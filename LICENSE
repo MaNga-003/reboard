@@ -1,0 +1,11 @@
+Copyright (c) 2026 ReBoard ekibi (Şerife, İrem, Emine, Burak). Tüm hakları saklıdır.
+All rights reserved.
+
+Bu depodaki kaynak kod yalnızca incelenmek üzere herkese açıktır. Yazılı izin olmadan
+kopyalanamaz, değiştirilemez, dağıtılamaz ve ticari amaçla kullanılamaz.
+
+The source code in this repository is publicly visible for review only. It may not be
+copied, modified, distributed or used commercially without written permission.
+
+Üçüncü taraf bileşenler kendi lisanslarıyla gelir:
+- src/design/wada.json: Sanzo Wada renk verisi, MIT (src/design/WADA_LICENSE.md).

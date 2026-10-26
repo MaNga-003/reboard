@@ -1,7 +1,7 @@
 {
   "$schema": "./docs/state.schema.json",
   "project": "ReBoard SaaS platformu",
-  "updated_at": "2026-10-27T01:35:00+03:00",
+  "updated_at": "2026-10-27T01:45:00+03:00",
   "current_phase": "F0",
   "deadlines": {
     "demo_freeze": "2026-10-29T18:00:00+03:00",
@@ -77,7 +77,7 @@
       "id": "T0.3",
       "phase": "F0",
       "mode": "hibrit",
-      "status": "yapılacak",
+      "status": "sürüyor",
       "title": "GitHub deposu MaNga-003/reboard (public) ve ilk push",
       "acceptance": "gh repo view MaNga-003/reboard açık; main dalı push edildi",
       "evidence": null,
@@ -85,7 +85,8 @@
         "T0.2"
       ],
       "decisions": [
-        "D-006"
+        "D-006",
+        "D-019"
       ]
     },
     {
@@ -515,14 +516,6 @@
       "question": "Ana palet A (#303), B (#310) ya da C (#343)?",
       "blocks": [
         "T3.5"
-      ]
-    },
-    {
-      "id": "Q-2",
-      "owner": "kullanıcı",
-      "question": "Açık deponun lisansı: MIT mi, tüm hakları saklı mı?",
-      "blocks": [
-        "T0.3"
       ]
     },
     {

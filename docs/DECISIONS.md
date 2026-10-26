@@ -107,3 +107,8 @@ Biçim: **Karar**, **Neden**, **Tarih**, kararı kim verdi (K: kullanıcı, C: C
 - **Karar:** Tartım fişi, irsaliye ve fatura gibi kanıt dosyaları en fazla 5 MB olarak Postgres'te `bytea` biçiminde tutulur. Erişim `EvidenceStore` arayüzünden geçer, böylece ileride S3 ya da R2'ye geçmek kolay olur. Her dosyanın SHA-256 özeti kaydedilir.
 - **Neden:** Çevrimdışı demoda da çalışıyor ve ek bir hizmet gerektirmiyor.
 - **Tarih:** 2026-10-27 · C
+
+### D-019 — Lisans: tüm hakları saklı
+- **Karar:** Depo herkese açıktır ama kod açık kaynak lisansıyla yayımlanmaz. `LICENSE` dosyası "tüm hakları saklıdır" der. Üçüncü taraf bileşenler (Wada renk verisi, MIT) kendi lisanslarıyla kalır.
+- **Neden:** Yarışmadan sonra şirketleşme seçeneği açık kalır. Sonradan açık lisansa geçmek kolaydır; yayımlanmış bir sürümü geri kapatmak mümkün değildir.
+- **Tarih:** 2026-10-27 · K
