@@ -25,7 +25,7 @@
 | M-15 | Dürüstlük | KPI bileşeni türü `resultClass` ister; E2E "Sentetik" rozetini arar | Her KPI'da rozet | `tests/e2e/honesty.spec.ts` | yazılacak (T2.3) |
 | M-16 | Belgeler güncel | `pnpm docs:check` | Yeşil | `scripts/docs-check.mjs`, CI | yeşil (T0.2) |
 | M-17 | Demo çalışır | `DEMO.md` akışı canlı URL'de Playwright ile | Yeşil | `tests/e2e/demo.spec.ts` | yazılacak (T4.3) |
-| M-18 | Gizli bilgi sızmaz | gitleaks | 0 bulgu | CI `secrets` işi (gitleaks v8.30.1, bütün geçmiş) | 0 bulgu (7 commit, CI çalıştırması 40417752073) |
+| M-18 | Gizli bilgi sızmaz | gitleaks; Vercel'e yüklenen dosya listesinde hassas yol sayısı | 0 bulgu | CI `secrets` işi (gitleaks v8.30.1, bütün geçmiş), `tests/unit/deploy-config.test.ts` | gitleaks: 0 bulgu (7 commit, CI çalıştırması 40417752073). Yayın: 67 dosyanın 0'ı hassas (`.private`, `.env*`, `.data`, belge). Bilerek bozma: `!/.private` ve `!/*` eklenince test düştü |
 | M-19 | Claude katkıcı görünmez (D-020) | Bütün geçmişte atıf satırı, Anthropic ya da Claude kimlikli yazar veya işleyen sayısı | 0 | `scripts/no-ai-attribution.mjs --history` (CI), `.githooks/commit-msg`, `tests/unit/no-ai-attribution.test.ts` | 0 bulgu (7 commit, CI). Bilerek bozma: temizlenmeden önceki geçmişte 10 atıf satırının 10u yakalandı; kanca atıflı mesajı reddetti |
 
 ## 2. Kullanıcıya kalanlar (ölçülemez)

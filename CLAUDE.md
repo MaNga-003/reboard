@@ -56,7 +56,10 @@ pnpm lint && pnpm typecheck
 pnpm test             # Vitest (birim ve entegrasyon, PGlite)
 pnpm test:e2e         # Playwright (Chromium)
 pnpm db:generate      # Drizzle migrasyonu üret
-pnpm db:migrate       # migrasyonları uygula
+pnpm db:migrate       # migrasyonları uygula (yerel PGlite)
+pnpm db:migrate:live  # migrasyonları Neon'a uygula (.env.neon, git dışı)
+pnpm deploy:prod      # Vercel'e yayın (yalnızca .vercelignore izin listesi yüklenir)
+pnpm live:check       # canlı denetim; TT Güvenli İnternet yüzünden: gh workflow run live-smoke.yml
 pnpm db:seed          # sentetik demo verisi
 pnpm docs:check       # belge tutarlılığı
 pnpm story:render     # Blender ile kareleri render et (story/blender)

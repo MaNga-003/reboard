@@ -147,11 +147,18 @@ Alanların anlamları ve birimleri `docs/DATA_DICTIONARY.md` dosyasında.
 | Yerel geliştirme | `pnpm dev` | PGlite (`.data/pglite`) |
 | Test | Vitest ve Playwright | PGlite (bellek ya da geçici klasör) |
 | Çevrimdışı demo | `pnpm demo:offline` (production build) | PGlite ve seed |
-| Canlı | Vercel, fra1 | Neon, `aws-eu-central-1` |
+| Canlı | Vercel, fra1: https://reboard-lovat.vercel.app | Neon, `aws-eu-central-1`, Postgres 18 |
 
 - Ortam değişkenleri:
   - `DATABASE_URL`: boşsa PGlite kullanılır.
   - `BETTER_AUTH_SECRET`, `BETTER_AUTH_URL`
   - `DEMO_MODE`, `DEMO_PASSWORD`
   - `CRON_SECRET`
+- Yayın:
+  - Vercel CLI ile yapılır (`pnpm deploy:prod`). `.vercelignore` bir izin listesidir: her şey dışarıda kalır, yalnızca derleme için gereken yollar yüklenir. `tests/unit/deploy-config.test.ts` bunu denetler.
+  - `vercel.json` çatıyı (`nextjs`) ve fonksiyon bölgesini (`fra1`) sabitler.
+  - Vercel'de `DATABASE_URL` (Neon havuzlu bağlantı) ve `BETTER_AUTH_SECRET` gizli değişkendir; `BETTER_AUTH_URL` canlı adrestir.
+  - Neon'a migrasyon `pnpm db:migrate:live` ile uygulanır; doğrudan bağlantı git dışındaki `.env.neon` dosyasında durur. Next bu dosyayı otomatik yüklemez, böylece yerel geliştirme PGlite'ta kalır. Bağlantılar `sslmode=verify-full` kullanır.
+  - Neon Postgres 18, PGlite Postgres 17 tabanlıdır; migrasyonlar ikisinde de denendi.
+  - Türk Telekom "Güvenli İnternet" filtresi `*.vercel.app` adreslerini yönlendiriyor (R-5). Canlı denetim bu yüzden GitHub Actions'ta çalışır: `gh workflow run live-smoke.yml` (`scripts/live-smoke.mjs`).
 - CI (GitHub Actions) sırasıyla şunları çalıştırır: lint, tip denetimi, Vitest, Playwright (Chromium), `docs:check` ve gitleaks.

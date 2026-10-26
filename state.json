@@ -1,7 +1,7 @@
 {
   "$schema": "./docs/state.schema.json",
   "project": "ReBoard SaaS platformu",
-  "updated_at": "2026-10-27T02:12:00+03:00",
+  "updated_at": "2026-10-27T02:33:00+03:00",
   "current_phase": "F0",
   "deadlines": {
     "demo_freeze": "2026-10-29T18:00:00+03:00",
@@ -94,10 +94,10 @@
       "id": "T0.4",
       "phase": "F0",
       "mode": "hibrit",
-      "status": "yapılacak",
+      "status": "tamam",
       "title": "Vercel ve Neon girişi (kullanıcı), proje, Frankfurt bölgesi ve ortam değişkenleri (Claude)",
       "acceptance": "Vercel projesi fra1'de; Neon projesi aws-eu-central-1'de; DATABASE_URL ve BETTER_AUTH_SECRET Vercel'de tanımlı",
-      "evidence": null,
+      "evidence": "Neon fragrant-rain-02230008 (aws-eu-central-1, Postgres 18): migrasyonlar uygulandı, 28 tablo, 2 tetikleyici; UPDATE, DELETE ve TRUNCATE geri alınan işlemde reddedildi. Vercel reboard (burak-siscis-projects): fonksiyonlar fra1, durum Ready, https://reboard-lovat.vercel.app. DATABASE_URL ve BETTER_AUTH_SECRET gizli değişken (Production, Preview); BETTER_AUTH_URL canlı adres. Yüklenen 67 dosyanın 0'ı hassas. GitHub bağlantısı kurulamadı (Vercel GitHub uygulaması MaNga-003'te yok); yayın CLI ile.",
       "depends_on": [
         "T0.3"
       ],
@@ -526,6 +526,14 @@
       "blocks": [
         "T4.5"
       ]
+    },
+    {
+      "id": "Q-4",
+      "owner": "kullanıcı",
+      "question": "*.vercel.app filtrelere takıldığı için özel bir alan adı alınsın mı (ör. reboard.app)? Ücretlidir.",
+      "blocks": [
+        "T4.3"
+      ]
     }
   ],
   "risks": [
@@ -536,8 +544,8 @@
     },
     {
       "id": "R-2",
-      "risk": "Vercel Hobby planı org deposundan yayını reddedebilir",
-      "mitigation": "GitHub Actions ve Vercel CLI ile yayın yolu"
+      "risk": "Vercel GitHub bağlantısı MaNga-003 deposuna kurulamadı (uygulama org'da yok)",
+      "mitigation": "Yayın Vercel CLI ile (pnpm deploy:prod); kullanıcı isterse Vercel GitHub uygulamasını MaNga-003'e kurar"
     },
     {
       "id": "R-3",
@@ -548,6 +556,11 @@
       "id": "R-4",
       "risk": "Herkese açık demoda ziyaretçiler veriyi bozabilir",
       "mitigation": "Demo verisini sıfırlama ve günlük cron ile yeniden yükleme"
+    },
+    {
+      "id": "R-5",
+      "risk": "Türk Telekom Güvenli İnternet filtresi *.vercel.app adreslerini yönlendiriyor; jüri ya da salon ağı da filtreli olabilir",
+      "mitigation": "Canlı denetim GitHub Actions'ta (live-smoke.yml); özel alan adı (Q-4); çevrimdışı demo (T4.2); salon ağı 29 Ekim'de denenir"
     }
   ],
   "metrics": [
@@ -691,9 +704,9 @@
       "id": "M-18",
       "claim": "Gizli bilgi sızmaz",
       "threshold": "gitleaks 0 bulgu",
-      "last_value": "0 bulgu (7 commit)",
-      "measured_at": "2026-10-27T02:12:00+03:00",
-      "test": "CI secrets işi (gitleaks v8.30.1)"
+      "last_value": "gitleaks 0 bulgu (7 commit); yayın 67 dosyada 0 hassas",
+      "measured_at": "2026-10-27T02:33:00+03:00",
+      "test": "CI secrets işi (gitleaks v8.30.1), tests/unit/deploy-config.test.ts"
     },
     {
       "id": "M-19",

@@ -16,7 +16,10 @@
     "test:coverage": "vitest run --coverage",
     "test:e2e": "playwright test",
     "db:generate": "drizzle-kit generate",
-    "db:migrate": "tsx scripts/db-migrate.ts"
+    "db:migrate": "tsx scripts/db-migrate.ts",
+    "db:migrate:live": "tsx --env-file=.env.neon scripts/db-migrate.ts",
+    "deploy:prod": "vercel deploy --prod",
+    "live:check": "node scripts/live-smoke.mjs"
   },
   "dependencies": {
     "@electric-sql/pglite": "^0.5.12",

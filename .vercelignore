@@ -1,0 +1,12 @@
+# CLI ile yayında yalnızca derleme için gerekenler yüklenir. Varsayılan "hepsi dışarıda" olduğundan
+# .private/, .env* ve yeni eklenen dosyalar kendiliğinden yüklenmez (tests/unit/deploy-config.test.ts).
+/*
+!/src
+!/public
+!/messages
+!/package.json
+!/pnpm-lock.yaml
+!/pnpm-workspace.yaml
+!/next.config.ts
+!/tsconfig.json
+!/vercel.json

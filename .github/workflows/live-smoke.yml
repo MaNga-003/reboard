@@ -1,0 +1,27 @@
+name: Canlı denetim
+
+# Yayından sonra elle tetiklenir: gh workflow run live-smoke.yml
+on:
+  workflow_dispatch:
+    inputs:
+      url:
+        description: Denetlenecek adres
+        required: false
+        default: https://reboard-lovat.vercel.app
+
+permissions:
+  contents: read
+
+jobs:
+  smoke:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 24
+      # Girdi kabuk metnine gömülmez; ortam değişkeninden okunur.
+      - run: node scripts/live-smoke.mjs "$LIVE_URL"
+        env:
+          LIVE_URL: ${{ inputs.url }}

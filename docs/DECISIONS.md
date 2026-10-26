@@ -18,7 +18,10 @@ Biçim: **Karar**, **Neden**, **Tarih**, kararı kim verdi (K: kullanıcı, C: C
 - **Tarih:** 2026-10-27 · K
 
 ### D-003 — Yayın: Vercel (fra1) ve Neon (Frankfurt), ayrıca çevrimdışı yedek
-- **Karar:** Canlı sürüm Vercel'de fra1 bölgesinde, veritabanı Neon Postgres'te Frankfurt bölgesinde çalışır. Demo için yerelde PGlite ile çalışan çevrimdışı bir yedek de hazırlanır.
+- **Karar:**
+  - Canlı sürüm Vercel'de fra1 bölgesinde, veritabanı Neon Postgres'te Frankfurt bölgesinde (`aws-eu-central-1`) çalışır. Demo için yerelde PGlite ile çalışan çevrimdışı bir yedek de hazırlanır.
+  - Yayın şimdilik Vercel CLI ile yapılır (`pnpm deploy:prod`). CLI yalnızca `.vercelignore` izin listesindeki dosyaları yükler; `.private/` ve `.env*` hiçbir koşulda yüklenmez.
+  - GitHub bağlantısı, Vercel GitHub uygulaması `MaNga-003` organizasyonuna kurulunca açılır.
 - **Neden:** Jüri bir bağlantı ya da QR kodla açabilsin. AB bölgesi seçildi. Ücretsiz katman yetiyor.
 - **Tarih:** 2026-10-27 · K
 
