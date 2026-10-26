@@ -94,7 +94,10 @@ Alanların anlamları ve birimleri `docs/DATA_DICTIONARY.md` dosyasında.
 - `biz_step` değerleri CBV sözlüğünden gelir: `receiving`, `inspecting`, `commissioning`, `shipping`, `transforming`, `accepting`.
 - Her olayda şunlar bulunur: `event_time`, `org_id`, `inputs[]` ve `outputs[]` (her biri `{ref, kg}`), `evidence_ids[]`, `prev_hash` ve `hash`.
 - Hash `hash = sha256(canonicalJson(payload) + prev_hash)` olarak hesaplanır. Kanonik JSON'da anahtarlar sıralanır ve sayılar sabit ondalıkla yazılır. Zincir organizasyon başına tutulur.
-- Kayıtlar yalnızca eklenir. `custody_events` tablosundaki UPDATE ve DELETE işlemlerini bir trigger reddeder; bu kural migrasyonda tanımlıdır.
+- Kayıtlar yalnızca eklenir (`drizzle/0002_append_only.sql`):
+  - Satır düzeyindeki UPDATE ve DELETE işlemlerini bir tetikleyici her zaman reddeder. Organizasyon silinmesinden gelen cascade de reddedilir; zinciri olan organizasyon silinemez.
+  - TRUNCATE yalnızca demo sıfırlamasında, aynı işlemde `SET LOCAL reboard.allow_reset = 'on'` ile çalışır.
+  - `(org_id, seq)` benzersizdir; aynı sıra numarasıyla ikinci kayıt (zincir çatallanması) yazılamaz. Eşzamanlı yazımda repository yeniden dener.
 - Doğrulama `/api/verify/[lot]` ucunda yapılır. Uç, lotun soy ağacındaki olay zincirini baştan yeniden hesaplar ve sonucu `{ok, brokenAt?}` olarak döner.
 - Kütle dengesinde girdiler toplamı, çıktılar, fire, nem ve buhar kaybının toplamına eşit olmalıdır: `Σ inputs.kg = Σ outputs.kg + fire_kg + moisture_loss_kg`. Varsayılan tolerans %2'dir. Tolerans aşılırsa açıklama alanı zorunlu olur.
 

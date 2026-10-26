@@ -1,7 +1,7 @@
 {
   "$schema": "./docs/state.schema.json",
   "project": "ReBoard SaaS platformu",
-  "updated_at": "2026-10-27T01:45:00+03:00",
+  "updated_at": "2026-10-27T01:50:00+03:00",
   "current_phase": "F0",
   "deadlines": {
     "demo_freeze": "2026-10-29T18:00:00+03:00",
@@ -77,10 +77,10 @@
       "id": "T0.3",
       "phase": "F0",
       "mode": "hibrit",
-      "status": "sürüyor",
+      "status": "tamam",
       "title": "GitHub deposu MaNga-003/reboard (public) ve ilk push",
       "acceptance": "gh repo view MaNga-003/reboard açık; main dalı push edildi",
-      "evidence": null,
+      "evidence": "https://github.com/MaNga-003/reboard (public, MaNga-003 org); main push edildi; LICENSE: tüm hakları saklı (D-019)",
       "depends_on": [
         "T0.2"
       ],
@@ -125,10 +125,10 @@
       "id": "T1.1",
       "phase": "F1",
       "mode": "otonom",
-      "status": "yapılacak",
+      "status": "tamam",
       "title": "Şema, migrasyonlar ve yalnızca-ekleme tetikleyicisi",
       "acceptance": "PGlite üzerinde migrasyonlar çalışır; custody_events UPDATE/DELETE reddedilir (test)",
-      "evidence": null,
+      "evidence": "drizzle/0001_alan.sql (28 tablo) ve 0002_append_only.sql; tests/integration/append-only.test.ts 7/7: UPDATE, DELETE, cascade DELETE, izinsiz TRUNCATE ve aynı seq reddedilir; izinli demo sıfırlaması çalışır; tetikleyici bilerek bozulunca test düştü (1/7)",
       "depends_on": [
         "T0.5"
       ],
@@ -141,7 +141,7 @@
       "id": "T1.2",
       "phase": "F1",
       "mode": "otonom",
-      "status": "yapılacak",
+      "status": "sürüyor",
       "title": "Hesap çekirdeği: birim ve özellik testleri",
       "acceptance": "src/domain/calc kapsamı en az %90; para birimi ya da vergi temeli uyuşmazsa hata; boş girdi 'bilinmiyor' döner",
       "evidence": null,
@@ -594,8 +594,8 @@
       "id": "M-6",
       "claim": "Kayıt değiştirilemez",
       "threshold": "0 kaçak",
-      "last_value": null,
-      "measured_at": null,
+      "last_value": "DB düzeyinde 0 kaçak (5 değişiklik yolu reddedildi); verifyChain T1.3'te",
+      "measured_at": "2026-10-27T01:45:00+03:00",
       "test": "tests/integration/append-only.test.ts"
     },
     {

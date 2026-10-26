@@ -13,8 +13,8 @@
 | M-3 | Scroll akıcı | Playwright ve CDP ile kare süresi kaydı | p99 ≤ 25 ms (masaüstü) | `tests/e2e/story-perf.spec.ts` | yazılacak (T3.4) |
 | M-4 | Kiracılar ayrılır | A kullanıcısı B'nin özel uç noktalarını ve repository fonksiyonlarını dener | 0 başarılı erişim | `tests/integration/tenant-isolation.test.ts` | yazılacak (T1.5) |
 | M-5 | Hesaplar doğru | Vitest ve fast-check özellik testleri | Uyuşmayan para birimi ya da vergi temeli hata verir; boş girdi `null` döner; `src/domain` kapsamı ≥ %90 | `tests/unit/calc/*.test.ts` | yazılacak (T1.2) |
-| M-6 | Kayıt değiştirilemez | Olay değiştirilip `verifyChain` çalıştırılır; DB'de UPDATE ve DELETE denenir | 0 kaçak | `tests/unit/traceability/*.test.ts`, `tests/integration/append-only.test.ts` | yazılacak (T1.1, T1.3) |
-| M-7 | Kütle dengesi | `|Σgirdi − Σçıktı − kayıp| ÷ Σgirdi` | ≤ %2, aşılırsa açıklama zorunlu | `tests/unit/traceability/mass-balance.test.ts` | yazılacak (T1.3) |
+| M-6 | Kayıt değiştirilemez | Olay değiştirilip `verifyChain` çalıştırılır; DB'de UPDATE, DELETE ve TRUNCATE denenir | 0 kaçak | `tests/integration/append-only.test.ts`, `tests/unit/traceability/*.test.ts` | DB: 0 kaçak (UPDATE, DELETE, cascade, TRUNCATE, çatal reddedildi); `verifyChain` T1.3'te |
+| M-7 | Kütle dengesi | `abs(Σgirdi − Σçıktı − kayıp) ÷ Σgirdi` | ≤ %2, aşılırsa açıklama zorunlu | `tests/unit/traceability/mass-balance.test.ts` | yazılacak (T1.3) |
 | M-8 | Grafik renkleri ayrışır | OKLab ΔE; Machado CVD benzetimi | ≥ 0,25; CVD'de ≥ 0,1; durum renkleri arası ton farkı ≥ 30° | `tests/unit/design-tokens.test.ts` | yazılacak (T3.1) |
 | M-9 | Hikâye metni okunur | Metin kutusunun altındaki gerçek kare piksellerine göre kontrast | Her bölümde ≥ 4,5 | `tests/unit/story-contrast.test.ts` | yazılacak (T3.5) |
 | M-10 | Kare dizisi kesintisiz | Ardışık karelerde SSIM, sıçrama dedektörü | İlk renderdan sonra kalibre edilir | `tests/unit/story-continuity.test.ts` | yazılacak (T3.5) |

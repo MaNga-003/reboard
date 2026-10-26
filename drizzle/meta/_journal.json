@@ -8,6 +8,20 @@
       "when": 1793053684002,
       "tag": "0000_kimlik",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1793054575404,
+      "tag": "0001_alan",
+      "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1793054576448,
+      "tag": "0002_append_only",
+      "breakpoints": true
     }
   ]
 }

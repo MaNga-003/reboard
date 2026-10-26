@@ -16,6 +16,20 @@
 | Mesafe | Yalnızca kuş uçuşu hesaplanır ve "kuş uçuşu" etiketiyle gösterilir |
 | Kimlik | UUID. Ekip içinde okunur kısa kodlar ayrıca tutulur (ör. `WB-2026-0012`) |
 
+**Şema dosyaları** (`src/db/schema/`):
+
+| Dosya | Tablolar |
+| --- | --- |
+| `auth.ts` | Better Auth: `user`, `session`, `account`, `verification`, `organization`, `member`, `invitation` |
+| `orgs.ts` | `org_profiles`: tür (`textile_factory`, `municipality`, `recycler`, `producer`, `panel_buyer`, `carrier`), ilçe, il, yuvarlanmış konum |
+| `market.ts` | `listings`, `offers`, `deals`, `deliveries` |
+| `trace.ts` | `waste_batches`, `production_batches`, `batch_inputs`, `panel_lots`, `custody_events`, `evidence_register`, `evidence_links` |
+| `economics.ts` | `supplier_baseline`, `transport_quotes`, `cost_lines`, `buyer_trials`, `transactions`, `saas_costs`, `model_inputs`, `calc_runs` |
+| `reference.ts` | `reference_values` |
+| `enums.ts` | Bütün enum değerleri |
+
+Kayıt taşıyan her tablonun `result_class` ve `created_at` kolonu vardır. Para kolonlarının yanında `currency` ve `tax_basis` bulunur. Kilogram kolonları `numeric(14,3)`, para kolonları `numeric(14,2)` tipindedir.
+
 ## 2. Sonuç sınıfları (`result_class`)
 
 | Değer | TR etiket | EN label | Ne zaman |
