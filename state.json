@@ -1,7 +1,7 @@
 {
   "$schema": "./docs/state.schema.json",
   "project": "ReBoard SaaS platformu",
-  "updated_at": "2026-10-27T01:50:00+03:00",
+  "updated_at": "2026-10-27T01:55:00+03:00",
   "current_phase": "F0",
   "deadlines": {
     "demo_freeze": "2026-10-29T18:00:00+03:00",
@@ -141,10 +141,10 @@
       "id": "T1.2",
       "phase": "F1",
       "mode": "otonom",
-      "status": "sürüyor",
+      "status": "tamam",
       "title": "Hesap çekirdeği: birim ve özellik testleri",
       "acceptance": "src/domain/calc kapsamı en az %90; para birimi ya da vergi temeli uyuşmazsa hata; boş girdi 'bilinmiyor' döner",
-      "evidence": null,
+      "evidence": "tests/unit/calc: 27 test yeşil; rapor örneği birebir (10.000 / 31.111 / 17.500 TL, 222,50–271,11 TL/m², olumsuz −10.000); src/domain kapsamı %100 satır/dal/fonksiyon, eşik vitest.config.mts'te zorunlu; bilerek bozulan 4 değişikliğin 4'ü yakalandı",
       "depends_on": [
         "T0.5"
       ],
@@ -586,8 +586,8 @@
       "id": "M-5",
       "claim": "Hesaplar doğru",
       "threshold": "para birimi/vergi temeli uyuşmazlığı hata; boş girdi null; src/domain kapsamı ≥ %90",
-      "last_value": null,
-      "measured_at": null,
+      "last_value": "27/27 test; src/domain kapsamı %100 (satır, dal, fonksiyon); 4/4 mutasyon yakalandı",
+      "measured_at": "2026-10-27T01:55:00+03:00",
       "test": "tests/unit/calc"
     },
     {

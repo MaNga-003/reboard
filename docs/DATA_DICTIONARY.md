@@ -6,10 +6,10 @@
 
 | Kural | Açıklama |
 | --- | --- |
-| Boş değer | `null` **bilinmiyor** demektir. Asla 0 yazılmaz. Arayüz "bilinmiyor" gösterir, hesap sonucu da `null` olur |
+| Boş değer | `null` **bilinmiyor** demektir. Asla 0 yazılmaz. Arayüz "bilinmiyor" gösterir, hesap sonucu da `null` olur. Boş kalem listesi ise bilinen sıfırdır (ör. hizmet geliri yok). Hiç girdisi olmayan hesabın sınıfı olamaz; hesap `no_inputs` hatası verir ve yayımlanmaz |
 | Para | `numeric(14,2)`. Yanında her zaman `currency` (`TRY`, `EUR`, `USD`) ve `tax_basis` (`incl_vat`, `excl_vat`) bulunur. Farklı para birimi ya da vergi temeli olan iki değer toplanmaz; hesap hata verir |
 | Kur | Kur dönüşümü yalnızca `reference_values` içindeki tarihli kurla yapılır. Kaynak: TCMB; demo değeri 49,5523 TL/USD |
-| Miktar | `numeric` ve birim enum'u: `kg`, `t`, `m2`, `m3`, `kwh`, `h`, `km`, `pcs` |
+| Miktar | `numeric` ve birim enum'u: `kg`, `t`, `m2`, `m3`, `kwh`, `h`, `km`, `pcs`, `trip`, `month` |
 | Dönem | `period`: `YYYY-MM` ya da `YYYY-MM-DD/YYYY-MM-DD`. Farklı dönemdeki değerler aynı hesapta birleşmez |
 | Zaman | `timestamptz`, ISO 8601 |
 | Konum | İlçe adı ya da yaklaşık 1 km'ye yuvarlanmış enlem ve boylam. Açık adres tutulmaz |
@@ -114,13 +114,26 @@ Bir hesabın sınıfı, girdilerinin **en zayıf** sınıfıdır. Sıralama en z
 
 **Formüller** (`src/domain/calc`):
 
-| Hesap | Formül |
-| --- | --- |
-| Fabrika kazancı | mevcut net atık gideri − yeni net atık gideri |
-| Panel müşterisi kazancı | eşdeğer mevcut ürün toplam gideri − ReBoard kullanılan ürün toplam gideri |
-| ReBoard faaliyet sonucu | panel geliri + kabul geliri + hizmet geliri − malzeme − operasyon − sabit gider − amortisman |
-| Fiyat koridoru | `[alt sınır, üst sınır]`. Alt sınır > üst sınır ise aralık oluşmaz ve uyarı verilir |
-| SaaS katkısı | abonelik geliri − müşteriye bağlı gider |
+Tanımlar maliyet raporundan birebir alınmıştır (D-002). Her sonuç `{value, unit, period, currency, taxBasis, resultClass, inputRefs, formulaVersion, conditions}` taşır. Sınıf, girdilerin en zayıf sınıfıdır.
+
+| Hesap | Formül | Koşul (`conditions`) |
+| --- | --- | --- |
+| Fabrika kazancı | mevcut net gider − yeni net gider. Mevcut net = kaçınılabilir toplama + taşıma + bertaraf − bugünkü atık satış geliri. Yeni net = elleçleme + taşıma + kabul + abonelik − ReBoard'un ödediği atık bedeli | |
+| Panel müşterisi kazancı | eşdeğer mevcut ürün toplam gideri − ReBoard kullanılan ürün toplam gideri (aynı ürün sayısı ya da kullanılabilir m²) | Teknik eşdeğerlik doğrulanmadıysa `equivalence_unverified` |
+| ReBoard faaliyet sonucu | panel + kabul + hizmet gelirleri − malzeme − operasyon − sabit gider − amortisman | Her zaman `before_financing_and_tax` |
+| Fiyat koridoru (TL/m²) | Alt = (dönem toplam giderleri − panel dışı gelirler) ÷ satılabilir alan. Üst = (müşterinin mevcut toplam gideri − geçiş ve ek işleme giderleri) ÷ gerekli ReBoard brüt alanı. Alan ≤ 0 ya da bilinmiyorsa sınır `null` | Alt > üst ise `no_corridor` |
+| SaaS katkısı | abonelik − müşteriye bağlı bulut, harita, iletişim ve destek gideri | |
+
+**Sentetik model örneği** (`src/domain/calc/synthetic-scenario.ts`). Rapordaki örnek: 10 t tekstil, 1.000 m² satılabilir panel, müşteri kesim verimi %85 (kullanılabilir 850 m²). Raporun girdi dosyası elimizde olmadığından girdiler, raporda yayımlanan sonuçları birebir üretecek biçimde **yeniden kuruldu**. Sonuçlar raporla aynıdır; tek tek kalemler Şerife'nin dosyasıyla aynı olmayabilir (T4.5'te karşılaştırılır).
+
+| Taraf | Girdi (TL, KDV hariç) | Sonuç |
+| --- | --- | --- |
+| Fabrika | Bugün: toplama 6.150 + taşıma 6.000 + bertaraf 7.850 (785 TL/t) − atık satışı 0. Yeni: elleçleme 2.000 + taşıma 3.000 + kabul 5.000 (500 TL/t) − atık bedeli 0 | **10.000** |
+| Fabrika, olumsuz senaryo | Atık bugün 2.000 TL/t'ye satılıyor | **−10.000** |
+| Panel müşterisi | Mevcut: eşdeğer ürün 263.111 + teslim 8.000 + kesim ve kaplama 10.000. ReBoard: panel 240.000 (240 TL/m²) + geçiş denemesi 4.000 + ek işleme 6.000 | **31.111** (koşullu) |
+| ReBoard | Panel 240.000 + kabul 5.000 − (malzeme 120.000 + operasyon 62.500 + sabit 30.000 + amortisman 15.000) | **17.500** |
+| Fiyat koridoru | Alt (227.500 − 5.000) ÷ 1.000; üst (281.111 − 10.000) ÷ 1.000 | **222,50–271,11 TL/m²** |
+| SaaS katkısı | Abonelik ücreti belirlenmedi | **bilinmiyor** |
 
 ## 7. Referans değerler (`reference_values`)
 
