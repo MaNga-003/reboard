@@ -1,0 +1,94 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "ReBoard state.json",
+  "type": "object",
+  "required": ["project", "updated_at", "current_phase", "deadlines", "goals", "phases", "tasks", "open_questions", "risks", "metrics"],
+  "additionalProperties": false,
+  "properties": {
+    "$schema": { "type": "string" },
+    "project": { "type": "string" },
+    "updated_at": { "type": "string", "format": "date-time" },
+    "current_phase": { "type": "string", "pattern": "^F[0-9]+$" },
+    "deadlines": {
+      "type": "object",
+      "additionalProperties": { "type": "string", "format": "date-time" }
+    },
+    "goals": { "type": "array", "items": { "type": "string" }, "minItems": 1 },
+    "phases": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "title", "window"],
+        "additionalProperties": false,
+        "properties": {
+          "id": { "type": "string", "pattern": "^F[0-9]+$" },
+          "title": { "type": "string" },
+          "window": { "type": "string" }
+        }
+      }
+    },
+    "tasks": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "phase", "mode", "status", "title", "acceptance", "evidence", "depends_on", "decisions"],
+        "additionalProperties": false,
+        "properties": {
+          "id": { "type": "string", "pattern": "^T[0-9]+\\.[0-9]+$" },
+          "phase": { "type": "string", "pattern": "^F[0-9]+$" },
+          "mode": { "enum": ["otonom", "kullanıcı", "hibrit"] },
+          "status": { "enum": ["yapılacak", "sürüyor", "engelli", "tamam", "iptal"] },
+          "title": { "type": "string" },
+          "acceptance": { "type": "string" },
+          "evidence": { "type": ["string", "null"] },
+          "depends_on": { "type": "array", "items": { "type": "string" } },
+          "decisions": { "type": "array", "items": { "type": "string", "pattern": "^D-[0-9]{3}$" } },
+          "note": { "type": "string" }
+        }
+      }
+    },
+    "open_questions": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "owner", "question", "blocks"],
+        "additionalProperties": false,
+        "properties": {
+          "id": { "type": "string", "pattern": "^Q-[0-9]+$" },
+          "owner": { "enum": ["kullanıcı", "ekip", "claude"] },
+          "question": { "type": "string" },
+          "blocks": { "type": "array", "items": { "type": "string" } }
+        }
+      }
+    },
+    "risks": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "risk", "mitigation"],
+        "additionalProperties": false,
+        "properties": {
+          "id": { "type": "string", "pattern": "^R-[0-9]+$" },
+          "risk": { "type": "string" },
+          "mitigation": { "type": "string" }
+        }
+      }
+    },
+    "metrics": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "claim", "threshold", "last_value", "measured_at", "test"],
+        "additionalProperties": false,
+        "properties": {
+          "id": { "type": "string", "pattern": "^M-[0-9]+$" },
+          "claim": { "type": "string" },
+          "threshold": { "type": "string" },
+          "last_value": { "type": ["string", "number", "null"] },
+          "measured_at": { "type": ["string", "null"] },
+          "test": { "type": "string" }
+        }
+      }
+    }
+  }
+}

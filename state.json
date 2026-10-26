@@ -1,0 +1,705 @@
+{
+  "$schema": "./docs/state.schema.json",
+  "project": "ReBoard SaaS platformu",
+  "updated_at": "2026-10-27T02:20:00+03:00",
+  "current_phase": "F0",
+  "deadlines": {
+    "demo_freeze": "2026-10-29T18:00:00+03:00",
+    "competition": "2026-10-30T09:00:00+03:00"
+  },
+  "goals": [
+    "Atık tekstil satıcıları ile alıcılarını pazar yerinde buluşturmak",
+    "Tedarik zincirinin aksamaması: stok, kaç günlük hammadde kaldığı, teslimler, uyarılar",
+    "Geri kazanılan atık miktarını doğrulanabilir biçimde göstererek güven kazanmak"
+  ],
+  "phases": [
+    {
+      "id": "F0",
+      "title": "Kurulum",
+      "window": "2026-10-27"
+    },
+    {
+      "id": "F1",
+      "title": "Alan çekirdeği",
+      "window": "2026-10-27/2026-10-28"
+    },
+    {
+      "id": "F2",
+      "title": "Ekranlar",
+      "window": "2026-10-28"
+    },
+    {
+      "id": "F3",
+      "title": "Hikâye (kare dizisi)",
+      "window": "2026-10-27/2026-10-29"
+    },
+    {
+      "id": "F4",
+      "title": "Yayın ve demo",
+      "window": "2026-10-29/2026-10-30"
+    },
+    {
+      "id": "F5",
+      "title": "Yarışma sonrası ürünleşme",
+      "window": "2026-11"
+    }
+  ],
+  "tasks": [
+    {
+      "id": "T0.1",
+      "phase": "F0",
+      "mode": "hibrit",
+      "status": "tamam",
+      "title": "Araç kurulumu: Node 24 LTS, pnpm, ffmpeg, Blender LTS",
+      "acceptance": "node, pnpm, ffmpeg ve blender sürüm komutları çalışır",
+      "evidence": "node v24.22.1, pnpm 10.34.9, ffmpeg 9.0.1 essentials, Blender 4.5.10 LTS (winget)",
+      "depends_on": [],
+      "decisions": [
+        "D-004",
+        "D-007"
+      ]
+    },
+    {
+      "id": "T0.2",
+      "phase": "F0",
+      "mode": "otonom",
+      "status": "tamam",
+      "title": "git init, .gitignore, belge seti, docs:check, Stop kancası, bellek",
+      "acceptance": "pnpm docs:check yeşil; kaynak belgeler git status'ta görünmez; Stop kancası src değişip state.json değişmediğinde durdurur",
+      "evidence": "docs:check yeşil (31 görev, 18 karar, 18 metrik); bilinçli bozma 4/4 yakalandı (bilinmeyen karar, eksik belge, fazladan metrik, şema ihlali); git check-ignore .private ve .env.local'ı dışlıyor; docs-guard: kod değişip state.json değişmeyince exit 2, diğer 4 durumda exit 0",
+      "depends_on": [],
+      "decisions": [
+        "D-006",
+        "D-017"
+      ]
+    },
+    {
+      "id": "T0.3",
+      "phase": "F0",
+      "mode": "hibrit",
+      "status": "yapılacak",
+      "title": "GitHub deposu MaNga-003/reboard (public) ve ilk push",
+      "acceptance": "gh repo view MaNga-003/reboard açık; main dalı push edildi",
+      "evidence": null,
+      "depends_on": [
+        "T0.2"
+      ],
+      "decisions": [
+        "D-006"
+      ]
+    },
+    {
+      "id": "T0.4",
+      "phase": "F0",
+      "mode": "hibrit",
+      "status": "yapılacak",
+      "title": "Vercel ve Neon girişi (kullanıcı), proje, Frankfurt bölgesi ve ortam değişkenleri (Claude)",
+      "acceptance": "Vercel projesi fra1'de; Neon projesi aws-eu-central-1'de; DATABASE_URL ve BETTER_AUTH_SECRET Vercel'de tanımlı",
+      "evidence": null,
+      "depends_on": [
+        "T0.3"
+      ],
+      "decisions": [
+        "D-003"
+      ]
+    },
+    {
+      "id": "T0.5",
+      "phase": "F0",
+      "mode": "otonom",
+      "status": "sürüyor",
+      "title": "Next.js iskeleti, Tailwind, UI temeli, next-intl, Drizzle ve PGlite, Better Auth, CI",
+      "acceptance": "pnpm build, pnpm lint, pnpm typecheck ve pnpm test yeşil; /tr ve /en açılır",
+      "evidence": null,
+      "depends_on": [],
+      "decisions": [
+        "D-005",
+        "D-007",
+        "D-008",
+        "D-009",
+        "D-010"
+      ]
+    },
+    {
+      "id": "T1.1",
+      "phase": "F1",
+      "mode": "otonom",
+      "status": "yapılacak",
+      "title": "Şema, migrasyonlar ve yalnızca-ekleme tetikleyicisi",
+      "acceptance": "PGlite üzerinde migrasyonlar çalışır; custody_events UPDATE/DELETE reddedilir (test)",
+      "evidence": null,
+      "depends_on": [
+        "T0.5"
+      ],
+      "decisions": [
+        "D-009",
+        "D-012"
+      ]
+    },
+    {
+      "id": "T1.2",
+      "phase": "F1",
+      "mode": "otonom",
+      "status": "yapılacak",
+      "title": "Hesap çekirdeği: birim ve özellik testleri",
+      "acceptance": "src/domain/calc kapsamı en az %90; para birimi ya da vergi temeli uyuşmazsa hata; boş girdi 'bilinmiyor' döner",
+      "evidence": null,
+      "depends_on": [
+        "T0.5"
+      ],
+      "decisions": [
+        "D-002",
+        "D-011"
+      ]
+    },
+    {
+      "id": "T1.3",
+      "phase": "F1",
+      "mode": "otonom",
+      "status": "yapılacak",
+      "title": "Olay günlüğü, hash zinciri, kütle dengesi; sahte kayıt testi",
+      "acceptance": "Değiştirilen bir olay verifyChain'de yakalanır; kütle dengesi toleransı testli",
+      "evidence": null,
+      "depends_on": [
+        "T1.1"
+      ],
+      "decisions": [
+        "D-012"
+      ]
+    },
+    {
+      "id": "T1.4",
+      "phase": "F1",
+      "mode": "otonom",
+      "status": "yapılacak",
+      "title": "Sentetik seed (3 kaynak, 2 taşıyıcı, 2 alıcı, ReBoard) ve kaynaklı referans değerler",
+      "acceptance": "Seed bütün tabloları doldurur; seed'deki her sayı resultClass taşır; demo kayıtlarının tamamı synthetic",
+      "evidence": null,
+      "depends_on": [
+        "T1.1"
+      ],
+      "decisions": [
+        "D-011"
+      ]
+    },
+    {
+      "id": "T1.5",
+      "phase": "F1",
+      "mode": "otonom",
+      "status": "yapılacak",
+      "title": "Kimlik, organizasyonlar ve roller, demo rol değiştirici; çapraz kiracı testleri",
+      "acceptance": "A organizasyonunun kullanıcısı B'nin özel kayıtlarına 0 erişim (test)",
+      "evidence": null,
+      "depends_on": [
+        "T1.1"
+      ],
+      "decisions": [
+        "D-010",
+        "D-016"
+      ]
+    },
+    {
+      "id": "T2.1",
+      "phase": "F2",
+      "mode": "otonom",
+      "status": "yapılacak",
+      "title": "Pazar yeri: ilan listesi, filtre, harita, detay, ilan oluşturma, teklif ve kabul",
+      "acceptance": "E2E: sağlayıcı ilan verir, üretici teklif eder, sağlayıcı kabul eder, anlaşma ve teslim planı oluşur",
+      "evidence": null,
+      "depends_on": [
+        "T1.4",
+        "T1.5"
+      ],
+      "decisions": []
+    },
+    {
+      "id": "T2.2",
+      "phase": "F2",
+      "mode": "otonom",
+      "status": "yapılacak",
+      "title": "İzlenebilirlik: parti kabulü, üretim partisi, soy ağacı, zaman çizelgesi, kanıt kaydı",
+      "acceptance": "E2E: teslim alınan parti tartılır, kanıt yüklenir, üretim partisine bağlanır, soy ağacında görünür",
+      "evidence": null,
+      "depends_on": [
+        "T1.3",
+        "T1.4"
+      ],
+      "decisions": [
+        "D-012",
+        "D-018"
+      ]
+    },
+    {
+      "id": "T2.3",
+      "phase": "F2",
+      "mode": "otonom",
+      "status": "yapılacak",
+      "title": "Etki ve tedarik sürekliliği paneli",
+      "acceptance": "Doğrulanmış ve beyan edilen kg ayrı gösterilir; kaç günlük hammadde kaldığı eşik renkleriyle görünür; uyarılar listelenir",
+      "evidence": null,
+      "depends_on": [
+        "T1.4"
+      ],
+      "decisions": [
+        "D-013"
+      ]
+    },
+    {
+      "id": "T2.4",
+      "phase": "F2",
+      "mode": "otonom",
+      "status": "yapılacak",
+      "title": "Dijital ürün pasaportu (açık), QR ve hash doğrulama",
+      "acceptance": "Girişsiz açılır; doğrulama ucu sağlam zincirde ok=true, bozuk zincirde brokenAt döner",
+      "evidence": null,
+      "depends_on": [
+        "T1.3"
+      ],
+      "decisions": [
+        "D-012"
+      ]
+    },
+    {
+      "id": "T2.5",
+      "phase": "F2",
+      "mode": "otonom",
+      "status": "yapılacak",
+      "title": "Senaryo ekranı: formüller, varsayımlar, sonuç sınıfları, olumsuz senaryo",
+      "acceptance": "Girdi değişince sonuç yeniden hesaplanır; olumsuz senaryo kırmızı ve açıklamalı gösterilir",
+      "evidence": null,
+      "depends_on": [
+        "T1.2"
+      ],
+      "decisions": [
+        "D-002",
+        "D-011"
+      ]
+    },
+    {
+      "id": "T2.6",
+      "phase": "F2",
+      "mode": "otonom",
+      "status": "yapılacak",
+      "title": "SaaS gider hesabı (saas_costs), tarihli resmî fiyat kaynaklarıyla",
+      "acceptance": "Aylık sabit ve müşteri başı gider tablosu; her fiyatta kaynak URL'si ve tarih bulunur",
+      "evidence": null,
+      "depends_on": [
+        "T1.1"
+      ],
+      "decisions": []
+    },
+    {
+      "id": "T3.1",
+      "phase": "F3",
+      "mode": "hibrit",
+      "status": "yapılacak",
+      "title": "Palet önizleme sayfası (A/B/C) ve kullanıcının seçimi",
+      "acceptance": "Üç aday gerçek bileşenlerle gösterilir; ölçümler sayfada görünür; kullanıcı birini seçer",
+      "evidence": null,
+      "depends_on": [
+        "T0.5"
+      ],
+      "decisions": [
+        "D-014"
+      ]
+    },
+    {
+      "id": "T3.2",
+      "phase": "F3",
+      "mode": "otonom",
+      "status": "yapılacak",
+      "title": "Storyboard ve STORY.md",
+      "acceptance": "8 bölüm, ölçek, süre, metin ve palet tanımlı",
+      "evidence": null,
+      "depends_on": [],
+      "decisions": [
+        "D-004"
+      ]
+    },
+    {
+      "id": "T3.3",
+      "phase": "F3",
+      "mode": "otonom",
+      "status": "yapılacak",
+      "title": "Blender sahne kodu ve animatik render",
+      "acceptance": "Tek komutla 16:9 ve 9:16 animatik kareler üretilir; oynatıcıda baştan sona oynar",
+      "evidence": null,
+      "depends_on": [
+        "T3.2"
+      ],
+      "decisions": [
+        "D-004"
+      ]
+    },
+    {
+      "id": "T3.4",
+      "phase": "F3",
+      "mode": "otonom",
+      "status": "yapılacak",
+      "title": "Kare dizisi oynatıcı ve yedek modlar (hareket azaltma, veri tasarrufu)",
+      "acceptance": "Scroll'da kare süresi p99 en fazla 25 ms; hareket azaltma tercihinde statik kareler; mobilde 9:16 dizisi",
+      "evidence": null,
+      "depends_on": [
+        "T3.3"
+      ],
+      "decisions": [
+        "D-004"
+      ]
+    },
+    {
+      "id": "T3.5",
+      "phase": "F3",
+      "mode": "otonom",
+      "status": "yapılacak",
+      "title": "Final render, AVIF/WebP kodlama ve bütçe testleri",
+      "acceptance": "Masaüstü en fazla 14 MB, mobil en fazla 6 MB, ilk bölüm en fazla 1,5 MB; metin altı kontrastı en az 4,5",
+      "evidence": null,
+      "depends_on": [
+        "T3.3",
+        "T3.1"
+      ],
+      "decisions": [
+        "D-004",
+        "D-014"
+      ]
+    },
+    {
+      "id": "T3.6",
+      "phase": "F3",
+      "mode": "kullanıcı",
+      "status": "yapılacak",
+      "title": "Hikâyenin his ve zevk onayı (2–4 maddelik kontrol listesi)",
+      "acceptance": "Kullanıcı onay verir ya da değişiklik listesi verir",
+      "evidence": null,
+      "depends_on": [
+        "T3.5"
+      ],
+      "decisions": []
+    },
+    {
+      "id": "T4.1",
+      "phase": "F4",
+      "mode": "otonom",
+      "status": "yapılacak",
+      "title": "Canlı yayın, migrasyon ve seed; canlı URL üzerinde E2E",
+      "acceptance": "Canlı URL'de E2E testleri yeşil",
+      "evidence": null,
+      "depends_on": [
+        "T0.4",
+        "T2.1",
+        "T2.2",
+        "T2.3",
+        "T2.4"
+      ],
+      "decisions": [
+        "D-003"
+      ]
+    },
+    {
+      "id": "T4.2",
+      "phase": "F4",
+      "mode": "otonom",
+      "status": "yapılacak",
+      "title": "Çevrimdışı demo paketi ve Playwright ile kaydedilmiş demo videosu",
+      "acceptance": "İnternet kapalıyken pnpm demo:offline ile demo akışı çalışır; video dosyası üretilir",
+      "evidence": null,
+      "depends_on": [
+        "T4.1"
+      ],
+      "decisions": [
+        "D-003"
+      ]
+    },
+    {
+      "id": "T4.3",
+      "phase": "F4",
+      "mode": "otonom",
+      "status": "yapılacak",
+      "title": "DEMO.md, QR kodu ve demo akışı testi",
+      "acceptance": "DEMO.md'deki her adım bir Playwright adımına karşılık gelir ve test yeşil",
+      "evidence": null,
+      "depends_on": [
+        "T4.1"
+      ],
+      "decisions": []
+    },
+    {
+      "id": "T4.4",
+      "phase": "F4",
+      "mode": "kullanıcı",
+      "status": "yapılacak",
+      "title": "En az iki ekip provası; geri bildirimlerin teste çevrilmesi",
+      "acceptance": "İki prova yapılır; her geri bildirim bir görev ya da test olur",
+      "evidence": null,
+      "depends_on": [
+        "T4.3"
+      ],
+      "decisions": []
+    },
+    {
+      "id": "T4.5",
+      "phase": "F4",
+      "mode": "hibrit",
+      "status": "yapılacak",
+      "title": "Sunum ile platform rakamlarının tutarlılığı (Şerife ve İrem onayı)",
+      "acceptance": "Uyumsuzluk listesi çıkar ve ekip her maddeye karar verir",
+      "evidence": null,
+      "depends_on": [
+        "T2.3"
+      ],
+      "decisions": [
+        "D-011"
+      ]
+    },
+    {
+      "id": "T4.6",
+      "phase": "F4",
+      "mode": "kullanıcı",
+      "status": "yapılacak",
+      "title": "30 Ekim'de canlı demo",
+      "acceptance": "Demo yapıldı",
+      "evidence": null,
+      "depends_on": [
+        "T4.4"
+      ],
+      "decisions": []
+    },
+    {
+      "id": "T5.1",
+      "phase": "F5",
+      "mode": "otonom",
+      "status": "yapılacak",
+      "title": "Postgres RLS, e-posta bildirimleri, EPCIS 2.0 JSON-LD dışa aktarımı, UNTP DPP, taşıyıcı modülü, Eurostat ve TCMB verisini otomatik çekme, gözlemlenebilirlik",
+      "acceptance": "Her alt iş ayrı görev olarak açılır",
+      "evidence": null,
+      "depends_on": [
+        "T4.6"
+      ],
+      "decisions": [
+        "D-016"
+      ]
+    },
+    {
+      "id": "T5.2",
+      "phase": "F5",
+      "mode": "hibrit",
+      "status": "yapılacak",
+      "title": "KVKK uyumu ve abonelik ile ödeme",
+      "acceptance": "Hukuki seçenekler ve karar ekiple netleşir",
+      "evidence": null,
+      "depends_on": [
+        "T4.6"
+      ],
+      "decisions": []
+    },
+    {
+      "id": "T5.3",
+      "phase": "F5",
+      "mode": "kullanıcı",
+      "status": "yapılacak",
+      "title": "Pilot saha verisiyle (Emine, İrem) sınıfın 'Gerçekleşen'e geçmesi",
+      "acceptance": "En az bir parti insan belge mutabakatıyla realized olur",
+      "evidence": null,
+      "depends_on": [
+        "T4.6"
+      ],
+      "decisions": [
+        "D-011"
+      ]
+    }
+  ],
+  "open_questions": [
+    {
+      "id": "Q-1",
+      "owner": "kullanıcı",
+      "question": "Ana palet A (#303), B (#310) ya da C (#343)?",
+      "blocks": [
+        "T3.5"
+      ]
+    },
+    {
+      "id": "Q-2",
+      "owner": "kullanıcı",
+      "question": "Açık deponun lisansı: MIT mi, tüm hakları saklı mı?",
+      "blocks": [
+        "T0.3"
+      ]
+    },
+    {
+      "id": "Q-3",
+      "owner": "ekip",
+      "question": "Sunumdaki 'prototip tamamlandı' ve '1,5 milyon ton' ifadeleri ile jüri belgesinin dili nasıl uyumlanacak?",
+      "blocks": [
+        "T4.5"
+      ]
+    }
+  ],
+  "risks": [
+    {
+      "id": "R-1",
+      "risk": "Blender kare dizisi 29 Ekim'e yetişmeyebilir",
+      "mitigation": "28 Ekim sabahı kaba animatik; hareket azaltma için statik yedek; son kalite iyileştirmesi isteğe bağlı"
+    },
+    {
+      "id": "R-2",
+      "risk": "Vercel Hobby planı org deposundan yayını reddedebilir",
+      "mitigation": "GitHub Actions ve Vercel CLI ile yayın yolu"
+    },
+    {
+      "id": "R-3",
+      "risk": "Demo günü internet olmayabilir",
+      "mitigation": "pnpm demo:offline (PGlite) ve kaydedilmiş demo videosu"
+    },
+    {
+      "id": "R-4",
+      "risk": "Herkese açık demoda ziyaretçiler veriyi bozabilir",
+      "mitigation": "Demo verisini sıfırlama ve günlük cron ile yeniden yükleme"
+    }
+  ],
+  "metrics": [
+    {
+      "id": "M-1",
+      "claim": "Metin kontrastı",
+      "threshold": "normal ≥ 4.5, büyük/arayüz ≥ 3",
+      "last_value": null,
+      "measured_at": null,
+      "test": "tests/unit/design-tokens.test.ts"
+    },
+    {
+      "id": "M-2",
+      "claim": "Hikâye kare bütçesi",
+      "threshold": "masaüstü ≤ 14 MB, mobil ≤ 6 MB, ilk bölüm ≤ 1,5 MB",
+      "last_value": null,
+      "measured_at": null,
+      "test": "tests/unit/story-budget.test.ts"
+    },
+    {
+      "id": "M-3",
+      "claim": "Scroll akıcılığı",
+      "threshold": "kare süresi p99 ≤ 25 ms",
+      "last_value": null,
+      "measured_at": null,
+      "test": "tests/e2e/story-perf.spec.ts"
+    },
+    {
+      "id": "M-4",
+      "claim": "Çapraz kiracı erişimi",
+      "threshold": "0",
+      "last_value": null,
+      "measured_at": null,
+      "test": "tests/integration/tenant-isolation.test.ts"
+    },
+    {
+      "id": "M-5",
+      "claim": "Hesaplar doğru",
+      "threshold": "para birimi/vergi temeli uyuşmazlığı hata; boş girdi null; src/domain kapsamı ≥ %90",
+      "last_value": null,
+      "measured_at": null,
+      "test": "tests/unit/calc"
+    },
+    {
+      "id": "M-6",
+      "claim": "Kayıt değiştirilemez",
+      "threshold": "0 kaçak",
+      "last_value": null,
+      "measured_at": null,
+      "test": "tests/integration/append-only.test.ts"
+    },
+    {
+      "id": "M-7",
+      "claim": "Kütle dengesi",
+      "threshold": "sapma ≤ %2, aşılırsa açıklama zorunlu",
+      "last_value": null,
+      "measured_at": null,
+      "test": "tests/unit/traceability/mass-balance.test.ts"
+    },
+    {
+      "id": "M-8",
+      "claim": "Grafik renkleri ayrışır",
+      "threshold": "ΔE ≥ 0,25; CVD ≥ 0,1; durum tonu farkı ≥ 30°",
+      "last_value": null,
+      "measured_at": null,
+      "test": "tests/unit/design-tokens.test.ts"
+    },
+    {
+      "id": "M-9",
+      "claim": "Hikâye metni okunur",
+      "threshold": "her bölümde kontrast ≥ 4,5",
+      "last_value": null,
+      "measured_at": null,
+      "test": "tests/unit/story-contrast.test.ts"
+    },
+    {
+      "id": "M-10",
+      "claim": "Kare dizisi kesintisiz",
+      "threshold": "SSIM eşiği ilk renderdan sonra kalibre edilir",
+      "last_value": null,
+      "measured_at": null,
+      "test": "tests/unit/story-continuity.test.ts"
+    },
+    {
+      "id": "M-11",
+      "claim": "Hızlı açılır",
+      "threshold": "LCP ≤ 2,5 s; CLS ≤ 0,1; TBT ≤ 200 ms; / JS ≤ 200 KB gz",
+      "last_value": null,
+      "measured_at": null,
+      "test": "lighthouserc.json"
+    },
+    {
+      "id": "M-12",
+      "claim": "Erişilebilir",
+      "threshold": "0 ciddi/kritik axe ihlali; dokunma hedefi ≥ 44×44 px",
+      "last_value": null,
+      "measured_at": null,
+      "test": "tests/e2e/a11y.spec.ts"
+    },
+    {
+      "id": "M-13",
+      "claim": "Yerleşim bozulmaz",
+      "threshold": "360–1440 px'te 0 taşma ve çakışma (TR, EN)",
+      "last_value": null,
+      "measured_at": null,
+      "test": "tests/e2e/layout.spec.ts"
+    },
+    {
+      "id": "M-14",
+      "claim": "Çeviri tam",
+      "threshold": "0 eksik anahtar",
+      "last_value": null,
+      "measured_at": null,
+      "test": "tests/unit/i18n.test.ts"
+    },
+    {
+      "id": "M-15",
+      "claim": "Dürüstlük",
+      "threshold": "her KPI'da sonuç sınıfı rozeti",
+      "last_value": null,
+      "measured_at": null,
+      "test": "tests/e2e/honesty.spec.ts"
+    },
+    {
+      "id": "M-16",
+      "claim": "Belgeler güncel",
+      "threshold": "docs:check yeşil",
+      "last_value": "yeşil",
+      "measured_at": "2026-10-27T02:20:00+03:00",
+      "test": "scripts/docs-check.mjs"
+    },
+    {
+      "id": "M-17",
+      "claim": "Demo çalışır",
+      "threshold": "DEMO.md akışı canlı URL'de yeşil",
+      "last_value": null,
+      "measured_at": null,
+      "test": "tests/e2e/demo.spec.ts"
+    },
+    {
+      "id": "M-18",
+      "claim": "Gizli bilgi sızmaz",
+      "threshold": "gitleaks 0 bulgu",
+      "last_value": null,
+      "measured_at": null,
+      "test": "CI"
+    }
+  ]
+}

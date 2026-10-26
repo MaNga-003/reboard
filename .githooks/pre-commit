@@ -1,0 +1,5 @@
+#!/bin/sh
+# D-017: kod commit ediliyorsa state.json da commit edilmeli; belge seti tutarlı olmalı.
+# Windows'ta node PATH'te değilse varsayılan kurulum yolunu dene.
+command -v node >/dev/null 2>&1 || PATH="/c/Program Files/nodejs:$PATH"
+exec node scripts/docs-check.mjs --staged
