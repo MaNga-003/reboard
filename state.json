@@ -1,7 +1,7 @@
 {
   "$schema": "./docs/state.schema.json",
   "project": "ReBoard SaaS platformu",
-  "updated_at": "2026-10-27T02:03:00+03:00",
+  "updated_at": "2026-10-27T02:20:00+03:00",
   "current_phase": "F0",
   "deadlines": {
     "demo_freeze": "2026-10-29T18:00:00+03:00",
@@ -158,10 +158,10 @@
       "id": "T1.3",
       "phase": "F1",
       "mode": "otonom",
-      "status": "yapılacak",
+      "status": "tamam",
       "title": "Olay günlüğü, hash zinciri, kütle dengesi; sahte kayıt testi",
       "acceptance": "Değiştirilen bir olay verifyChain'de yakalanır; kütle dengesi toleransı testli",
-      "evidence": null,
+      "evidence": "src/domain/traceability (canonical, chain, mass-balance, genealogy) ve src/db/repo/custody.ts. verifyChain: 500 rastgele zincirde 10 tür değişiklikte 0 kaçak, yer ve neden doğru; çapa sondan silmeyi ve kuyruğun yeniden yazılmasını yakalar. PGlite gidiş-dönüşü ve tetikleyiciyi atlayan saldırgan testi yeşil. Kütle dengesi %2 sınırı testli. Bilerek bozma: 15 değişikliğin 15i yakalandı; src/domain kapsamı %100",
       "depends_on": [
         "T1.1"
       ],
@@ -595,16 +595,16 @@
       "id": "M-6",
       "claim": "Kayıt değiştirilemez",
       "threshold": "0 kaçak",
-      "last_value": "DB düzeyinde 0 kaçak (5 değişiklik yolu reddedildi); verifyChain T1.3'te",
-      "measured_at": "2026-10-27T01:45:00+03:00",
-      "test": "tests/integration/append-only.test.ts"
+      "last_value": "0 kaçak: DB 5 değişiklik yolunu reddetti; verifyChain 10 tür × 500 zincir; bozma 15/15",
+      "measured_at": "2026-10-27T02:20:00+03:00",
+      "test": "tests/unit/traceability/chain.test.ts, tests/integration/custody-chain.test.ts, tests/integration/append-only.test.ts"
     },
     {
       "id": "M-7",
       "claim": "Kütle dengesi",
       "threshold": "sapma ≤ %2, aşılırsa açıklama zorunlu",
-      "last_value": null,
-      "measured_at": null,
+      "last_value": "%2 sınırı ve bilinmeyen → null testli; bozma 4/4",
+      "measured_at": "2026-10-27T02:20:00+03:00",
       "test": "tests/unit/traceability/mass-balance.test.ts"
     },
     {

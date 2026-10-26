@@ -21,6 +21,7 @@
   "dependencies": {
     "@electric-sql/pglite": "^0.5.12",
     "@gsap/react": "^2.1.2",
+    "@noble/hashes": "2.4.0",
     "@xyflow/react": "^12.12.0",
     "better-auth": "^1.7.14",
     "class-variance-authority": "^0.7.1",

@@ -1,10 +1,10 @@
 import { boolean, date, doublePrecision, jsonb, numeric, pgTable, text, uuid } from "drizzle-orm/pg-core";
 import { organization } from "./auth";
 import { classified, id, kg, money, moneyMeta, orgId, ts } from "./common";
+import type { Composition } from "../../domain/fibre";
 import { deliveryStatus, listingKind, listingStatus, offerStatus, recurrence, unit } from "./enums";
 
-/** Lif bileşimi: lif → yüzde. Toplam 100 olmalı (Zod ile denetlenir). */
-export type Composition = Partial<Record<"cotton" | "polyester" | "polycotton" | "viscose" | "wool" | "acrylic" | "elastane" | "other" | "unknown", number>>;
+export type { Composition };
 
 export const listings = pgTable("listings", {
   id: id(),

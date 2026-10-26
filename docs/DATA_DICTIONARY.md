@@ -46,7 +46,7 @@ Bir hesabın sınıfı, girdilerinin **en zayıf** sınıfıdır. Sıralama en z
 | Alan | TR | Birim / tür | Not |
 | --- | --- | --- | --- |
 | `listing.kind` | İlan türü | enum | `waste_offer`, `waste_request`, `panel_offer`, `panel_request` |
-| `listing.composition` | Lif bileşimi | `{fiber: yüzde}` | Toplam 100 olmalı. Lifler: `cotton`, `polyester`, `polycotton`, `viscose`, `wool`, `acrylic`, `elastane`, `other`, `unknown` |
+| `listing.composition` | Lif bileşimi | `{fiber: yüzde}` | Toplam 100 olmalı. Lifler (`src/domain/fibre.ts`): `cotton`, `polyester`, `polycotton`, `viscose`, `wool`, `acrylic`, `elastane`, `other`, `unknown`. 100'e tamamlanmayan kısım `unknown` sayılır |
 | `listing.contains_silk` | İpek içerir | bool | `true` ise üretici talebiyle eşleşmez (ipek kapsam dışı) |
 | `listing.quantity` | Miktar | `kg` ya da `m2` | Panel ilanında m² |
 | `listing.recurrence` | Tekrar | enum | `once`, `weekly`, `monthly` |
@@ -78,11 +78,16 @@ Bir hesabın sınıfı, girdilerinin **en zayıf** sınıfıdır. Sıralama en z
 | `panel_lot.test_status` | Test durumu | enum | `not_tested`, `in_progress`, `passed`, `failed`. Yöntemler: EN 323, 310, 319, 320, 317 |
 | `custody_event.type` | Olay türü | enum | EPCIS: `object`, `transformation`, `transaction` |
 | `custody_event.biz_step` | İş adımı | enum | CBV: `receiving`, `inspecting`, `commissioning`, `shipping`, `transforming`, `accepting` |
-| `custody_event.hash` | Hash | hex | `sha256(canonicalJson(payload) + prev_hash)` |
+| `custody_event.seq` | Sıra numarası | tamsayı | Organizasyon başına 1'den başlar; `(org_id, seq)` benzersizdir |
+| `custody_event.payload` | Olay içeriği | jsonb | `inputs[]` ve `outputs[]` (`{ref, kg}`), `evidenceIds[]`, isteğe bağlı `note`. kg 3 ondalıklı metindir (`"1250.500"`) |
+| `custody_event.prev_hash` | Önceki hash | hex | İlk olayda 64 sıfır |
+| `custody_event.hash` | Hash | hex | `sha256(canonicalJson({orgId, seq, type, bizStep, eventTime, payload}) + prev_hash)` |
 | `evidence.status` | Kanıt durumu | enum | `declared` (beyan), `documented` (belgeli), `reconciled` (mutabık) |
 | `evidence.sha256` | Dosya özeti | hex | |
 
-**Kütle dengesi:** `Σ allocated_kg = output_kg + scrap_kg + moisture_loss_kg`. Varsayılan tolerans %2'dir; aşılırsa açıklama zorunludur.
+**Kütle dengesi:** `|Σ allocated_kg − output_kg − scrap_kg − moisture_loss_kg| ÷ Σ allocated_kg ≤ 0,02`. Aşılırsa açıklama zorunludur. Değerlerden biri bilinmiyorsa denge "bilinmiyor" olur; sağlandı da sağlanmadı da denmez.
+
+**Lotun payı:** Üretim partisinden tek lot çıktıysa 1, birden çok lot çıktıysa `lotun area_m2 ÷ partinin bütün lotlarının area_m2 toplamı`. Bir lotun alanı bilinmiyorsa pay ve ondan türeyen bütün kg değerleri bilinmiyor olur.
 
 ## 5. Etki ve tedarik
 

@@ -54,7 +54,7 @@ Tabloların tamamı `src/db/schema/` altında. Ortak kurallar:
 
 - Boş değer bilinmeyen demektir (D-011). Kolon boş bırakılabilir; arayüz "bilinmiyor" yazar.
 - Para `numeric(14,2)` olarak, `currency` (TRY, EUR, USD) ve `tax_basis` (`incl_vat` ya da `excl_vat`) alanlarıyla birlikte saklanır.
-- Miktarlar `numeric` ve birim enum'uyla saklanır (`kg`, `t`, `m2`, `kwh`, `h`).
+- Miktarlar `numeric` ve birim enum'uyla saklanır. Birimlerin listesi `docs/DATA_DICTIONARY.md` dosyasında.
 - Zaman damgaları `timestamptz` olur.
 - Özel tablolarda `org_id` kolonu bulunur.
 
@@ -92,14 +92,21 @@ Alanların anlamları ve birimleri `docs/DATA_DICTIONARY.md` dosyasında.
   - `TransformationEvent`: atık partisinin üretim partisine, üretim partisinin panel lotuna dönüşmesi.
   - `TransactionEvent`: anlaşma ve satış.
 - `biz_step` değerleri CBV sözlüğünden gelir: `receiving`, `inspecting`, `commissioning`, `shipping`, `transforming`, `accepting`.
-- Her olayda şunlar bulunur: `event_time`, `org_id`, `inputs[]` ve `outputs[]` (her biri `{ref, kg}`), `evidence_ids[]`, `prev_hash` ve `hash`.
-- Hash `hash = sha256(canonicalJson(payload) + prev_hash)` olarak hesaplanır. Kanonik JSON'da anahtarlar sıralanır ve sayılar sabit ondalıkla yazılır. Zincir organizasyon başına tutulur.
+- Her olayda şunlar bulunur: `org_id`, `seq`, `type`, `biz_step`, `event_time`, `payload`, `prev_hash` ve `hash`. `payload` jsonb'dir: `inputs[]` ve `outputs[]` (her biri `{ref, kg}`), `evidenceIds[]` ve isteğe bağlı `note`.
+- Hash şöyle hesaplanır: `hash = sha256(canonicalJson({orgId, seq, type, bizStep, eventTime, payload}) + prev_hash)`. `eventTime` ISO 8601 UTC metnidir.
+  - Kanonik JSON'da anahtarlar sıralanır. Yalnızca güvenli tamsayılar kabul edilir; kg değerleri `"1250.500"` gibi 3 ondalıklı metin olarak yazılır. Böylece jsonb ve `timestamptz` gidiş-dönüşünden sonra hash değişmez.
+  - SHA-256 `@noble/hashes` ile hesaplanır; aynı kod sunucuda ve tarayıcıda çalışır.
+  - Zincir organizasyon başına tutulur: ilk olayın `seq` değeri 1, `prev_hash` değeri 64 sıfırdır (`GENESIS_HASH`).
+- `verifyChain(events, anchor?)` olayları sırayla denetler: sıra numarası, organizasyon, önceki hash ve hash'in yeniden hesaplanması. Bozulma varsa `{ok: false, brokenAt, reason}` döner; `reason` şunlardan biridir: `seq_gap`, `org_mismatch`, `prev_hash_mismatch`, `hash_mismatch`, `anchor_mismatch`.
+- **Bilinen sınır ve çapa:** Veritabanına tam erişimi olan biri bir olayı değiştirip ondan sonraki bütün hash'leri yeniden hesaplarsa, ya da sondan olay silerse zincir kendi içinde tutarlı kalır. Bunu yalnızca daha önce dışarıya verilmiş bir çapa (`{count, head}`) yakalar. Çapa pasaportta ve dışa aktarımda yayımlanacak (T2.4).
+- Yazma ve okuma `src/db/repo/custody.ts` üzerinden yapılır. `appendCustodyEvent` bir işlem içinde zincirin ucunu okur, sonraki olayı hesaplar ve ekler; `(org_id, seq)` çakışırsa 3 kez yeniden dener. `listCustodyEvents` zinciri `seq` sırasıyla döndürür. `withTenant` sarmalaması T1.5'te eklenecek.
 - Kayıtlar yalnızca eklenir (`drizzle/0002_append_only.sql`):
   - Satır düzeyindeki UPDATE ve DELETE işlemlerini bir tetikleyici her zaman reddeder. Organizasyon silinmesinden gelen cascade de reddedilir; zinciri olan organizasyon silinemez.
   - TRUNCATE yalnızca demo sıfırlamasında, aynı işlemde `SET LOCAL reboard.allow_reset = 'on'` ile çalışır.
   - `(org_id, seq)` benzersizdir; aynı sıra numarasıyla ikinci kayıt (zincir çatallanması) yazılamaz. Eşzamanlı yazımda repository yeniden dener.
-- Doğrulama `/api/verify/[lot]` ucunda yapılır. Uç, lotun soy ağacındaki olay zincirini baştan yeniden hesaplar ve sonucu `{ok, brokenAt?}` olarak döner.
-- Kütle dengesinde girdiler toplamı, çıktılar, fire, nem ve buhar kaybının toplamına eşit olmalıdır: `Σ inputs.kg = Σ outputs.kg + fire_kg + moisture_loss_kg`. Varsayılan tolerans %2'dir. Tolerans aşılırsa açıklama alanı zorunlu olur.
+- Herkese açık doğrulama `/api/verify/[lot]` ucunda yapılacak (T2.4). Uç, lotun soy ağacındaki olay zincirlerini `verifyChain` ile baştan yeniden hesaplar.
+- Kütle dengesi (`massBalance`): `|Σ girdi − çıktı − fire − nem kaybı| ÷ Σ girdi ≤ %2`. Tolerans aşılırsa açıklama zorunludur (`balanceNoteMissing`). Değerlerden biri bilinmiyorsa ya da girdi 0 ise denge iddia edilmez (`withinTolerance: null`). Negatif kg reddedilir.
+- Soy ağacı (`genealogy(lotId)`): panel lotundan üretim partisine, oradan atık partilerine iner. Lotun payı, partide tek lot varsa 1, yoksa alan oranıdır; herhangi bir lotun alanı bilinmiyorsa pay da bilinmez. Sonuç; lotun tekstil kg'ını, bunun doğrulanmış kısmını, sağlayıcıya ve life göre dağılımını ve en zayıf sonuç sınıfını verir.
 
 ## 5. Alan modülleri (`src/domain`)
 
@@ -107,7 +114,7 @@ Alanların anlamları ve birimleri `docs/DATA_DICTIONARY.md` dosyasında.
 | --- | --- |
 | `result.ts` | `Result` tipi `{value: Decimal \| null, unit, period, currency?, taxBasis?, resultClass, inputRefs, formulaVersion, conditions}`. `null` "bilinmiyor" anlamına gelir. `weakestClass` sonucun sınıfını girdilerin en zayıfından türetir |
 | `calc/` | `money.ts`: kalem toplama ve `null` yayılımı. `formulas.ts`: fabrika kazancı, panel müşterisi kazancı, ReBoard faaliyet sonucu, fiyat koridoru ve SaaS katkısı. `synthetic-scenario.ts`: rapordaki sentetik örnek. Para birimi, vergi temeli, dönem ya da birim uyuşmazsa, hiç girdi yoksa `CalcError` fırlatır |
-| `traceability/` | `canonicalJson`, `hashEvent`, `verifyChain`, `massBalance`, `genealogy(lotId)` |
+| `traceability/` | `canonical.ts`: `canonicalJson`, `kgText`. `chain.ts`: `hashEvent`, `nextEvent`, `verifyChain`. `mass-balance.ts`: `massBalance`, `balanceNoteMissing`. `genealogy.ts`: `genealogy(lotId, graph)`, `splitByComposition`. Lif listesi `src/domain/fibre.ts` dosyasında |
 | `impact/` | `recoveredKg({verifiedOnly})`, `inPanelKg`, `co2eRange(kg, factors)`. CO₂e alt ve üst sınırla, kaynağıyla birlikte döner |
 | `supply/` | `inventoryKg`, `daysOfCover`, `projectedCover(deliveries)`, `supplierReliability`, `hhi`, `matchScore(listing, need)` |
 
