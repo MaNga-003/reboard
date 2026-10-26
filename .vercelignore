@@ -2,7 +2,6 @@
 # .private/, .env* ve yeni eklenen dosyalar kendiliğinden yüklenmez (tests/unit/deploy-config.test.ts).
 /*
 !/src
-!/public
 !/messages
 !/package.json
 !/pnpm-lock.yaml

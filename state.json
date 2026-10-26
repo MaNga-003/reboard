@@ -1,7 +1,7 @@
 {
   "$schema": "./docs/state.schema.json",
   "project": "ReBoard SaaS platformu",
-  "updated_at": "2026-10-27T02:33:00+03:00",
+  "updated_at": "2026-10-27T02:36:00+03:00",
   "current_phase": "F0",
   "deadlines": {
     "demo_freeze": "2026-10-29T18:00:00+03:00",
@@ -97,7 +97,7 @@
       "status": "tamam",
       "title": "Vercel ve Neon girişi (kullanıcı), proje, Frankfurt bölgesi ve ortam değişkenleri (Claude)",
       "acceptance": "Vercel projesi fra1'de; Neon projesi aws-eu-central-1'de; DATABASE_URL ve BETTER_AUTH_SECRET Vercel'de tanımlı",
-      "evidence": "Neon fragrant-rain-02230008 (aws-eu-central-1, Postgres 18): migrasyonlar uygulandı, 28 tablo, 2 tetikleyici; UPDATE, DELETE ve TRUNCATE geri alınan işlemde reddedildi. Vercel reboard (burak-siscis-projects): fonksiyonlar fra1, durum Ready, https://reboard-lovat.vercel.app. DATABASE_URL ve BETTER_AUTH_SECRET gizli değişken (Production, Preview); BETTER_AUTH_URL canlı adres. Yüklenen 67 dosyanın 0'ı hassas. GitHub bağlantısı kurulamadı (Vercel GitHub uygulaması MaNga-003'te yok); yayın CLI ile.",
+      "evidence": "Neon fragrant-rain-02230008 (aws-eu-central-1, Postgres 18): migrasyonlar uygulandı, 28 tablo, 2 tetikleyici; UPDATE, DELETE ve TRUNCATE geri alınan işlemde reddedildi. Vercel reboard (burak-siscis-projects): fonksiyonlar fra1, durum Ready, https://reboard-lovat.vercel.app. DATABASE_URL ve BETTER_AUTH_SECRET gizli değişken (Production, Preview); BETTER_AUTH_URL canlı adres. Yüklenen 67 dosyanın 0'ı hassas. GitHub bağlantısı kurulamadı (Vercel GitHub uygulaması MaNga-003'te yok); yayın CLI ile. Canlı denetim GitHub Actions'tan 8/8 (çalıştırma 40420750548): / → /tr 307, /tr ve /en 200, /api/auth/ok 200, fonksiyon bölgesi fra1, 3 güvenlik başlığı.",
       "depends_on": [
         "T0.3"
       ],

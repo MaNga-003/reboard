@@ -1,6 +1,14 @@
 // D-003: yayın Frankfurt'ta; CLI yayını yalnızca izin listesindeki dosyaları yükler (M-18).
-import { readdirSync, readFileSync } from "node:fs";
+import { execFileSync } from "node:child_process";
+import { readFileSync } from "node:fs";
 import { describe, expect, it } from "vitest";
+
+// Depoda izlenen ama bilerek yüklenmeyen üst düzey yollar. Yeni bir yol eklenince test düşer ve karar ister.
+const EXCLUDED = [
+  ".claude", ".env.example", ".gitattributes", ".githooks", ".github", ".gitignore", ".vercelignore",
+  "AGENTS.md", "ARCHITECTURE.md", "CLAUDE.md", "LICENSE", "README.md", "docs", "drizzle", "drizzle.config.ts",
+  "eslint.config.mjs", "playwright.config.ts", "scripts", "state.json", "story", "tests", "vitest.config.mts",
+];
 
 const vercel = JSON.parse(readFileSync("vercel.json", "utf8"));
 const rules = readFileSync(".vercelignore", "utf8")
@@ -26,11 +34,15 @@ describe("yayın ayarı", () => {
     (path) => expect(uploaded(path)).toBe(false),
   );
 
-  it("derleme için gereken her yol yüklenir ve izinli her yol depoda vardır", () => {
+  it("derleme için gereken her yol yüklenir", () => {
     for (const path of ["src/app/[locale]/page.tsx", "messages/tr.json", "package.json", "pnpm-lock.yaml", "next.config.ts", "tsconfig.json"]) {
       expect(uploaded(path), path).toBe(true);
     }
-    const top = new Set(readdirSync("."));
-    expect([...allowed].filter((p) => !top.has(p))).toEqual([]);
+  });
+
+  it("izlenen her üst düzey yol ya yüklenir ya da bilerek dışarıda bırakılır; izinli her yol depoda vardır", () => {
+    const tracked = new Set(execFileSync("git", ["ls-files"], { encoding: "utf8" }).split("\n").filter(Boolean).map((p) => p.split("/")[0]));
+    expect([...tracked].filter((p) => !allowed.has(p) && !EXCLUDED.includes(p))).toEqual([]);
+    expect([...allowed].filter((p) => !tracked.has(p))).toEqual([]);
   });
 });
