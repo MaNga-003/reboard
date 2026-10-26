@@ -1,7 +1,7 @@
 {
   "$schema": "./docs/state.schema.json",
   "project": "ReBoard SaaS platformu",
-  "updated_at": "2026-10-27T02:20:00+03:00",
+  "updated_at": "2026-10-27T02:12:00+03:00",
   "current_phase": "F0",
   "deadlines": {
     "demo_freeze": "2026-10-29T18:00:00+03:00",
@@ -691,16 +691,16 @@
       "id": "M-18",
       "claim": "Gizli bilgi sızmaz",
       "threshold": "gitleaks 0 bulgu",
-      "last_value": null,
-      "measured_at": null,
-      "test": "CI"
+      "last_value": "0 bulgu (7 commit)",
+      "measured_at": "2026-10-27T02:12:00+03:00",
+      "test": "CI secrets işi (gitleaks v8.30.1)"
     },
     {
       "id": "M-19",
       "claim": "Claude katkıcı görünmez",
       "threshold": "geçmişte 0 atıf satırı, 0 yapay zekâ kimlikli yazar ya da işleyen",
-      "last_value": "0 bulgu (5 commit); bilerek bozma: eski geçmişte 10 satırın 10u yakalandı",
-      "measured_at": "2026-10-27T02:03:00+03:00",
+      "last_value": "0 bulgu (7 commit, CI); bilerek bozma: eski geçmişte 10 satırın 10u yakalandı",
+      "measured_at": "2026-10-27T02:12:00+03:00",
       "test": "scripts/no-ai-attribution.mjs"
     }
   ]
