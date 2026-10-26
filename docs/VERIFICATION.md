@@ -19,13 +19,13 @@
 | M-9 | Hikâye metni okunur | Metin kutusunun altındaki gerçek kare piksellerine göre kontrast | Her bölümde ≥ 4,5 | `tests/unit/story-contrast.test.ts` | yazılacak (T3.5) |
 | M-10 | Kare dizisi kesintisiz | Ardışık karelerde SSIM, sıçrama dedektörü | İlk renderdan sonra kalibre edilir | `tests/unit/story-continuity.test.ts` | yazılacak (T3.5) |
 | M-11 | Hızlı açılır | Lighthouse CI, mobil profil | LCP ≤ 2,5 s; CLS ≤ 0,1; TBT ≤ 200 ms; `/` JS ≤ 200 KB gz | `lighthouserc.json` | yazılacak (T4.1) |
-| M-12 | Erişilebilir | axe-core; klavye E2E; dokunma hedefi dikdörtgenleri | 0 ciddi ya da kritik ihlal; hedef ≥ 44×44 px | `tests/e2e/a11y.spec.ts` | yazılacak (T2.x) |
-| M-13 | Yerleşim bozulmaz | 360, 390, 768, 1024 ve 1440 px'te yatay taşma ve çakışma; TR ve EN | 0 | `tests/e2e/layout.spec.ts` | yazılacak (T2.x) |
-| M-14 | Çeviri tam | `messages/tr.json` ve `en.json` anahtar eşitliği | 0 eksik | `tests/unit/i18n.test.ts` | yazılacak (T0.5) |
+| M-12 | Erişilebilir | axe-core; klavye E2E; dokunma hedefi dikdörtgenleri | 0 ciddi ya da kritik ihlal; hedef ≥ 44×44 px | `tests/e2e/smoke.spec.ts` (ekranlar eklendikçe genişler) | /tr, /en: 0 ciddi ihlal; dokunma hedefi henüz ölçülmedi |
+| M-13 | Yerleşim bozulmaz | 360, 390, 768, 1024 ve 1440 px'te yatay taşma ve çakışma; TR ve EN | 0 | `tests/e2e/smoke.spec.ts` (ekranlar eklendikçe genişler) | /tr, /en, 5 genişlik: 0 px |
+| M-14 | Çeviri tam | `messages/tr.json` ve `en.json` anahtar eşitliği | 0 eksik | `tests/unit/i18n.test.ts` | 0 eksik (20 anahtar) |
 | M-15 | Dürüstlük | KPI bileşeni türü `resultClass` ister; E2E "Sentetik" rozetini arar | Her KPI'da rozet | `tests/e2e/honesty.spec.ts` | yazılacak (T2.3) |
 | M-16 | Belgeler güncel | `pnpm docs:check` | Yeşil | `scripts/docs-check.mjs`, CI | yeşil (T0.2) |
 | M-17 | Demo çalışır | `DEMO.md` akışı canlı URL'de Playwright ile | Yeşil | `tests/e2e/demo.spec.ts` | yazılacak (T4.3) |
-| M-18 | Gizli bilgi sızmaz | gitleaks | 0 bulgu | CI | yazılacak (T0.5) |
+| M-18 | Gizli bilgi sızmaz | gitleaks | 0 bulgu | CI `secrets` işi (gitleaks v8.30.1, bütün geçmiş) | ilk push'ta ölçülecek |
 
 ## 2. Kullanıcıya kalanlar (ölçülemez)
 

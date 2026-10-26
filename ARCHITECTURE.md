@@ -43,8 +43,10 @@ flowchart LR
 | Alan | `src/domain/…` | Saf TypeScript. I/O yok, birim testli. Tek gerçek kaynak burası |
 | Repository | `src/db/repo/…` | Bütün özel sorgular `withTenant(orgId)` üzerinden geçer (D-016) |
 | Şema | `src/db/schema/…` | Drizzle. Migrasyonlar `drizzle/` klasöründe |
-| Tasarım | `src/design/tokens.ts` | Wada paleti tokenları. Kontrast ve ΔE testleri bu dosyayı dolaşır |
-| Çeviri | `messages/{tr,en}.json` | next-intl. Anahtarların iki dilde eşit olduğu test edilir |
+| Tasarım | `src/design/` | `wada.json`: sözlüğün 159 rengi (MIT, `WADA_LICENSE.md`). `tokens.ts`: Wada adlarıyla tanımlı paletler ve `<html>` üzerine yazılan CSS değişkenleri. `color.ts`: kontrast, OKLab ΔE, ton farkı ve CVD benzetimi; testler ve palet önizlemesi bunu kullanır |
+| Çeviri | `messages/{tr,en}.json`, `src/i18n/` | next-intl. `src/proxy.ts` dil önekini yönetir (`/` → `/tr` ya da `/en`; API ve uzantılı dosyalar hariç). Anahtarların iki dilde eşit olduğu test edilir |
+| Kimlik | `src/lib/auth.ts` | `getAuth()` tembel başlatılır; build sırasında veritabanı ve secret denetimi tetiklenmez. Uç: `src/app/api/auth/[...all]/route.ts` |
+| Veritabanı istemcisi | `src/db/client.ts` | `getDb()`: `DATABASE_URL` varsa node-postgres, yoksa `.data/pglite`. Migrasyon: `pnpm db:migrate` (`scripts/db-migrate.ts`) |
 
 ## 3. Veri modeli
 

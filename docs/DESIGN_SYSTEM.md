@@ -14,6 +14,8 @@
 
 Uzay finali (hikâyenin son bölümü): Deep Indigo `#051230` ve Dull Violet Black `#1e0e3f`.
 
+**Geçici durum:** Seçim gelene kadar `ACTIVE_PALETTE = "B"` kullanılıyor; metin kontrastı en yüksek aday bu. Seçim bir satırlık değişikliktir.
+
 ## 2. Token yapısı (`src/design/tokens.ts`)
 
 - **Ham renkler:** Wada adı ve hex. Yalnızca `palettes.json` içinden alınır; test bunu denetler.

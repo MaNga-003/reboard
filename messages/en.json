@@ -1,0 +1,32 @@
+{
+  "meta": {
+    "title": "ReBoard: from textile waste to panels",
+    "description": "Textile waste marketplace, supply continuity and verifiable recovery."
+  },
+  "nav": {
+    "story": "Story",
+    "market": "Marketplace",
+    "traceability": "Traceability",
+    "dashboard": "Dashboard",
+    "scenario": "Scenario",
+    "language": "Language",
+    "skipStory": "Skip the story"
+  },
+  "resultClass": {
+    "synthetic": "Synthetic",
+    "sourced_estimate": "Sourced estimate",
+    "pilot_projection": "Pilot projection",
+    "realized": "Realized"
+  },
+  "common": {
+    "unknown": "unknown",
+    "asTheCrowFlies": "as the crow flies",
+    "notTested": "not tested"
+  },
+  "home": {
+    "headline": "From textile waste to panels, every kilogram verified.",
+    "lead": "ReBoard connects the factories that supply textile waste, the panel producer and buyers in one traceable chain.",
+    "cta": "Go to the marketplace",
+    "demoNotice": "All data in this demo is synthetic. The panel recipe has not been selected or tested yet."
+  }
+}

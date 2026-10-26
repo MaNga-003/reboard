@@ -1,0 +1,32 @@
+{
+  "meta": {
+    "title": "ReBoard: atık tekstilden panele",
+    "description": "Atık tekstil pazar yeri, tedarik sürekliliği ve doğrulanabilir geri kazanım."
+  },
+  "nav": {
+    "story": "Hikâye",
+    "market": "Pazar yeri",
+    "traceability": "İzlenebilirlik",
+    "dashboard": "Panel",
+    "scenario": "Senaryo",
+    "language": "Dil",
+    "skipStory": "Hikâyeyi atla"
+  },
+  "resultClass": {
+    "synthetic": "Sentetik",
+    "sourced_estimate": "Kaynaklı tahmin",
+    "pilot_projection": "Pilot projeksiyon",
+    "realized": "Gerçekleşen"
+  },
+  "common": {
+    "unknown": "bilinmiyor",
+    "asTheCrowFlies": "kuş uçuşu",
+    "notTested": "test edilmedi"
+  },
+  "home": {
+    "headline": "Atık tekstilden panele, her kilogramı doğrulanmış.",
+    "lead": "ReBoard, tekstil atığını sağlayan fabrikaları, panel üreticisini ve alıcıları tek bir izlenebilir zincirde buluşturur.",
+    "cta": "Pazar yerine git",
+    "demoNotice": "Bu demodaki verilerin tamamı sentetiktir. Panel reçetesi henüz seçilmedi ve test edilmedi."
+  }
+}

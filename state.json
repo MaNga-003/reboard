@@ -1,7 +1,7 @@
 {
   "$schema": "./docs/state.schema.json",
   "project": "ReBoard SaaS platformu",
-  "updated_at": "2026-10-27T02:20:00+03:00",
+  "updated_at": "2026-10-27T01:35:00+03:00",
   "current_phase": "F0",
   "deadlines": {
     "demo_freeze": "2026-10-29T18:00:00+03:00",
@@ -107,10 +107,10 @@
       "id": "T0.5",
       "phase": "F0",
       "mode": "otonom",
-      "status": "sürüyor",
-      "title": "Next.js iskeleti, Tailwind, UI temeli, next-intl, Drizzle ve PGlite, Better Auth, CI",
+      "status": "tamam",
+      "title": "Next.js iskeleti, Tailwind, tasarım tokenları, next-intl, Drizzle ve PGlite, Better Auth, Vitest, Playwright, CI",
       "acceptance": "pnpm build, pnpm lint, pnpm typecheck ve pnpm test yeşil; /tr ve /en açılır",
-      "evidence": null,
+      "evidence": "pnpm lint 0 hata; pnpm typecheck (next typegen + tsc) 0 hata; pnpm test 20/20 (renk ölçümleri color_metrics.py ile çapraz, Better Auth şema eşleşmesi, TR/EN anahtar eşitliği (20/20), PGlite migrasyonu); pnpm build temiz; pnpm test:e2e 14/14 (/ → /tr, /tr ve /en, axe 0 ciddi ihlal, 360–1440 px taşma 0, e-postayla kayıt PGlite'a yazar); bilinçli bozma 2/2 yakalandı; CI .github/workflows/ci.yml",
       "depends_on": [],
       "decisions": [
         "D-005",
@@ -649,24 +649,24 @@
       "id": "M-12",
       "claim": "Erişilebilir",
       "threshold": "0 ciddi/kritik axe ihlali; dokunma hedefi ≥ 44×44 px",
-      "last_value": null,
-      "measured_at": null,
-      "test": "tests/e2e/a11y.spec.ts"
+      "last_value": "/tr ve /en: 0 ciddi/kritik ihlal (dokunma hedefi henüz ölçülmedi)",
+      "measured_at": "2026-10-27T01:35:00+03:00",
+      "test": "tests/e2e/smoke.spec.ts"
     },
     {
       "id": "M-13",
       "claim": "Yerleşim bozulmaz",
       "threshold": "360–1440 px'te 0 taşma ve çakışma (TR, EN)",
-      "last_value": null,
-      "measured_at": null,
-      "test": "tests/e2e/layout.spec.ts"
+      "last_value": "/tr ve /en, 5 genişlik: 0 px taşma",
+      "measured_at": "2026-10-27T01:35:00+03:00",
+      "test": "tests/e2e/smoke.spec.ts"
     },
     {
       "id": "M-14",
       "claim": "Çeviri tam",
       "threshold": "0 eksik anahtar",
-      "last_value": null,
-      "measured_at": null,
+      "last_value": "0 eksik anahtar (TR 20, EN 20)",
+      "measured_at": "2026-10-27T01:35:00+03:00",
       "test": "tests/unit/i18n.test.ts"
     },
     {
