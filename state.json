@@ -1,7 +1,7 @@
 {
   "$schema": "./docs/state.schema.json",
   "project": "ReBoard SaaS platformu",
-  "updated_at": "2026-10-27T01:55:00+03:00",
+  "updated_at": "2026-10-27T02:03:00+03:00",
   "current_phase": "F0",
   "deadlines": {
     "demo_freeze": "2026-10-29T18:00:00+03:00",
@@ -80,13 +80,14 @@
       "status": "tamam",
       "title": "GitHub deposu MaNga-003/reboard (public) ve ilk push",
       "acceptance": "gh repo view MaNga-003/reboard açık; main dalı push edildi",
-      "evidence": "https://github.com/MaNga-003/reboard (public, MaNga-003 org); main push edildi; LICENSE: tüm hakları saklı (D-019)",
+      "evidence": "https://github.com/MaNga-003/reboard (public, MaNga-003 org); main push edildi; LICENSE: tüm hakları saklı (D-019); geçmişteki 5 commit mesajından Claude atfı silindi, ağaçlar birebir aynı, katkıcı listesinde yalnızca ekip (D-020, M-19)",
       "depends_on": [
         "T0.2"
       ],
       "decisions": [
         "D-006",
-        "D-019"
+        "D-019",
+        "D-020"
       ]
     },
     {
@@ -693,6 +694,14 @@
       "last_value": null,
       "measured_at": null,
       "test": "CI"
+    },
+    {
+      "id": "M-19",
+      "claim": "Claude katkıcı görünmez",
+      "threshold": "geçmişte 0 atıf satırı, 0 yapay zekâ kimlikli yazar ya da işleyen",
+      "last_value": "0 bulgu (5 commit); bilerek bozma: eski geçmişte 10 satırın 10u yakalandı",
+      "measured_at": "2026-10-27T02:03:00+03:00",
+      "test": "scripts/no-ai-attribution.mjs"
     }
   ]
 }

@@ -9,6 +9,7 @@
     "lint": "eslint",
     "typecheck": "next typegen && tsc --noEmit",
     "docs:check": "node scripts/docs-check.mjs",
+    "attribution:check": "node scripts/no-ai-attribution.mjs --history",
     "prepare": "git config core.hooksPath .githooks || true",
     "test": "vitest run",
     "test:watch": "vitest",

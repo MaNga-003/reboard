@@ -112,3 +112,13 @@ Biçim: **Karar**, **Neden**, **Tarih**, kararı kim verdi (K: kullanıcı, C: C
 - **Karar:** Depo herkese açıktır ama kod açık kaynak lisansıyla yayımlanmaz. `LICENSE` dosyası "tüm hakları saklıdır" der. Üçüncü taraf bileşenler (Wada renk verisi, MIT) kendi lisanslarıyla kalır.
 - **Neden:** Yarışmadan sonra şirketleşme seçeneği açık kalır. Sonradan açık lisansa geçmek kolaydır; yayımlanmış bir sürümü geri kapatmak mümkün değildir.
 - **Tarih:** 2026-10-27 · K
+
+### D-020 — Claude ortak yazar ya da katkıcı olarak görünmez
+- **Karar:**
+  - Commit mesajlarına ve PR açıklamalarına `Co-Authored-By: Claude…`, `Claude-Session:` ya da "Generated with Claude Code" satırı eklenmez.
+  - Commit'lerin yazarı ve işleyeni ekip üyesidir.
+  - `.claude/settings.json` içindeki `attribution` ayarı bu satırları kapatır.
+  - `.githooks/commit-msg` atıflı mesajı reddeder; CI'daki `pnpm attribution:check` bütün geçmişi denetler (M-19).
+  - 2026-10-27'de var olan 5 commit'in mesajlarından bu satırlar silindi; dosya içeriği değişmedi.
+- **Neden:** Kullanıcının isteği. Depo herkese açık ve katkıcı listesi yalnızca ekibi göstermeli.
+- **Tarih:** 2026-10-27 · K

@@ -1,0 +1,4 @@
+#!/bin/sh
+# D-020: commit mesajında Claude ortak yazar ya da oturum satırı olmamalı.
+command -v node >/dev/null 2>&1 || PATH="/c/Program Files/nodejs:$PATH"
+exec node scripts/no-ai-attribution.mjs "$1"

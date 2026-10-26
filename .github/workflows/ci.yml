@@ -34,6 +34,8 @@ jobs:
       - run: pnpm install --frozen-lockfile
       - name: Belgeler güncel (D-017)
         run: pnpm docs:check
+      - name: Commit'lerde Claude atfı yok (D-020)
+        run: pnpm attribution:check
       - run: pnpm lint
       - run: pnpm typecheck
       - run: pnpm test:coverage
