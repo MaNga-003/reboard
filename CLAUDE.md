@@ -68,6 +68,8 @@ pnpm story:encode     # PNG → AVIF/WebP ve manifest.json
 
 Ortam (Windows): Bash'te önce `export PATH="/c/Program Files/nodejs:/c/Users/burak/AppData/Roaming/npm:$PATH"`. Blender yolu `C:\Program Files\Blender Foundation\Blender 4.5\blender.exe`; ffmpeg winget ile kurulu.
 
+Neon: `neon` CLI bu klasöre bağlı (`.neon`, git dışı). MCP `.mcp.json` içinde, OAuth ile ve bu projeye sabit. Beceriler `.claude/skills/neon*` altında durur (git dışı); oturum başında `neon skills update -y` çalıştırılır. **`neon link` ve `neon checkout` her zaman `--no-env-pull` ile çalışır; `neon env pull` ve `neon deploy` kullanılmaz** (`neon.ts` yok, Better Auth korunur). Yerel `.env.local` içinde `DATABASE_URL` boş kalmalı, yoksa geliştirme PGlite yerine canlı veritabanına bağlanır.
+
 ## Kod kuralları
 
 - Next.js 16.4 kullanılıyor ve eğitim verisindekinden farklı. Kod yazmadan önce `node_modules/next/dist/docs/` altındaki ilgili rehberi oku. Middleware'in yeni adı `proxy.ts`. Cache Components kapalı (D-008).
