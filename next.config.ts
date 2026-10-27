@@ -13,6 +13,10 @@ const securityHeaders = [
 
 const nextConfig: NextConfig = {
   cacheComponents: false,
+  experimental: {
+    // Kanıt yükleme (D-018): dosya en çok 4 MiB; çok parçalı form payıyla Vercel'in 4,5 MB gövde sınırına eşit.
+    serverActions: { bodySizeLimit: "4.5mb" },
+  },
   // PGlite WASM dosyalarını kendisi yükler; paketlenmemeli.
   serverExternalPackages: ["@electric-sql/pglite"],
   async headers() {

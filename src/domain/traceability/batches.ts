@@ -82,6 +82,13 @@ export function evidenceError(b: Uint8Array): EvidenceRuleError | null {
   return sniffMime(b) ? null : "file_type";
 }
 
+/** Dosya adı yalnızca gösterilir ve indirme adı olur: yol, denetim karakteri ve tırnak atılır, 120 karakterde kesilir. */
+export function cleanFileName(name: string): string {
+  const base = name.slice(Math.max(name.lastIndexOf("/"), name.lastIndexOf("\\")) + 1);
+  const clean = base.replace(/[\u0000-\u001f\u007f"<>|:*?]/g, "").trim().slice(0, 120);
+  return clean || "kanit";
+}
+
 /** D-013: tartım var ve kantar fişi bir insan tarafından kontrol edilmişse parti doğrulanmıştır. */
 export function isVerified(weighedKg: Kg, evidence: readonly { kind: string; status: EvidenceStatus }[]): boolean {
   return weighedKg !== null && evidence.some((e) => e.kind === "weighbridge_ticket" && e.status !== "declared");
@@ -114,6 +121,9 @@ export type ProductionRuleError =
   | "kg_invalid"
   | "balance_note_missing"
   | "lot_invalid";
+
+/** Üretime girebilir mi: doğrulanmış ve kalanı bilinen, sıfırdan büyük. Form yalnızca bunları listeler. */
+export const producible = (b: Pick<StockBatch, "verified" | "remainingKg">) => b.verified && b.remainingKg !== null && b.remainingKg.gt(0);
 
 export function productionError(p: ProductionInput, stock: readonly StockBatch[]): ProductionRuleError | null {
   if (p.inputs.length === 0) return "no_inputs";

@@ -5,11 +5,13 @@ import { Decimal } from "@/domain/result";
 import {
   EVIDENCE_MAX_BYTES,
   acceptedKg,
+  cleanFileName,
   declaredGap,
   evidenceError,
   isVerified,
   lotAreaM2,
   nextCode,
+  producible,
   productionError,
   receiveError,
   remainingKg,
@@ -51,6 +53,10 @@ describe("receiveError", () => {
   ] as const)("%o → %s", (o, code) => expect(receiveError(receive(o as Partial<ReceiveInput>))).toBe(code));
   it("ayıklanan tartıma eşit olabilir (hepsi ret)", () => expect(receiveError(receive({ rejectedKg: "490" }))).toBeNull());
   it("ipekli parti ayıklanan kg ile kabul edilir", () => expect(receiveError(receive({ containsSilk: true, rejectedKg: "3" }))).toBeNull());
+  it("bileşim bilinmiyorsa kabul edilir; eksik lif bilinmeyen sayılır, 0 değil", () => {
+    expect(receiveError(receive({ composition: null }))).toBeNull();
+    expect(receiveError(receive({ composition: { cotton: 60 } }))).toBeNull();
+  });
 });
 
 describe("kabul edilen, fark ve kalan", () => {
@@ -92,6 +98,13 @@ describe("kanıt dosyası", () => {
     expect(evidenceError(bytes(PNG, EVIDENCE_MAX_BYTES - PNG.length + 1))).toBe("file_too_large");
     expect(evidenceError(new Uint8Array())).toBe("file_empty");
     expect(evidenceError(bytes([1, 2, 3]))).toBe("file_type");
+  });
+  it("dosya adı: yol ve tehlikeli karakter atılır, boşsa varsayılan ad", () => {
+    expect(cleanFileName("C:\\fakepath\\kantar fişi.pdf")).toBe("kantar fişi.pdf");
+    expect(cleanFileName("../../etc/passwd")).toBe("passwd");
+    expect(cleanFileName('a"<b>\u0000.png')).toBe("ab.png");
+    expect(cleanFileName("x".repeat(300))).toHaveLength(120);
+    expect(cleanFileName("  /  ")).toBe("kanit");
   });
   it("D-013: tartım ve kontrol edilmiş kantar fişi varsa doğrulanmış", () => {
     const ticket = (status: "declared" | "documented" | "reconciled") => ({ kind: "weighbridge_ticket", status });
@@ -156,6 +169,26 @@ describe("productionError", () => {
       }),
     ));
   it("lot alanı levha sayısı × levha alanı", () => expect(lotAreaM2(6).toString()).toBe(SHEET_AREA_M2.times(6).toString()));
+});
+
+describe("producible", () => {
+  it.each([
+    [true, "0.001", true],
+    [true, "0", false],
+    [true, null, false],
+    [false, "100", false],
+  ] as const)("doğrulanmış=%s, kalan=%s → %s", (verified, rem, want) =>
+    expect(producible({ verified, remainingKg: rem === null ? null : new Decimal(rem) })).toBe(want));
+  // Form listesi ile kaydetme kuralı ayrışırsa kullanıcı seçtiği partiyle hata alır ya da geçerli partiyi göremez.
+  it("özellik: listelenen parti en küçük tahsisle productionError'dan geçer, listelenmeyen geçmez", () =>
+    fc.assert(
+      // Sınırlar (0 ve 1 g) açıkça üretilir: rastgele tamsayıyla 100 örnekte 0 çıkmadı, gt → gte bozması kaçtı.
+      fc.property(fc.boolean(), fc.option(fc.oneof(fc.constantFrom(0, 1), fc.integer({ min: 0, max: 1_000_000 })), { nil: null }), (verified, grams) => {
+        const b: StockBatch = { id: "a", verified, remainingKg: grams === null ? null : new Decimal(grams).div(1000) };
+        const p = production({ inputs: [{ wasteBatchId: "a", kg: "0.001" }], outputKg: "0.001", scrapKg: "0", moistureLossKg: "0", sheetCount: null, densityKgM3: null });
+        return producible(b) === (productionError(p, [b]) === null);
+      }),
+    ));
 });
 
 describe("nextCode", () => {

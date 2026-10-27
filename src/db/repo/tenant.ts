@@ -74,14 +74,19 @@ function visibility(db: Db, org: string): Record<TenantTable, SQL> {
     .select({ id: deals.id })
     .from(deals)
     .where(or(eq(deals.sellerOrgId, org), eq(deals.buyerOrgId, org)));
+  const dealListings = db
+    .select({ id: deals.listingId })
+    .from(deals)
+    .where(or(eq(deals.sellerOrgId, org), eq(deals.buyerOrgId, org)));
   const ownProduction = db.select({ id: productionBatches.id }).from(productionBatches).where(eq(productionBatches.orgId, org));
   const ownEvidence = db.select({ id: evidenceRegister.id }).from(evidenceRegister).where(eq(evidenceRegister.orgId, org));
   const publicOrgs = db.select({ id: orgProfiles.orgId }).from(orgProfiles).where(eq(orgProfiles.isPublic, true));
   return {
-    // Pazar yeri: herkese açık kurum profilleri ve açık ilanlar.
+    // Pazar yeri: herkese açık kurum profilleri ve açık ilanlar. Anlaşmanın tarafı, ilan kapansa da
+    // anlaştığı ilanı görür: tek seferlik ilan kabulde kapanır, alıcı teslim alırken başlığı ve bileşimi okur.
     organizations: or(eq(organization.id, org), inArray(organization.id, publicOrgs))!,
     orgProfiles: or(eq(orgProfiles.orgId, org), eq(orgProfiles.isPublic, true))!,
-    listings: or(eq(listings.orgId, org), eq(listings.status, "open"))!,
+    listings: or(eq(listings.orgId, org), eq(listings.status, "open"), inArray(listings.id, dealListings))!,
     // Teklifi veren ve ilan sahibi görür.
     offers: or(eq(offers.orgId, org), inArray(offers.listingId, ownListings))!,
     deals: or(eq(deals.sellerOrgId, org), eq(deals.buyerOrgId, org))!,

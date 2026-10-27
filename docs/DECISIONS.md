@@ -103,7 +103,8 @@ Biçim: **Karar**, **Neden**, **Tarih**, kararı kim verdi (K: kullanıcı, C: C
 ### D-016 — Kiracı izolasyonu
 - **Karar:**
   - Kurum verisine erişim tek bir repository katmanından geçer: `withTenant(db, orgId)` (`src/db/repo/tenant.ts`). Görünürlük kuralı her sorguya eklenir; çağıranın koşulu onu gevşetemez.
-  - Paylaşılanlar bilinçli olarak sınırlıdır: açık ilanlar, herkese açık kurum profilleri ve panel lotları, taraf olunan teklif, anlaşma ve teslimler, sağlayıcının teslim ettiği partinin tartım sonucu, kurumdan bağımsız kaynaklı değerler. Geri kalan her şey yalnızca sahibine açıktır.
+  - Paylaşılanlar bilinçli olarak sınırlıdır: açık ilanlar, herkese açık kurum profilleri ve panel lotları, taraf olunan teklif, anlaşma ve teslimler, taraf olunan anlaşmanın ilanı (kapanmış olsa da), sağlayıcının teslim ettiği partinin tartım sonucu, kurumdan bağımsız kaynaklı değerler. Geri kalan her şey yalnızca sahibine açıktır.
+  - Tek seferlik ilan kabulde kapanır; alıcı teslim alırken ilanın başlığını ve lif bileşimini okumak zorundadır. Bu yüzden anlaşmanın iki tarafı ilanı görmeye devam eder; başka kurum kapanan ilanı görmez.
   - Yazma hakkı görmekten dardır: yalnızca sahibi yazar. Yok ile yetkisiz aynı hatayı verir.
   - Çapraz kiracı erişimi otomatik testle ölçülür (M-4). Postgres RLS Faz 5'te ikinci savunma hattı olarak eklenecek.
 - **Neden:** Rakip fabrikalar aynı platformda; bir kurumun maliyet ve hacim verisi başkasına sızarsa güven biter. Tek katman, tek test edilebilir sınır demektir.
@@ -122,8 +123,11 @@ Biçim: **Karar**, **Neden**, **Tarih**, kararı kim verdi (K: kullanıcı, C: C
   - Tartım fişi, irsaliye ve fatura gibi kanıt dosyaları en fazla 4 MiB (4.194.304 bayt) olarak Postgres'te `bytea` biçiminde tutulur. Erişim `EvidenceStore` arayüzünden geçer, böylece ileride S3 ya da R2'ye geçmek kolay olur.
   - Her dosyanın SHA-256 özeti kaydedilir ve gözetim zincirine yazılır.
   - Tür, tarayıcının bildirdiği MIME'den değil dosyanın ilk baytlarından belirlenir: PDF, PNG, JPEG ya da WebP.
+  - İndirme yalnızca `/api/evidence/[id]` üzerinden ve yalnızca sahip kuruma açıktır: oturum yoksa 401, başka kurumsa ya da kayıt yoksa 404. Yanıt her zaman ek (`attachment`) olarak gelir; `X-Content-Type-Options: nosniff`, `Content-Security-Policy: sandbox` ve `Cache-Control: private, no-store` taşır.
+  - Tarayıcı 4 MiB'ı aşan ya da boş dosyayı göndermeden durdurur; sunucu aynı kuralı yeniden denetler.
 - **Neden:**
   - Çevrimdışı demoda da çalışıyor ve ek bir hizmet gerektirmiyor.
+  - Yüklenen dosya kullanıcı içeriğidir: tarayıcıda sayfa olarak açılırsa betik çalıştırabilir. Ek olarak indirmek ve kum havuzu bunu engeller.
   - Vercel işlevleri en fazla 4,5 MB istek gövdesi kabul eder (413 `FUNCTION_PAYLOAD_TOO_LARGE`). Önceki 5 MB sınırı yayında hiç çalışamazdı; çok parçalı form başlıklarına da pay kalsın diye sınır 4 MiB oldu.
 - **Tarih:** 2026-10-27 · C
 
@@ -131,6 +135,16 @@ Biçim: **Karar**, **Neden**, **Tarih**, kararı kim verdi (K: kullanıcı, C: C
 - **Karar:** Depo herkese açıktır ama kod açık kaynak lisansıyla yayımlanmaz. `LICENSE` dosyası "tüm hakları saklıdır" der. Üçüncü taraf bileşenler (Wada renk verisi, MIT) kendi lisanslarıyla kalır.
 - **Neden:** Yarışmadan sonra şirketleşme seçeneği açık kalır. Sonradan açık lisansa geçmek kolaydır; yayımlanmış bir sürümü geri kapatmak mümkün değildir.
 - **Tarih:** 2026-10-27 · K
+
+### D-023 — Soy ağacı iç içe liste olarak gösterilir, React Flow kullanılmaz
+- **Karar:**
+  - Lot sayfasındaki soy ağacı (lot → üretim partisi → atık partileri) iç içe `<ul>` listesidir. Her atık partisi satırında sağlayıcı, doğrulama durumu, tahsis edilen kg ve lota düşen kg yazar.
+  - Lif dağılımı ve sağlayıcı payları ayrı tanım listelerinde, sayı olarak verilir.
+- **Neden:**
+  - Ağaç en fazla iki kat derinliğinde; çizge düzeni bilgi eklemez.
+  - Liste ekran okuyucuda ve klavyede kendiliğinden çalışır, 360 px'te taşmaz. Ölçüler (M-12, M-13, axe) çizgeye göre doğrudan uygulanır.
+  - React Flow (`@xyflow/react` 12) küçültülmüş 180 KB, gzip ile 60 KB JavaScript getirirdi (esbuild ile ölçüldü). Ayrıca ayrı bir erişilebilirlik işi gerektirirdi. Paket bağımlılıklardan çıkarıldı.
+- **Tarih:** 2026-10-27 · C
 
 ### D-022 — İlan haritası: MapLibre ve OpenFreeMap, listeyle yedekli
 - **Karar:**

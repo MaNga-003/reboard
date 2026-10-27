@@ -6,6 +6,9 @@ export const SHEET_MM = { width: 1830, length: 3660 } as const;
 export const SHEET_AREA_M2 = new Decimal(SHEET_MM.width).times(SHEET_MM.length).div(1_000_000);
 export const TARGET_THICKNESS_MM = 18;
 export const DENSITY_RANGE_KG_M3 = [550, 750] as const;
+/** Bağlayıcı adayları (ekip planı); reçete seçilmedi. */
+export const BINDERS = ["pet_copet", "pmdi", "none", "unknown"] as const;
+export type Binder = (typeof BINDERS)[number];
 
 /** Levha kütlesi = alan × kalınlık × yoğunluk. */
 export function sheetMassKg(densityKgM3: Decimal.Value, thicknessMm: Decimal.Value = TARGET_THICKNESS_MM): Decimal {

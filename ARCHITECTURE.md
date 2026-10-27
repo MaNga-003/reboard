@@ -24,7 +24,7 @@ flowchart LR
   subgraph Next.js 16 sunucusu, Vercel fra1
     RSC[Server Components<br/>okuma]
     SA[Server Actions<br/>Zod ile doğrulama ve yetki]
-    API[Route Handlers<br/>/api/auth · /api/verify · /api/cron]
+    API[Route Handlers<br/>/api/auth · /api/evidence · /api/verify · /api/cron]
     D[Alan katmanı src/domain<br/>calc · traceability · impact · supply]
     R[Repository katmanı src/db/repo<br/>withTenant]
   end
@@ -38,7 +38,7 @@ flowchart LR
 | Katman | Klasör | Kural |
 | --- | --- | --- |
 | Sayfalar | `src/app/[locale]/…` | Yalnızca sunum. İş kuralı içermez |
-| Bileşenler | `src/components/…` | `ui/`: temel bileşenler. `story/`: kare dizisi oynatıcı. `market/`: ilan kartı, fiyat metni, ilan haritası (`MarketMap`). `charts/`, `trace/`: soy ağacı |
+| Bileşenler | `src/components/…` | `ui/`: temel bileşenler. `story/`: kare dizisi oynatıcı. `market/`: ilan kartı, fiyat metni, ilan haritası (`MarketMap`). `trace/`: kabul, kanıt ve üretim formları (`keep.ts`: hata dönüşünde girilen değerler silinmez), olay zaman çizelgesi, zincir durumu, miktar (`Qty`, `data-kg`) ve kaydırılan tablo kabı (`TableWrap`) |
 | Sunucu eylemleri | ilgili rota klasöründe `actions.ts` | Her eylem `src/lib/action.ts` kapısından geçer (oturum → rol → Zod), sonra repository'ye gider |
 | Alan | `src/domain/…` | Saf TypeScript. I/O yok, birim testli. Tek gerçek kaynak burası |
 | Repository | `src/db/repo/…` | Bütün özel sorgular `withTenant(orgId)` üzerinden geçer (D-016) |
@@ -110,14 +110,20 @@ Alanların anlamları ve birimleri `docs/DATA_DICTIONARY.md` dosyasında.
   - Zincir organizasyon başına tutulur: ilk olayın `seq` değeri 1, `prev_hash` değeri 64 sıfırdır (`GENESIS_HASH`).
 - `verifyChain(events, anchor?)` olayları sırayla denetler: sıra numarası, organizasyon, önceki hash ve hash'in yeniden hesaplanması. Bozulma varsa `{ok: false, brokenAt, reason}` döner; `reason` şunlardan biridir: `seq_gap`, `org_mismatch`, `prev_hash_mismatch`, `hash_mismatch`, `anchor_mismatch`.
 - **Bilinen sınır ve çapa:** Veritabanına tam erişimi olan biri bir olayı değiştirip ondan sonraki bütün hash'leri yeniden hesaplarsa, ya da sondan olay silerse zincir kendi içinde tutarlı kalır. Bunu yalnızca daha önce dışarıya verilmiş bir çapa (`{count, head}`) yakalar. Çapa pasaportta ve dışa aktarımda yayımlanacak (T2.4).
-- Yazma ve okuma `src/db/repo/custody.ts` üzerinden yapılır. `appendCustodyEvent` bir işlem içinde zincirin ucunu okur, sonraki olayı hesaplar ve ekler; `(org_id, seq)` çakışırsa 3 kez yeniden dener. `listCustodyEvents` zinciri `seq` sırasıyla döndürür. `withTenant` sarmalaması T1.5'te eklenecek.
+- Yazma ve okuma `src/db/repo/custody.ts` üzerinden yapılır. `appendCustodyEvent` bir işlem içinde zincirin ucunu okur, sonraki olayı hesaplar ve ekler; `(org_id, seq)` çakışırsa 3 kez yeniden dener. `listCustodyEvents(db, orgId)` yalnızca o kurumun zincirini `seq` sırasıyla döndürür; ekranlar onu oturumdaki kurumla çağırır.
+- İzlenebilirlik yazımları `src/db/repo/trace.ts` içindedir; her biri tek işlemde kaydı ve zincir olayını birlikte yazar, biri düşerse ikisi de yazılmaz:
+  - `receiveDelivery`: planlı teslimi kapatır, atık partisini yazar (`WB-yyyy-nnnn`), `receiving` ve ayıklama varsa `inspecting` olayı ekler.
+  - `uploadEvidence`: dosyayı `EvidenceStore`'a, özetini kanıt kaydına yazar, partiye bağlar ve notunda SHA-256 bulunan bir `inspecting` olayı ekler.
+  - `checkEvidence`: kanıtı beyandan belgeliye geçirir ve bağlı partileri D-013'e göre yeniden doğrular.
+  - `createProduction`: partileri kilitleyip yalnızca doğrulanmış ve kalanı yeten partilerden tahsis alır, kütle dengesini denetler (`productionError`), isterse panel lotunu açar ve `transforming` olayını ekler. Ekran stok listesini aynı kuralla süzer (`producible`).
+  - Kurallar `src/domain/traceability/batches.ts` içindedir; ihlal `TraceRuleError` kodu olarak eyleme döner ve formda çevrilmiş metinle gösterilir.
 - Kayıtlar yalnızca eklenir (`drizzle/0002_append_only.sql`):
   - Satır düzeyindeki UPDATE ve DELETE işlemlerini bir tetikleyici her zaman reddeder. Organizasyon silinmesinden gelen cascade de reddedilir; zinciri olan organizasyon silinemez.
   - TRUNCATE yalnızca demo sıfırlamasında, aynı işlemde `SET LOCAL reboard.allow_reset = 'on'` ile çalışır.
   - `(org_id, seq)` benzersizdir; aynı sıra numarasıyla ikinci kayıt (zincir çatallanması) yazılamaz. Eşzamanlı yazımda repository yeniden dener.
 - Herkese açık doğrulama `/api/verify/[lot]` ucunda yapılacak (T2.4). Uç, lotun soy ağacındaki olay zincirlerini `verifyChain` ile baştan yeniden hesaplar.
 - Kütle dengesi (`massBalance`): `|Σ girdi − çıktı − fire − nem kaybı| ÷ Σ girdi ≤ %2`. Tolerans aşılırsa açıklama zorunludur (`balanceNoteMissing`). Değerlerden biri bilinmiyorsa ya da girdi 0 ise denge iddia edilmez (`withinTolerance: null`). Negatif kg reddedilir.
-- Soy ağacı (`genealogy(lotId)`): panel lotundan üretim partisine, oradan atık partilerine iner. Lotun payı, partide tek lot varsa 1, yoksa alan oranıdır; herhangi bir lotun alanı bilinmiyorsa pay da bilinmez. Sonuç; lotun tekstil kg'ını, bunun doğrulanmış kısmını, sağlayıcıya ve life göre dağılımını ve en zayıf sonuç sınıfını verir.
+- Soy ağacı (`genealogy(lotId)`): panel lotundan üretim partisine, oradan atık partilerine iner. Lotun payı, partide tek lot varsa 1, yoksa alan oranıdır; herhangi bir lotun alanı bilinmiyorsa pay da bilinmez. Sonuç; lotun tekstil kg'ını, bunun doğrulanmış kısmını, sağlayıcıya ve life göre dağılımını ve en zayıf sonuç sınıfını verir. Lot sayfasında iç içe liste olarak gösterilir (D-023).
 
 ## 5. Alan modülleri (`src/domain`)
 
@@ -151,7 +157,7 @@ Alanların anlamları ve birimleri `docs/DATA_DICTIONARY.md` dosyasında.
   | Tablo | Kurum X görür |
   | --- | --- |
   | `organization`, `org_profiles` | kendisini ve herkese açık profilleri |
-  | `listings` | kendi ilanlarını ve açık ilanları |
+  | `listings` | kendi ilanlarını, açık ilanları ve taraf olduğu anlaşmanın ilanını (kapanmış olsa da) |
   | `offers` | verdiği teklifleri ve kendi ilanlarına gelenleri |
   | `deals`, `deliveries` | taraf olduklarını |
   | `waste_batches` | teslim aldıklarını ve sağlayıcısı olduklarını; tartım sonucu iki tarafa da görünür |
@@ -163,7 +169,7 @@ Alanların anlamları ve birimleri `docs/DATA_DICTIONARY.md` dosyasında.
   - Kanıt dosyasının içeriği (`evidence_register.content`) listelere girmez.
   - Yazma hakkı görmekten dardır: `assertOwns` satırın sahibi başkaysa da satır yoksa da aynı hatayı verir; satırın varlığı sızdırılmaz.
   - Kimlik tabloları (`user`, `session`, `account`, `verification`, `member`, `invitation`) bu katmandan okunmaz. Bir test, şemadaki her tablonun ya katalogda ya bu listede olduğunu denetler; yeni bir tablo kuralsız kalamaz.
-- **Ekranlar:** `/giris` sayfasında demo rolleri ve e-posta formu bulunur. `(app)` grubundaki sayfalar oturum ister: `/panel`, `/pazar`, `/pazar/[id]`, `/pazar/yeni`. Başlıkta kurum · rol, demo modunda "Rol değiştir" menüsü ve çıkış düğmesi bulunur.
+- **Ekranlar:** `/giris` sayfasında demo rolleri ve e-posta formu bulunur. `(app)` grubundaki sayfalar oturum ister: `/panel`, `/pazar`, `/pazar/[id]`, `/pazar/yeni`, `/izlenebilirlik` ve alt sayfaları (`kabul/[deliveryId]`, `parti/[id]`, `uretim/yeni`, `lot/[id]`). Başlıkta kurum · rol, demo modunda "Rol değiştir" menüsü ve çıkış düğmesi bulunur.
 - Herkese açık sayfalar: `/`, `/giris`, `/pasaport/[lot]`, `/api/verify/[lot]` ve etki sayacı.
 - **Demo rolleri:** Tedarikçi (Konfeksiyon A, sahip), Üretici (ReBoard Pilot Tesisi, sahip), Panel alıcısı (Mobilya Atölyesi F, sahip), İzleyici (ReBoard Pilot Tesisi, izleyici). Parola yalnızca `DEMO_PASSWORD` ortam değişkenindedir. Demo kurumlarının adları kurgusaldır ve harfle kodlanır; gerçek bir firmayla karışmaz.
 - Postgres RLS, ikinci savunma hattı olarak Faz 5'te eklenecek.
@@ -178,6 +184,7 @@ Alanların anlamları ve birimleri `docs/DATA_DICTIONARY.md` dosyasında.
 - Kayıt ve kurum açma kapalıdır; oturumsuz kurum uç noktaları 401 döner (M-4).
 - `next.config.ts` üzerinden güvenlik başlıkları uygulanır: `X-Content-Type-Options`, `Referrer-Policy`, `X-Frame-Options`, `Permissions-Policy`. CSP henüz yok (R-6). Eklenince harita için `connect-src` ve `img-src` içine `https://tiles.openfreemap.org`, `worker-src` içine `'self'` girer.
 - Kanıt dosyalarında yalnızca PDF, PNG, JPEG ve WebP kabul edilir; tür dosyanın ilk baytlarından belirlenir, dosya en fazla 4 MiB olabilir (Vercel'in 4,5 MB gövde sınırı, D-018) ve SHA-256 özeti tutulur.
+- Kanıt indirme ucu `/api/evidence/[id]` yalnızca sahip kuruma açıktır (oturumsuz 401, başka kurum ya da yok 404). Yanıt `Content-Disposition: attachment`, `X-Content-Type-Options: nosniff`, `Content-Security-Policy: sandbox; default-src 'none'` ve `Cache-Control: private, no-store` taşır; yüklenen dosya uygulamanın kökeninde sayfa olarak açılmaz (D-018).
 - Gizli bilgiler yalnızca ortam değişkenlerinde durur; CI'da gitleaks çalışır. `.env.example` dosyası yalnızca anahtar adlarını içerir.
 - Log'larda kişisel veri tutulmaz. Konum ilçe düzeyinde ya da yaklaşık 1 km'ye yuvarlanmış olarak saklanır.
 

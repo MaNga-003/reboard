@@ -53,6 +53,24 @@ export async function gutterBreaches(page: Page) {
   });
 }
 
+/**
+ * Kaydırılan kabın içindeki mutlak konumlu öğe (ör. sr-only başlık) konumunu o kabın içinden almalı; yoksa kırpılmaz,
+ * sayfayı taşırır. Taşma veriye bağlı: yalnızca tablo ekrandan genişken görünür (uzun ilan başlığıyla 16 px).
+ * Bu ölçü veriden bağımsızdır: kaçan her öğeyi tablo dar da olsa yakalar.
+ */
+export async function escapedAbsolutes(page: Page) {
+  return page.evaluate(() => {
+    const out: string[] = [];
+    for (const el of document.querySelectorAll<HTMLElement>("body *")) {
+      if (getComputedStyle(el).position !== "absolute") continue;
+      let scroller: HTMLElement | null = null;
+      for (let p = el.parentElement; p && !scroller; p = p.parentElement) if (getComputedStyle(p).overflowX !== "visible") scroller = p;
+      if (scroller && !(el.offsetParent && scroller.contains(el.offsetParent))) out.push(`${el.tagName.toLowerCase()} "${(el.textContent ?? "").trim().slice(0, 25)}"`);
+    }
+    return out;
+  });
+}
+
 export async function signIn(page: Page, persona: string, locale = "tr") {
   await page.goto(`/${locale}/giris`);
   await page.locator(`main [data-persona="${persona}"]`).click();

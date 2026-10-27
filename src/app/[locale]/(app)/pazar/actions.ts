@@ -5,31 +5,23 @@ import { z } from "zod";
 import { getDb } from "@/db/client";
 import { MarketRuleError, acceptOffer, closeListing, createListing, placeOffer, rejectOffer, withdrawOffer } from "@/db/repo/market";
 import { TenantAccessError } from "@/db/repo/tenant";
-import { FIBRES, type Composition } from "@/domain/fibre";
 import { LISTING_KINDS, MARKET_UNITS, RECURRENCES, isWaste } from "@/domain/market";
 import { redirect } from "@/i18n/navigation";
 import { routing } from "@/i18n/routing";
 import { authorize, type Permission } from "@/lib/action";
+import { SILK, blank, compositionFields, compositionOf, decimal, locale, silkOf } from "@/lib/form";
 import { getViewer } from "@/lib/viewer";
 
 export type MarketFormState = { error: string; fields?: string[] } | null;
 
-const locale = z.enum(routing.locales);
 const day = z.string().regex(/^\d{4}-\d{2}-\d{2}$/);
-const optionalDay = z.union([z.literal("").transform(() => null), day]);
-// Virgüllü ondalık da kabul edilir (Türkçe klavye).
-const decimal = (scale: number) =>
-  z
-    .string()
-    .trim()
-    .transform((s) => s.replace(",", "."))
-    .pipe(z.string().regex(new RegExp(`^\\d{1,9}(\\.\\d{1,${scale}})?$`)));
+const optionalDay = z.union([blank, day]);
 const PAYERS = ["buyer", "seller", "none", "unknown"] as const;
 
 /** "Kim öder" ve tutar işaretli birim fiyata çevrilir: alıcı öderse +, satıcı kabul bedeli öderse −. */
 const price = {
   payer: z.enum(PAYERS),
-  amount: z.union([z.literal("").transform(() => null), decimal(2)]),
+  amount: z.union([blank, decimal(2)]),
 };
 function signedPrice(payer: (typeof PAYERS)[number], amount: string | null): string | null {
   if (payer === "unknown") return null;
@@ -37,9 +29,6 @@ function signedPrice(payer: (typeof PAYERS)[number], amount: string | null): str
   return payer === "seller" ? `-${amount}` : amount;
 }
 const priceNeedsAmount = (v: { payer: string; amount: string | null }) => !["buyer", "seller"].includes(v.payer) || (v.amount !== null && Number(v.amount) > 0);
-
-const FIBRE_FIELDS = FIBRES.filter((f) => f !== "unknown");
-const share = z.union([z.literal("").transform(() => null), z.coerce.number().int().min(0).max(100)]);
 
 const listingSchema = z
   .object({
@@ -51,8 +40,8 @@ const listingSchema = z
     recurrence: z.enum(RECURRENCES),
     windowStart: optionalDay,
     windowEnd: optionalDay,
-    silk: z.enum(["no", "yes", "unknown"]).default("unknown"),
-    ...Object.fromEntries(FIBRE_FIELDS.map((f) => [`c_${f}`, share.optional()])),
+    silk: z.enum(SILK).default("unknown"),
+    ...compositionFields,
     ...price,
   })
   .refine(priceNeedsAmount, { path: ["amount"] });
@@ -76,9 +65,8 @@ export async function createListingAction(_prev: MarketFormState, formData: Form
   const viewer = await getViewer();
   const gate = authorize(viewer, { resource: "listing", action: "create" }, listingSchema, Object.fromEntries(formData));
   if (!gate.ok) return { error: gate.error, fields: gate.fields };
-  const v = gate.input as z.output<typeof listingSchema> & Record<string, number | null | undefined>;
+  const v = gate.input;
   const waste = isWaste(v.kind);
-  const composition = Object.fromEntries(FIBRE_FIELDS.flatMap((f) => (typeof v[`c_${f}`] === "number" ? [[f, v[`c_${f}`]]] : []))) as Composition;
   let id: string;
   try {
     id = await createListing(getDb(), viewer!.orgId, {
@@ -89,8 +77,8 @@ export async function createListingAction(_prev: MarketFormState, formData: Form
       recurrence: v.recurrence,
       windowStart: v.windowStart,
       windowEnd: v.windowEnd,
-      composition: waste && Object.keys(composition).length ? composition : null,
-      containsSilk: waste ? (v.silk === "unknown" ? null : v.silk === "yes") : null,
+      composition: waste ? compositionOf(v) : null,
+      containsSilk: waste ? silkOf(v.silk) : null,
       unitPrice: signedPrice(v.payer, v.amount),
       currency: "TRY",
       taxBasis: "excl_vat",

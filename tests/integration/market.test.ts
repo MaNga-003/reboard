@@ -1,7 +1,7 @@
 // Pazar yeri (T2.1): ilan → teklif → kabul → anlaşma ve teslim planı, gerçek migrasyonlar ve demo verisiyle.
 // Kurallar, eşzamanlı kabul ve kiracı sınırı (teklif ve anlaşmayı yalnızca tarafları görür) burada ölçülür.
 import { PGlite } from "@electric-sql/pglite";
-import { and, eq } from "drizzle-orm";
+import { eq } from "drizzle-orm";
 import { migrate } from "drizzle-orm/pglite/migrator";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
 import { createPgliteDb } from "@/db/client";
@@ -197,14 +197,19 @@ describe("okuma: liste, eşleşme ve kiracı sınırı", () => {
   it("her kurum ilan ayrıntısında yalnızca taraf olduğu teklif ve anlaşmaları görür", async () => {
     const all = await db.select().from(listings);
     const allOffers = await db.select().from(offers);
+    const allDeals = await db.select().from(deals);
+    const party = (x: string, listingId: string) => allDeals.some((d) => d.listingId === listingId && (d.sellerOrgId === x || d.buyerOrgId === x));
     let checked = 0;
+    let closedSeen = 0;
     for (const x of ORGS) {
       for (const l of all) {
         const d = await listingDetail(db, x, l.id, NOW);
-        if (l.orgId !== x && l.status !== "open") {
+        // Kapalı ilanı yalnızca sahibi ve anlaşmanın tarafı görür (D-016).
+        if (l.orgId !== x && l.status !== "open" && !party(x, l.id)) {
           expect(d, `${x} kapalı ilanı görmemeli: ${l.id}`).toBeNull();
           continue;
         }
+        if (l.orgId !== x && l.status !== "open") closedSeen++;
         expect(d).not.toBeNull();
         for (const o of d!.offers) expect(o.orgId === x || l.orgId === x, `${x} teklif ${o.id}`).toBe(true);
         for (const deal of d!.deals) expect(deal.sellerOrgId === x || deal.buyerOrgId === x, `${x} anlaşma ${deal.id}`).toBe(true);
@@ -215,12 +220,18 @@ describe("okuma: liste, eşleşme ve kiracı sınırı", () => {
       }
     }
     expect(checked).toBeGreaterThan(ORGS.length * 5);
+    // Kural boşa geçmesin: seed'de karşı tarafın gördüğü en az bir kapalı ilan var.
+    expect(closedSeen).toBeGreaterThan(0);
   });
 
   it("geçersiz ya da görünmeyen kimlik null ve 'yok' hatası verir", async () => {
     expect(await listingDetail(db, R, "olmayan", NOW)).toBeNull();
     await expect(acceptOffer(db, R, "olmayan", NOW)).rejects.toBeInstanceOf(TenantAccessError);
-    const [closed] = await db.select().from(listings).where(and(eq(listings.orgId, F), eq(listings.status, "closed")));
-    expect(await listingDetail(db, R, closed.id, NOW)).toBeNull();
+    // R'nin taraf olmadığı kapalı ilan: anlaşması olmayan ya da anlaşmasında R olmayan.
+    const closed = await db.select().from(listings).where(eq(listings.status, "closed"));
+    const dealt = await db.select().from(deals);
+    const foreign = closed.filter((l) => l.orgId !== R && !dealt.some((d) => d.listingId === l.id && (d.sellerOrgId === R || d.buyerOrgId === R)));
+    expect(foreign.length).toBeGreaterThan(0);
+    for (const l of foreign) expect(await listingDetail(db, R, l.id, NOW)).toBeNull();
   });
 });

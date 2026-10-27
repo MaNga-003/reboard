@@ -26,6 +26,9 @@ export default async function AppLayout({ children, params }: LayoutProps<"/[loc
             <Link href="/pazar" className={`${tap} underline-offset-4 hover:underline`}>
               {t("nav.market")}
             </Link>
+            <Link href="/izlenebilirlik" className={`${tap} underline-offset-4 hover:underline`}>
+              {t("nav.traceability")}
+            </Link>
             <Link href="/panel" className={`${tap} underline-offset-4 hover:underline`}>
               {t("nav.dashboard")}
             </Link>

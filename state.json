@@ -1,8 +1,8 @@
 {
   "$schema": "./docs/state.schema.json",
   "project": "ReBoard SaaS platformu",
-  "updated_at": "2026-10-27T09:24:00+03:00",
-  "current_phase": "F1",
+  "updated_at": "2026-10-27T15:11:00+03:00",
+  "current_phase": "F2",
   "deadlines": {
     "demo_freeze": "2026-10-29T18:00:00+03:00",
     "competition": "2026-10-30T09:00:00+03:00"
@@ -223,10 +223,10 @@
       "id": "T2.2",
       "phase": "F2",
       "mode": "otonom",
-      "status": "sürüyor",
+      "status": "tamam",
       "title": "İzlenebilirlik: parti kabulü, üretim partisi, soy ağacı, zaman çizelgesi, kanıt kaydı",
       "acceptance": "E2E: teslim alınan parti tartılır, kanıt yüklenir, üretim partisine bağlanır, soy ağacında görünür",
-      "evidence": "Kısmi (sürüyor): alan kuralları src/domain/traceability/batches.ts (kabul, kanıt türü ve 4 MiB sınırı, D-013 doğrulama, üretim tahsisi, kod üretimi, zaman çizelgesi süzgeci); tests/unit/traceability/batches.test.ts 47/47. Kalan: depo (src/db/repo/trace.ts), eylemler, /izlenebilirlik sayfaları, kanıt indirme ucu, next.config bodySizeLimit, E2E akışı ve belgeler.",
+      "evidence": "E2E trace.spec 10/10: teslim alma (492 kg tartım), PNG kantar fişi (ekrandaki ve zincirdeki SHA-256 dosyanınkiyle aynı), kontrol → doğrulandı, üretim partisi ve lot, soy ağacında sağlayıcı ve doğrulanmış kg; indirme sahibine 200, başka kuruma 404, oturumsuza 401, nosniff ve sandbox. Tam E2E 46/46 (art arda 3 koşu), Vitest 288/288, src/domain/traceability kapsamı %100. Bilerek bozma: ekran 4/4, birim 2/2, depo 1/1 (M-23). Bulunan hatalar: tek seferlik ilan kabulde kapandığı için alıcı ilanı göremiyordu (D-016 güncellendi); sr-only başlık sayfayı 16 px, SHA-256 notu 360 px'te 210 px taşırıyordu (escapedAbsolutes eklendi, M-13). Canlı denetime izlenebilirlik adımları eklendi (yalnızca okur).",
       "depends_on": [
         "T1.3",
         "T1.4"
@@ -234,7 +234,9 @@
       "decisions": [
         "D-012",
         "D-013",
-        "D-018"
+        "D-016",
+        "D-018",
+        "D-023"
       ]
     },
     {
@@ -667,24 +669,24 @@
       "id": "M-12",
       "claim": "Erişilebilir",
       "threshold": "0 ciddi/kritik axe ihlali; dokunma hedefi ≥ 44×44 px",
-      "last_value": "/tr, /en, giriş, panel, pazar listesi (harita açılır kutusu dahil), ilan ayrıntısı, yeni ilan (TR, EN): 0 ciddi/kritik ihlal; 5 genişlikte 44 px altı hedef 0; bozma yakalandı",
-      "measured_at": "2026-10-27T09:10:00+03:00",
-      "test": "tests/e2e/smoke.spec.ts, tests/e2e/auth.spec.ts, tests/e2e/market.spec.ts"
+      "last_value": "/tr, /en, giriş, panel, pazar listesi (harita açılır kutusu dahil), ilan ayrıntısı, yeni ilan, izlenebilirlik (genel bakış, teslim alma, parti, yeni üretim, lot) TR ve EN: 0 ciddi/kritik ihlal; 5 genişlikte 44 px altı hedef 0; bozma yakalandı",
+      "measured_at": "2026-10-27T15:11:00+03:00",
+      "test": "tests/e2e/smoke.spec.ts, tests/e2e/auth.spec.ts, tests/e2e/market.spec.ts, tests/e2e/trace.spec.ts"
     },
     {
       "id": "M-13",
       "claim": "Yerleşim bozulmaz",
-      "threshold": "0 px sayfa taşması; main içerik kutusundan taşan 0 öğe",
-      "last_value": "giriş, panel, pazar listesi (haritalı), ilan ayrıntısı, yeni ilan; 5 genişlik: 0 px taşma, kenar boşluğuna giren 0 öğe (önce yeni ilanda 16 px; CI Linux'ta 3 px taşma)",
-      "measured_at": "2026-10-27T09:15:00+03:00",
-      "test": "tests/e2e/smoke.spec.ts, tests/e2e/auth.spec.ts, tests/e2e/market.spec.ts"
+      "threshold": "0 px sayfa taşması; main içerik kutusundan taşan 0 öğe; kaydırılan kaptan kaçan 0 mutlak konumlu öğe",
+      "last_value": "giriş, panel, pazar ve izlenebilirlik sayfaları; 5 genişlik: 0 px, 0 öğe, 0 kaçak. Önce sr-only başlık 16 px, SHA-256 notu 360 px'te 210 px taşırıyordu; relative bozması escapedAbsolutes ile 5 genişlikte yakalandı",
+      "measured_at": "2026-10-27T15:11:00+03:00",
+      "test": "tests/e2e/smoke.spec.ts, tests/e2e/auth.spec.ts, tests/e2e/market.spec.ts, tests/e2e/trace.spec.ts"
     },
     {
       "id": "M-14",
       "claim": "Çeviri tam",
       "threshold": "0 eksik anahtar",
-      "last_value": "0 eksik (229 yaprak anahtar)",
-      "measured_at": "2026-10-27T09:10:00+03:00",
+      "last_value": "0 eksik (415 yaprak anahtar)",
+      "measured_at": "2026-10-27T15:11:00+03:00",
       "test": "tests/unit/i18n.test.ts"
     },
     {
@@ -750,6 +752,14 @@
       "last_value": "A/B/C: 0 zayıf çift; ekranda halka 12,23:1 (önce 1,64:1); 44 px dokunma alanı; bozma 3/3",
       "measured_at": "2026-10-27T09:10:00+03:00",
       "test": "tests/unit/map.test.ts, tests/e2e/market.spec.ts"
+    },
+    {
+      "id": "M-23",
+      "claim": "İzlenebilirlik akışı doğru",
+      "threshold": "teslim alma → kanıt → kontrol → üretim → lot yeşil; SHA-256 dosyanınkiyle aynı; indirme sahibine 200, başka kuruma 404, oturumsuza 401; 4 MiB üstünde 0 POST; izleyiciye 0 form",
+      "last_value": "E2E 10/10 (tam paket 46/46 × 3); birim ve entegrasyon 66/66; traceability kapsamı %100; bozma ekran 4/4, birim 2/2, depo 1/1",
+      "measured_at": "2026-10-27T15:11:00+03:00",
+      "test": "tests/e2e/trace.spec.ts, tests/integration/trace.test.ts, tests/unit/traceability/batches.test.ts"
     }
   ]
 }

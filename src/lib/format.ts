@@ -14,4 +14,9 @@ export function fmtDate(v: Date | string, locale: string) {
 }
 
 /** 0–100 arası pay; Türkçede "%50", İngilizcede "50%". */
-export const fmtPercent = (share: number, locale: string) => new Intl.NumberFormat(tag(locale), { style: "percent", maximumFractionDigits: 0 }).format(share / 100);
+export const fmtPercent = (share: number, locale: string, maxFraction = 0) =>
+  new Intl.NumberFormat(tag(locale), { style: "percent", maximumFractionDigits: maxFraction }).format(share / 100);
+
+/** Olay zamanı: gün ve saat, İstanbul saatiyle. */
+export const fmtDateTime = (v: Date | string, locale: string) =>
+  new Intl.DateTimeFormat(tag(locale), { dateStyle: "medium", timeStyle: "short", timeZone: ZONE }).format(new Date(v));

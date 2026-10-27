@@ -1,4 +1,5 @@
-// Canlı yayının hızlı denetimi: yönlendirme, iki dil, kimlik ucu, giriş akışı, fonksiyon bölgesi ve güvenlik başlıkları.
+// Canlı yayının hızlı denetimi: yönlendirme, iki dil, kimlik ucu, giriş akışı, pazar yeri, izlenebilirlik, fonksiyon bölgesi ve güvenlik başlıkları.
+// Yalnızca okur; canlı veritabanına yazmaz.
 // Türk Telekom "Güvenli İnternet" *.vercel.app'i yönlendirdiği için GitHub Actions'ta çalışır (live-smoke.yml).
 // Kullanım: node scripts/live-smoke.mjs [https://adres]
 const base = (process.argv[2] ?? process.env.LIVE_URL ?? "https://reboard-lovat.vercel.app").replace(/\/$/, "");
@@ -40,6 +41,12 @@ const anon = await get("/tr/panel");
 check([307, 308].includes(anon.status) && /\/tr\/giris$/.test(anon.headers.get("location") ?? ""), "oturumsuz /tr/panel → /tr/giris", `${anon.status} ${anon.headers.get("location")}`);
 const anonMarket = await get("/tr/pazar");
 check([307, 308].includes(anonMarket.status) && /\/tr\/giris$/.test(anonMarket.headers.get("location") ?? ""), "oturumsuz /tr/pazar → /tr/giris", `${anonMarket.status} ${anonMarket.headers.get("location")}`);
+const anonTrace = await get("/tr/izlenebilirlik");
+check([307, 308].includes(anonTrace.status) && /\/tr\/giris$/.test(anonTrace.headers.get("location") ?? ""), "oturumsuz /tr/izlenebilirlik → /tr/giris", `${anonTrace.status} ${anonTrace.headers.get("location")}`);
+// Kanıt indirme ucu (D-018): oturumsuz 401. Kimlik uydurmadır; böyle bir kayıt yoktur.
+const noEvidence = "/api/evidence/00000000-0000-4000-8000-000000000000";
+const anonEvidence = await get(noEvidence);
+check(anonEvidence.status === 401, "oturumsuz kanıt indirme 401", anonEvidence.status);
 const post = (path, body, cookie) =>
   fetch(base + path, {
     method: "POST",
@@ -62,6 +69,13 @@ if (process.env.DEMO_PASSWORD) {
   const marketHtml = await market.text();
   const cards = (marketHtml.match(/data-listing-id=/g) ?? []).length;
   check(market.status === 200 && cards > 0 && marketHtml.includes('data-result-class="synthetic"'), "girişli /tr/pazar ilan kartları ve Sentetik rozeti", `${market.status} · ${cards} kart`);
+  // İzlenebilirlik (T2.2): sağlayıcı teslim ettiği partileri ve kendi zincirinin durumunu görür; yalnızca okunur.
+  const trace = await fetch(base + "/tr/izlenebilirlik", { redirect: "manual", headers: { cookie, "user-agent": "reboard-live-smoke" } });
+  const traceHtml = await trace.text();
+  const batches = (traceHtml.match(/data-batch-code=/g) ?? []).length;
+  check(trace.status === 200 && batches > 0 && traceHtml.includes('data-chain="ok"'), "girişli /tr/izlenebilirlik partiler ve sağlam zincir", `${trace.status} · ${batches} parti`);
+  const missing = await fetch(base + noEvidence, { redirect: "manual", headers: { cookie, "user-agent": "reboard-live-smoke" } });
+  check(missing.status === 404, "girişli, var olmayan kanıt 404", missing.status);
   await post("/api/auth/sign-out", {}, cookie);
 } else {
   console.log("atlandı · demo girişi (DEMO_PASSWORD yok)");

@@ -60,6 +60,19 @@ sequenceDiagram
 5. **Gözetim zinciri:** Her adım bir EPCIS olayı olarak hash zincirine eklenir.
 6. **Pasaport:** Her panel lotunun açık bir sayfası ve QR kodu olur.
 
+- Ekranlar:
+  - `/izlenebilirlik`: teslim alınacaklar, teslim alınan partiler, sağlayıcı olarak teslim edilenler, üretim partileri ve zincir durumu.
+  - `/izlenebilirlik/kabul/[teslim]`: beyan edilen kg ve lif bileşimi ilandan gelir; tartılan kg, ayıklanan kg, nem ve ipek girilir.
+  - `/izlenebilirlik/parti/[id]`: beyan ile tartım farkı, kabul edilen ve kalan kg, kanıtlar (SHA-256, indirme, kontrol), tahsisler ve olay geçmişi.
+  - `/izlenebilirlik/uretim/yeni`: yalnızca doğrulanmış ve kalanı olan partiler listelenir; tahsis, çıktı, fire, nem kaybı, bağlayıcı ve isteğe bağlı panel lotu girilir.
+  - `/izlenebilirlik/lot/[id]`: soy ağacı (iç içe liste, D-023), lif ve sağlayıcı dağılımı, kütle dengesi, test durumu ("test edilmedi") ve olay geçmişi.
+- Parti, kantar fişi ya da tartım kanıtı "belgeli" olunca doğrulanır (D-013). Ana etki sayısı bu doğrulanmış kg'dır.
+- Ayıklanan kg tartılan kg'ı aşamaz. Kütle dengesi %2'yi aşarsa açıklama zorunludur. Bilinmeyen değer 0 sayılmaz, "bilinmiyor" yazar.
+- Kural hatası formu silmez: uyarı çıkar, girilen değerler yerinde kalır.
+- Roller: operatör teslim alır, kanıt yükler ve üretim girer; kanıtı yalnızca sahip ya da yönetici kontrol eder. İzleyici her şeyi okur, hiçbir şey yazmaz.
+- Sağlayıcı, teslim ettiği partinin tartım sonucunu ve doğrulandığını görür; alıcının kanıt dosyasını ve olay geçmişini görmez.
+- Kanıt dosyasını yalnızca yükleyen kurum indirir; dosya sayfa olarak açılmaz, ek olarak iner (D-018).
+
 ### 3.3 Etki ve tedarik paneli
 
 - **Etki:**
@@ -105,5 +118,5 @@ Her sonuç sınıf rozetini taşır. Olumsuz senaryo gizlenmez.
 - Kaynaklı referans değerler **Kaynaklı tahmin** rozeti taşır ve kaynağına bağlanır.
 - Platform reçete, dayanım ya da maliyet üstünlüğü iddia etmez. Test durumu "test edilmedi" ise öyle yazar.
 - İpek kapsam dışıdır; kabulde ayıklanır ve kaydı tutulur.
-- Her kurum yalnızca kendi kayıtlarını ve paylaşılanları görür: açık ilanlar, herkese açık profiller ve lotlar, taraf olduğu teklif, anlaşma ve teslimler. Sağlayıcı, teslim ettiği partinin tartım sonucunu görür (D-016).
+- Her kurum yalnızca kendi kayıtlarını ve paylaşılanları görür: açık ilanlar, herkese açık profiller ve lotlar, taraf olduğu teklif, anlaşma ve teslimler ve bu anlaşmaların ilanı (kapanmış olsa da). Sağlayıcı, teslim ettiği partinin tartım sonucunu görür (D-016).
 - Hesaplar davetle açılır; herkese açık kayıt yoktur (D-010).
