@@ -1,7 +1,7 @@
 {
   "$schema": "./docs/state.schema.json",
   "project": "ReBoard SaaS platformu",
-  "updated_at": "2026-10-27T18:41:00+03:00",
+  "updated_at": "2026-10-27T19:17:00+03:00",
   "current_phase": "F2",
   "deadlines": {
     "demo_freeze": "2026-10-29T18:00:00+03:00",
@@ -267,7 +267,8 @@
         "T1.3"
       ],
       "decisions": [
-        "D-012"
+        "D-012",
+        "D-025"
       ]
     },
     {
@@ -614,8 +615,8 @@
       "id": "M-5",
       "claim": "Hesaplar doğru",
       "threshold": "para birimi/vergi temeli uyuşmazlığı hata; boş girdi null; src/domain kapsamı ≥ %90",
-      "last_value": "346/346 test (birim ve entegrasyon); src/domain kapsamı satır %100, dal %98,5, fonksiyon %99,5 (impact.ts dal %88,9, supply.ts %96,6); eşik %90",
-      "measured_at": "2026-10-27T18:24:00+03:00",
+      "last_value": "377/377 test (birim ve entegrasyon); src/domain kapsamı satır %100, dal %98,7, fonksiyon %99,5 (impact.ts dal %88,9, supply.ts %96,6, passport.ts %97,1); eşik %90",
+      "measured_at": "2026-10-27T19:17:00+03:00",
       "test": "tests/unit/calc"
     },
     {
@@ -670,24 +671,24 @@
       "id": "M-12",
       "claim": "Erişilebilir",
       "threshold": "0 ciddi/kritik axe ihlali; dokunma hedefi ≥ 44×44 px",
-      "last_value": "/tr, /en, giriş, panel (TR ve EN, tablolar açık), pazar listesi, ilan ayrıntısı, yeni ilan, izlenebilirlik sayfaları: 0 ciddi/kritik ihlal; 5 genişlikte 44 px altı hedef 0; projeksiyon klavyeyle gezilir (Home/End, aria-live)",
-      "measured_at": "2026-10-27T18:24:00+03:00",
-      "test": "tests/e2e/smoke.spec.ts, tests/e2e/auth.spec.ts, tests/e2e/market.spec.ts, tests/e2e/trace.spec.ts, tests/e2e/panel.spec.ts"
+      "last_value": "/tr, /en, giriş, panel (TR ve EN, tablolar açık), pazar listesi, ilan ayrıntısı, yeni ilan, izlenebilirlik sayfaları, açık pasaport (sağlam ve bozuk): 0 ciddi/kritik ihlal; 5 genişlikte 44 px altı hedef 0; projeksiyon klavyeyle gezilir (Home/End, aria-live)",
+      "measured_at": "2026-10-27T19:17:00+03:00",
+      "test": "tests/e2e/smoke.spec.ts, tests/e2e/auth.spec.ts, tests/e2e/market.spec.ts, tests/e2e/trace.spec.ts, tests/e2e/panel.spec.ts, tests/e2e/passport.spec.ts"
     },
     {
       "id": "M-13",
       "claim": "Yerleşim bozulmaz",
       "threshold": "0 px sayfa taşması; main içerik kutusundan taşan 0 öğe; kaydırılan kaptan kaçan 0 mutlak konumlu öğe",
-      "last_value": "giriş, panel, pazar ve izlenebilirlik; 5 genişlik: 0 px, 0 öğe, 0 kaçak. Panel bulgusu: sr-only'nin -1 px kenar boşluğu ipucu metnini 1 px taşırıyordu, düzeltildi",
-      "measured_at": "2026-10-27T18:24:00+03:00",
-      "test": "tests/e2e/smoke.spec.ts, tests/e2e/auth.spec.ts, tests/e2e/market.spec.ts, tests/e2e/trace.spec.ts, tests/e2e/panel.spec.ts"
+      "last_value": "giriş, panel, pazar, izlenebilirlik ve pasaport; 5 genişlik: 0 px, 0 öğe, 0 kaçak. Panel bulgusu: sr-only'nin -1 px kenar boşluğu ipucu metnini 1 px taşırıyordu, düzeltildi",
+      "measured_at": "2026-10-27T19:17:00+03:00",
+      "test": "tests/e2e/smoke.spec.ts, tests/e2e/auth.spec.ts, tests/e2e/market.spec.ts, tests/e2e/trace.spec.ts, tests/e2e/panel.spec.ts, tests/e2e/passport.spec.ts"
     },
     {
       "id": "M-14",
       "claim": "Çeviri tam",
       "threshold": "0 eksik anahtar",
-      "last_value": "0 eksik (490 yaprak anahtar)",
-      "measured_at": "2026-10-27T18:24:00+03:00",
+      "last_value": "0 eksik (522 yaprak anahtar)",
+      "measured_at": "2026-10-27T19:17:00+03:00",
       "test": "tests/unit/i18n.test.ts"
     },
     {
@@ -777,6 +778,22 @@
       "last_value": "100.000 senaryoda 0 çakışma; düşen yazı varsayılanda 0/41.286, bütün aralıkta %1,03; gerçek genişlik 5,26–5,49 px/harf (tahmin 7); mutasyon 7/7 + E2E CHAR_W=5",
       "test": "tests/unit/chart-layout.test.ts, tests/e2e/panel.spec.ts",
       "measured_at": "2026-10-27T18:24:00+03:00"
+    },
+    {
+      "id": "M-26",
+      "claim": "Pasaport QR'ı okunur",
+      "threshold": "çözülen metin beklenen adres; SC ≥ 0,55 (ISO/IEC 15415 B); modül ≥ 4 px; sessiz bölge ≥ 4 modül; %7'lik kare lekede 0 okunamayan konum",
+      "last_value": "SC A 0,769, B 0,806, C 0,601; ekranda 5 genişlik × TR/EN 4,53 px/modül, SC 0,806; M düzeyi %8 lekede 54/54 (L %6'da yarısı okunmadı); mutasyon 4/4, E2E %30 soluk 4/4 düştü",
+      "measured_at": "2026-10-27T19:17:00+03:00",
+      "test": "tests/unit/qr.test.ts, tests/e2e/passport.spec.ts"
+    },
+    {
+      "id": "M-27",
+      "claim": "Açık pasaport sızdırmaz ve sahteyi yakalar",
+      "threshold": "0 sızıntı (not, kanıt, fiyat, alıcı adı, adı gizli zincirin hash ve sıra numarası); bozuk olayda brokenAt; tam yeniden yazım çapayla anchor_mismatch",
+      "last_value": "E2E 4/4 (tam paket 60/60); mutasyon 16/16; bulgu: adı gizli alıcı zincirinin ucu yayımlanıyordu, kaldırıldı",
+      "measured_at": "2026-10-27T19:17:00+03:00",
+      "test": "tests/integration/passport.test.ts, tests/unit/traceability/passport.test.ts, tests/e2e/passport.spec.ts"
     }
   ]
 }

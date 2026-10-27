@@ -46,6 +46,7 @@ Uzay finali (hikâyenin son bölümü): Deep Indigo `#051230` ve Dull Violet Bla
 | Durum renkleri ayrı | OKLCh ton farkı; OKLab ΔE; renk körlüğü benzetiminde ΔE | Ton ≥ 30°, ΔE ≥ 0,15, CVD ≥ 0,1. Ölçülen en düşük: ton 57,9° (warn~danger), ΔE 0,168 ve CVD 0,130 (ok~warn). Kategori eşiği 0,25 aranmaz: durum her zaman simge ve yazıyla gelir | aynı |
 | Grafik yazıları çakışmaz | Rastgele projeksiyonlarda kesin geometri; tarayıcıda gerçek yazı kutusu, noktalar, eşik çizgileri ve veri işareti | 0 çakışma; varsayılan eşiklerde 0 düşen etiket | `tests/unit/chart-layout.test.ts`, `tests/e2e/panel.spec.ts` (M-25) |
 | Renkler Wada'dan | Her rolün ve durumun hex'i sözlükte var | %100 | `tests/unit/design-tokens.test.ts` |
+| Pasaport QR'ı okunur | ISO/IEC 15415 sembol kontrastı (zemin ile modülün göreli parlaklık farkı); jsQR ile çözme; modül başına piksel. Koyu modül `text`, zemin `bg` | SC ≥ 0,55; modül ≥ 4 px. Ölçülen SC: A 0,769, B 0,806, C 0,601. Ekranda 0,806 ve 4,53 px | `tests/unit/qr.test.ts`, `tests/e2e/passport.spec.ts` (M-26) |
 | Harita noktası altlıkta seçilir | WCAG kontrastı, altlık örneklerine ve ekran pikseline karşı | Nokta ≥ 3; etiket ≥ 4,5 | `tests/unit/map.test.ts`, `tests/e2e/market.spec.ts` (M-22) |
 
 ## 4. Tipografi

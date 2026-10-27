@@ -622,7 +622,49 @@
       "massBalance": "Kütle dengesi",
       "input": "Girdi",
       "accounted": "Çıktı + fire + nem kaybı",
-      "timeline": "Olay geçmişi"
+      "timeline": "Olay geçmişi",
+      "passport": "Açık pasaportu gör"
+    }
+  },
+  "passport": {
+    "metaTitle": "Ürün pasaportu {code} · ReBoard",
+    "kicker": "Dijital ürün pasaportu",
+    "lead": "Bu sayfa girişsiz açılır. Panel lotunun hangi atık partilerinden ve hangi liflerden geldiğini, kayıtlarının değiştirilmediğini gösterir.",
+    "otherLocale": "English",
+    "producer": "Üretici",
+    "hiddenName": "Adı paylaşılmadı",
+    "composition": "Lif bileşimi",
+    "sources": "Kaynak partiler",
+    "sourcesHint": "Lota giren atık partileri, sağlayıcıları ve lota düşen payları.",
+    "timelineHint": "Bu lotun soy ağacına dokunan olaylar. Notlar ve kanıt belgeleri pasaportta gösterilmez.",
+    "roles": {
+      "producer": "Üretici",
+      "supplier": "Sağlayıcı",
+      "buyer": "Alıcı"
+    },
+    "verify": {
+      "title": "Doğrulama",
+      "ok": "Doğrulama geçti: {count} olay zinciri ilk olaydan yeniden hesaplandı.",
+      "broken": "Doğrulama geçmedi: en az bir olay zinciri bozuk.",
+      "how": "Doğrulama sayfa açıldığında bu sunucuda yapılır: her kurumun olay zinciri ilk olaydan başlayarak yeniden hesaplanır.",
+      "again": "Yeniden doğrula",
+      "busy": "Doğrulanıyor…",
+      "result": "{time}: {verdict}",
+      "failed": "Doğrulama ucuna ulaşılamadı.",
+      "json": "Sonucu JSON olarak gör",
+      "chainOk": "Zincir doğrulandı. Kurumun adı paylaşılmadığı için olay sayısı ve son hash yazılmaz."
+    },
+    "anchor": {
+      "missing": "Adreste etiket çapası yok; yalnızca zincirlerin kendi tutarlılığı denetlendi. Etiket çapası, lot üretildiği andaki zinciri bağlar ve QR'daki adreste bulunur.",
+      "invalid": "Adresteki etiket çapası okunamadı; yok sayıldı.",
+      "matched": "Etiket çapası eşleşti: lot üretildiğinden beri üretici zincirinin bu bölümü yeniden yazılmadı.",
+      "mismatch": "Etiket çapası eşleşmedi: ya üretici zinciri etiket basıldıktan sonra yeniden yazıldı ya da adresteki çapa bu lotun etiketinden gelmiyor.",
+      "unchecked": "Etiket çapası denetlenemedi: üretici zinciri daha önce kırılıyor."
+    },
+    "qr": {
+      "title": "QR kodu",
+      "hint": "QR, bu sayfanın adresini etiket çapasıyla birlikte taşır. Panel etiketine basılır.",
+      "label": "{code} pasaportunun QR kodu"
     }
   }
 }

@@ -43,6 +43,11 @@ export default async function LotPage({ params, searchParams }: PageProps<"/[loc
         <p role="note" className="max-w-prose rounded border border-fg/30 px-3 py-2 text-sm">
           {t("trace.lot.testNote")}
         </p>
+        {lot.isPublic && (
+          <Link href={`/pasaport/${lot.code}`} data-passport-link className="inline-flex min-h-11 items-center justify-self-start underline underline-offset-4">
+            {t("trace.lot.passport")}
+          </Link>
+        )}
         <dl className="grid gap-x-4 gap-y-1 text-sm sm:grid-cols-[max-content_1fr]">
           <dt className="font-semibold">{t("trace.lot.production")}</dt>
           <dd>{production.code}</dd>

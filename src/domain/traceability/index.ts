@@ -3,3 +3,4 @@ export * from "./chain";
 export * from "./mass-balance";
 export * from "./genealogy";
 export * from "./batches";
+export * from "./passport";

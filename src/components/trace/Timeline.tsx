@@ -28,7 +28,7 @@ export function Timeline({ events, locale }: { events: readonly ChainedEvent[]; 
             </p>
           )}
           {/* wrap-anywhere: notta 64 karakterlik SHA-256 durabilir; break-words ızgaranın en dar genişliğini küçültmez, sayfa 210 px taşıyordu (M-13). */}
-          {e.payload.note && <p className="text-sm wrap-anywhere">{e.payload.note}</p>}
+          {e.payload.note && <p data-note className="text-sm wrap-anywhere">{e.payload.note}</p>}
           <p className="font-mono text-xs break-all">
             #{e.seq} · {t("timeline.hash")} {short(e.hash)}
           </p>

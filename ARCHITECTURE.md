@@ -109,7 +109,7 @@ Alanların anlamları ve birimleri `docs/DATA_DICTIONARY.md` dosyasında.
   - SHA-256 `@noble/hashes` ile hesaplanır; aynı kod sunucuda ve tarayıcıda çalışır.
   - Zincir organizasyon başına tutulur: ilk olayın `seq` değeri 1, `prev_hash` değeri 64 sıfırdır (`GENESIS_HASH`).
 - `verifyChain(events, anchor?)` olayları sırayla denetler: sıra numarası, organizasyon, önceki hash ve hash'in yeniden hesaplanması. Bozulma varsa `{ok: false, brokenAt, reason}` döner; `reason` şunlardan biridir: `seq_gap`, `org_mismatch`, `prev_hash_mismatch`, `hash_mismatch`, `anchor_mismatch`.
-- **Bilinen sınır ve çapa:** Veritabanına tam erişimi olan biri bir olayı değiştirip ondan sonraki bütün hash'leri yeniden hesaplarsa, ya da sondan olay silerse zincir kendi içinde tutarlı kalır. Bunu yalnızca daha önce dışarıya verilmiş bir çapa (`{count, head}`) yakalar. Çapa pasaportta ve dışa aktarımda yayımlanacak (T2.4).
+- **Bilinen sınır ve çapa:** Veritabanına tam erişimi olan biri bir olayı değiştirip ondan sonraki bütün hash'leri yeniden hesaplarsa, ya da sondan olay silerse zincir kendi içinde tutarlı kalır. Bunu yalnızca daha önce dışarıya verilmiş bir çapa (`{count, head}`) yakalar. Lotun etiket çapası pasaportun QR adresinde yayımlanır (D-025); dışa aktarım Faz 5'tedir.
 - Yazma ve okuma `src/db/repo/custody.ts` üzerinden yapılır. `appendCustodyEvent` bir işlem içinde zincirin ucunu okur, sonraki olayı hesaplar ve ekler; `(org_id, seq)` çakışırsa 3 kez yeniden dener. `listCustodyEvents(db, orgId)` yalnızca o kurumun zincirini `seq` sırasıyla döndürür; ekranlar onu oturumdaki kurumla çağırır.
 - İzlenebilirlik yazımları `src/db/repo/trace.ts` içindedir; her biri tek işlemde kaydı ve zincir olayını birlikte yazar, biri düşerse ikisi de yazılmaz:
   - `receiveDelivery`: planlı teslimi kapatır, atık partisini yazar (`WB-yyyy-nnnn`), `receiving` ve ayıklama varsa `inspecting` olayı ekler.
@@ -121,7 +121,15 @@ Alanların anlamları ve birimleri `docs/DATA_DICTIONARY.md` dosyasında.
   - Satır düzeyindeki UPDATE ve DELETE işlemlerini bir tetikleyici her zaman reddeder. Organizasyon silinmesinden gelen cascade de reddedilir; zinciri olan organizasyon silinemez.
   - TRUNCATE yalnızca demo sıfırlamasında, aynı işlemde `SET LOCAL reboard.allow_reset = 'on'` ile çalışır.
   - `(org_id, seq)` benzersizdir; aynı sıra numarasıyla ikinci kayıt (zincir çatallanması) yazılamaz. Eşzamanlı yazımda repository yeniden dener.
-- Herkese açık doğrulama `/api/verify/[lot]` ucunda yapılacak (T2.4). Uç, lotun soy ağacındaki olay zincirlerini `verifyChain` ile baştan yeniden hesaplar.
+- **Açık pasaport** (D-025): `src/db/repo/passport.ts` içindeki `publicPassport(db, kod, çapa?)` iki adımda çalışır.
+  1. Yalnızca açık lotu bulur ve `lotGraph` ile lotun sahibinin gözüyle okur. İç lot sayfası (`lotGenealogy`) da aynı grafiği kullanır, bu yüzden iki sayfadaki sayılar aynıdır.
+  2. Soy ağacındaki kodlara (lot, üretim partisi, atık partileri) dokunan zincirleri `payload` jsonb içerme sorgusuyla bulur. Her zinciri `verifyChain` ile ilk olaydan başlayarak yeniden hesaplar; üretici zincirini istenirse etiket çapasıyla da denetler.
+  - Dışarı çıkan alanları `src/domain/traceability/passport.ts` seçer:
+    - `publicEvent`: not ve kanıt çıkarılır, yalnızca soy ağacı nesneleri kalır.
+    - `publicVerdict`: adı gizli zincirde olay sayısı ve uç yazılmaz.
+    - Ayrıca `chainRole`, `lotAnchor`, `anchorStatus` ve `fibreRows`.
+  - `/[locale]/pasaport/[lot]` sayfası sunucuda çizilir. QR, `src/components/passport/qr.ts` içindeki `qrPath` ile tek bir SVG yoluna çevrilir. `VerifyButton` aynı ucu tarayıcıdan yeniden çağırır.
+  - `/api/verify/[lot]?a=<çapa>` ucu üç yanıt verir: 200 ve hüküm; okunamayan çapada 400; lot yoksa ya da açık değilse 404.
 - Kütle dengesi (`massBalance`): `|Σ girdi − çıktı − fire − nem kaybı| ÷ Σ girdi ≤ %2`. Tolerans aşılırsa açıklama zorunludur (`balanceNoteMissing`). Değerlerden biri bilinmiyorsa ya da girdi 0 ise denge iddia edilmez (`withinTolerance: null`). Negatif kg reddedilir.
 - Soy ağacı (`genealogy(lotId)`): panel lotundan üretim partisine, oradan atık partilerine iner. Lotun payı, partide tek lot varsa 1, yoksa alan oranıdır; herhangi bir lotun alanı bilinmiyorsa pay da bilinmez. Sonuç; lotun tekstil kg'ını, bunun doğrulanmış kısmını, sağlayıcıya ve life göre dağılımını ve en zayıf sonuç sınıfını verir. Lot sayfasında iç içe liste olarak gösterilir (D-023).
 

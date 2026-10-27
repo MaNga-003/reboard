@@ -570,18 +570,24 @@ export type LotView = {
   chain: ChainVerdict;
 };
 
-/** Lottan geriye: üretim partisi, tahsis edilen atık partileri ve sağlayıcılar. Yalnızca lotun sahibi için. */
-export async function lotGenealogy(db: Db, orgId: string, lotId: string): Promise<LotView | null> {
-  const tenant = withTenant(db, orgId);
-  const lot = await tenant.get("panelLots", lotId);
-  if (!lot || lot.orgId !== orgId) return null;
+export type LotGraph = {
+  production: TenantRow<"productionBatches">;
+  wastes: WasteBatch[];
+  orgs: TenantRow<"organizations">[];
+  genealogy: Genealogy;
+  /** Lotun soy ağacındaki nesne kodları: lot, üretim partisi ve atık partileri. Olay geçmişi bunlara dokunanlardır. */
+  refs: Set<string>;
+};
+
+/** Lottan geriye soy ağacı, lot sahibinin gözüyle. İç lot sayfası ve açık pasaport aynı grafiği kullanır. */
+export async function lotGraph(db: Db, lot: TenantRow<"panelLots">): Promise<LotGraph | null> {
+  const tenant = withTenant(db, lot.orgId);
   const production = await tenant.get("productionBatches", lot.productionBatchId);
   if (!production) return null;
-  const [siblings, allocations, orgs, events] = await Promise.all([
+  const [siblings, allocations, orgs] = await Promise.all([
     tenant.list("panelLots", { where: eq(panelLots.productionBatchId, production.id) }),
     tenant.list("batchInputs", { where: eq(batchInputs.productionBatchId, production.id) }),
     tenant.list("organizations"),
-    listCustodyEvents(db, orgId),
   ]);
   const wastes = allocations.length
     ? await tenant.list("wasteBatches", {
@@ -592,14 +598,23 @@ export async function lotGenealogy(db: Db, orgId: string, lotId: string): Promis
         orderBy: [asc(wasteBatches.receivedAt)],
       })
     : [];
-  const names = new Map(orgs.map((o) => [o.id, o.name]));
   const g = genealogy(lot.id, {
     lots: siblings.map((l) => ({ id: l.id, code: l.code, productionBatchId: l.productionBatchId, areaM2: l.areaM2, resultClass: l.resultClass })),
     productions: [production],
     allocations,
     wastes: wastes.map((w) => ({ id: w.id, code: w.code, supplierOrgId: w.supplierOrgId, composition: w.composition, verified: w.verified, resultClass: w.resultClass })),
   });
-  const refs = new Set([lot.code, production.code, ...wastes.map((w) => w.code)]);
+  return { production, wastes, orgs, genealogy: g, refs: new Set([lot.code, production.code, ...wastes.map((w) => w.code)]) };
+}
+
+/** Lottan geriye: üretim partisi, tahsis edilen atık partileri ve sağlayıcılar. Yalnızca lotun sahibi için. */
+export async function lotGenealogy(db: Db, orgId: string, lotId: string): Promise<LotView | null> {
+  const lot = await withTenant(db, orgId).get("panelLots", lotId);
+  if (!lot || lot.orgId !== orgId) return null;
+  const [graph, events] = await Promise.all([lotGraph(db, lot), listCustodyEvents(db, orgId)]);
+  if (!graph) return null;
+  const { genealogy: g, production, wastes, refs } = graph;
+  const names = new Map(graph.orgs.map((o) => [o.id, o.name]));
   return {
     genealogy: g,
     lot,

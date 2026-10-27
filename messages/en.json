@@ -622,7 +622,49 @@
       "massBalance": "Mass balance",
       "input": "Input",
       "accounted": "Output + scrap + moisture loss",
-      "timeline": "Event history"
+      "timeline": "Event history",
+      "passport": "View the public passport"
+    }
+  },
+  "passport": {
+    "metaTitle": "Product passport {code} · ReBoard",
+    "kicker": "Digital product passport",
+    "lead": "This page opens without signing in. It shows which waste batches and fibres the panel lot came from, and that its records have not been altered.",
+    "otherLocale": "Türkçe",
+    "producer": "Producer",
+    "hiddenName": "Name not shared",
+    "composition": "Fibre composition",
+    "sources": "Source batches",
+    "sourcesHint": "Waste batches that went into the lot, their suppliers and the share that fell to this lot.",
+    "timelineHint": "Events that touch this lot's genealogy. Notes and evidence documents are not shown in the passport.",
+    "roles": {
+      "producer": "Producer",
+      "supplier": "Supplier",
+      "buyer": "Buyer"
+    },
+    "verify": {
+      "title": "Verification",
+      "ok": "Verification passed: {count, plural, one {# event chain was} other {# event chains were}} recomputed from the first event.",
+      "broken": "Verification failed: at least one event chain is broken.",
+      "how": "Verification runs on this server when the page opens: each organisation's event chain is recomputed starting from its first event.",
+      "again": "Verify again",
+      "busy": "Verifying…",
+      "result": "{time}: {verdict}",
+      "failed": "Could not reach the verification endpoint.",
+      "json": "See the result as JSON",
+      "chainOk": "Chain verified. Its event count and last hash are not shown because the organisation's name is not shared."
+    },
+    "anchor": {
+      "missing": "The address has no label anchor; only each chain's internal consistency was checked. The label anchor pins the chain as it was when the lot was made and is part of the QR address.",
+      "invalid": "The label anchor in the address could not be read and was ignored.",
+      "matched": "Label anchor matched: this part of the producer chain has not been rewritten since the lot was made.",
+      "mismatch": "Label anchor did not match: either the producer chain was rewritten after the label was printed, or the anchor in the address does not come from this lot's label.",
+      "unchecked": "The label anchor could not be checked: the producer chain breaks earlier."
+    },
+    "qr": {
+      "title": "QR code",
+      "hint": "The QR carries this page's address together with the label anchor. It is printed on the panel label.",
+      "label": "QR code for passport {code}"
     }
   }
 }

@@ -31,3 +31,7 @@ export const fmtShortDate = (v: Date, locale: string) => new Intl.DateTimeFormat
 /** İşaretli pay (oran × 100): "+%2,5", "−%1"; sıfır işaretsiz. */
 export const fmtSignedPercent = (share: number, locale: string, maxFraction = 1) =>
   new Intl.NumberFormat(tag(locale), { style: "percent", maximumFractionDigits: maxFraction, signDisplay: "exceptZero" }).format(share / 100);
+
+/** Saat, saniyesiyle: art arda iki doğrulamanın zamanı ayırt edilsin. */
+export const fmtTime = (v: Date | string, locale: string) =>
+  new Intl.DateTimeFormat(tag(locale), { timeStyle: "medium", timeZone: ZONE }).format(new Date(v));

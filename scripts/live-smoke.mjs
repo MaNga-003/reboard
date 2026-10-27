@@ -1,4 +1,4 @@
-// Canlı yayının hızlı denetimi: yönlendirme, iki dil, kimlik ucu, giriş akışı, pazar yeri, izlenebilirlik, panel, fonksiyon bölgesi ve güvenlik başlıkları.
+// Canlı yayının hızlı denetimi: yönlendirme, iki dil, kimlik ucu, giriş akışı, pazar yeri, izlenebilirlik, panel, pasaport, fonksiyon bölgesi ve güvenlik başlıkları.
 // Yalnızca okur; canlı veritabanına yazmaz.
 // Türk Telekom "Güvenli İnternet" *.vercel.app'i yönlendirdiği için GitHub Actions'ta çalışır (live-smoke.yml).
 // Kullanım: node scripts/live-smoke.mjs [https://adres]
@@ -91,6 +91,31 @@ if (process.env.DEMO_PASSWORD) {
     "girişli /tr/panel üretici: 8 gösterge, hepsi Sentetik, gün sayısı",
     `${prodPanel.status} · ${kpis} gösterge · ${[...classes].join(",")}`,
   );
+
+  // Pasaport (T2.4, D-025): lot kodu üreticinin listesinden; sayfa ve doğrulama ucu çerezsiz açılır.
+  const prodTrace = await (await fetch(base + "/tr/izlenebilirlik", { redirect: "manual", headers: { cookie: prodCookie, "user-agent": "reboard-live-smoke" } })).text();
+  const lot = [...new Set([...prodTrace.matchAll(/>(PL-\d{4}-\d{3,9})</g)].map((m) => m[1]))].sort()[0];
+  check(Boolean(lot), "üretici listesinde lot kodu", lot);
+  if (lot) {
+    const passport = await get(`/tr/pasaport/${lot}`);
+    const passportHtml = await passport.text();
+    const qr = passportHtml.match(/data-qr="([^"]+)"/)?.[1].replaceAll("&amp;", "&") ?? "";
+    check(
+      passport.status === 200 && passportHtml.includes('data-passport="ok"') && qr.startsWith(`${base}/tr/pasaport/${lot}?a=`),
+      "çerezsiz /tr/pasaport: zincirler sağlam, QR canlı adresi ve çapayı taşır",
+      `${passport.status} · ${qr.slice(base.length, base.length + 40)}…`,
+    );
+    const verify = await get(`/api/verify/${lot}`);
+    const v = await verify.json();
+    check(
+      verify.status === 200 && v.ok === true && verify.headers.get("cache-control") === "no-store" && verify.headers.get("access-control-allow-origin") === "*",
+      "çerezsiz /api/verify: ok, no-store, CORS",
+      `${verify.status} · ${v.chains?.map((c) => `${c.role}:${c.ok}`).join(",")}`,
+    );
+    const anchored = await (await get(`/api/verify/${lot}?a=${v.anchor}`)).json();
+    check(anchored.ok === true && anchored.anchorChecked === true && `${base}/tr/pasaport/${lot}?a=${v.anchor}` === qr, "etiket çapası eşleşir ve QR'dakiyle aynı", v.anchor?.slice(0, 16));
+    check((await get("/api/verify/PL-1999-999")).status === 404, "bilinmeyen lot 404");
+  }
   await post("/api/auth/sign-out", {}, prodCookie);
 } else {
   console.log("atlandı · demo girişi (DEMO_PASSWORD yok)");

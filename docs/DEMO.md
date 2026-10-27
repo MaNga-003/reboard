@@ -11,7 +11,7 @@
 | Demo parolası | Ortam değişkeni `DEMO_PASSWORD`. Depoda yazmaz; ekibe ayrı iletilir |
 | Yedek 1: internetsiz | `pnpm demo:offline` → `http://localhost:3000` (PGlite ve seed) |
 | Yedek 2: video | `.private/demo/reboard-demo.mp4` (T4.2) |
-| QR | Pasaport sayfasının QR'ı sunuma eklenir (T4.3) |
+| QR | Pasaport sayfasındaki QR, adresi etiket çapasıyla (`?a=`) taşır. Seed yeniden yüklenince çapa değişir; sunuma ve etikete konacak QR son yüklemeden sonra canlı sayfadan alınır (D-025, T4.3) |
 
 ## 2. Akış
 
@@ -22,7 +22,7 @@
 | 3 | 1:10–1:35 | `/pazar` (Üretici: ReBoard) | Eşleşme skoru, kuş uçuşu mesafe; teklif; sağlayıcı kabul eder; teslim planı | "Kabul edilen teklif tedarik takvimine giriyor." |
 | 4 | 1:35–2:05 | `/izlenebilirlik` | Parti kabulü: beyan ve tartım farkı, kanıt yükleme; üretim partisi ve kütle dengesi; soy ağacı | "Her kilogram kantar fişine ve bir sonraki adıma bağlı." |
 | 5 | 2:05–2:30 | `/panel` | Doğrulanmış ve beyan edilen kg; kaç günlük hammadde kaldığı; uyarı | "Stok 7 günün altına inmeden uyarıyor." |
-| 6 | 2:30–2:50 | `/pasaport/[lot]` (telefondan QR ile) | Kaynak bileşimi, "test edilmedi" etiketi, hash doğrulaması: geçti | "Alıcı panelin nereden geldiğini kendisi doğruluyor." |
+| 6 | 2:30–2:50 | `/pasaport/[lot]` (telefondan QR ile) | Kaynak bileşimi, "test edilmedi" etiketi, zincir doğrulaması ve etiket çapası: geçti | "Alıcı panelin nereden geldiğini hesap açmadan görüyor; kayıt sonradan değişirse doğrulama düşüyor." |
 | 7 | 2:50–3:00 | `/senaryo` | Fabrika kazancı, fiyat koridoru, sonuç sınıfı rozetleri | "Rakamlar sentetik; pilotla gerçekleşene dönecek." |
 
 ## 3. Demo rolleri

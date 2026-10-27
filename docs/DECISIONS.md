@@ -103,7 +103,7 @@ Biçim: **Karar**, **Neden**, **Tarih**, kararı kim verdi (K: kullanıcı, C: C
 ### D-016 — Kiracı izolasyonu
 - **Karar:**
   - Kurum verisine erişim tek bir repository katmanından geçer: `withTenant(db, orgId)` (`src/db/repo/tenant.ts`). Görünürlük kuralı her sorguya eklenir; çağıranın koşulu onu gevşetemez.
-  - Paylaşılanlar bilinçli olarak sınırlıdır: açık ilanlar, herkese açık kurum profilleri ve panel lotları, taraf olunan teklif, anlaşma ve teslimler, taraf olunan anlaşmanın ilanı (kapanmış olsa da), sağlayıcının teslim ettiği partinin tartım sonucu, kurumdan bağımsız kaynaklı değerler. Geri kalan her şey yalnızca sahibine açıktır.
+  - Paylaşılanlar bilinçli olarak sınırlıdır: açık ilanlar, herkese açık kurum profilleri ve panel lotları, taraf olunan teklif, anlaşma ve teslimler, taraf olunan anlaşmanın ilanı (kapanmış olsa da), sağlayıcının teslim ettiği partinin tartım sonucu, kurumdan bağımsız kaynaklı değerler. Açık pasaport ayrıca herkese açık lotun soy ağacına dokunan zincirlerin hükmünü ve süzülmüş olaylarını yayımlar (D-025). Geri kalan her şey yalnızca sahibine açıktır.
   - Tek seferlik ilan kabulde kapanır; alıcı teslim alırken ilanın başlığını ve lif bileşimini okumak zorundadır. Bu yüzden anlaşmanın iki tarafı ilanı görmeye devam eder; başka kurum kapanan ilanı görmez.
   - Yazma hakkı görmekten dardır: yalnızca sahibi yazar. Yok ile yetkisiz aynı hatayı verir.
   - Çapraz kiracı erişimi otomatik testle ölçülür (M-4). Postgres RLS Faz 5'te ikinci savunma hattı olarak eklenecek.
@@ -135,6 +135,30 @@ Biçim: **Karar**, **Neden**, **Tarih**, kararı kim verdi (K: kullanıcı, C: C
 - **Karar:** Depo herkese açıktır ama kod açık kaynak lisansıyla yayımlanmaz. `LICENSE` dosyası "tüm hakları saklıdır" der. Üçüncü taraf bileşenler (Wada renk verisi, MIT) kendi lisanslarıyla kalır.
 - **Neden:** Yarışmadan sonra şirketleşme seçeneği açık kalır. Sonradan açık lisansa geçmek kolaydır; yayımlanmış bir sürümü geri kapatmak mümkün değildir.
 - **Tarih:** 2026-10-27 · K
+
+### D-025 — Açık ürün pasaportu: süzülmüş görünüm, etiket çapası ve doğrulama ucu
+- **Karar:**
+  - `/pasaport/[lot]` sayfası ve `/api/verify/[lot]` ucu girişsiz açılır. Yalnızca `is_public` lotlar açılır. Biçimi `PL-yyyy-nnn` olmayan kod veritabanına gitmeden 404 olur.
+  - Pasaport lotu, lotun sahibinin gözüyle okur (`withTenant(lot sahibi)`, `lotGraph`). Dışarı çıkan alanları alan katmanı seçer (`src/domain/traceability/passport.ts`). Şunlar çıkmaz: not, kanıt kimliği ve dosyası, fiyat, soy ağacı dışındaki nesneler (ör. kardeş lot).
+  - Soy ağacına dokunan her kurumun zinciri (üretici, sağlayıcılar, alıcılar) ilk olaydan başlayarak `verifyChain` ile yeniden hesaplanır. Bunun için başka kurumların olayları okunur, ama dışarı yalnızca hüküm ve süzülmüş olaylar çıkar.
+  - Kurum adı yalnızca profili açıksa yazılır. Alıcının adı hiç yazılmaz. Adı yazılmayan zincirin olay sayısı ve son hash'i yazılmaz; olaylarının sıra numarası ve hash'i de yazılmaz. Kırılma varsa yeri her zaman yazılır.
+  - Etiket çapası `<sıra>-<hash>` biçimindedir: lotu ilk kez çıktı olarak yazan üretici olayının sırası ve hash'i. QR, sayfa adresini `?a=` çapasıyla taşır.
+    - Çapa verilirse üretici zinciri ona göre de denetlenir.
+    - Çapa uymazsa pasaport "doğrulama geçmedi" der ve iki olasılığı yazar: zincir yeniden yazıldı ya da çapa bu lotun etiketinden gelmiyor.
+    - Okunamayan çapa sayfada yok sayılır; uçta 400 döner.
+  - Uç çerez okumaz. Yanıt `no-store` ve `Access-Control-Allow-Origin: *` başlıklarını taşır.
+  - QR sunucuda SVG olarak çizilir: `qrcode` paketi, M düzeyi hata düzeltme, 4 modül sessiz bölge.
+    - Koyu modül metin rengindedir, zemin sayfa zeminidir.
+    - Yüksek kontrast modunda renk değişmez.
+    - Adresin sunucu kısmı istekten (`x-forwarded-host`) alınır.
+- **Neden:**
+  - Alıcı ve jüri lotun kökenini hesap açmadan görmeli. Öte yandan sağlayıcının fiyatı, notları ve lotu kimin aldığı ticari bilgidir (D-016).
+  - Sunucunun hükmü yalnızca kayıtların kendi içinde tutarlı olduğunu gösterir. Veritabanına tam erişimi olan biri geçmişi baştan yazarsa zincir yine tutarlı görünür; bunu ancak önceden dışarı verilmiş bir çapa yakalar (ARCHITECTURE §4). Etikete basılan çapa bu dış kayıttır.
+  - Doğrulama yine bizim sunucumuzda çalışır. Bağımsız yeniden hesaplama için olayların tamamı ve imzalı bir çapa gerekir (EPCIS JSON-LD dışa aktarımı, Faz 5).
+  - Adı gizli bir zincirin ucu iki pasaportta aynı görünürse iki lotu aynı alıcıya bağlar. Olay sayısı da kurumun iş hacmini sezdirir.
+  - M düzeyi, kare bir lekede sembolün %8'i silinse de her konumda okundu; L düzeyinde %6'da konumların yarısı okunmadı (M-26).
+  - Seed yeniden yüklenince olay zamanları ve hash'ler değişir. Bu yüzden basılı QR son yüklemeden sonra üretilmelidir (`docs/DEMO.md`).
+- **Tarih:** 2026-10-27 · C
 
 ### D-024 — Tedarik paneli: üretime hazır stok, eşikler ve uyarılar
 - **Karar:**

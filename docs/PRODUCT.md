@@ -58,14 +58,18 @@ sequenceDiagram
 3. **Üretim partisi:** Birden çok atık partisi kütleyle bir üretim partisine tahsis edilir. Kütle dengesi denetlenir.
 4. **Panel lotu:** Üretim partisinden m², yoğunluk ve test durumuyla panel lotu çıkar.
 5. **Gözetim zinciri:** Her adım bir EPCIS olayı olarak hash zincirine eklenir.
-6. **Pasaport:** Her panel lotunun açık bir sayfası ve QR kodu olur.
+6. **Pasaport:** Her açık panel lotunun girişsiz bir sayfası ve QR kodu olur (D-025).
+   - Sayfa şunları gösterir: kaynak partiler, lif bileşimi, kütle dengesi, test durumu ve olay zincirlerinin doğrulaması.
+   - Şunlar gösterilmez: notlar, kanıtlar, fiyat ve alıcının adı.
+   - QR, etiket çapasını taşır. Zincir sonradan yeniden yazılırsa çapa uymaz.
 
 - Ekranlar:
   - `/izlenebilirlik`: teslim alınacaklar, teslim alınan partiler, sağlayıcı olarak teslim edilenler, üretim partileri ve zincir durumu.
   - `/izlenebilirlik/kabul/[teslim]`: beyan edilen kg ve lif bileşimi ilandan gelir; tartılan kg, ayıklanan kg, nem ve ipek girilir.
   - `/izlenebilirlik/parti/[id]`: beyan ile tartım farkı, kabul edilen ve kalan kg, kanıtlar (SHA-256, indirme, kontrol), tahsisler ve olay geçmişi.
   - `/izlenebilirlik/uretim/yeni`: yalnızca doğrulanmış ve kalanı olan partiler listelenir; tahsis, çıktı, fire, nem kaybı, bağlayıcı ve isteğe bağlı panel lotu girilir.
-  - `/izlenebilirlik/lot/[id]`: soy ağacı (iç içe liste, D-023), lif ve sağlayıcı dağılımı, kütle dengesi, test durumu ("test edilmedi") ve olay geçmişi.
+  - `/izlenebilirlik/lot/[id]`: soy ağacı (iç içe liste, D-023), lif ve sağlayıcı dağılımı, kütle dengesi, test durumu ("test edilmedi") ve olay geçmişi. Lot açıksa "Açık pasaportu gör" bağlantısı vardır.
+  - `/pasaport/[lot]` (girişsiz): açık pasaport. Yeniden doğrulama düğmesi ve QR'ı vardır. `/api/verify/[lot]` aynı doğrulamayı JSON olarak verir.
 - Parti, kantar fişi ya da tartım kanıtı "belgeli" olunca doğrulanır (D-013). Ana etki sayısı bu doğrulanmış kg'dır.
 - Ayıklanan kg tartılan kg'ı aşamaz. Kütle dengesi %2'yi aşarsa açıklama zorunludur. Bilinmeyen değer 0 sayılmaz, "bilinmiyor" yazar.
 - Kural hatası formu silmez: uyarı çıkar, girilen değerler yerinde kalır.

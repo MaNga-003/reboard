@@ -93,6 +93,22 @@ Bir hesabın sınıfı, girdilerinin **en zayıf** sınıfıdır. Sıralama en z
 
 **Lotun payı:** Üretim partisinden tek lot çıktıysa 1, birden çok lot çıktıysa `lotun area_m2 ÷ partinin bütün lotlarının area_m2 toplamı`. Bir lotun alanı bilinmiyorsa pay ve ondan türeyen bütün kg değerleri bilinmiyor olur.
 
+**Etiket çapası** (`a`, D-025): `<sıra>-<hash>` biçimindedir; `hash` 64 hex karakterdir. Lotu ilk kez çıktı olarak yazan üretici olayının `seq` ve `hash` değerini taşır. Pasaport adresinde ve QR'da bulunur.
+
+**Doğrulama ucu** `GET /api/verify/{lot}?a={çapa}`:
+
+| Alan | Anlam |
+| --- | --- |
+| `lot` | Lot kodu |
+| `ok` | Bütün zincirler sağlam; çapa verildiyse o da eşleşti |
+| `checkedAt` | Doğrulama zamanı (ISO 8601, UTC) |
+| `resultClass` | Lotun en zayıf sonuç sınıfı |
+| `anchor` | Bugünkü zincirden hesaplanan etiket çapası; bilinmiyorsa `null` |
+| `anchorChecked` | İstekteki çapa üretici zincirinde denetlendi mi |
+| `chains[]` | `{role, name, ok, count?, head?, brokenAt?, reason?}`. `role` değerleri: `producer`, `supplier`, `buyer`. Adı paylaşılmayan zincirde `name` `null` olur; `count` ve `head` yazılmaz |
+
+Hata yanıtları: okunamayan çapada 400 `{error: "anchor_invalid"}`; lot yoksa ya da açık değilse 404 `{error: "not_found"}`.
+
 ## 5. Etki ve tedarik
 
 | Metrik | TR | Tanım |
