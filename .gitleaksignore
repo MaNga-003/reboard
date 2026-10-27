@@ -1,3 +1,5 @@
 # gitleaks yanlış pozitifleri. Yalnızca incelenmiş ve gizli bilgi olmadığı doğrulanmış bulgular buraya girer.
-# generic-api-key: reference_values satırındaki key alanı ("electricity_tl_kwh_2026h1"), bir referans değerin adıdır.
+# Seed'deki elektrik fiyatı referansının adı, genel API anahtarı kuralına takıldı (gizli bilgi değil).
 b978d715ff7041eea9d586c1dec169b6851a1f6f:src/db/seed/demo.ts:generic-api-key:243
+# Aynı adı alıntılayan doğrulama belgesi satırı.
+8d29f777ec7c69e8222b0e29db9d76035eaa2490:docs/VERIFICATION.md:generic-api-key:28
