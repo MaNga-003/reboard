@@ -1,7 +1,7 @@
 {
   "$schema": "./docs/state.schema.json",
   "project": "ReBoard SaaS platformu",
-  "updated_at": "2026-10-28T01:52:00+03:00",
+  "updated_at": "2026-10-28T02:25:02+03:00",
   "current_phase": "F2",
   "deadlines": {
     "demo_freeze": "2026-10-29T18:00:00+03:00",
@@ -327,7 +327,7 @@
       "id": "T3.2",
       "phase": "F3",
       "mode": "otonom",
-      "status": "yapılacak",
+      "status": "sürüyor",
       "title": "Storyboard ve STORY.md",
       "acceptance": "8 bölüm, ölçek, süre, metin ve palet tanımlı",
       "evidence": null,
@@ -340,7 +340,7 @@
       "id": "T3.3",
       "phase": "F3",
       "mode": "otonom",
-      "status": "yapılacak",
+      "status": "sürüyor",
       "title": "Blender sahne kodu ve animatik render",
       "acceptance": "Tek komutla 16:9 ve 9:16 animatik kareler üretilir; oynatıcıda baştan sona oynar",
       "evidence": null,
@@ -349,7 +349,8 @@
       ],
       "decisions": [
         "D-004"
-      ]
+      ],
+      "note": "Fotogerçekçi yöne geçildi (D-004, Cycles). Yazıldı: story/blender/lib.py (Cycles kurulumu, ışık, kamera, malzeme kitaplığı), textile.py (lif düzeyinde 2/1 dimi denim: 12.644 eğri, 3,85 M nokta), s1_fibre.py (1. bölüm), build.py. İlk önizleme: 0, 15 ve 29. kareler, %50 çözünürlük, 64 örnek, kare başına 5–6 s (RTX 3050). Önizleme henüz incelenmedi. Sıradaki: önizlemeyi incele, pozlama ve ışığı ölçerek ayarla, sonra 2–8. bölümler, story:render ve story:encode betikleri."
     },
     {
       "id": "T3.4",
@@ -563,7 +564,7 @@
     {
       "id": "Q-3",
       "owner": "ekip",
-      "question": "Sunumdaki düzeltmeler (öneriler .private/kaynak-dogrulama.md, 3. ve 8. bölüm) ekipçe uygulanacak mı? Yanıtlananlar (28.10): yazılım iddiaları 'planlanan' diye yazılacak; PET/CoPET için SDS yok, 'formaldehit içermez' yalnız pMDI için yazılabilir. Açık kalanlar: (1) Türkiye için '1,5 milyon ton' yazan bir kuruluş belgesi bulunamadı; EEA kişi başı atık oranıyla izdüşüm ~1,36 Mt veriyor. Belge iletilmezse Eurostat'ın 2022 sayısı (361.500 t) kullanılsın mı? '%85' için de kaynak yok. (2) YOMSAD/OGM belgesi iletilmedi; '8 milyon m³' yerine 'yaklaşık 8,6 milyon m³ tüketim (FAOSTAT 2024, görünür tüketim)' yazılsın mı? (3) Biyobazlı aday olarak PLA bikomponent elyaf testlere eklensin mi? (yanıt bekleniyor)",
+      "question": "Sunumdaki düzeltmeler (öneriler .private/kaynak-dogrulama.md, 3. ve 8. bölüm) ekipçe uygulanacak mı? Yanıtlananlar (28.10): yazılım iddiaları 'planlanan' diye yazılacak; PET/CoPET için SDS yok, 'formaldehit içermez' yalnız pMDI için yazılabilir; '8 milyon m³' yerine 'yaklaşık 8,6 milyon m³ tüketim (FAOSTAT 2024)' yazılacak. Demodan sonra netleşecek (kullanıcı kararı, 28.10): (1) Türkiye için '1,5 milyon ton' yazan bir kuruluş belgesi bulunamadı; EEA kişi başı atık oranıyla izdüşüm ~1,36 Mt veriyor. Belge iletilmezse Eurostat'ın 2022 sayısı (361.500 t) kullanılsın mı? '%85' için de kaynak yok. (2) Biyobazlı aday olarak PLA bikomponent elyaf testlere eklensin mi?",
       "blocks": [
         "T4.5"
       ]

@@ -37,7 +37,10 @@ flowchart LR
   M --> P[FrameSequencePlayer<br/>canvas]
 ```
 
-1. `pnpm story:render` Blender 4.5 LTS'yi arka planda (`-b`) çalıştırır. Sahne tamamen kodla kurulur, el ile düzenlenmiş `.blend` dosyası yoktur. Motor Eevee'dir.
+1. `pnpm story:render` Blender 4.5 LTS'yi arka planda (`-b`) çalıştırır (`story/blender/build.py -- --aspect d|m --quality preview|animatic|final --sections 1-8 [--frames 0,15,29]`). Sahne tamamen kodla kurulur, el ile düzenlenmiş `.blend` dosyası yoktur. Motor Cycles'tır (GPU OptiX, OIDN, AgX); gürültü tohumu sabittir, böylece ileri geri scroll'da titreşim olmaz.
+   - `lib.py`: ortak kurulum, ışık, kamera ve malzeme kitaplığı (renkler Wada'dan).
+   - `textile.py`: lif düzeyinde 2/1 dimi denim; 1. ve 2. bölüm aynı şeridi kullanır.
+   - `s1_fibre.py` … `s8_*.py`: bölüm sahneleri (1 birim = 1 mm ya da 1 m, bölüme göre).
 2. Dünya dokusu NASA Blue Marble'dan gelir (kamu malı).
 3. Render 16:9 için 1920×1080, 9:16 için 1080×1920 olarak alınır. Animatik için yarı çözünürlük ve düşük örnekleme kullanılır.
 4. `pnpm story:encode` PNG'leri AVIF'e (WebP yedeğiyle) çevirir ve `manifest.json` üretir.

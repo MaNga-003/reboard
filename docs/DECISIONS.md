@@ -27,9 +27,9 @@ Biçim: **Karar**, **Neden**, **Tarih**, kararı kim verdi (K: kullanıcı, C: C
 - **Tarih:** 2026-10-27 · K
 
 ### D-004 — Hikâye: Apple tarzı kare dizisi, Blender ile otonom render
-- **Karar:** Ana sayfadaki scroll hikâyesi, yapışkan bir canvas üzerinde scroll ile oynatılan bir kare dizisidir. Kareler Blender 4.5 LTS'de Python (bpy) ile kodla üretilen sahnelerden Eevee ile render edilir. Masaüstü (16:9) ve mobil (9:16) için ayrı render alınır.
-- **Neden:** Kullanıcı fotogerçekçi ve sinematik bir akış istedi. Blender'da sahne kodla üretildiği için otonom çalışılabiliyor, sonuç tekrar üretilebiliyor ve palet birebir tutuyor.
-- **Tarih:** 2026-10-27 · K
+- **Karar:** Ana sayfadaki scroll hikâyesi, yapışkan bir canvas üzerinde scroll ile oynatılan bir kare dizisidir. Kareler Blender 4.5 LTS'de Python (bpy) ile kodla üretilen sahnelerden **Cycles** ile (GPU, OptiX, OIDN gürültü giderme, AgX) fotogerçekçi olarak render edilir. Malzemeler gerçek ölçekte modellenir; ör. 1. bölümde her iplik tek tek liflerden bükülür. Masaüstü (16:9) ve mobil (9:16) için ayrı render alınır. Kaliteden ödün verilmez; süre kullanıcının denetimindedir.
+- **Neden:** Kullanıcı fotogerçekçi ve sinematik bir akış istedi; stilize Eevee görünümü bunu karşılamıyordu (28.10). Blender'da sahne kodla üretildiği için otonom çalışılabiliyor, sonuç tekrar üretilebiliyor ve malzeme renkleri Wada sözlüğünden geliyor.
+- **Tarih:** 2026-10-28 · K
 
 ### D-005 — Dil: Türkçe (varsayılan) ve İngilizce
 - **Karar:** Çeviri next-intl ile yapılır. Varsayılan `tr`, ikinci dil `en`. Bileşenlerde sabit metin bulunmaz.
