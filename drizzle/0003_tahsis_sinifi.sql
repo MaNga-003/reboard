@@ -1,0 +1,2 @@
+ALTER TABLE "batch_inputs" ADD COLUMN "result_class" "result_class" NOT NULL;--> statement-breakpoint
+ALTER TABLE "batch_inputs" ADD COLUMN "created_at" timestamp with time zone DEFAULT now() NOT NULL;

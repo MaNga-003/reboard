@@ -52,6 +52,8 @@ export const batchInputs = pgTable(
       .notNull()
       .references(() => wasteBatches.id),
     allocatedKg: kg("allocated_kg").notNull(),
+    // Her sayı sınıfını taşır (D-011); tahsis miktarı partiden ayrı ölçülebilir.
+    ...classified(),
   },
   (t) => [primaryKey({ columns: [t.productionBatchId, t.wasteBatchId] })],
 );

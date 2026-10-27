@@ -13,7 +13,7 @@
 | Dönem | `period`: `YYYY-MM` ya da `YYYY-MM-DD/YYYY-MM-DD`. Farklı dönemdeki değerler aynı hesapta birleşmez |
 | Zaman | `timestamptz`, ISO 8601 |
 | Konum | İlçe adı ya da yaklaşık 1 km'ye yuvarlanmış enlem ve boylam. Açık adres tutulmaz |
-| Mesafe | Yalnızca kuş uçuşu hesaplanır ve "kuş uçuşu" etiketiyle gösterilir |
+| Mesafe | Yalnızca kuş uçuşu hesaplanır (`src/domain/geo.ts`, haversine, 0,1 km) ve "kuş uçuşu" etiketiyle gösterilir |
 | Kimlik | UUID. Ekip içinde okunur kısa kodlar ayrıca tutulur (ör. `WB-2026-0012`) |
 
 **Şema dosyaları** (`src/db/schema/`):
@@ -67,7 +67,7 @@ Bir hesabın sınıfı, girdilerinin **en zayıf** sınıfıdır. Sıralama en z
 | `waste_batch.rejected_kg` | Ayıklanan kg | kg | İpek ve uygunsuz malzeme |
 | `waste_batch.accepted_kg` | Kabul edilen kg | kg | `weighed_kg − rejected_kg` |
 | `waste_batch.verified` | Doğrulandı | bool | Tartım ve kanıt varsa `true` (D-013) |
-| `batch_input.allocated_kg` | Tahsis edilen kg | kg | Atık partisinden üretim partisine |
+| `batch_input.allocated_kg` | Tahsis edilen kg | kg | Atık partisinden üretim partisine. Satır kendi `result_class` değerini taşır |
 | `production_batch.output_kg` | Çıktı kg | kg | |
 | `production_batch.scrap_kg` | Fire | kg | |
 | `production_batch.moisture_loss_kg` | Nem ve buhar kaybı | kg | |
@@ -96,7 +96,7 @@ Bir hesabın sınıfı, girdilerinin **en zayıf** sınıfıdır. Sıralama en z
 | `recovered_kg_verified` | Doğrulanmış geri kazanım | `verified = true` olan partilerin `accepted_kg` toplamı. Ana metrik |
 | `recovered_kg_declared` | Beyan edilen geri kazanım | Bütün partilerin `declared_kg` toplamı. Ayrı gösterilir |
 | `in_panel_kg` | Panele giren tekstil | Panel lotlarına ulaşan `allocated_kg` toplamı |
-| `co2e_range` | CO₂e aralığı | `[kg × alt katsayı, kg × üst katsayı]`, kaynağıyla. Sınıfı `sourced_estimate`; tek sayı gösterilmez |
+| `co2e_range` | CO₂e aralığı | `[kg × alt katsayı, kg × üst katsayı]`, kaynağıyla. Sınıfı `sourced_estimate`; tek sayı gösterilmez. Doğrulanmış katsayı kaynağı henüz yok (`docs/RESEARCH.md` §3); o zamana kadar değer "bilinmiyor" |
 | `inventory_kg` | Stok | Kabul edilen − tahsis edilen |
 | `days_of_cover` | Kaç günlük hammadde kaldığı | `inventory_kg ÷ planlı günlük ihtiyaç`. Eşikler ayarlanabilir; varsayılan 14 ve 7 |
 | `on_time_rate` | Zamanında teslim | `delivered_at ≤ planned_at + 1 gün` olan teslimlerin oranı |
@@ -142,11 +142,13 @@ Tanımlar maliyet raporundan birebir alınmıştır (D-002). Her sonuç `{value,
 
 ## 7. Referans değerler (`reference_values`)
 
-| Anahtar | Değer | Kaynak | Not |
+Değerler 2026-10-27'de resmî kaynaktan yeniden okunarak doğrulandı. Sınıfları `sourced_estimate`.
+
+| Anahtar | Değer | Kaynak | Doğrulama ve not |
 | --- | --- | --- | --- |
-| `eurostat_tr_textile_waste_2022` | 361.500 t | Eurostat `env_wasgen`, W076, TOTAL_HH | Kapsam notu zorunlu |
-| `electricity_tl_kwh_2026h1` | 3,975 TL/kWh | Sanayi tarifesi (NAC, KDV hariç) | 2026 ilk yarı |
-| `ibb_gate_fee_seymen` | 700 TL/t | İBB tarifesi | |
-| `ibb_gate_fee_komurcuoda` | 785 TL/t | İBB tarifesi | |
-| `usd_try` | 49,5523 | TCMB | Tarihiyle |
-| `sheet_area_m2` | 6,70 m² | Standart levha 1830×3660 mm | |
+| `eurostat_tr_textile_waste_2022` | 361.500 t | [Eurostat `env_wasgen`](https://ec.europa.eu/eurostat/databrowser/view/env_wasgen/default/table?lang=en): TR, W076, TOTAL_HH, HAZ_NHAZ, 2022 | API'den aynı değer okundu. Ülke düzeyinde, bütün faaliyetler ve haneler; yerel fabrika tonajı değildir. Kapsam notu zorunlu |
+| `electricity_tl_kwh_2026h1` | 3,975 TL/kWh | [Eurostat `nrg_pc_205`](https://ec.europa.eu/eurostat/databrowser/view/nrg_pc_205/default/table?lang=en): TR, MWH20-499, X_VAT, NAC, 2026-S1 | API'den aynı değer okundu. Yıllık 20–499 MWh bandı, KDV ve geri alınabilir vergiler hariç ulusal fiyat; pilotun sözleşme fiyatı değildir |
+| `ibb_gate_fee_seymen` | 700 TL/t | [İBB ücret tarifesi, EK-2](https://cevre.ibb.istanbul/wp-content/uploads/2025/12/EK2-Ucret-Tarifesi.pdf), kalem 1.1 | Tutar tarifede var. Tesis adı rapordan alındı; PDF'te makineyle okunamadı. KDV durumu doğrulanmadı |
+| `ibb_gate_fee_komurcuoda` | 785 TL/t | Aynı tarife, kalem 1.2 | Yukarıdakiyle aynı not |
+| `usd_try` | 49,5523 TL/USD | [TCMB, 19.10.2026](https://www.tcmb.gov.tr/kurlar/202610/19102026.xml), döviz satış | Maliyet raporu 16.10.2026 dosyasını gösteriyor; o gün döviz satış 49,4463. 49,5523 değeri 19.10.2026 döviz satış kurudur (T4.5'te ekiple düzeltilecek) |
+| `sheet_area_m2` | 6,70 m² | Standart levha 1830×3660 mm | Hesap: 1,830 × 3,660 = 6,6978 m² |

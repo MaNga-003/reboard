@@ -24,7 +24,8 @@
 | Kaynak | Çıkarım | Platformdaki karşılığı |
 | --- | --- | --- |
 | [Sandin ve Peters (JCP 2018), Chalmers derlemesi](https://research.chalmers.se/en/publication/503200) | Tekstil yeniden kullanımı ve geri dönüşümünün etkisi neyin ikame edildiğine çok bağlı | CO₂e tek sayı olarak verilmez |
-| [Refashion EPR değerlendirmesi](https://pro.refashion.fr/en/environmental-assessment-EPR-sector) | Kaçınılan emisyon katsayıları yaklaşık 0,4–5,8 kg CO₂e/kg aralığında dağılıyor | `co2e_range` alt ve üst sınırla, kaynağıyla ve "Kaynaklı tahmin" rozetiyle |
+| Refashion EPR değerlendirmesi (`pro.refashion.fr/en/environmental-assessment-EPR-sector`) | Sayfa 2026-10-27'de 404 veriyor. Daha önce buradan alınan 0,4–5,8 kg CO₂e/kg aralığı şu an doğrulanamıyor | `co2e_range` için katsayı yok. Doğrulanmış bir kaynak bulunana kadar CO₂e gösterilmez; `reference_values` tablosuna da yazılmaz |
+| [JRC134586, AB kullanılmış ve atık tekstil yönetimi değerlendirmesi (2023)](https://publications.jrc.ec.europa.eu/repository/handle/JRC134586) | Özet sayfası kg başına sera gazı kazancı vermiyor; rakamlar tam raporda olabilir | CO₂e katsayısı için incelenecek aday kaynak |
 
 ## 4. Scroll anlatımı
 

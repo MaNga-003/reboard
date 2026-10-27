@@ -1,7 +1,7 @@
 {
   "$schema": "./docs/state.schema.json",
   "project": "ReBoard SaaS platformu",
-  "updated_at": "2026-10-27T02:46:00+03:00",
+  "updated_at": "2026-10-27T00:05:04.694Z",
   "current_phase": "F0",
   "deadlines": {
     "demo_freeze": "2026-10-29T18:00:00+03:00",
@@ -173,7 +173,7 @@
       "id": "T1.4",
       "phase": "F1",
       "mode": "otonom",
-      "status": "yapılacak",
+      "status": "sürüyor",
       "title": "Sentetik seed (3 kaynak, 2 taşıyıcı, 2 alıcı, ReBoard) ve kaynaklı referans değerler",
       "acceptance": "Seed bütün tabloları doldurur; seed'deki her sayı resultClass taşır; demo kayıtlarının tamamı synthetic",
       "evidence": null,
@@ -182,7 +182,8 @@
       ],
       "decisions": [
         "D-011"
-      ]
+      ],
+      "note": "Biten: batch_inputs result_class taşıyor (migrasyon 0003); kuş uçuşu mesafe src/domain/geo.ts ve testleri; referans değerler resmî kaynaktan doğrulandı (Eurostat env_wasgen 361.500 t ve nrg_pc_205 3,975 TL/kWh aynı; İBB 700 ve 785 TL/t tarifenin 1.1 ve 1.2 kalemlerinde; TCMB 49,5523 = 19.10.2026 döviz satış, rapordaki 16.10 bağlantısı yanlış). CO₂e katsayı kaynağı (Refashion) 404: doğrulanmış kaynak bulunana kadar seed'e girmez. Sıradaki: src/db/seed/demo.ts (now'a bağlı, deterministik demoId ve PRNG; 8 org, 20 atık partisi, 5 üretim partisi, zincirler), src/db/seed/index.ts (DEMO_MODE=true iken public tablolarını SET LOCAL reboard.allow_reset ile TRUNCATE edip ekler), scripts/db-seed.ts ve db:seed:live, tests/integration/seed.test.ts (session, verification, invitation dışında her tablo dolu; demo kayıtları synthetic)."
     },
     {
       "id": "T1.5",

@@ -22,6 +22,13 @@
       "when": 1793054576448,
       "tag": "0002_append_only",
       "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1793059251780,
+      "tag": "0003_tahsis_sinifi",
+      "breakpoints": true
     }
   ]
 }
