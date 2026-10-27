@@ -828,7 +828,7 @@
       "vercel_pro": "Ticari kullanım Pro ister. 1 geliştirici koltuğu; 20 USD kullanım kredisi dahil. Kredi aşılırsa kullanım ücreti işler; müşteri başına düşen pay kullanım ölçülünce yazılır.",
       "neon_launch_compute": "Aylık asgari ücret yok; kullandıkça ödenir. Müşteri başına düşen pay kullanım ölçülünce yazılır.",
       "neon_launch_storage": "Kullandıkça ödenir. Müşteri başına düşen pay veri büyüklüğü ölçülünce yazılır.",
-      "domain": "Alan adı seçilmedi (açık soru Q-4). Fiyat uzantıya ve kayıt firmasına göre değişir; müşteri sayısıyla değişmez."
+      "domain": "Alan adı seçilmedi; şimdilik ücretli alan adı alınmıyor. Fiyat uzantıya ve kayıt firmasına göre değişir; müşteri sayısıyla değişmez."
     }
   }
 }

@@ -1,7 +1,7 @@
 {
   "$schema": "./docs/state.schema.json",
   "project": "ReBoard SaaS platformu",
-  "updated_at": "2026-10-27T20:16:00+03:00",
+  "updated_at": "2026-10-27T23:24:00+03:00",
   "current_phase": "F2",
   "deadlines": {
     "demo_freeze": "2026-10-29T18:00:00+03:00",
@@ -301,6 +301,7 @@
       ],
       "decisions": [
         "D-002",
+        "D-003",
         "D-011",
         "D-027"
       ]
@@ -438,7 +439,9 @@
       "depends_on": [
         "T4.1"
       ],
-      "decisions": []
+      "decisions": [
+        "D-003"
+      ]
     },
     {
       "id": "T4.4",
@@ -541,14 +544,6 @@
       "blocks": [
         "T4.5"
       ]
-    },
-    {
-      "id": "Q-4",
-      "owner": "kullanıcı",
-      "question": "*.vercel.app filtrelere takıldığı için özel bir alan adı alınsın mı (ör. reboard.app)? Ücretlidir.",
-      "blocks": [
-        "T4.3"
-      ]
     }
   ],
   "risks": [
@@ -575,7 +570,7 @@
     {
       "id": "R-5",
       "risk": "Türk Telekom Güvenli İnternet filtresi *.vercel.app adreslerini yönlendiriyor; jüri ya da salon ağı da filtreli olabilir",
-      "mitigation": "Canlı denetim GitHub Actions'ta (live-smoke.yml); özel alan adı (Q-4); çevrimdışı demo (T4.2); salon ağı 29 Ekim'de denenir"
+      "mitigation": "Canlı denetim GitHub Actions'ta (live-smoke.yml); çevrimdışı demo (T4.2); salon ağı 29 Ekim'de denenir; ücretli alan adı şimdilik alınmıyor (D-003)"
     },
     {
       "id": "R-6",

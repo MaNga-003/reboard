@@ -22,7 +22,8 @@ Biçim: **Karar**, **Neden**, **Tarih**, kararı kim verdi (K: kullanıcı, C: C
   - Canlı sürüm Vercel'de fra1 bölgesinde, veritabanı Neon Postgres'te Frankfurt bölgesinde (`aws-eu-central-1`) çalışır. Demo için yerelde PGlite ile çalışan çevrimdışı bir yedek de hazırlanır.
   - Yayın şimdilik Vercel CLI ile yapılır (`pnpm deploy:prod`). CLI yalnızca `.vercelignore` izin listesindeki dosyaları yükler; `.private/` ve `.env*` hiçbir koşulda yüklenmez.
   - GitHub bağlantısı, Vercel GitHub uygulaması `MaNga-003` organizasyonuna kurulunca açılır.
-- **Neden:** Jüri bir bağlantı ya da QR kodla açabilsin. AB bölgesi seçildi. Ücretsiz katman yetiyor.
+  - Ücretli alan adı şimdilik alınmaz (kullanıcı kararı, 2026-10-27). Demo ve QR kodları `reboard-lovat.vercel.app` adresini kullanır. Türk Telekom filtresi riski (R-5) çevrimdışı demo (T4.2) ve 29 Ekim'deki salon ağı denemesiyle karşılanır.
+- **Neden:** Jüri bir bağlantı ya da QR kodla açabilsin. AB bölgesi seçildi. Ücretsiz katman yetiyor. Alan adı ücretlidir ve demo için zorunlu değildir.
 - **Tarih:** 2026-10-27 · K
 
 ### D-004 — Hikâye: Apple tarzı kare dizisi, Blender ile otonom render
@@ -143,7 +144,7 @@ Biçim: **Karar**, **Neden**, **Tarih**, kararı kim verdi (K: kullanıcı, C: C
   - Demo kurulumu: Vercel Hobby, Neon Free, OpenFreeMap, GitHub Actions; hepsi 0. Ticari kurulum: Vercel Pro 20 USD/ay; Neon Launch, kullanıma bağlı (işlem 0,106 USD/CU-saat, depolama 0,35 USD/GB-ay); OpenFreeMap; GitHub Actions; alan adı.
   - Bilinen 0 ile bilinmeyen ayrıdır. Kullanıma bağlı ya da seçilmemiş kalemin tutarı `null` yazılır. Bilinmeyen kalem varsa toplam "bilinmiyor" olur. Bilinen kısım sıfırdan büyükse "en az" diye alt sınır olarak yazılır ve bilinmeyen kalemler adıyla listelenir.
   - USD tutarlar TCMB `usd_try` kuruyla TL'ye çevrilir. Kur yoksa USD kalemli toplam bilinmiyor olur. Toplamın sınıfı kalemlerin ve kurun en zayıfıdır. Para birimi TL ya da USD dışındaysa, vergi temelleri karışıksa ya da tutar eksiyse hesap hata verir.
-  - Alan adı seçilmedi (Q-4); tutarı `null`.
+  - Ticari kurulumun alan adı seçilmedi; şimdilik ücretli alan adı alınmaz (D-003). Tutarı `null`; satırın kaynak bağlantısı bu karara gider.
   - Tablo `/senaryo` sayfasının altındadır. Hesabı `src/domain/calc/saas-costs.ts` (`saasStageSummary`) yapar, satırları `src/db/repo/saas.ts` okur.
   - Fiyatlar `pnpm db:prices` ve `pnpm db:prices:live` ile yenilenir. Bu komutlar yalnızca `saas_costs` satırlarını siler ve yeniden yazar; zincire, kurum verisine ve kura dokunmaz.
   - Migrasyon 0005 eski serbest metinli üç satırı siler.

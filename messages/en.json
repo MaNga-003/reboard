@@ -828,7 +828,7 @@
       "vercel_pro": "Commercial use requires Pro. One developer seat; USD 20 of usage credit included. Beyond the credit, usage is billed; the share per customer is filled in once usage is measured.",
       "neon_launch_compute": "No monthly minimum; pay as you go. The share per customer is filled in once usage is measured.",
       "neon_launch_storage": "Pay as you go. The share per customer is filled in once the data size is measured.",
-      "domain": "No domain chosen yet (open question Q-4). The price depends on the extension and the registrar; it does not change with the number of customers."
+      "domain": "No domain chosen; no paid domain for now. The price depends on the extension and the registrar; it does not change with the number of customers."
     }
   }
 }

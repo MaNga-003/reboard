@@ -419,7 +419,8 @@ export function buildDemo(now: Date): DemoData {
         plan: null,
         monthlyCost: null,
         perCustomerCost: "0",
-        sourceUrl: "https://github.com/MaNga-003/reboard/blob/main/state.json",
+        // Kaynak, "şimdilik ücretli alan adı alınmaz" kararıdır (D-003).
+        sourceUrl: "https://github.com/MaNga-003/reboard/blob/main/docs/DECISIONS.md",
         currency: "USD",
         retrievedAt: SOURCED_AT,
         resultClass: SE,
