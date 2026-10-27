@@ -38,6 +38,8 @@ const signinHtml = await signin.text();
 check(signin.status === 200 && signinHtml.includes('data-persona="supplier"'), "/tr/giris demo rolleri", signin.status);
 const anon = await get("/tr/panel");
 check([307, 308].includes(anon.status) && /\/tr\/giris$/.test(anon.headers.get("location") ?? ""), "oturumsuz /tr/panel → /tr/giris", `${anon.status} ${anon.headers.get("location")}`);
+const anonMarket = await get("/tr/pazar");
+check([307, 308].includes(anonMarket.status) && /\/tr\/giris$/.test(anonMarket.headers.get("location") ?? ""), "oturumsuz /tr/pazar → /tr/giris", `${anonMarket.status} ${anonMarket.headers.get("location")}`);
 const post = (path, body, cookie) =>
   fetch(base + path, {
     method: "POST",
@@ -55,6 +57,11 @@ if (process.env.DEMO_PASSWORD) {
   check(login.status === 200 && cookie.length > 0, "demo girişi (Konfeksiyon A)", login.status);
   const panel = await fetch(base + "/tr/panel", { redirect: "manual", headers: { cookie, "user-agent": "reboard-live-smoke" } });
   check(panel.status === 200 && (await panel.text()).includes("Konfeksiyon A · Sahip"), "girişli /tr/panel kurum ve rol", panel.status);
+  // Pazar yeri (T2.1): ilan kartları ve sonuç sınıfı rozeti (D-011) yayında da gelmeli.
+  const market = await fetch(base + "/tr/pazar", { redirect: "manual", headers: { cookie, "user-agent": "reboard-live-smoke" } });
+  const marketHtml = await market.text();
+  const cards = (marketHtml.match(/data-listing-id=/g) ?? []).length;
+  check(market.status === 200 && cards > 0 && marketHtml.includes('data-result-class="synthetic"'), "girişli /tr/pazar ilan kartları ve Sentetik rozeti", `${market.status} · ${cards} kart`);
   await post("/api/auth/sign-out", {}, cookie);
 } else {
   console.log("atlandı · demo girişi (DEMO_PASSWORD yok)");
