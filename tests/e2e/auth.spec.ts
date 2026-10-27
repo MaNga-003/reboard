@@ -1,38 +1,10 @@
 // Kimlik akışı (T1.5): demo rolüyle giriş, rol değiştirme, çıkış; erişilebilirlik, taşma ve dokunma hedefi (M-12, M-13).
 // Sunucu seed'li veritabanıyla ve DEMO_PASSWORD ile çalışır (CI: db:seed adımı).
-import AxeBuilder from "@axe-core/playwright";
-import { expect, test, type Page } from "@playwright/test";
+import { expect, test } from "@playwright/test";
 import { permissionList } from "../../src/domain/access";
+import { TAP_MIN, WIDTHS, overflow, seriousViolations, signIn, smallTargets } from "./helpers";
 
 const allowed = (role: string) => permissionList(role).filter((p) => p.allowed).length;
-const WIDTHS = [360, 390, 768, 1024, 1440];
-const TAP_MIN = 44;
-
-async function seriousViolations(page: Page) {
-  const { violations } = await new AxeBuilder({ page }).analyze();
-  return violations.filter((v) => v.impact === "serious" || v.impact === "critical").map((v) => `${v.id}: ${v.nodes.length}`);
-}
-
-/** Görünür her etkileşimli öğenin en küçük kenarı; hata mesajı öğeyi ve ölçüyü söyler. */
-async function smallTargets(page: Page) {
-  return page.evaluate((min) => {
-    const out: string[] = [];
-    for (const el of document.querySelectorAll<HTMLElement>("a, button, input:not([type=hidden]), select, textarea, summary")) {
-      const r = el.getBoundingClientRect();
-      if (!r.width || !r.height || getComputedStyle(el).visibility === "hidden") continue;
-      if (Math.min(r.width, r.height) < min) out.push(`${el.tagName.toLowerCase()} "${(el.textContent ?? "").trim().slice(0, 30)}" ${Math.round(r.width)}×${Math.round(r.height)}`);
-    }
-    return out;
-  }, TAP_MIN);
-}
-
-const overflow = (page: Page) => page.evaluate(() => document.documentElement.scrollWidth - window.innerWidth);
-
-async function signIn(page: Page, persona: string, locale = "tr") {
-  await page.goto(`/${locale}/giris`);
-  await page.locator(`main [data-persona="${persona}"]`).click();
-  await expect(page).toHaveURL(new RegExp(`/${locale}/panel$`));
-}
 
 test("oturum yokken panel giriş sayfasına yönlenir", async ({ page }) => {
   await page.goto("/tr/panel");

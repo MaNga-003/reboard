@@ -85,6 +85,16 @@ erDiagram
 
 Alanların anlamları ve birimleri `docs/DATA_DICTIONARY.md` dosyasında.
 
+**Pazar yeri yazımları** (`src/db/repo/market.ts`, D-021) yalnızca bu fonksiyonlardan geçer; kurallar `src/domain/market.ts` içindedir:
+
+- `createListing`: konum kurum profilinden kopyalanır; fiyat birimi ilanın birimidir.
+- `placeOffer`: ilan `withTenant` ile okunur; görünmeyen ilan "yok" hatası verir. Birim, para birimi ve vergi temeli ilandan gelir.
+- `acceptOffer` tek işlemdir: teklif `status = 'open'` koşuluyla güncellenir, tek seferlik ilan kapanır, diğer açık teklifler reddedilir, `deals` ve planlı `deliveries` yazılır. Kural ihlalinde işlem geri alınır. `deals` ve `deliveries` başka yoldan yazılmaz.
+- `rejectOffer`, `withdrawOffer` koşullu güncellemedir; `closeListing` `assertOwns` sonrası ilanı kapatır ve açık teklifleri reddeder.
+- Okuma: `listMarket` (süzgeç, eşleşme skoru, güvenilirlik) ve `listingDetail` (teklifler, anlaşmalar, teslimler). İkisi de yalnızca `withTenant` görünürlüğüyle okur.
+- `drizzle/0004_teslim_kutlesi_bos.sql`: `deliveries.planned_kg` boş bırakılabilir (m² teslim).
+- Server Action'lar `src/app/[locale]/(app)/pazar/actions.ts` içindedir: oturum → rol → Zod → depo. Hata kodu `market.errors.*` metnine çevrilir; yok ile yetkisiz aynı koddur (`not_found`). Tek düğmeli eylemler sonucu `?durum=` ya da `?hata=` ile ilan sayfasına döndürür; JavaScript olmadan da çalışır.
+
 ## 4. Gözetim zinciri ve olay modeli (D-012)
 
 - Olaylar EPCIS 2.0'dan gelir:
@@ -116,7 +126,9 @@ Alanların anlamları ve birimleri `docs/DATA_DICTIONARY.md` dosyasında.
 | `calc/` | `money.ts`: kalem toplama ve `null` yayılımı. `formulas.ts`: fabrika kazancı, panel müşterisi kazancı, ReBoard faaliyet sonucu, fiyat koridoru ve SaaS katkısı. `synthetic-scenario.ts`: rapordaki sentetik örnek. Para birimi, vergi temeli, dönem ya da birim uyuşmazsa, hiç girdi yoksa `CalcError` fırlatır |
 | `traceability/` | `canonical.ts`: `canonicalJson`, `kgText`. `chain.ts`: `hashEvent`, `nextEvent`, `verifyChain`. `mass-balance.ts`: `massBalance`, `balanceNoteMissing`. `genealogy.ts`: `genealogy(lotId, graph)`, `splitByComposition`. Lif listesi `src/domain/fibre.ts` dosyasında |
 | `impact/` | `recoveredKg({verifiedOnly})`, `inPanelKg`, `co2eRange(kg, factors)`. CO₂e alt ve üst sınırla, kaynağıyla birlikte döner |
-| `supply/` | `inventoryKg`, `daysOfCover`, `projectedCover(deliveries)`, `supplierReliability`, `hhi`, `matchScore(listing, need)` |
+| `market.ts` | İlan türleri ve birimleri, taraflar, ödeme yönü, ilan, teklif, yanıt ve geri çekme kuralları, teslim planı (`deliveryPlan`), eşleşme skoru (`matchScore`, `compositionFit`), İstanbul takvim günü (D-021) |
+| `supply.ts` | `onTimeRate`. T2.3'te `inventoryKg`, `daysOfCover`, `projectedCover`, `hhi` eklenecek |
+| `fibre.ts`, `geo.ts`, `access.ts`, `panel.ts` | Lif listesi ve bileşim payları; kuş uçuşu mesafe; roller; panel ölçüleri |
 
 ## 6. Kimlik, roller ve kiracılar
 
@@ -150,7 +162,7 @@ Alanların anlamları ve birimleri `docs/DATA_DICTIONARY.md` dosyasında.
   - Kanıt dosyasının içeriği (`evidence_register.content`) listelere girmez.
   - Yazma hakkı görmekten dardır: `assertOwns` satırın sahibi başkaysa da satır yoksa da aynı hatayı verir; satırın varlığı sızdırılmaz.
   - Kimlik tabloları (`user`, `session`, `account`, `verification`, `member`, `invitation`) bu katmandan okunmaz. Bir test, şemadaki her tablonun ya katalogda ya bu listede olduğunu denetler; yeni bir tablo kuralsız kalamaz.
-- **Ekranlar:** `/giris` sayfasında demo rolleri ve e-posta formu bulunur. `(app)` grubundaki sayfalar oturum ister; şimdilik yalnızca `/panel`. Başlıkta kurum · rol, demo modunda "Rol değiştir" menüsü ve çıkış düğmesi bulunur.
+- **Ekranlar:** `/giris` sayfasında demo rolleri ve e-posta formu bulunur. `(app)` grubundaki sayfalar oturum ister: `/panel`, `/pazar`, `/pazar/[id]`, `/pazar/yeni`. Başlıkta kurum · rol, demo modunda "Rol değiştir" menüsü ve çıkış düğmesi bulunur.
 - Herkese açık sayfalar: `/`, `/giris`, `/pasaport/[lot]`, `/api/verify/[lot]` ve etki sayacı.
 - **Demo rolleri:** Tedarikçi (Konfeksiyon A, sahip), Üretici (ReBoard Pilot Tesisi, sahip), Panel alıcısı (Mobilya Atölyesi F, sahip), İzleyici (ReBoard Pilot Tesisi, izleyici). Parola yalnızca `DEMO_PASSWORD` ortam değişkenindedir. Demo kurumlarının adları kurgusaldır ve harfle kodlanır; gerçek bir firmayla karışmaz.
 - Postgres RLS, ikinci savunma hattı olarak Faz 5'te eklenecek.

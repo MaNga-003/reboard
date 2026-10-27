@@ -127,6 +127,17 @@ Biçim: **Karar**, **Neden**, **Tarih**, kararı kim verdi (K: kullanıcı, C: C
 - **Neden:** Yarışmadan sonra şirketleşme seçeneği açık kalır. Sonradan açık lisansa geçmek kolaydır; yayımlanmış bir sürümü geri kapatmak mümkün değildir.
 - **Tarih:** 2026-10-27 · K
 
+### D-021 — Pazar yeri kuralları: miktar, teslim planı ve eşleşme skoru
+- **Karar:**
+  - Tekrarlı ilanda (`weekly`, `monthly`) miktar **her teslim** içindir. Teklif ilanın biriminde verilir ve ilandaki miktarı aşamaz; ilk teslim günü geçmişte ya da uygunluk penceresi dışında olamaz.
+  - Kabul tek işlemde yapılır: teklif koşullu olarak kabul edilir, anlaşma ve teslim planı yazılır. Tek seferlik ilan kabulde kapanır ve diğer açık teklifler reddedilir; tekrarlı ilan açık kalır. Eşzamanlı iki kabulden yalnızca biri geçer.
+  - Teslim planı 09:00 TSİ'dedir: önerilen gün (geçmişse kabul günü), haftalık 7 günde bir, aylık ayın aynı gününde (ay sonuna kırpılır). Plan pencere bitişinde ya da 60 günde kesilir, hangisi önceyse.
+  - m² panel tesliminde planlı kg `null` kalır; yoğunluk ölçülmedi, 0 yazılmaz.
+  - Eşleşme skoru 0–100'dür. Ağırlıklar: bileşim uyumu 40, miktar karşılama 20, kuş uçuşu yakınlık 20 (100 km ve ötesi 0), izleyenle zamanında teslim 20. İpek içeren atık eşleşmez. Bilinmeyen bileşen 0 sayılmaz; ağırlığı skordan düşülür ve skorun hangi ağırlıktan hesaplandığı ekranda yazar.
+  - Güvenilirlik yalnızca izleyenin taraf olduğu teslimlerden hesaplanır (D-016).
+- **Neden:** Tedarik sürekliliği tekrarlı teslimle ölçülür. Skorun gerekçesi görünmezse güven vermez; bilinmeyeni sıfır saymak dürüstlük kuralına aykırıdır (D-011). Ağırlıklar ve 100 km sınırı Antalya OSB çevresi için seçildi, pilot verisiyle kalibre edilmedi.
+- **Tarih:** 2026-10-27 · C
+
 ### D-020 — Claude ortak yazar ya da katkıcı olarak görünmez
 - **Karar:**
   - Commit mesajlarına ve PR açıklamalarına `Co-Authored-By: Claude…`, `Claude-Session:` ya da "Generated with Claude Code" satırı eklenmez.

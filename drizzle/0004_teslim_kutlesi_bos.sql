@@ -1,0 +1,1 @@
+ALTER TABLE "deliveries" ALTER COLUMN "planned_kg" DROP NOT NULL;

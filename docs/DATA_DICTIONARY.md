@@ -48,13 +48,17 @@ Bir hesabın sınıfı, girdilerinin **en zayıf** sınıfıdır. Sıralama en z
 | `listing.kind` | İlan türü | enum | `waste_offer`, `waste_request`, `panel_offer`, `panel_request` |
 | `listing.composition` | Lif bileşimi | `{fiber: yüzde}` | Toplam 100 olmalı. Lifler (`src/domain/fibre.ts`): `cotton`, `polyester`, `polycotton`, `viscose`, `wool`, `acrylic`, `elastane`, `other`, `unknown`. 100'e tamamlanmayan kısım `unknown` sayılır |
 | `listing.contains_silk` | İpek içerir | bool | `true` ise üretici talebiyle eşleşmez (ipek kapsam dışı) |
-| `listing.quantity` | Miktar | `kg` ya da `m2` | Panel ilanında m² |
+| `listing.quantity` | Miktar | `kg`, `t` ya da `m2` | Atıkta kg ya da t, panelde m². Tekrarlı ilanda miktar her teslim içindir (D-021) |
 | `listing.recurrence` | Tekrar | enum | `once`, `weekly`, `monthly` |
-| `listing.window` | Uygunluk penceresi | tarih aralığı | |
-| `listing.price` | Birim fiyat | para / birim | İşareti "kim kime öder"i söyler: pozitifse alıcı öder, negatifse sağlayıcı kabul bedeli öder |
-| `offer.status` | Teklif durumu | enum | `open`, `accepted`, `rejected`, `withdrawn` |
-| `deal` | Anlaşma | | Kabul edilen tekliften doğar |
-| `delivery.planned_at` | Planlı teslim | timestamptz | Tedarik projeksiyonuna girer |
+| `listing.window` | Uygunluk penceresi | tarih aralığı | Teklifin ilk teslim günü bu aralıkta olmalı. Teslim planı pencere bitişinde ya da 60 günde kesilir |
+| `listing.price` | Birim fiyat | para / birim | İşareti "kim kime öder"i söyler: pozitifse alıcı öder, negatifse sağlayıcı kabul bedeli öder. `0` bedelsiz, `null` bilinmiyor. Para birimi ve vergi temeli ayrı alanlardadır (`TRY`, `excl_vat`) |
+| `listing.location` | Konum | ilçe, yuvarlanmış enlem ve boylam | İlan açılırken kurum profilinden kopyalanır; mesafe yalnızca kuş uçuşu gösterilir |
+| `offer.quantity` | Teklif miktarı | ilanın birimi | İlandaki miktarı aşamaz |
+| `offer.proposed_date` | İlk teslim günü | tarih | Geçmişte ya da ilanın penceresi dışında olamaz |
+| `offer.status` | Teklif durumu | enum | `open`, `accepted`, `rejected`, `withdrawn`. Yalnızca açık teklif kabul, ret ya da geri çekme görür |
+| `deal` | Anlaşma | | Kabul edilen tekliften doğar. Atık ya da panel teklifinde ilan sahibi satıcıdır; talepte teklif veren satıcıdır. Teklifte fiyat yoksa ilanın fiyatı alınır |
+| `delivery.planned_at` | Planlı teslim | timestamptz | 09:00 TSİ. Önerilen gün (geçmişse kabul günü), haftalık ya da aylık (ay sonuna kırpılır). Tedarik projeksiyonuna girer |
+| `delivery.planned_kg` | Planlı kg | kg | Miktar kg ya da t ise kg'a çevrilir. m² panel tesliminde `null` (yoğunluk ölçülmedi); 0 yazılmaz |
 | `delivery.delivered_at` | Gerçek teslim | timestamptz | Zamanında teslim yüzdesi buradan hesaplanır |
 
 ## 4. İzlenebilirlik
@@ -99,10 +103,10 @@ Bir hesabın sınıfı, girdilerinin **en zayıf** sınıfıdır. Sıralama en z
 | `co2e_range` | CO₂e aralığı | `[kg × alt katsayı, kg × üst katsayı]`, kaynağıyla. Sınıfı `sourced_estimate`; tek sayı gösterilmez. Doğrulanmış katsayı kaynağı henüz yok (`docs/RESEARCH.md` §3); o zamana kadar değer "bilinmiyor" |
 | `inventory_kg` | Stok | Kabul edilen − tahsis edilen |
 | `days_of_cover` | Kaç günlük hammadde kaldığı | `inventory_kg ÷ planlı günlük ihtiyaç`. Eşikler ayarlanabilir; varsayılan 14 ve 7 |
-| `on_time_rate` | Zamanında teslim | `delivered_at ≤ planned_at + 1 gün` olan teslimlerin oranı |
+| `on_time_rate` | Zamanında teslim | `delivered_at ≤ planned_at + 1 gün` olan teslimlerin vadesi gelmiş teslimlere oranı. Vadesi gelmiş: teslim edilmiş, iptal edilmiş ya da planlı tarihi 1 günden fazla geçmiş. Vadesi gelmiş teslim yoksa `null`. Pazar yerinde yalnızca izleyenin taraf olduğu teslimlerden hesaplanır (`src/domain/supply.ts`) |
 | `declared_vs_weighed` | Beyan ile tartım farkı | `(weighed − declared) ÷ declared` |
 | `hhi` | Tedarikçi yoğunlaşması | Tedarikçi paylarının karelerinin toplamı (0–10.000) |
-| `match_score` | Eşleşme skoru | 0–100. Bileşim uyumu, ipek içermemesi, miktar, kuş uçuşu mesafe ve güvenilirlik ağırlıklı toplamı |
+| `match_score` | Eşleşme skoru | 0–100 tamsayı (D-021, `src/domain/market.ts`). Ağırlıklar: bileşim 40, miktar 20, yakınlık 20, güvenilirlik 20. Bileşim uyumu `Σ min(arz payı, talep payı) ÷ talebin bilinen payı`; miktar `min(arz ÷ talep, 1)`; yakınlık `max(0, 1 − kuş uçuşu km ÷ 100)`; güvenilirlik `on_time_rate`. İpek içeren atık eşleşmez. Bilinmeyen bileşenin ağırlığı skordan düşülür; kalan ağırlık (`knownWeight`) ekranda yazar. Hiçbir bileşen bilinmiyorsa `null` |
 
 ## 6. Ekonomi (Şerife'nin raporu)
 

@@ -22,7 +22,10 @@ export default async function AppLayout({ children, params }: LayoutProps<"/[loc
           <Link href="/" className={`${tap} font-display text-xl`}>
             {t("nav.brand")}
           </Link>
-          <nav aria-label={t("nav.main")}>
+          <nav aria-label={t("nav.main")} className="flex flex-wrap">
+            <Link href="/pazar" className={`${tap} underline-offset-4 hover:underline`}>
+              {t("nav.market")}
+            </Link>
             <Link href="/panel" className={`${tap} underline-offset-4 hover:underline`}>
               {t("nav.dashboard")}
             </Link>

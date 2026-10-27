@@ -1,7 +1,7 @@
 {
   "$schema": "./docs/state.schema.json",
   "project": "ReBoard SaaS platformu",
-  "updated_at": "2026-10-27T08:20:35+03:00",
+  "updated_at": "2026-10-27T08:51:00+03:00",
   "current_phase": "F1",
   "deadlines": {
     "demo_freeze": "2026-10-29T18:00:00+03:00",
@@ -191,7 +191,7 @@
       "status": "tamam",
       "title": "Kimlik, organizasyonlar ve roller, demo rol değiştirici; çapraz kiracı testleri",
       "acceptance": "A organizasyonunun kullanıcısı B'nin özel kayıtlarına 0 erişim (test)",
-      "evidence": "Roller src/domain/access.ts (tek tablo), Better Auth rolleri ondan kurulur (src/lib/auth.ts; kayıt ve kurum açma kapalı, girişte etkin kurum). withTenant: src/db/repo/tenant.ts (22 tablo kataloğu, list/get/owns/assertOwns); membership.ts; viewer.ts (server-only); action.ts kapısı. Ekranlar: /giris (4 demo rolü, e-posta formu), (app)/panel, başlıkta rol değiştirici. tests/integration/tenant-isolation.test.ts 13/13: repository 3061 deneme 0 başarılı, HTTP 98 deneme 0 başarılı, bozma 9/9 yakalandı. auth-roles 2/2, access 7/7, action 4/4. Toplam 173 Vitest testi yeşil; src/domain kapsamı satır %95,96. tests/e2e/auth.spec.ts ve smoke: 25/25 (a11y 0 ciddi, 5 genişlikte taşma 0, dokunma hedefi < 44 px 0; bozma yakalandı). Canlı: Neon yeniden yüklendi (369 satır, 9 kullanıcı); Vercel'e DEMO_MODE ve gizli DEMO_PASSWORD eklendi; yayın reboard-ia91mcehs → reboard-lovat.vercel.app.",
+      "evidence": "Roller src/domain/access.ts (tek tablo), Better Auth rolleri ondan kurulur (src/lib/auth.ts; kayıt ve kurum açma kapalı, girişte etkin kurum). withTenant: src/db/repo/tenant.ts (22 tablo kataloğu, list/get/owns/assertOwns); membership.ts; viewer.ts (server-only); action.ts kapısı. Ekranlar: /giris (4 demo rolü, e-posta formu), (app)/panel, başlıkta rol değiştirici. tests/integration/tenant-isolation.test.ts 13/13: repository 3061 deneme 0 başarılı, HTTP 98 deneme 0 başarılı, bozma 9/9 yakalandı. auth-roles 2/2, access 7/7, action 4/4. Toplam 173 Vitest testi yeşil; src/domain kapsamı satır %95,96. tests/e2e/auth.spec.ts ve smoke: 25/25 (a11y 0 ciddi, 5 genişlikte taşma 0, dokunma hedefi < 44 px 0; bozma yakalandı). Canlı: Neon yeniden yüklendi (369 satır, 9 kullanıcı); Vercel'e DEMO_MODE ve gizli DEMO_PASSWORD eklendi; yayın reboard-ia91mcehs → reboard-lovat.vercel.app. Canlı denetim (GitHub Actions live-smoke 40454971234) 13/13 yeşil, demo girişi dahil; CI 40454965341 yeşil.",
       "depends_on": [
         "T1.1"
       ],
@@ -204,7 +204,7 @@
       "id": "T2.1",
       "phase": "F2",
       "mode": "otonom",
-      "status": "yapılacak",
+      "status": "sürüyor",
       "title": "Pazar yeri: ilan listesi, filtre, harita, detay, ilan oluşturma, teklif ve kabul",
       "acceptance": "E2E: sağlayıcı ilan verir, üretici teklif eder, sağlayıcı kabul eder, anlaşma ve teslim planı oluşur",
       "evidence": null,
@@ -212,7 +212,11 @@
         "T1.4",
         "T1.5"
       ],
-      "decisions": []
+      "decisions": [
+        "D-011",
+        "D-016",
+        "D-021"
+      ]
     },
     {
       "id": "T2.2",
@@ -656,24 +660,24 @@
       "id": "M-12",
       "claim": "Erişilebilir",
       "threshold": "0 ciddi/kritik axe ihlali; dokunma hedefi ≥ 44×44 px",
-      "last_value": "/tr, /en, giriş ve panel (TR, EN): 0 ciddi/kritik ihlal; 5 genişlikte 44 px altı hedef 0",
-      "measured_at": "2026-10-27T08:20:35+03:00",
-      "test": "tests/e2e/smoke.spec.ts, tests/e2e/auth.spec.ts"
+      "last_value": "/tr, /en, giriş, panel, pazar listesi, ilan ayrıntısı, yeni ilan (TR, EN): 0 ciddi/kritik ihlal; 5 genişlikte 44 px altı hedef 0; bozma yakalandı",
+      "measured_at": "2026-10-27T08:51:00+03:00",
+      "test": "tests/e2e/smoke.spec.ts, tests/e2e/auth.spec.ts, tests/e2e/market.spec.ts"
     },
     {
       "id": "M-13",
       "claim": "Yerleşim bozulmaz",
       "threshold": "360–1440 px'te 0 taşma ve çakışma (TR, EN)",
-      "last_value": "/tr, /en, /tr/giris, /tr/panel, 5 genişlik: 0 px taşma",
-      "measured_at": "2026-10-27T08:20:35+03:00",
-      "test": "tests/e2e/smoke.spec.ts, tests/e2e/auth.spec.ts"
+      "last_value": "giriş, panel, pazar listesi, ilan ayrıntısı, yeni ilan; 5 genişlik: 0 px taşma",
+      "measured_at": "2026-10-27T08:51:00+03:00",
+      "test": "tests/e2e/smoke.spec.ts, tests/e2e/auth.spec.ts, tests/e2e/market.spec.ts"
     },
     {
       "id": "M-14",
       "claim": "Çeviri tam",
       "threshold": "0 eksik anahtar",
-      "last_value": "0 eksik anahtar (TR 20, EN 20)",
-      "measured_at": "2026-10-27T01:35:00+03:00",
+      "last_value": "0 eksik (224 yaprak anahtar)",
+      "measured_at": "2026-10-27T08:51:00+03:00",
       "test": "tests/unit/i18n.test.ts"
     },
     {
@@ -723,6 +727,14 @@
       "last_value": "16/16 test; 369 satır (9 kullanıcı); 63 olay 5 zincirde ok; 1/5 parti tolerans dışı ve açıklamalı; bozma 2/2",
       "measured_at": "2026-10-27T08:20:35+03:00",
       "test": "tests/integration/seed.test.ts"
+    },
+    {
+      "id": "M-21",
+      "claim": "Pazar yeri akışı doğru",
+      "threshold": "ilan → teklif → kabul → anlaşma ve teslim planı yeşil; eşzamanlı kabulde tam 1 anlaşma; 0 sızıntı",
+      "last_value": "E2E 10/10; birim ve entegrasyon 42/42; market/supply/fibre kapsamı %100; bozma depo 4/4, ekran 2/2",
+      "measured_at": "2026-10-27T08:51:00+03:00",
+      "test": "tests/e2e/market.spec.ts, tests/integration/market.test.ts, tests/unit/market.test.ts"
     }
   ]
 }

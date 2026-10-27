@@ -126,5 +126,187 @@
     "allowed": "allowed",
     "denied": "not allowed",
     "comingSoon": "Supply and impact indicators will be added to this page."
+  },
+  "units": {
+    "kg": "kg",
+    "t": "t",
+    "m2": "m²"
+  },
+  "fibres": {
+    "cotton": "Cotton",
+    "polyester": "Polyester",
+    "polycotton": "Poly-cotton blend",
+    "viscose": "Viscose",
+    "wool": "Wool",
+    "acrylic": "Acrylic",
+    "elastane": "Elastane",
+    "other": "Other",
+    "unknown": "Unknown"
+  },
+  "market": {
+    "title": "Marketplace",
+    "lead": "Textile waste and panel listings. Locations are district level; distances are as the crow flies.",
+    "newListing": "Post a listing",
+    "readOnly": "The viewer role cannot post listings or offers; it only reads records.",
+    "filters": {
+      "title": "Filter",
+      "kind": "Listing type",
+      "all": "All",
+      "silkFree": "Silk-free only",
+      "sort": "Sort by",
+      "sortScore": "Match score",
+      "sortNew": "Newest",
+      "silk": "Silk",
+      "apply": "Apply"
+    },
+    "kinds": {
+      "waste_offer": "Waste offer",
+      "waste_request": "Waste request",
+      "panel_offer": "Panel offer",
+      "panel_request": "Panel request"
+    },
+    "recurrence": {
+      "once": "One-off",
+      "weekly": "Weekly",
+      "monthly": "Monthly"
+    },
+    "payer": {
+      "buyer": "Buyer pays",
+      "seller": "Seller pays a gate fee",
+      "none": "Free of charge",
+      "unknown": "Price unknown"
+    },
+    "silk": {
+      "yes": "Contains silk",
+      "no": "Silk-free",
+      "unknown": "Silk content unknown"
+    },
+    "results": "{count, plural, =0 {No open listings} one {# open listing} other {# open listings}}",
+    "empty": "No open listings match this filter.",
+    "yours": "Your listing",
+    "hiddenOrg": "Organisation profile hidden",
+    "openOffers": "{count, plural, =0 {No pending offers} one {# pending offer} other {# pending offers}}",
+    "distance": "{km} km",
+    "quantity": "Quantity",
+    "perDelivery": "per delivery",
+    "price": "Unit price",
+    "priceValue": "{amount} {currency}/{unit}, {tax}",
+    "composition": "Fibre composition",
+    "window": "Availability window",
+    "windowValue": "{start} – {end}",
+    "location": "Location",
+    "detailLink": "Details and offer",
+    "match": {
+      "title": "Match",
+      "score": "{score}/100",
+      "against": "against your listing “{title}”",
+      "excludedSilk": "No match: silk is out of scope",
+      "unknown": "Score unknown",
+      "known": "Score from known components: {weight}% of the weight",
+      "none": "You have no open listing to compare with",
+      "parts": {
+        "composition": "Composition fit",
+        "quantity": "Quantity coverage",
+        "distance": "Proximity",
+        "reliability": "On-time deliveries with you"
+      }
+    },
+    "detail": {
+      "back": "Back to the marketplace",
+      "owner": "Posted by",
+      "offers": "Offers",
+      "noOffers": "No offers yet.",
+      "offersHint": "Only the listing owner and the offerer see an offer.",
+      "deals": "Deals and delivery plan",
+      "noDeals": "You are not a party to any deal on this listing.",
+      "seller": "Seller",
+      "buyer": "Buyer",
+      "deliveries": "Deliveries",
+      "plannedAt": "Planned date",
+      "plannedKg": "Planned kg",
+      "status": "Status",
+      "proposedDate": "First delivery",
+      "accept": "Accept",
+      "reject": "Reject",
+      "withdraw": "Withdraw offer",
+      "close": "Close listing",
+      "closed": "This listing is closed."
+    },
+    "offerStatus": {
+      "open": "Open",
+      "accepted": "Accepted",
+      "rejected": "Rejected",
+      "withdrawn": "Withdrawn"
+    },
+    "deliveryStatus": {
+      "planned": "Planned",
+      "delivered": "Delivered",
+      "cancelled": "Cancelled"
+    },
+    "offerForm": {
+      "title": "Make an offer",
+      "quantity": "Quantity ({unit})",
+      "quantityHint": "At most {max} {unit}",
+      "payer": "Who pays?",
+      "amount": "Unit price (TRY/{unit}, excl. VAT)",
+      "date": "First delivery date",
+      "message": "Note (optional)",
+      "submit": "Send offer"
+    },
+    "listingForm": {
+      "title": "New listing",
+      "kind": "Listing type",
+      "titleField": "Title",
+      "titleHint": "Example: cotton cutting waste, weekly",
+      "quantity": "Quantity",
+      "unit": "Unit",
+      "recurrence": "Recurrence",
+      "recurrenceHint": "For a recurring listing the quantity is per delivery.",
+      "windowStart": "Available from",
+      "windowEnd": "Available until",
+      "silk": "Silk",
+      "composition": "Fibre composition (%)",
+      "compositionHint": "At most 100 in total. Any remaining share counts as unknown.",
+      "payer": "Who pays?",
+      "amount": "Unit price (TRY, excl. VAT)",
+      "amountHint": "If you do not know the price, choose “Price unknown”.",
+      "location": "The location comes from your organisation’s district-level profile.",
+      "submit": "Publish listing"
+    },
+    "notices": {
+      "created": "Listing published.",
+      "offered": "Your offer was sent.",
+      "accepted": "Offer accepted; the deal and delivery plan were created.",
+      "rejected": "Offer rejected.",
+      "withdrawn": "Offer withdrawn.",
+      "closed": "Listing closed."
+    },
+    "errors": {
+      "unauthenticated": "Your session has ended; please sign in again.",
+      "forbidden": "This role cannot do that.",
+      "invalid": "Please check your input.",
+      "not_found": "Record not found.",
+      "listing_closed": "The listing is closed.",
+      "own_listing": "You cannot make an offer on your own listing.",
+      "unit_mismatch": "The unit does not fit this listing type.",
+      "quantity_invalid": "The quantity must be greater than zero.",
+      "quantity_exceeds": "The quantity exceeds the listing.",
+      "date_past": "The date cannot be in the past.",
+      "date_outside_window": "The date is outside the listing’s availability window.",
+      "composition_invalid": "Fibre shares must add up to at most 100.",
+      "window_invalid": "The window cannot start after it ends.",
+      "panel_fields": "A panel listing has no fibre composition or silk field.",
+      "not_owner": "Only the owner of the record can do that.",
+      "offer_not_open": "The offer is no longer open."
+    }
+  },
+  "currency": {
+    "TRY": "TRY",
+    "EUR": "EUR",
+    "USD": "USD"
+  },
+  "taxBasis": {
+    "excl_vat": "excl. VAT",
+    "incl_vat": "incl. VAT"
   }
 }

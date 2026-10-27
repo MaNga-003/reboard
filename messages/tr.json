@@ -126,5 +126,187 @@
     "allowed": "yapabilir",
     "denied": "yapamaz",
     "comingSoon": "Tedarik ve etki göstergeleri bu sayfaya eklenecek."
+  },
+  "units": {
+    "kg": "kg",
+    "t": "t",
+    "m2": "m²"
+  },
+  "fibres": {
+    "cotton": "Pamuk",
+    "polyester": "Polyester",
+    "polycotton": "Pamuk-polyester karışımı",
+    "viscose": "Viskon",
+    "wool": "Yün",
+    "acrylic": "Akrilik",
+    "elastane": "Elastan",
+    "other": "Diğer",
+    "unknown": "Bilinmiyor"
+  },
+  "market": {
+    "title": "Pazar yeri",
+    "lead": "Atık tekstil ve panel ilanları. Konumlar ilçe düzeyindedir; mesafeler kuş uçuşudur.",
+    "newListing": "Yeni ilan ver",
+    "readOnly": "İzleyici rolü ilan ve teklif veremez; kayıtları yalnızca okur.",
+    "filters": {
+      "title": "Süzgeç",
+      "kind": "İlan türü",
+      "all": "Hepsi",
+      "silkFree": "Yalnızca ipeksiz",
+      "sort": "Sıralama",
+      "sortScore": "Eşleşme skoru",
+      "sortNew": "En yeni",
+      "silk": "İpek",
+      "apply": "Uygula"
+    },
+    "kinds": {
+      "waste_offer": "Atık teklifi",
+      "waste_request": "Atık talebi",
+      "panel_offer": "Panel teklifi",
+      "panel_request": "Panel talebi"
+    },
+    "recurrence": {
+      "once": "Tek sefer",
+      "weekly": "Haftalık",
+      "monthly": "Aylık"
+    },
+    "payer": {
+      "buyer": "Alıcı öder",
+      "seller": "Satıcı kabul bedeli öder",
+      "none": "Bedelsiz",
+      "unknown": "Fiyat bilinmiyor"
+    },
+    "silk": {
+      "yes": "İpek içerir",
+      "no": "İpeksiz",
+      "unknown": "İpek durumu bilinmiyor"
+    },
+    "results": "{count, plural, =0 {Açık ilan yok} one {# açık ilan} other {# açık ilan}}",
+    "empty": "Bu süzgece uyan açık ilan yok.",
+    "yours": "Sizin ilanınız",
+    "hiddenOrg": "Kurum profili gizli",
+    "openOffers": "{count, plural, =0 {Bekleyen teklif yok} one {# bekleyen teklif} other {# bekleyen teklif}}",
+    "distance": "{km} km",
+    "quantity": "Miktar",
+    "perDelivery": "her teslimde",
+    "price": "Birim fiyat",
+    "priceValue": "{amount} {currency}/{unit}, {tax}",
+    "composition": "Lif bileşimi",
+    "window": "Uygunluk penceresi",
+    "windowValue": "{start} – {end}",
+    "location": "Konum",
+    "detailLink": "Ayrıntı ve teklif",
+    "match": {
+      "title": "Eşleşme",
+      "score": "{score}/100",
+      "against": "“{title}” ilanınıza göre",
+      "excludedSilk": "Eşleşmez: ipek kapsam dışı",
+      "unknown": "Skor bilinmiyor",
+      "known": "Skor bilinen bileşenlerden: ağırlığın %{weight} kadarı",
+      "none": "Karşılaştırılacak açık ilanınız yok",
+      "parts": {
+        "composition": "Bileşim uyumu",
+        "quantity": "Miktar karşılama",
+        "distance": "Yakınlık",
+        "reliability": "Sizinle zamanında teslim"
+      }
+    },
+    "detail": {
+      "back": "Pazar yerine dön",
+      "owner": "İlan veren",
+      "offers": "Teklifler",
+      "noOffers": "Henüz teklif yok.",
+      "offersHint": "Teklifleri yalnızca ilan sahibi ve teklifi veren görür.",
+      "deals": "Anlaşmalar ve teslim planı",
+      "noDeals": "Bu ilanda taraf olduğunuz anlaşma yok.",
+      "seller": "Satıcı",
+      "buyer": "Alıcı",
+      "deliveries": "Teslimler",
+      "plannedAt": "Planlı tarih",
+      "plannedKg": "Planlı kg",
+      "status": "Durum",
+      "proposedDate": "İlk teslim",
+      "accept": "Kabul et",
+      "reject": "Reddet",
+      "withdraw": "Teklifi geri çek",
+      "close": "İlanı kapat",
+      "closed": "Bu ilan kapalı."
+    },
+    "offerStatus": {
+      "open": "Açık",
+      "accepted": "Kabul edildi",
+      "rejected": "Reddedildi",
+      "withdrawn": "Geri çekildi"
+    },
+    "deliveryStatus": {
+      "planned": "Planlı",
+      "delivered": "Teslim edildi",
+      "cancelled": "İptal"
+    },
+    "offerForm": {
+      "title": "Teklif ver",
+      "quantity": "Miktar ({unit})",
+      "quantityHint": "En çok {max} {unit}",
+      "payer": "Kim öder?",
+      "amount": "Birim fiyat (TL/{unit}, KDV hariç)",
+      "date": "İlk teslim tarihi",
+      "message": "Not (isteğe bağlı)",
+      "submit": "Teklifi gönder"
+    },
+    "listingForm": {
+      "title": "Yeni ilan",
+      "kind": "İlan türü",
+      "titleField": "Başlık",
+      "titleHint": "Örnek: Pamuklu kesim artığı, haftalık",
+      "quantity": "Miktar",
+      "unit": "Birim",
+      "recurrence": "Tekrar",
+      "recurrenceHint": "Tekrarlı ilanda miktar her teslim içindir.",
+      "windowStart": "Uygunluk başlangıcı",
+      "windowEnd": "Uygunluk bitişi",
+      "silk": "İpek",
+      "composition": "Lif bileşimi (%)",
+      "compositionHint": "Toplam en fazla 100. Boş kalan pay bilinmiyor sayılır.",
+      "payer": "Kim öder?",
+      "amount": "Birim fiyat (TL, KDV hariç)",
+      "amountHint": "Fiyatı bilmiyorsanız “Fiyat bilinmiyor” seçin.",
+      "location": "Konum, kurumunuzun ilçe düzeyindeki profilinden alınır.",
+      "submit": "İlanı yayımla"
+    },
+    "notices": {
+      "created": "İlan yayımlandı.",
+      "offered": "Teklifiniz gönderildi.",
+      "accepted": "Teklif kabul edildi; anlaşma ve teslim planı oluştu.",
+      "rejected": "Teklif reddedildi.",
+      "withdrawn": "Teklif geri çekildi.",
+      "closed": "İlan kapatıldı."
+    },
+    "errors": {
+      "unauthenticated": "Oturumunuz kapanmış; yeniden giriş yapın.",
+      "forbidden": "Bu rol bu işlemi yapamaz.",
+      "invalid": "Girdiyi denetleyin.",
+      "not_found": "Kayıt bulunamadı.",
+      "listing_closed": "İlan kapalı.",
+      "own_listing": "Kendi ilanınıza teklif veremezsiniz.",
+      "unit_mismatch": "Birim bu ilan türüne uymuyor.",
+      "quantity_invalid": "Miktar sıfırdan büyük olmalı.",
+      "quantity_exceeds": "Miktar ilandakini aşıyor.",
+      "date_past": "Tarih geçmişte olamaz.",
+      "date_outside_window": "Tarih ilanın uygunluk penceresi dışında.",
+      "composition_invalid": "Lif yüzdelerinin toplamı en fazla 100 olmalı.",
+      "window_invalid": "Pencere başlangıcı bitişten sonra olamaz.",
+      "panel_fields": "Panel ilanında lif bileşimi ve ipek alanı olmaz.",
+      "not_owner": "Bu işlemi yalnızca kaydın sahibi yapabilir.",
+      "offer_not_open": "Teklif artık açık değil."
+    }
+  },
+  "currency": {
+    "TRY": "TL",
+    "EUR": "€",
+    "USD": "$"
+  },
+  "taxBasis": {
+    "excl_vat": "KDV hariç",
+    "incl_vat": "KDV dahil"
   }
 }

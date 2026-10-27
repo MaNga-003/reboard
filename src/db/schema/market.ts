@@ -74,7 +74,8 @@ export const deliveries = pgTable("deliveries", {
     .references(() => deals.id, { onDelete: "cascade" }),
   plannedAt: ts("planned_at").notNull(),
   deliveredAt: ts("delivered_at"),
-  plannedKg: kg("planned_kg").notNull(),
+  // m² panel teslimi için kütle bilinmiyor (yoğunluk ölçülmedi): null kalır, 0 yazılmaz.
+  plannedKg: kg("planned_kg"),
   carrierName: text("carrier_name"),
   status: deliveryStatus("status").notNull().default("planned"),
   ...classified(),
