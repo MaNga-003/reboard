@@ -36,6 +36,13 @@
       "when": 1793078958076,
       "tag": "0004_teslim_kutlesi_bos",
       "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "7",
+      "when": 1793120333339,
+      "tag": "0005_saas_kurulum",
+      "breakpoints": true
     }
   ]
 }

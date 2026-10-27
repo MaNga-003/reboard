@@ -5,7 +5,9 @@ import { migrate } from "drizzle-orm/pglite/migrator";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
 import { createPgliteDb } from "@/db/client";
 import * as schema from "@/db/schema";
-import { appTables, buildDemo, seedDemo } from "@/db/seed";
+import { saasCostData } from "@/db/repo/saas";
+import { withTenant } from "@/db/repo/tenant";
+import { appTables, buildDemo, seedDemo, seedPrices } from "@/db/seed";
 import { DEMO_USERS, demoId } from "@/db/seed/demo";
 import { Decimal } from "@/domain/result";
 import { balanceNoteMissing, genealogy, massBalance, verifyChain, type ChainedEvent } from "@/domain/traceability";
@@ -183,6 +185,34 @@ describe("demo seed", () => {
     expect(again).toEqual(Object.fromEntries(Object.entries(counts).filter(([k]) => k !== "account")));
     expect(await count("account")).toBe(0);
     expect(await head()).toBe(before);
+  });
+
+  it("SaaS gider tablosu depodan okunur: her kurum iki kurulumu, satırların kaynağını ve kuru görür (T2.6)", async () => {
+    const orgs = await db.select({ id: schema.organization.id }).from(schema.organization);
+    for (const { id } of orgs) {
+      const d = await saasCostData(withTenant(db, id));
+      expect(d.stages.map((s) => s.stage)).toEqual(["demo", "commercial"]);
+      expect(d.usdTry?.value).toBe("49.552300");
+      expect(d.rows.size).toBe(buildDemo(NOW).saasCosts.length);
+      const commercial = d.stages[1];
+      expect(commercial.monthly.atLeast?.toString()).toBe("991.046");
+      expect(commercial.monthly.unknown).toEqual(["domain"]);
+      expect(d.rows.get("neon_launch_compute")?.unitPrice).toBe("0.106000");
+    }
+  });
+
+  it("fiyat yenileme yalnızca saas_costs satırlarını değiştirir; zincir ve öbür tablolar aynı kalır", async () => {
+    const head = async () => (await client.query<{ h: string }>(`select string_agg(hash, ',' order by org_id, seq) as h from custody_events`)).rows[0].h;
+    const others = appTables().filter((t) => t !== "saas_costs");
+    const snapshot = async () => Object.fromEntries(await Promise.all(others.map(async (t) => [t, await count(t)] as const)));
+    const [h0, c0] = [await head(), await snapshot()];
+    const ids0 = (await db.select({ id: schema.saasCosts.id }).from(schema.saasCosts)).map((r) => r.id);
+    expect(await seedPrices(db, NOW)).toBe(buildDemo(NOW).saasCosts.length);
+    expect(await head()).toBe(h0);
+    expect(await snapshot()).toEqual(c0);
+    const ids1 = (await db.select({ id: schema.saasCosts.id }).from(schema.saasCosts)).map((r) => r.id);
+    expect(ids1).toHaveLength(ids0.length);
+    expect(ids1.filter((i) => ids0.includes(i))).toEqual([]);
   });
 
   it("sıfırlama dışında TRUNCATE hâlâ reddedilir", async () => {

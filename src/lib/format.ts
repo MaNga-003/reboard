@@ -41,3 +41,6 @@ export function fmtMoney(v: Decimal, locale: string) {
   const digits = v.isInteger() ? 0 : 2;
   return new Intl.NumberFormat(tag(locale), { minimumFractionDigits: digits, maximumFractionDigits: digits }).format(Number(v.toString()));
 }
+
+/** Sayılan öğeler: "a, b ve c" / "a, b and c". */
+export const fmtList = (items: readonly string[], locale: string) => new Intl.ListFormat(tag(locale), { type: "conjunction" }).format(items);

@@ -774,5 +774,61 @@
       "negative": "Olumsuz senaryo"
     },
     "m2": "{value} m²"
+  },
+  "saasCosts": {
+    "title": "SaaS giderleri",
+    "intro": "Platformun kendi gideri: bugünkü demo kurulumu ve ilk ücretli müşteriyle geçilecek kurulum. Her fiyat sağlayıcının resmî sayfasından okundu; satırda kaynağı ve okunma tarihi var. Dolar fiyatları kurla TL'ye çevrilir. Bir kalem bilinmiyorsa toplam da bilinmiyor; bilinen kalemlerin toplamı yalnızca alt sınır olarak yazılır.",
+    "fx": "Kur: {rate} TL/USD, {date} döviz satış",
+    "fxSource": "Kaynak: TCMB",
+    "fxMissing": "Kur bilinmiyor; dolar fiyatları TL'ye çevrilemedi.",
+    "empty": "Fiyat satırı yok. Fiyatlar yeniden yüklenince tablo görünür.",
+    "stages": {
+      "demo": {
+        "title": "Bugün: demo kurulumu",
+        "intro": "Ücretsiz planlar. Vercel Hobby yalnızca kişisel ve ticari olmayan kullanım içindir; ilk ücretli müşteriyle aşağıdaki kuruluma geçilir."
+      },
+      "commercial": {
+        "title": "İlk ücretli müşteriyle",
+        "intro": "Ticari kullanım Vercel Pro ister. Veritabanı kullandıkça ödenir; müşteri başına düşen pay kullanım ölçülünce yazılır."
+      }
+    },
+    "monthly": "Aylık sabit gider",
+    "perCustomer": "Müşteri başı aylık gider",
+    "tryMonth": "{amount} TL/ay",
+    "atLeast": "en az {amount} TL/ay",
+    "unknownItems": "Bilinmeyen: {items}.",
+    "columns": {
+      "item": "Kalem",
+      "monthly": "Aylık sabit",
+      "perCustomer": "Müşteri başı",
+      "source": "Kaynak"
+    },
+    "amount": "{amount} {currency}",
+    "unitPrice": "Kullanıma bağlı: {amount} {currency}/{unit}",
+    "retrieved": "Okunma: {date}",
+    "noVendor": "Sağlayıcı seçilmedi",
+    "items": {
+      "hosting": "Barındırma",
+      "database": "Veritabanı",
+      "database_compute": "Veritabanı işlem gücü",
+      "database_storage": "Veritabanı depolama",
+      "map_tiles": "Harita altlığı",
+      "ci": "Sürekli entegrasyon (CI)",
+      "domain": "Alan adı"
+    },
+    "units": {
+      "cu_hour": "CU-saat",
+      "gb_month": "GB-ay"
+    },
+    "notes": {
+      "vercel_hobby": "Yalnızca kişisel ve ticari olmayan kullanım. Ayda 100 GB veri aktarımı, 1 milyon işlev çağrısı ve 4 saat CPU dahil.",
+      "neon_free": "Proje başına 100 CU-saat işlem ve 1 GB depolama. Süreli deneme değil, kart gerekmez.",
+      "openfreemap": "Genel sunucu: görüntüleme ve istek sınırı yok, kayıt ve anahtar yok, ticari kullanım serbest. Bağışla yürür.",
+      "github_actions": "Açık depoda standart GitHub çalıştırıcıları ücretsiz.",
+      "vercel_pro": "Ticari kullanım Pro ister. 1 geliştirici koltuğu; 20 USD kullanım kredisi dahil. Kredi aşılırsa kullanım ücreti işler; müşteri başına düşen pay kullanım ölçülünce yazılır.",
+      "neon_launch_compute": "Aylık asgari ücret yok; kullandıkça ödenir. Müşteri başına düşen pay kullanım ölçülünce yazılır.",
+      "neon_launch_storage": "Kullandıkça ödenir. Müşteri başına düşen pay veri büyüklüğü ölçülünce yazılır.",
+      "domain": "Alan adı seçilmedi (açık soru Q-4). Fiyat uzantıya ve kayıt firmasına göre değişir; müşteri sayısıyla değişmez."
+    }
   }
 }

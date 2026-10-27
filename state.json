@@ -1,7 +1,7 @@
 {
   "$schema": "./docs/state.schema.json",
   "project": "ReBoard SaaS platformu",
-  "updated_at": "2026-10-27T19:51:00+03:00",
+  "updated_at": "2026-10-27T20:16:00+03:00",
   "current_phase": "F2",
   "deadlines": {
     "demo_freeze": "2026-10-29T18:00:00+03:00",
@@ -292,14 +292,18 @@
       "id": "T2.6",
       "phase": "F2",
       "mode": "otonom",
-      "status": "yapılacak",
+      "status": "sürüyor",
       "title": "SaaS gider hesabı (saas_costs), tarihli resmî fiyat kaynaklarıyla",
       "acceptance": "Aylık sabit ve müşteri başı gider tablosu; her fiyatta kaynak URL'si ve tarih bulunur",
       "evidence": null,
       "depends_on": [
         "T1.1"
       ],
-      "decisions": []
+      "decisions": [
+        "D-002",
+        "D-011",
+        "D-027"
+      ]
     },
     {
       "id": "T3.1",
@@ -616,8 +620,8 @@
       "id": "M-5",
       "claim": "Hesaplar doğru",
       "threshold": "para birimi/vergi temeli uyuşmazlığı hata; boş girdi null; src/domain kapsamı ≥ %90",
-      "last_value": "389/389 test (birim ve entegrasyon); src/domain kapsamı satır %100, dal %98,6, fonksiyon %99,6 (impact.ts dal %88,9, supply.ts %96,6, synthetic-scenario.ts %95,8, passport.ts %97,1); eşik %90",
-      "measured_at": "2026-10-27T19:45:00+03:00",
+      "last_value": "398/398 test (birim ve entegrasyon); src/domain kapsamı satır %100 (605/605), dal %98,6, fonksiyon %99,6; eşik %90",
+      "measured_at": "2026-10-27T20:16:00+03:00",
       "test": "tests/unit/calc"
     },
     {
@@ -672,24 +676,24 @@
       "id": "M-12",
       "claim": "Erişilebilir",
       "threshold": "0 ciddi/kritik axe ihlali; dokunma hedefi ≥ 44×44 px",
-      "last_value": "/tr, /en, giriş, panel (TR ve EN, tablolar açık), pazar listesi, ilan ayrıntısı, yeni ilan, izlenebilirlik sayfaları, açık pasaport (sağlam ve bozuk), senaryo (rapor, olumsuz, EN): 0 ciddi/kritik ihlal; 5 genişlikte 44 px altı hedef 0; projeksiyon klavyeyle gezilir (Home/End, aria-live)",
-      "measured_at": "2026-10-27T19:45:00+03:00",
+      "last_value": "/tr, /en, giriş, panel (TR ve EN, tablolar açık), pazar listesi, ilan ayrıntısı, yeni ilan, izlenebilirlik sayfaları, açık pasaport (sağlam ve bozuk), senaryo (rapor, olumsuz, EN): 0 ciddi/kritik ihlal; 5 genişlikte 44 px altı hedef 0; projeksiyon klavyeyle gezilir (Home/End, aria-live); SaaS gider tablosu TR ve EN 0 ihlal, 0 küçük hedef",
+      "measured_at": "2026-10-27T20:16:00+03:00",
       "test": "tests/e2e/smoke.spec.ts, tests/e2e/auth.spec.ts, tests/e2e/market.spec.ts, tests/e2e/trace.spec.ts, tests/e2e/panel.spec.ts, tests/e2e/passport.spec.ts, tests/e2e/scenario.spec.ts"
     },
     {
       "id": "M-13",
       "claim": "Yerleşim bozulmaz",
       "threshold": "0 px sayfa taşması; main içerik kutusundan taşan 0 öğe; kaydırılan kaptan kaçan 0 mutlak konumlu öğe",
-      "last_value": "giriş, panel, pazar, izlenebilirlik, pasaport ve senaryo; 5 genişlik: 0 px, 0 öğe, 0 kaçak. Panel bulgusu: sr-only'nin -1 px kenar boşluğu ipucu metnini 1 px taşırıyordu, düzeltildi",
-      "measured_at": "2026-10-27T19:45:00+03:00",
+      "last_value": "giriş, panel, pazar, izlenebilirlik, pasaport ve senaryo; 5 genişlik: 0 px, 0 öğe, 0 kaçak. Panel bulgusu: sr-only'nin -1 px kenar boşluğu ipucu metnini 1 px taşırıyordu, düzeltildi; SaaS tablosu kabı 5 genişlikte 0 px kayar, kaynak bağlantıları görünür alanda",
+      "measured_at": "2026-10-27T20:16:00+03:00",
       "test": "tests/e2e/smoke.spec.ts, tests/e2e/auth.spec.ts, tests/e2e/market.spec.ts, tests/e2e/trace.spec.ts, tests/e2e/panel.spec.ts, tests/e2e/passport.spec.ts, tests/e2e/scenario.spec.ts"
     },
     {
       "id": "M-14",
       "claim": "Çeviri tam",
       "threshold": "0 eksik anahtar",
-      "last_value": "0 eksik (604 yaprak anahtar)",
-      "measured_at": "2026-10-27T19:45:00+03:00",
+      "last_value": "0 eksik (644 yaprak anahtar)",
+      "measured_at": "2026-10-27T20:16:00+03:00",
       "test": "tests/unit/i18n.test.ts"
     },
     {
@@ -736,8 +740,8 @@
       "id": "M-20",
       "claim": "Demo verisi dürüst ve tutarlı",
       "threshold": "boş tablo yalnız invitation/session/verification; synthetic dışı sınıf yalnız kaynaklı satırlarda; zincir ve kütle dengesi ok; 0 hatalı tahsis",
-      "last_value": "16/16 test; 369 satır (9 kullanıcı); 63 olay 5 zincirde ok; 1/5 parti tolerans dışı ve açıklamalı; bozma 2/2",
-      "measured_at": "2026-10-27T08:20:35+03:00",
+      "last_value": "18/18 test; 374 satır (9 kullanıcı); 63 olay 5 zincirde ok; 1/5 parti tolerans dışı ve açıklamalı; bozma 2/2; fiyat yenileme zinciri değiştirmez",
+      "measured_at": "2026-10-27T20:16:00+03:00",
       "test": "tests/integration/seed.test.ts"
     },
     {
@@ -803,6 +807,14 @@
       "last_value": "birim 12/12, E2E 6/6 (tam paket 66/66, 3 ardışık koşu); mutasyon alan 16/16, arayüz 5/5",
       "measured_at": "2026-10-27T19:45:00+03:00",
       "test": "tests/unit/calc/scenario.test.ts, tests/e2e/scenario.spec.ts"
+    },
+    {
+      "id": "M-29",
+      "claim": "SaaS gider tablosu doğru, kaynaklı ve dürüst",
+      "threshold": "beklenen değer fiyat sayfasından ve kurdan; bilinmeyen 0 olmaz; her satırda https kaynak ve tarih; tablo kabı 0 px kayar; 0 ciddi a11y ihlali",
+      "last_value": "birim 7/7, entegrasyon 2 yeni, E2E 7/7 (tam paket 67/67); mutasyon alan/seed/depo 18/18, arayüz 4/4, yerleşim ölçüsü eski yerleşimde 14 bulgu; canlı denetim yerelde yeşil, canlı yayın bekliyor",
+      "measured_at": "2026-10-27T20:16:00+03:00",
+      "test": "tests/unit/calc/saas-costs.test.ts, tests/integration/seed.test.ts, tests/e2e/scenario.spec.ts, scripts/live-smoke.mjs"
     }
   ]
 }

@@ -70,6 +70,8 @@ pnpm deploy:prod      # Vercel'e yayın (yalnızca .vercelignore izin listesi y�
 pnpm live:check       # canlı denetim; TT Güvenli İnternet yüzünden: gh workflow run live-smoke.yml
 pnpm db:seed          # sentetik demo verisi (yerel PGlite; DEMO_MODE=true ister, tabloları boşaltır)
 pnpm db:seed:live     # aynı veriyi Neon'a yükler (.env.local + .env.neon)
+pnpm db:prices        # yalnızca SaaS fiyat satırlarını yeniler (yerel; zincire dokunmaz)
+pnpm db:prices:live   # aynı satırları Neon'da yeniler (.env.neon)
 pnpm docs:check       # belge tutarlılığı
 pnpm progress         # faz faz biten görevler ve ilerleme oranı (mesai sonu raporu)
 pnpm story:render     # Blender ile kareleri render et (story/blender)

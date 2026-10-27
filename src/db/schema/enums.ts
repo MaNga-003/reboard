@@ -21,3 +21,5 @@ export const distanceKind = pgEnum("distance_kind", ["crow_flies", "road"]);
 export const costCategory = pgEnum("cost_category", ["material", "binder", "energy", "labor", "operations", "fixed", "depreciation", "transport", "other"]);
 export const transactionKind = pgEnum("transaction_kind", ["panel_sale", "gate_fee", "service", "waste_purchase", "subscription"]);
 export const buyerProduct = pgEnum("buyer_product", ["particleboard", "mdf", "reboard"]);
+// SaaS gider kalemi hangi kurulumda geçerli: bugünkü demo, ilk ücretli müşteriyle ticari ya da ikisi (D-027).
+export const saasStage = pgEnum("saas_stage", ["demo", "commercial", "both"]);

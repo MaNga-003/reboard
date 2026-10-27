@@ -117,6 +117,7 @@ Ekranın parçaları:
 - **Kırmızı:** zarar eden taraf ve oluşmayan fiyat koridoru. Kutunun üst çizgisi kırmızı olur, "Zarar" ya da "Koridor yok" çipi ve nedenini anlatan cümle eklenir. Kırmızı sonuç sayısı ekran okuyucuya okunur.
 - **Bilinmeyen ve geçersiz girdi:** boş alan bilinmiyor sayılır, ona dayanan sonuç "bilinmiyor" yazar. Geçersiz alanın altında nedeni yazar ve alan bilinmiyor sayılır.
 - **Karşılaştırma tablosu:** rapor örneği ile olumsuz senaryo yan yana. Olumsuz senaryo gizlenmez; hesaplayıcıya dokunulmasa da görünür.
+- **SaaS giderleri** (D-027): platformun kendi işletme gideri iki kurulum için ayrı tabloda durur: bugünkü demo kurulumu ve ticari kurulum. Her kurulumun aylık sabit ve müşteri başı toplamı TL olarak yazar. Bilinmeyen kalem varsa toplam "bilinmiyor" ya da "en az …" olur ve bilinmeyen kalemler adıyla listelenir. Her satırda kaynak bağlantısı ve okunma tarihi, tablonun üstünde TCMB kuru bulunur.
 
 ## 4. MVP kapsamı (30 Ekim demosu)
 

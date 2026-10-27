@@ -139,7 +139,7 @@ Hata yanıtları: okunamayan çapada 400 `{error: "anchor_invalid"}`; lot yoksa 
 | `cost_lines` | Üretim gider kalemleri: malzeme, enerji, işçilik, sabit gider, amortisman |
 | `buyer_trials` | Alıcının eşdeğer ürün gideri: sunta, MDF |
 | `transactions` | Gerçek ya da demo satış ve kabul işlemleri |
-| `saas_costs` | Platform giderleri: barındırma, veritabanı, alan adı; kaynak URL'si ve tarihiyle |
+| `saas_costs` | Platform giderleri, kurulum kurulum (D-027): barındırma, veritabanı, harita, CI, alan adı; kaynak URL'si ve okunma tarihiyle |
 | `model_inputs` | Senaryo girdileri. Seed anahtarları senaryo alan adlarının yılan biçimidir (`wasteT` → `waste_t`, `panelPricePerM2` → `panel_price_per_m2`); tedarik eşikleri ve günlük ihtiyaç kendi anahtarlarıyla durur |
 | `calc_runs` | Formül sürümü, girdi hash'i, çıktılar ve sonuç sınıfı |
 
@@ -181,6 +181,23 @@ Tanımlar maliyet raporundan birebir alınmıştır (D-002). Her sonuç `{value,
 - **Kesim verimi:** ekranda 0–100, hesapta 0–1. Kullanılabilir alan = satılabilir alan × kesim verimi.
 - **Boş ve geçersiz girdi:** boş alan `null` olur. Kabul edilen biçim en çok 12 hane ve 4 ondalıktır; ayırıcı nokta ya da virgül olabilir. Eksi, harf, boşluklu sayı ve %100'ü aşan yüzde geçersizdir; geçersiz alan da `null` sayılır.
 - **Kırmızı gösterilen sonuç:** bilinen ve sıfırdan küçük sonuç (zarar) ile alt sınırın üst sınırı aştığı fiyat koridoru. `null` zarar sayılmaz.
+
+**SaaS gider tablosu** (`saas_costs`, D-027). Hesap `saasStageSummary` (`src/domain/calc/saas-costs.ts`).
+
+| Kolon | Anlamı |
+| --- | --- |
+| `key` | Benzersiz kalem anahtarı; arayüzde açıklama notunun çeviri anahtarı (`saasCosts.notes.<key>`) |
+| `stage` | `demo`, `commercial` ya da ikisinde de geçen `both` |
+| `item` | `hosting`, `database`, `database_compute`, `database_storage`, `map_tiles`, `ci`, `domain` (çeviri anahtarı) |
+| `vendor`, `plan` | Sağlayıcı ve plan; seçilmediyse `null` ("Sağlayıcı seçilmedi") |
+| `monthly_cost` | Aylık sabit tutar. Kullanıma bağlıysa ya da seçilmediyse `null`; 0 yalnızca ücretsiz plan içindir |
+| `per_customer_monthly` | Müşteri başı aylık tutar; bilinmiyorsa `null` |
+| `unit_price`, `usage_unit` | Kullanıma bağlı birim fiyat ve birimi (`cu_hour`, `gb_month`); ikisi birlikte gelir |
+| `currency`, `tax_basis` | `USD` ya da `TRY`; bir kurulumda tek vergi temeli |
+| `source_url`, `retrieved_at` | https kaynak ve okunma tarihi; ikisi de ekranda yazar |
+
+- **Toplam:** kurulumun aylık sabit ve müşteri başı toplamı TL'dir; USD kalemler `usd_try` ile çevrilir. Bilinmeyen kalem varsa toplam `null`; bilinen kısım sıfırdan büyükse alt sınır ("en az") olarak yazılır ve bilinmeyen kalemler listelenir. Kur yoksa USD kalemli toplam `null`.
+- **Seed değerleri** (27 Ekim 2026): demo kurulumu 0 TL/ay; ticari kurulum en az 991,05 TL/ay (Vercel Pro 20 USD × 49,5523), bilinmeyen alan adı; ticari müşteri başı gider bilinmiyor.
 
 ## 7. Referans değerler (`reference_values`)
 

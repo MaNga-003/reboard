@@ -83,3 +83,16 @@ export async function seedDemo(db: Db, { now = new Date(), password, env = proce
   });
   return counts;
 }
+
+/**
+ * Yalnızca kaynaklı fiyat satırlarını (saas_costs) seed'deki hâliyle yeniler. Zincire, kurum verisine ve kura dokunmaz;
+ * bu yüzden canlıda pasaport hash'leri değişmeden çalıştırılabilir (D-027). Silme ve ekleme tek işlemdedir.
+ */
+export async function seedPrices(db: Db, now = new Date()) {
+  const rows = buildDemo(now).saasCosts;
+  await db.transaction(async (tx) => {
+    await tx.delete(schema.saasCosts);
+    await tx.insert(schema.saasCosts).values(rows);
+  });
+  return rows.length;
+}

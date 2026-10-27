@@ -2,7 +2,7 @@
 import { jsonb, numeric, pgTable, text, uuid } from "drizzle-orm/pg-core";
 import { organization } from "./auth";
 import { classified, id, kg, money, moneyMeta, orgId, ts } from "./common";
-import { buyerProduct, costCategory, distanceKind, transactionKind, unit } from "./enums";
+import { buyerProduct, costCategory, distanceKind, saasStage, transactionKind, unit } from "./enums";
 import { deals } from "./market";
 import { evidenceRegister, productionBatches } from "./trace";
 
@@ -76,14 +76,21 @@ export const transactions = pgTable("transactions", {
   ...classified(),
 });
 
-// Platform giderleri: kurumdan bağımsız; fiyatlar resmî sayfadan, tarihiyle.
+// Platform giderleri: kurumdan bağımsız; fiyatlar resmî sayfadan, tarihiyle (D-027).
+// item ve key ekranda çeviri anahtarıdır; satırın açıklaması messages/*.json içinde durur.
 export const saasCosts = pgTable("saas_costs", {
   id: id(),
+  key: text("key").notNull().unique(),
+  stage: saasStage("stage").notNull(),
   item: text("item").notNull(),
-  vendor: text("vendor").notNull(),
+  // Seçilmemiş sağlayıcı (ör. alan adı) boş kalır.
+  vendor: text("vendor"),
   plan: text("plan"),
   monthlyCost: money("monthly_cost"),
   perCustomerCost: money("per_customer_cost"),
+  // Kullanıma bağlı kalemin birim fiyatı; 0,106 USD/CU-saat gibi kuruştan küçük fiyatlar için 6 hane.
+  unitPrice: numeric("unit_price", { precision: 14, scale: 6 }),
+  usageUnit: text("usage_unit"),
   ...moneyMeta(),
   sourceUrl: text("source_url").notNull(),
   retrievedAt: ts("retrieved_at").notNull(),

@@ -1,4 +1,4 @@
-// Canlı yayının hızlı denetimi: yönlendirme, iki dil, kimlik ucu, giriş akışı, pazar yeri, izlenebilirlik, panel, pasaport, senaryo, fonksiyon bölgesi ve güvenlik başlıkları.
+// Canlı yayının hızlı denetimi: yönlendirme, iki dil, kimlik ucu, giriş akışı, pazar yeri, izlenebilirlik, panel, pasaport, senaryo, SaaS giderleri, fonksiyon bölgesi ve güvenlik başlıkları.
 // Yalnızca okur; canlı veritabanına yazmaz.
 // Türk Telekom "Güvenli İnternet" *.vercel.app'i yönlendirdiği için GitHub Actions'ta çalışır (live-smoke.yml).
 // Kullanım: node scripts/live-smoke.mjs [https://adres]
@@ -120,7 +120,9 @@ if (process.env.DEMO_PASSWORD) {
   }
   // Senaryo (T2.5, D-026): rapor sayıları sunucuda da aynı; olumsuz senaryo karşılaştırmada tek kırmızı hücre.
   const scenario = await fetch(base + "/tr/senaryo", { redirect: "manual", headers: { cookie: prodCookie, "user-agent": "reboard-live-smoke" } });
-  const scenarioHtml = await scenario.text();
+  const scenarioPage = await scenario.text();
+  // Sayfanın altındaki SaaS gider tablosu kaynaklı tahmindir; senaryo sınıfı ondan önceki bölümde sayılır.
+  const [scenarioHtml, saasHtml = ""] = scenarioPage.split('aria-labelledby="sc-saas"');
   const scenarioKpis = (scenarioHtml.match(/data-kpi="scenario-/g) ?? []).length;
   const scenarioClasses = new Set([...scenarioHtml.matchAll(/data-result-class="([a-z_]+)"/g)].map((m) => m[1]));
   const redCells = (scenarioHtml.match(/data-cell="negative" data-alert="true"/g) ?? []).length;
@@ -128,6 +130,18 @@ if (process.env.DEMO_PASSWORD) {
     scenario.status === 200 && scenarioKpis === 5 && scenarioClasses.size === 1 && scenarioClasses.has("synthetic") && scenarioHtml.includes("222,50 – 271,11 TL/m²") && redCells === 1,
     "girişli /tr/senaryo: 5 sonuç, hepsi Sentetik, koridor rapordaki gibi, olumsuz senaryoda 1 kırmızı",
     `${scenario.status} · ${scenarioKpis} sonuç · ${[...scenarioClasses].join(",")} · ${redCells} kırmızı`,
+  );
+  // SaaS gider tablosu (T2.6, D-027): 4 toplam kutusu, 10 satır, her satırda https kaynak ve okunma tarihi; alt sınır yazılır.
+  const saasKpis = (saasHtml.match(/data-kpi="saas-/g) ?? []).length;
+  const saasClasses = new Set([...saasHtml.matchAll(/data-result-class="([a-z_]+)"/g)].map((m) => m[1]));
+  const saasLines = (saasHtml.match(/data-line="/g) ?? []).length;
+  const saasSources = (saasHtml.match(/data-source[^>]*>(?:(?!<\/th>).)*?<a href="https:\/\//gs) ?? []).length;
+  // Aynı metin RSC verisinde de geçer; yalnızca öğe içindeki metin sayılır.
+  const saasDates = (saasHtml.match(/>Okunma: 27 Eki 2026</g) ?? []).length;
+  check(
+    saasKpis === 4 && saasClasses.size === 1 && saasClasses.has("sourced_estimate") && saasLines === 10 && saasSources === 10 && saasDates === 10 && saasHtml.includes("en az 991,05 TL/ay"),
+    "girişli /tr/senaryo SaaS giderleri: 4 toplam, 10 satır, hepsi kaynaklı ve tarihli; ticari sabit gider en az 991,05 TL/ay",
+    `${saasKpis} toplam · ${[...saasClasses].join(",")} · ${saasLines} satır · ${saasSources} kaynak · ${saasDates} tarih`,
   );
   await post("/api/auth/sign-out", {}, prodCookie);
 } else {

@@ -21,6 +21,8 @@
     "db:migrate:live": "tsx --env-file=.env.neon scripts/db-migrate.ts",
     "db:seed": "tsx --env-file-if-exists=.env.local scripts/db-seed.ts",
     "db:seed:live": "tsx --env-file=.env.local --env-file=.env.neon scripts/db-seed.ts",
+    "db:prices": "tsx --env-file-if-exists=.env.local scripts/db-prices.ts",
+    "db:prices:live": "tsx --env-file=.env.neon scripts/db-prices.ts",
     "deploy:prod": "vercel deploy --prod",
     "live:check": "node scripts/live-smoke.mjs"
   },

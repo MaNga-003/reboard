@@ -136,6 +136,24 @@ Biçim: **Karar**, **Neden**, **Tarih**, kararı kim verdi (K: kullanıcı, C: C
 - **Neden:** Yarışmadan sonra şirketleşme seçeneği açık kalır. Sonradan açık lisansa geçmek kolaydır; yayımlanmış bir sürümü geri kapatmak mümkün değildir.
 - **Tarih:** 2026-10-27 · K
 
+### D-027 — SaaS gider tablosu: iki kurulum, kaynaklı fiyatlar, bilinmeyen kalem alt sınır yapar
+- **Karar:**
+  - `saas_costs` her satırda bir kalem tutar: benzersiz `key` (çeviri anahtarı da budur), kurulum (`demo`, `commercial`; ikisinde de geçerse `both`), kalem türü, sağlayıcı ve plan, aylık sabit tutar, müşteri başı aylık tutar, kullanıma bağlı birim fiyat ve birimi, para birimi, vergi temeli, kaynak URL'si, okunma tarihi ve sonuç sınıfı.
+  - Fiyatlar 27 Ekim 2026'da resmî fiyat sayfalarından okundu; sınıf `sourced_estimate`. Her satırda https kaynak bağlantısı ve okunma tarihi ekranda yazar.
+  - Demo kurulumu: Vercel Hobby, Neon Free, OpenFreeMap, GitHub Actions; hepsi 0. Ticari kurulum: Vercel Pro 20 USD/ay; Neon Launch, kullanıma bağlı (işlem 0,106 USD/CU-saat, depolama 0,35 USD/GB-ay); OpenFreeMap; GitHub Actions; alan adı.
+  - Bilinen 0 ile bilinmeyen ayrıdır. Kullanıma bağlı ya da seçilmemiş kalemin tutarı `null` yazılır. Bilinmeyen kalem varsa toplam "bilinmiyor" olur. Bilinen kısım sıfırdan büyükse "en az" diye alt sınır olarak yazılır ve bilinmeyen kalemler adıyla listelenir.
+  - USD tutarlar TCMB `usd_try` kuruyla TL'ye çevrilir. Kur yoksa USD kalemli toplam bilinmiyor olur. Toplamın sınıfı kalemlerin ve kurun en zayıfıdır. Para birimi TL ya da USD dışındaysa, vergi temelleri karışıksa ya da tutar eksiyse hesap hata verir.
+  - Alan adı seçilmedi (Q-4); tutarı `null`.
+  - Tablo `/senaryo` sayfasının altındadır. Hesabı `src/domain/calc/saas-costs.ts` (`saasStageSummary`) yapar, satırları `src/db/repo/saas.ts` okur.
+  - Fiyatlar `pnpm db:prices` ve `pnpm db:prices:live` ile yenilenir. Bu komutlar yalnızca `saas_costs` satırlarını siler ve yeniden yazar; zincire, kurum verisine ve kura dokunmaz.
+  - Migrasyon 0005 eski serbest metinli üç satırı siler.
+- **Neden:**
+  - Ekip planındaki SaaS teslimi "SaaS gider hesabı"dır; jüri platformun kendi işletme giderini sorabilir. Tarih ve kaynak, fiyat sayfası değişince sayının neden farklı olduğunu açıklar.
+  - Kullanıma bağlı gideri 0 saymak ticari gideri olduğundan düşük gösterirdi (D-011). Alt sınır bilineni gizlemez, bilinmeyeni de saklamaz.
+  - Fiyat yenilemesi tam seed gerektirseydi pasaport hash'leri ve basılı QR'lar değişirdi.
+  - Eski satırların yeni zorunlu kolonlarını (`key`, `stage`) tahminle doldurmak uydurma olurdu; satırlar seed'den yeniden yazılır.
+- **Tarih:** 2026-10-27 · C
+
 ### D-026 — Senaryo ekranı: tarayıcıda aynı alan işleviyle hesap, açık girdiler ve kırmızı uyarılar
 - **Karar:**
   - `/senaryo` girişle açılır. Hesap tarayıcıda, sunucudakiyle aynı alan işleviyle yapılır (`runScenario`). Girdi değişince sonuç beklemeden yenilenir. Girdiler kaydedilmez.

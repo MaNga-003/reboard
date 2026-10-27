@@ -774,5 +774,61 @@
       "negative": "Downside scenario"
     },
     "m2": "{value} m²"
+  },
+  "saasCosts": {
+    "title": "SaaS costs",
+    "intro": "The platform's own costs: today's demo setup and the setup for the first paying customer. Every price was read from the vendor's official page; each row shows its source and the date it was read. Dollar prices are converted to TL at the exchange rate. If an item is unknown, the total is unknown too; the sum of the known items is shown only as a lower bound.",
+    "fx": "Rate: {rate} TL/USD, {date} selling rate",
+    "fxSource": "Source: CBRT",
+    "fxMissing": "Exchange rate unknown; dollar prices could not be converted to TL.",
+    "empty": "No price rows. The table appears once the prices are reloaded.",
+    "stages": {
+      "demo": {
+        "title": "Today: demo setup",
+        "intro": "Free plans. Vercel Hobby is for personal, non-commercial use only; the first paying customer requires the setup below."
+      },
+      "commercial": {
+        "title": "With the first paying customer",
+        "intro": "Commercial use requires Vercel Pro. The database is pay-as-you-go; the share per customer is filled in once usage is measured."
+      }
+    },
+    "monthly": "Fixed monthly cost",
+    "perCustomer": "Monthly cost per customer",
+    "tryMonth": "{amount} TL/month",
+    "atLeast": "at least {amount} TL/month",
+    "unknownItems": "Unknown: {items}.",
+    "columns": {
+      "item": "Item",
+      "monthly": "Fixed monthly",
+      "perCustomer": "Per customer",
+      "source": "Source"
+    },
+    "amount": "{amount} {currency}",
+    "unitPrice": "Usage-based: {amount} {currency}/{unit}",
+    "retrieved": "Read: {date}",
+    "noVendor": "Vendor not chosen",
+    "items": {
+      "hosting": "Hosting",
+      "database": "Database",
+      "database_compute": "Database compute",
+      "database_storage": "Database storage",
+      "map_tiles": "Map tiles",
+      "ci": "Continuous integration (CI)",
+      "domain": "Domain name"
+    },
+    "units": {
+      "cu_hour": "CU-hour",
+      "gb_month": "GB-month"
+    },
+    "notes": {
+      "vercel_hobby": "Personal, non-commercial use only. 100 GB data transfer, 1 million function invocations and 4 hours of CPU per month included.",
+      "neon_free": "100 CU-hours of compute and 1 GB of storage per project. Not a time-limited trial; no card required.",
+      "openfreemap": "Public instance: no limit on views or requests, no sign-up and no keys, commercial use allowed. Funded by donations.",
+      "github_actions": "Standard GitHub-hosted runners are free for public repositories.",
+      "vercel_pro": "Commercial use requires Pro. One developer seat; USD 20 of usage credit included. Beyond the credit, usage is billed; the share per customer is filled in once usage is measured.",
+      "neon_launch_compute": "No monthly minimum; pay as you go. The share per customer is filled in once usage is measured.",
+      "neon_launch_storage": "Pay as you go. The share per customer is filled in once the data size is measured.",
+      "domain": "No domain chosen yet (open question Q-4). The price depends on the extension and the registrar; it does not change with the number of customers."
+    }
   }
 }

@@ -3,6 +3,7 @@
 import { expect, test, type Page } from "@playwright/test";
 import { contrastRatio } from "../../src/design/color";
 import { statusHex } from "../../src/design/tokens";
+import { buildDemo } from "../../src/db/seed/demo";
 import { REPORT_SCENARIO, formFromParams, paramsFromForm, runScenario, type ScenarioForm } from "../../src/domain/calc";
 import type { Decimal } from "../../src/domain/result";
 import { fmtMoney } from "../../src/lib/format";
@@ -42,7 +43,7 @@ test("rapor örneği: sonuçlar raporla aynı, sınıflı; SaaS bilinmiyor; form
   await expect(card(page, "reboard").locator("[data-condition=before_financing_and_tax]")).toBeVisible();
   await expect(card(page, "customer")).toContainText("850 m²");
 
-  const kpis = page.locator("[data-kpi]");
+  const kpis = page.locator('[data-kpi^="scenario-"]');
   await expect(kpis).toHaveCount(5);
   for (const k of await kpis.all()) await expect(k.locator("[data-result-class]")).toHaveAttribute("data-result-class", "synthetic");
   await expect(page.locator('[data-kpi][data-alert="true"]')).toHaveCount(0);
@@ -146,6 +147,59 @@ test("İngilizce: aynı sonuçlar, İngilizce biçim, 0 ciddi a11y ihlali", asyn
   await expect(card(page, "factory").locator("[data-result-class]")).toHaveText("Synthetic");
   await page.locator("[data-preset=negative]").click();
   await expect(card(page, "factory").locator("[data-level=danger]")).toHaveText("Loss");
+  await expect(saasValue(page, "commercial-monthly")).toHaveText("at least 991.05 TL/month");
+  await expect(saasKpi(page, "commercial-monthly").locator("[data-unknown]")).toHaveText("Unknown: Domain name.");
+  await expect(line(page, "commercial", "neon_launch_compute").locator("[data-unit-price]")).toHaveText("Usage-based: 0.106 USD/CU-hour");
+  await expect(line(page, "commercial", "domain").locator("th")).toContainText("Vendor not chosen");
+  await expect(page.locator("[data-fx]")).toContainText("Rate: 49.5523 TL/USD, 19 Oct 2026 selling rate");
+  expect(await seriousViolations(page)).toEqual([]);
+});
+
+const saasKpi = (page: Page, id: string) => page.locator(`[data-kpi="saas-${id}"]`);
+const saasValue = (page: Page, id: string) => saasKpi(page, id).locator("[data-value]");
+const line = (page: Page, stage: string, key: string) => page.locator(`[data-stage="${stage}"] tr[data-line="${key}"]`);
+
+test("SaaS gider tablosu: iki kurulum, her fiyatta kaynak ve tarih; bilinmeyen kalem toplamı bilinmiyor yapar, bilinen kısım alt sınırdır", async ({ page }) => {
+  await openScenario(page);
+  // Beklenen: Vercel Pro 20 USD × TCMB 49,5523 TL/USD = 991,046 TL (fiyat sayfası ve kur; alan işlevinden değil).
+  await expect(saasValue(page, "demo-monthly")).toHaveText("0 TL/ay");
+  await expect(saasValue(page, "demo-per-customer")).toHaveText("0 TL/ay");
+  await expect(saasValue(page, "commercial-monthly")).toHaveText("en az 991,05 TL/ay");
+  await expect(saasKpi(page, "commercial-monthly").locator("[data-unknown]")).toHaveText("Bilinmeyen: Alan adı.");
+  await expect(saasValue(page, "commercial-per-customer")).toHaveText("bilinmiyor");
+  await expect(saasKpi(page, "commercial-per-customer").locator("[data-unknown]")).toHaveText(
+    "Bilinmeyen: Barındırma, Veritabanı işlem gücü ve Veritabanı depolama.",
+  );
+  const kpis = page.locator('[data-kpi^="saas-"]');
+  await expect(kpis).toHaveCount(4);
+  for (const k of await kpis.all()) await expect(k.locator("[data-result-class]")).toHaveAttribute("data-result-class", "sourced_estimate");
+  await expect(page.locator("#sc-saas [data-result-class]")).toHaveAttribute("data-result-class", "sourced_estimate");
+
+  // Her seed satırı kendi kurulumunda (ortak satır ikisinde de) bir kez; her satırda https kaynak bağlantısı ve okunma tarihi.
+  const rows = buildDemo(new Date()).saasCosts;
+  for (const stage of ["demo", "commercial"]) {
+    const want = rows.filter((r) => r.stage === stage || r.stage === "both").map((r) => r.key);
+    const got = await page.locator(`[data-stage="${stage}"] tr[data-line]`).evaluateAll((es) => es.map((e) => e.getAttribute("data-line")));
+    expect([...got].sort(), stage).toEqual([...want].sort());
+    for (const key of want) {
+      const src = line(page, stage, key).locator("[data-source]");
+      const url = rows.find((r) => r.key === key)!.sourceUrl;
+      expect(url).toMatch(/^https:\/\//);
+      await expect(src.getByRole("link")).toHaveAttribute("href", url);
+      await expect(src.getByRole("link")).toHaveText(new URL(url).host);
+      await expect(src).toContainText("Okunma: 27 Eki 2026");
+    }
+  }
+  await expect(line(page, "commercial", "vercel_pro").locator("[data-monthly]")).toHaveText("20 USD");
+  await expect(line(page, "commercial", "vercel_pro").locator("[data-per-customer]")).toHaveText("bilinmiyor");
+  await expect(line(page, "commercial", "neon_launch_storage").locator("[data-unit-price]")).toHaveText("Kullanıma bağlı: 0,35 USD/GB-ay");
+  await expect(line(page, "commercial", "domain").locator("[data-monthly]")).toHaveText("bilinmiyor");
+  await expect(line(page, "commercial", "domain").locator("th")).toContainText("Sağlayıcı seçilmedi");
+  await expect(line(page, "demo", "vercel_hobby").locator("th")).toContainText("ticari olmayan");
+  const fx = page.locator("[data-fx]");
+  await expect(fx).toContainText("Kur: 49,5523 TL/USD, 19 Eki 2026 döviz satış");
+  await expect(fx.getByRole("link", { name: "TCMB" })).toHaveAttribute("href", /^https:\/\/www\.tcmb\.gov\.tr\//);
+  await expect(fx.locator("[data-result-class]")).toHaveAttribute("data-result-class", "sourced_estimate");
   expect(await seriousViolations(page)).toEqual([]);
 });
 
@@ -161,6 +215,19 @@ for (const locale of ["tr", "en"]) {
       expect(await gutterBreaches(page), `${width} px`).toEqual([]);
       expect(await escapedAbsolutes(page), `${width} px`).toEqual([]);
       expect(await smallTargets(page), `${width} px`).toEqual([]);
+      // SaaS tablosu kendi içinde de kaymaz: kaynak bağlantısı her genişlikte kaydırmadan görünür (T2.6).
+      const hidden = await page.locator("[data-stage] [role=region]").evaluateAll((rs) =>
+        rs.flatMap((r) => {
+          const box = r.getBoundingClientRect();
+          const out = r.scrollWidth - r.clientWidth > 0 ? [`${r.getAttribute("aria-label")} ${r.scrollWidth - r.clientWidth} px kayıyor`] : [];
+          for (const a of r.querySelectorAll("[data-source] a")) {
+            const b = a.getBoundingClientRect();
+            if (b.left < box.left || b.right > box.right) out.push(`${a.textContent} görünür alanın dışında`);
+          }
+          return out;
+        }),
+      );
+      expect(hidden, `${width} px`).toEqual([]);
     }
   });
 }
