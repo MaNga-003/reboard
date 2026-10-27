@@ -1,4 +1,4 @@
-// Canlı yayının hızlı denetimi: yönlendirme, iki dil, kimlik ucu, giriş akışı, pazar yeri, izlenebilirlik, fonksiyon bölgesi ve güvenlik başlıkları.
+// Canlı yayının hızlı denetimi: yönlendirme, iki dil, kimlik ucu, giriş akışı, pazar yeri, izlenebilirlik, panel, fonksiyon bölgesi ve güvenlik başlıkları.
 // Yalnızca okur; canlı veritabanına yazmaz.
 // Türk Telekom "Güvenli İnternet" *.vercel.app'i yönlendirdiği için GitHub Actions'ta çalışır (live-smoke.yml).
 // Kullanım: node scripts/live-smoke.mjs [https://adres]
@@ -77,6 +77,21 @@ if (process.env.DEMO_PASSWORD) {
   const missing = await fetch(base + noEvidence, { redirect: "manual", headers: { cookie, "user-agent": "reboard-live-smoke" } });
   check(missing.status === 404, "girişli, var olmayan kanıt 404", missing.status);
   await post("/api/auth/sign-out", {}, cookie);
+
+  // Panel (T2.3): üretici etki ve tedarik göstergelerini görür; her gösterge sınıf rozetli ve sentetik (D-011, D-024).
+  const prod = await post("/api/auth/sign-in/email", { email: "reboard@demo.reboard.example", password: process.env.DEMO_PASSWORD });
+  const prodCookie = prod.headers.getSetCookie().map((c) => c.split(";")[0]).join("; ");
+  check(prod.status === 200 && prodCookie.length > 0, "demo girişi (ReBoard Pilot Tesisi)", prod.status);
+  const prodPanel = await fetch(base + "/tr/panel", { redirect: "manual", headers: { cookie: prodCookie, "user-agent": "reboard-live-smoke" } });
+  const prodHtml = await prodPanel.text();
+  const kpis = (prodHtml.match(/data-kpi="/g) ?? []).length;
+  const classes = new Set([...prodHtml.matchAll(/data-result-class="([a-z_]+)"/g)].map((m) => m[1]));
+  check(
+    prodPanel.status === 200 && kpis === 8 && classes.size === 1 && classes.has("synthetic") && prodHtml.includes("data-days="),
+    "girişli /tr/panel üretici: 8 gösterge, hepsi Sentetik, gün sayısı",
+    `${prodPanel.status} · ${kpis} gösterge · ${[...classes].join(",")}`,
+  );
+  await post("/api/auth/sign-out", {}, prodCookie);
 } else {
   console.log("atlandı · demo girişi (DEMO_PASSWORD yok)");
 }
