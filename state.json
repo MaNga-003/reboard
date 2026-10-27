@@ -1,7 +1,7 @@
 {
   "$schema": "./docs/state.schema.json",
   "project": "ReBoard SaaS platformu",
-  "updated_at": "2026-10-27T15:11:00+03:00",
+  "updated_at": "2026-10-27T15:18:00+03:00",
   "current_phase": "F2",
   "deadlines": {
     "demo_freeze": "2026-10-29T18:00:00+03:00",
@@ -226,7 +226,7 @@
       "status": "tamam",
       "title": "İzlenebilirlik: parti kabulü, üretim partisi, soy ağacı, zaman çizelgesi, kanıt kaydı",
       "acceptance": "E2E: teslim alınan parti tartılır, kanıt yüklenir, üretim partisine bağlanır, soy ağacında görünür",
-      "evidence": "E2E trace.spec 10/10: teslim alma (492 kg tartım), PNG kantar fişi (ekrandaki ve zincirdeki SHA-256 dosyanınkiyle aynı), kontrol → doğrulandı, üretim partisi ve lot, soy ağacında sağlayıcı ve doğrulanmış kg; indirme sahibine 200, başka kuruma 404, oturumsuza 401, nosniff ve sandbox. Tam E2E 46/46 (art arda 3 koşu), Vitest 288/288, src/domain/traceability kapsamı %100. Bilerek bozma: ekran 4/4, birim 2/2, depo 1/1 (M-23). Bulunan hatalar: tek seferlik ilan kabulde kapandığı için alıcı ilanı göremiyordu (D-016 güncellendi); sr-only başlık sayfayı 16 px, SHA-256 notu 360 px'te 210 px taşırıyordu (escapedAbsolutes eklendi, M-13). Canlı denetime izlenebilirlik adımları eklendi (yalnızca okur).",
+      "evidence": "E2E trace.spec 10/10: teslim alma (492 kg tartım), PNG kantar fişi (ekrandaki ve zincirdeki SHA-256 dosyanınkiyle aynı), kontrol → doğrulandı, üretim partisi ve lot, soy ağacında sağlayıcı ve doğrulanmış kg; indirme sahibine 200, başka kuruma 404, oturumsuza 401, nosniff ve sandbox. Tam E2E 46/46 (art arda 3 koşu), Vitest 288/288, src/domain/traceability kapsamı %100. Bilerek bozma: ekran 4/4, birim 2/2, depo 1/1 (M-23). Bulunan hatalar: tek seferlik ilan kabulde kapandığı için alıcı ilanı göremiyordu (D-016 güncellendi); sr-only başlık sayfayı 16 px, SHA-256 notu 360 px'te 210 px taşırıyordu (escapedAbsolutes eklendi, M-13). Canlı denetime izlenebilirlik adımları eklendi (yalnızca okur). İlk yayın: reboard-ce4kr3j43, canlı denetim 40502559473 19/19 (8 parti, zincir sağlam).",
       "depends_on": [
         "T1.3",
         "T1.4"
