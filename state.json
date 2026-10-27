@@ -1,7 +1,7 @@
 {
   "$schema": "./docs/state.schema.json",
   "project": "ReBoard SaaS platformu",
-  "updated_at": "2026-10-27T18:26:00+03:00",
+  "updated_at": "2026-10-27T18:41:00+03:00",
   "current_phase": "F2",
   "deadlines": {
     "demo_freeze": "2026-10-29T18:00:00+03:00",
@@ -246,7 +246,7 @@
       "status": "tamam",
       "title": "Etki ve tedarik sürekliliği paneli",
       "acceptance": "Doğrulanmış ve beyan edilen kg ayrı gösterilir; kaç günlük hammadde kaldığı eşik renkleriyle görünür; uyarılar listelenir",
-      "evidence": "/panel: etki (doğrulanmış, beyan, panelde kg, aylık grafik) ve tedarik (üretime hazır stok, kaç günlük, Yeterli/Dikkat/Kritik çipi, uyarılar, 30 günlük projeksiyon, yaklaşan teslimler, sağlayıcı güvenilirliği, HHI), TR ve EN, tablo görünümleri. pnpm test:coverage 346/346, src/domain satır %100 dal %98,5 fonksiyon %99,5; pnpm test:e2e 56/56 × 3; lint, typecheck, build yeşil. Grafik yazıları (M-25): 100.000 rastgele senaryoda 0 çakışma, varsayılan eşiklerde 0 düşen yazı, 7/7 birim mutasyon ve CHAR_W=5 E2E mutasyonu yakalandı. Commit 85cf3d2; yayın Vercel dpl_BTHjd9wA6pKJvtfRqCyqEYNMWXnR (reboard-lovat.vercel.app); canlı denetime üretici paneli eklendi (8 gösterge, hepsi Sentetik).",
+      "evidence": "/panel: etki (doğrulanmış, beyan, panelde kg, aylık grafik) ve tedarik (üretime hazır stok, kaç günlük, Yeterli/Dikkat/Kritik çipi, uyarılar, 30 günlük projeksiyon, yaklaşan teslimler, sağlayıcı güvenilirliği, HHI), TR ve EN, tablo görünümleri. pnpm test:coverage 346/346, src/domain satır %100 dal %98,5 fonksiyon %99,5; pnpm test:e2e 56/56 × 3; lint, typecheck, build yeşil. Grafik yazıları (M-25): 100.000 rastgele senaryoda 0 çakışma, varsayılan eşiklerde 0 düşen yazı, 7/7 birim mutasyon ve CHAR_W=5 E2E mutasyonu yakalandı. Commit 85cf3d2; yayın Vercel dpl_BTHjd9wA6pKJvtfRqCyqEYNMWXnR (reboard-lovat.vercel.app); canlı denetime üretici paneli eklendi (8 gösterge, hepsi Sentetik); live-smoke 40531095526: 21/21 tamam.",
       "depends_on": [
         "T1.4"
       ],
@@ -259,7 +259,7 @@
       "id": "T2.4",
       "phase": "F2",
       "mode": "otonom",
-      "status": "yapılacak",
+      "status": "sürüyor",
       "title": "Dijital ürün pasaportu (açık), QR ve hash doğrulama",
       "acceptance": "Girişsiz açılır; doğrulama ucu sağlam zincirde ok=true, bozuk zincirde brokenAt döner",
       "evidence": null,

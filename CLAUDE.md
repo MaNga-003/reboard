@@ -39,6 +39,14 @@ ReBoard, atık tekstilden yük taşımayan iç mekân panelleri üretmeyi önere
 
 Otonomi en üst düzeyde tutulur. Kullanıcıya soru sormadan önce ölçerek ya da varsayılanla ilerlenip ilerlenemeyeceğine bakılır. Gözle yapılacak her kontrol önce bir metriğe çevrilir; bu iş `measurable-verification` becerisiyle yapılır.
 
+## Mesai sonu raporu (kullanıcı kararı, 2026-10-27)
+
+Her mesai sonunda (kullanıcı "mesaiyi bitiriyoruz" dediğinde ya da oturum kapanırken) kısa bir Türkçe rapor yazılır:
+
+1. Bu mesaide biten görevler, kanıtın bir satırlık özetiyle.
+2. Bekleyen görevler: sıradaki otonom işler ve kullanıcı adımı gereken işler (`kullanıcı`, `hibrit`, açık sorular).
+3. İlerleme oranı `pnpm progress` çıktısından alınır: demo kapsamı (F0–F4) ve bütün plan. Oran görev sayısına göredir; görevlerin büyüklüğü eşit değildir ve raporda bu söylenir.
+
 ## Dürüstlük kuralları (D-011)
 
 - Ekranda gösterilen her sayı `resultClass` taşır: `synthetic`, `sourced_estimate`, `pilot_projection` ya da `realized`. KPI bileşenleri bu alan olmadan derlenmez.
@@ -63,6 +71,7 @@ pnpm live:check       # canlı denetim; TT Güvenli İnternet yüzünden: gh wor
 pnpm db:seed          # sentetik demo verisi (yerel PGlite; DEMO_MODE=true ister, tabloları boşaltır)
 pnpm db:seed:live     # aynı veriyi Neon'a yükler (.env.local + .env.neon)
 pnpm docs:check       # belge tutarlılığı
+pnpm progress         # faz faz biten görevler ve ilerleme oranı (mesai sonu raporu)
 pnpm story:render     # Blender ile kareleri render et (story/blender)
 pnpm story:encode     # PNG → AVIF/WebP ve manifest.json
 ```
