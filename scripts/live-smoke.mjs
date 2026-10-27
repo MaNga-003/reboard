@@ -1,4 +1,4 @@
-// Canlı yayının hızlı denetimi: yönlendirme, iki dil, kimlik ucu, giriş akışı, pazar yeri, izlenebilirlik, panel, pasaport, fonksiyon bölgesi ve güvenlik başlıkları.
+// Canlı yayının hızlı denetimi: yönlendirme, iki dil, kimlik ucu, giriş akışı, pazar yeri, izlenebilirlik, panel, pasaport, senaryo, fonksiyon bölgesi ve güvenlik başlıkları.
 // Yalnızca okur; canlı veritabanına yazmaz.
 // Türk Telekom "Güvenli İnternet" *.vercel.app'i yönlendirdiği için GitHub Actions'ta çalışır (live-smoke.yml).
 // Kullanım: node scripts/live-smoke.mjs [https://adres]
@@ -43,6 +43,8 @@ const anonMarket = await get("/tr/pazar");
 check([307, 308].includes(anonMarket.status) && /\/tr\/giris$/.test(anonMarket.headers.get("location") ?? ""), "oturumsuz /tr/pazar → /tr/giris", `${anonMarket.status} ${anonMarket.headers.get("location")}`);
 const anonTrace = await get("/tr/izlenebilirlik");
 check([307, 308].includes(anonTrace.status) && /\/tr\/giris$/.test(anonTrace.headers.get("location") ?? ""), "oturumsuz /tr/izlenebilirlik → /tr/giris", `${anonTrace.status} ${anonTrace.headers.get("location")}`);
+const anonScenario = await get("/tr/senaryo");
+check([307, 308].includes(anonScenario.status) && /\/tr\/giris$/.test(anonScenario.headers.get("location") ?? ""), "oturumsuz /tr/senaryo → /tr/giris", `${anonScenario.status} ${anonScenario.headers.get("location")}`);
 // Kanıt indirme ucu (D-018): oturumsuz 401. Kimlik uydurmadır; böyle bir kayıt yoktur.
 const noEvidence = "/api/evidence/00000000-0000-4000-8000-000000000000";
 const anonEvidence = await get(noEvidence);
@@ -116,6 +118,17 @@ if (process.env.DEMO_PASSWORD) {
     check(anchored.ok === true && anchored.anchorChecked === true && `${base}/tr/pasaport/${lot}?a=${v.anchor}` === qr, "etiket çapası eşleşir ve QR'dakiyle aynı", v.anchor?.slice(0, 16));
     check((await get("/api/verify/PL-1999-999")).status === 404, "bilinmeyen lot 404");
   }
+  // Senaryo (T2.5, D-026): rapor sayıları sunucuda da aynı; olumsuz senaryo karşılaştırmada tek kırmızı hücre.
+  const scenario = await fetch(base + "/tr/senaryo", { redirect: "manual", headers: { cookie: prodCookie, "user-agent": "reboard-live-smoke" } });
+  const scenarioHtml = await scenario.text();
+  const scenarioKpis = (scenarioHtml.match(/data-kpi="scenario-/g) ?? []).length;
+  const scenarioClasses = new Set([...scenarioHtml.matchAll(/data-result-class="([a-z_]+)"/g)].map((m) => m[1]));
+  const redCells = (scenarioHtml.match(/data-cell="negative" data-alert="true"/g) ?? []).length;
+  check(
+    scenario.status === 200 && scenarioKpis === 5 && scenarioClasses.size === 1 && scenarioClasses.has("synthetic") && scenarioHtml.includes("222,50 – 271,11 TL/m²") && redCells === 1,
+    "girişli /tr/senaryo: 5 sonuç, hepsi Sentetik, koridor rapordaki gibi, olumsuz senaryoda 1 kırmızı",
+    `${scenario.status} · ${scenarioKpis} sonuç · ${[...scenarioClasses].join(",")} · ${redCells} kırmızı`,
+  );
   await post("/api/auth/sign-out", {}, prodCookie);
 } else {
   console.log("atlandı · demo girişi (DEMO_PASSWORD yok)");

@@ -5,7 +5,7 @@
 import { sha256 } from "@noble/hashes/sha2.js";
 import { bytesToHex, utf8ToBytes } from "@noble/hashes/utils.js";
 import type { Role } from "../../domain/access";
-import { REPORT_NEGATIVE_SCENARIO, REPORT_SCENARIO, runScenario, type ScenarioParams } from "../../domain/calc";
+import { REPORT_NEGATIVE_SCENARIO, REPORT_SCENARIO, SCENARIO_FIELDS, runScenario, type ScenarioParams } from "../../domain/calc";
 import type { Composition } from "../../domain/fibre";
 import { crowFliesKm } from "../../domain/geo";
 import { SHEET_AREA_M2, TARGET_THICKNESS_MM, sheetMassKg } from "../../domain/panel";
@@ -942,15 +942,11 @@ export function buildDemo(now: Date): DemoData {
   input("days_of_cover_yellow_min", 7, null, R, thisMonth, "Varsayılan eşik (gün)");
   const p = REPORT_SCENARIO;
   const sc = "Maliyet raporunun sentetik model örneği";
-  input("waste_t", p.wasteT, "t", null, "sentetik-donem", sc);
-  input("sellable_area_m2", p.sellableAreaM2, "m2", null, "sentetik-donem", sc);
-  input("customer_cut_yield", p.customerCutYield, null, null, "sentetik-donem", sc);
-  input("panel_price_try_per_m2", p.panelPricePerM2, null, null, "sentetik-donem", sc);
-  input("current_waste_sale_try_per_t", p.currentWasteSalePerT, null, null, "sentetik-donem", sc);
-  input("acceptance_fee_try_per_t", p.acceptanceFeePerT, null, null, "sentetik-donem", sc);
-  for (const [k, v] of Object.entries(p.reboardCosts)) input(`reboard_${k}_try`, v, null, null, "sentetik-donem", sc);
-  input("subscription_try_per_month", p.subscriptionPerMonth, null, null, "sentetik-donem", `${sc}; ücret belirlenmedi`);
-  input("customer_cost_try_per_month", p.customerAttributableCostPerMonth, null, null, "sentetik-donem", `${sc}; bilinmiyor`);
+  // Senaryonun bütün girdileri (D-026); anahtar alan adının yılan biçimi: wasteT → waste_t.
+  for (const f of SCENARIO_FIELDS) {
+    const note = p[f.key] === null ? `${sc}; belirlenmedi` : sc;
+    input(f.key.replace(/[A-Z]/g, (c) => `_${c.toLowerCase()}`), p[f.key], f.unit === "t" || f.unit === "m2" ? f.unit : null, null, "sentetik-donem", note);
+  }
 
   // Hesap kayıtları: formül sürümü, girdi hash'i ve çıktılar.
   const run = (formula: string, params: ScenarioParams, outputs: Record<string, unknown>, r: Result) => {

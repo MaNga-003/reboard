@@ -3,7 +3,7 @@
 // Gerçek yazı genişliğinin CHAR_W tahminini aşmadığını panel.spec tarayıcıda ölçer.
 import fc from "fast-check";
 import { describe, expect, it } from "vitest";
-import { CHAR_W, M, PLOT_H, overlaps, polylineHits, projectionLayout, segmentHits, type Box, type ProjectionLayout } from "@/components/panel/chart-layout";
+import { CHAR_W, INK, M, PLOT_H, overlaps, polylineHits, projectionLayout, segmentHits, type Box, type ProjectionLayout } from "@/components/panel/chart-layout";
 import { Decimal } from "@/domain/result";
 import { coverLevel, coverThresholds, projectStock } from "@/domain/supply";
 import en from "../../messages/en.json";
@@ -70,7 +70,7 @@ function collisions(r: ReturnType<typeof build>) {
   labels.forEach((a, i) => {
     const b = a.box;
     if (b.x0 < M.left || b.x1 > width - M.right || b.y0 < 0 || b.y1 > M.top + PLOT_H) out.push(`"${a.text}" çizim alanı dışında`);
-    if (Math.abs(b.x1 - b.x0 - a.text.length * CHAR_W) > 1e-9) out.push(`"${a.text}" kutusu tahminden farklı`);
+    if (Math.abs(b.x1 - b.x0 - a.text.length * CHAR_W - 2 * INK) > 1e-9) out.push(`"${a.text}" kutusu tahminden farklı`);
     if (sampledHit(l, b)) out.push(`"${a.text}" veri çizgisine değiyor`);
     for (const o of l.obstacles) if (overlaps(b, o)) out.push(`"${a.text}" bir işarete ya da eşik çizgisine değiyor`);
     for (const c of labels.slice(i + 1)) if (overlaps(b, c.box)) out.push(`"${a.text}" ~ "${c.text}"`);
@@ -135,7 +135,8 @@ describe("projeksiyon grafiği yazı yerleşimi", () => {
   // varsayılan eşiklerde (14/7, ≥ 328 px, bugün ≤ 30 gün, teslimlerle eksen 390 güne kadar) 0/41.286 yazı düştü,
   // 5 eşik yazısı çizginin üstüne oturdu; bütün aralıkta 412/40.058 (%1,03), düşenlerin hepsi alt eşik yazısı:
   // iki eşik çizgisi 15 px'ten yakınsa (ör. 3 ve 2 gün, 100 günlük eksen) arada yazıya yer yok.
-  // Önceki adımlar: yalnız uzun yazı %0,24 / %1,88; kısa biçimle %0,015 / %1,27; çizgi üstü yerleşimle bugünkü değer.
+  // Önceki adımlar: yalnız uzun yazı %0,24 / %1,88; kısa biçimle %0,015 / %1,27; çizgi üstü yerleşimle %1,03.
+  // Kutu iki yandan INK (2 px) büyüyünce (aynı tohum, 10.000'er senaryo): varsayılanda 0/20.710, bütün aralıkta 254/20.030 (%1,27).
   function dropRate(arb: fc.Arbitrary<Scenario>) {
     const n = { total: 0, dropped: 0, marker: 0 };
     fc.assert(

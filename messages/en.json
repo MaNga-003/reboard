@@ -666,5 +666,113 @@
       "hint": "The QR carries this page's address together with the label anchor. It is printed on the panel label.",
       "label": "QR code for passport {code}"
     }
+  },
+  "scenario": {
+    "title": "Scenario",
+    "intro": "The formulas from the cost report, with the report's synthetic example. Change an input and the results are recalculated at once. An input left empty counts as unknown, and so does every result that depends on it.",
+    "taxNote": "Amounts exclude VAT and cover a synthetic period.",
+    "presets": {
+      "label": "Ready scenarios",
+      "base": "Report example",
+      "negative": "Downside scenario: the waste sells today for 2,000 TL/t"
+    },
+    "resultsTitle": "Results",
+    "inputsTitle": "Inputs",
+    "updated": "Results updated. Results shown in red: {count}.",
+    "groups": {
+      "volume": "Volumes and prices",
+      "factory": "Textile factory",
+      "customer": "Panel customer",
+      "reboard": "ReBoard costs",
+      "saas": "SaaS subscription (monthly)"
+    },
+    "fieldLabel": "{label} ({unit})",
+    "units": {
+      "t": "t",
+      "m2": "m²",
+      "try": "TL",
+      "try_per_t": "TL/t",
+      "try_per_m2": "TL/m²",
+      "try_per_month": "TL/month",
+      "percent": "%"
+    },
+    "fields": {
+      "wasteT": "Textile waste",
+      "sellableAreaM2": "Sellable panel area",
+      "panelPricePerM2": "Panel price",
+      "acceptanceFeePerT": "Acceptance fee, paid by the factory",
+      "wastePaymentPerT": "Waste price, paid by ReBoard",
+      "collection": "Collection cost today",
+      "transportNow": "Transport cost today",
+      "disposalPerT": "Disposal fee today",
+      "wasteSalePerT": "Waste sale income today",
+      "handling": "Handling cost with ReBoard",
+      "transportNext": "Transport cost with ReBoard",
+      "equivalentProduct": "Equivalent current product",
+      "delivery": "Delivery of the current product",
+      "cuttingCoating": "Cutting and coating of the current product",
+      "switchingTrial": "Switching trial",
+      "extraProcessing": "Extra processing for ReBoard",
+      "customerCutYield": "Cutting yield",
+      "material": "Material",
+      "operations": "Operations",
+      "fixed": "Fixed cost",
+      "depreciation": "Depreciation",
+      "subscriptionPerMonth": "Subscription fee",
+      "customerCostPerMonth": "Cloud, map and support cost per customer"
+    },
+    "invalid": "Enter zero or a positive number. This field counts as unknown.",
+    "invalidPercent": "Enter a number from 0 to 100. This field counts as unknown.",
+    "money": "{amount} TL",
+    "perM2": "{amount} TL/m²",
+    "corridorValue": "{lower} – {upper}",
+    "loss": "Loss",
+    "noCorridor": "No corridor",
+    "usableArea": "Usable area for the customer: {area}.",
+    "conditions": {
+      "equivalence_unverified": "Technical equivalence is not verified; the gain is conditional.",
+      "before_financing_and_tax": "Before financing and tax.",
+      "no_corridor": "The lower bound is above the upper bound."
+    },
+    "results": {
+      "factory": {
+        "title": "Textile factory gain",
+        "formula": "Net waste cost today (collection + transport + disposal − waste sales) − net cost with ReBoard (handling + transport + acceptance fee − waste price paid by ReBoard).",
+        "parts": "{now} − {next} = {result}",
+        "alert": "With ReBoard the factory pays more than today: today's waste sale income plus the new costs exceed the costs it avoids. The gap closes if ReBoard pays for the waste or the acceptance fee falls; that payment comes out of ReBoard's result."
+      },
+      "customer": {
+        "title": "Panel customer gain",
+        "formula": "Total cost of the equivalent current product (product + delivery + cutting and coating) − total cost with ReBoard (panel + switching trial + extra processing).",
+        "parts": "{now} − {next} = {result}",
+        "alert": "The ReBoard product costs the customer more than the current one. The panel price or the switching costs must fall."
+      },
+      "reboard": {
+        "title": "ReBoard operating result",
+        "formula": "Panel and acceptance income − material (including the waste price), operations, fixed cost and depreciation.",
+        "parts": "{now} − {next} = {result}",
+        "alert": "ReBoard's costs exceed its income. The panel price or the area sold must rise, or the costs must fall."
+      },
+      "corridor": {
+        "title": "Panel price corridor",
+        "formula": "Lower bound: (period costs − non-panel income) ÷ sellable area. Upper bound: (customer's current cost − switching and extra processing) ÷ required gross area.",
+        "parts": "Lower: {lowerNum} ÷ {area} = {lower}. Upper: {upperNum} ÷ {area} = {upper}.",
+        "alert": "At these costs no price both covers ReBoard's costs and saves the customer money. The product, the costs or the business model must be reconsidered."
+      },
+      "saas": {
+        "title": "SaaS contribution (monthly)",
+        "formula": "Subscription − cloud, map, messaging and support cost per customer. The subscription fee is not set yet.",
+        "parts": "{now} − {next} = {result}",
+        "alert": "The subscription does not cover the cost per customer."
+      }
+    },
+    "compare": {
+      "title": "Report example and downside scenario",
+      "intro": "The report's downside scenario is not hidden. If the factory sells its waste today for 2,000 TL/t, giving it to ReBoard costs the factory money; the other results do not change.",
+      "result": "Result",
+      "base": "Report example",
+      "negative": "Downside scenario"
+    },
+    "m2": "{value} m²"
   }
 }

@@ -11,6 +11,11 @@ export const CHAR_W = 7;
 const ASCENT = 12;
 const DESCENT = 3;
 const GAP = 3;
+/**
+ * Harfin mürekkebi bağlantı noktasını aşabilir: kalın "k" sonda 1,2 px taştı ("24. gün: kritik", panel.spec, 27 Ekim).
+ * Kutu iki yandan bu kadar büyütülür; yoksa ekrandaki yazı tahmin kutusundan çıkar ve çakışmasızlık ekrana taşınmaz.
+ */
+export const INK = 2;
 
 export type Box = { x0: number; x1: number; y0: number; y1: number };
 export type Pt = { x: number; y: number };
@@ -59,7 +64,7 @@ export const polylineHits = (line: readonly Pt[], b: Box) => line.some((p, i) =>
 export function textBox(x: number, base: number, anchor: Anchor, text: string): Box {
   const w = text.length * CHAR_W;
   const x0 = anchor === "end" ? x - w : x;
-  return { x0, x1: x0 + w, y0: base - ASCENT, y1: base + DESCENT };
+  return { x0: x0 - INK, x1: x0 + w + INK, y0: base - ASCENT, y1: base + DESCENT };
 }
 
 export type ProjectionInput = { day: number; days: number; arrival: boolean };
@@ -151,7 +156,7 @@ export function projectionLayout(
     const candidates = (text: string): Candidate[] => {
       const w = text.length * CHAR_W;
       const xs: { x: number; anchor: Anchor }[] = [
-        { x: width - M.right, anchor: "end" },
+        { x: width - M.right - INK, anchor: "end" },
         { x: M.left + 4, anchor: "start" },
         ...Array.from({ length: 7 }, (_, k) => ({ x: M.left + 4 + ((k + 1) * (plotW - 8 - w)) / 8, anchor: "start" as const })),
       ];

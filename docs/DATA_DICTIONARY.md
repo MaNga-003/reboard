@@ -140,7 +140,7 @@ Hata yanıtları: okunamayan çapada 400 `{error: "anchor_invalid"}`; lot yoksa 
 | `buyer_trials` | Alıcının eşdeğer ürün gideri: sunta, MDF |
 | `transactions` | Gerçek ya da demo satış ve kabul işlemleri |
 | `saas_costs` | Platform giderleri: barındırma, veritabanı, alan adı; kaynak URL'si ve tarihiyle |
-| `model_inputs` | Senaryo girdileri |
+| `model_inputs` | Senaryo girdileri. Seed anahtarları senaryo alan adlarının yılan biçimidir (`wasteT` → `waste_t`, `panelPricePerM2` → `panel_price_per_m2`); tedarik eşikleri ve günlük ihtiyaç kendi anahtarlarıyla durur |
 | `calc_runs` | Formül sürümü, girdi hash'i, çıktılar ve sonuç sınıfı |
 
 **Formüller** (`src/domain/calc`):
@@ -165,6 +165,22 @@ Tanımlar maliyet raporundan birebir alınmıştır (D-002). Her sonuç `{value,
 | ReBoard | Panel 240.000 + kabul 5.000 − (malzeme 120.000 + operasyon 62.500 + sabit 30.000 + amortisman 15.000) | **17.500** |
 | Fiyat koridoru | Alt (227.500 − 5.000) ÷ 1.000; üst (281.111 − 10.000) ÷ 1.000 | **222,50–271,11 TL/m²** |
 | SaaS katkısı | Abonelik ücreti belirlenmedi | **bilinmiyor** |
+
+**Senaryo ekranının girdileri** (`SCENARIO_FIELDS`, D-026). Her girdi ayrı bir alandır; tutarlar KDV hariç ve sentetik dönem içindir.
+
+| Grup | Girdiler (birim) |
+| --- | --- |
+| Miktar ve fiyatlar | tekstil atığı (t), satılabilir panel alanı (m²), panel fiyatı (TL/m²), kabul bedeli (TL/t, fabrika öder), atık bedeli (TL/t, ReBoard öder) |
+| Tekstil fabrikası | bugün: toplama (TL), taşıma (TL), bertaraf (TL/t), atık satış geliri (TL/t); ReBoard'la: elleçleme (TL), taşıma (TL) |
+| Panel müşterisi | eşdeğer mevcut ürün, teslim, kesim ve kaplama, geçiş denemesi, ek işleme (TL); kesim verimi (%) |
+| ReBoard giderleri | malzeme, operasyon, sabit gider, amortisman (TL) |
+| SaaS aboneliği | abonelik ücreti ve müşteriye bağlı gider (TL/ay) |
+
+- **Atık bedeli:** ReBoard'un ödediği tutar (t × TL/t) fabrikanın yeni net giderinden düşer ve ReBoard'un malzeme giderine eklenir. İki sonucun toplamı ödemeden etkilenmez.
+- **Abonelik:** ücret belirlenmediği için senaryoda fabrikanın yeni giderine yazılmaz; SaaS katkısı ayrı ve aylıktır.
+- **Kesim verimi:** ekranda 0–100, hesapta 0–1. Kullanılabilir alan = satılabilir alan × kesim verimi.
+- **Boş ve geçersiz girdi:** boş alan `null` olur. Kabul edilen biçim en çok 12 hane ve 4 ondalıktır; ayırıcı nokta ya da virgül olabilir. Eksi, harf, boşluklu sayı ve %100'ü aşan yüzde geçersizdir; geçersiz alan da `null` sayılır.
+- **Kırmızı gösterilen sonuç:** bilinen ve sıfırdan küçük sonuç (zarar) ile alt sınırın üst sınırı aştığı fiyat koridoru. `null` zarar sayılmaz.
 
 ## 7. Referans değerler (`reference_values`)
 

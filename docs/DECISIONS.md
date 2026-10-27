@@ -136,6 +136,25 @@ Biçim: **Karar**, **Neden**, **Tarih**, kararı kim verdi (K: kullanıcı, C: C
 - **Neden:** Yarışmadan sonra şirketleşme seçeneği açık kalır. Sonradan açık lisansa geçmek kolaydır; yayımlanmış bir sürümü geri kapatmak mümkün değildir.
 - **Tarih:** 2026-10-27 · K
 
+### D-026 — Senaryo ekranı: tarayıcıda aynı alan işleviyle hesap, açık girdiler ve kırmızı uyarılar
+- **Karar:**
+  - `/senaryo` girişle açılır. Hesap tarayıcıda, sunucudakiyle aynı alan işleviyle yapılır (`runScenario`). Girdi değişince sonuç beklemeden yenilenir. Girdiler kaydedilmez.
+  - Formüldeki her satır ekranda ayrı bir girdidir (23 alan, `SCENARIO_FIELDS`); gizli sabit yoktur. Hazır senaryolar: rapor örneği ve olumsuz senaryo (atık bugün 2.000 TL/t'ye satılıyor).
+  - Boş girdi bilinmiyor sayılır (`null`) ve ona dayanan sonuç da bilinmiyor olur. Geçersiz girdi (eksi, harf, boşluklu sayı, 4'ten fazla ondalık, %100'ü aşan yüzde) de bilinmiyor sayılır ve alanın altında nedeni yazar. Ondalık ayırıcı nokta ya da virgül olabilir.
+  - ReBoard'un ödediği atık bedeli fabrikanın yeni net giderinden düşer ve aynı tutar ReBoard'un malzeme giderine eklenir.
+  - Zarar, bilinen ve sıfırdan küçük sonuçtur. Bilinmeyen sonuç zarar sayılmaz. Oluşmayan fiyat koridoru da kırmızı gösterilir.
+  - Kırmızı hiçbir zaman yalnızca renkle verilmez: kutunun 4 px kırmızı üst çizgisi, "Zarar" ya da "Koridor yok" çipi, nedenini ve çıkış yolunu anlatan cümle birlikte gelir. Kırmızı sonuç sayısı ekran okuyucuya da okunur.
+  - Her sonucun altında formül ve formülün sayılarla yazılmış ara toplamları bulunur.
+  - Olumsuz senaryo, hesaplayıcıya dokunulmasa da sayfanın altındaki karşılaştırma tablosunda görünür.
+  - Abonelik ücreti belirlenmediği için fabrikanın yeni giderine yazılmaz; SaaS katkısı ayrı ve aylık gösterilir.
+  - Seed'deki `model_inputs` anahtarları alan adlarından türetilir (`wasteT` → `waste_t`).
+- **Neden:**
+  - Jüri bir girdiyi değiştirip sonucun nasıl tepki verdiğini görebilmeli. Ağ gidiş dönüşü olmadan hesap anında yenilenir. Aynı işlev seed'deki `calc_runs` kayıtlarını da ürettiği için ekran ile kayıt birbirinden ayrışamaz.
+  - Bilinmeyeni sıfır saymak sonucu iyimser gösterir (D-011). Geçersiz girdiyi sessizce düzeltmek de aynı hatadır.
+  - Atık bedeli yalnızca fabrikaya yazılsaydı ödeme yoktan var olurdu. İki tarafa yazılınca fabrikanın zararı kapandığında ReBoard'un sonucu aynı tutarda düşer; testte toplam korunur.
+  - Olumsuz senaryo rapordadır; gizlenirse ekran rapordan daha iyimser görünür.
+- **Tarih:** 2026-10-27 · C
+
 ### D-025 — Açık ürün pasaportu: süzülmüş görünüm, etiket çapası ve doğrulama ucu
 - **Karar:**
   - `/pasaport/[lot]` sayfası ve `/api/verify/[lot]` ucu girişsiz açılır. Yalnızca `is_public` lotlar açılır. Biçimi `PL-yyyy-nnn` olmayan kod veritabanına gitmeden 404 olur.

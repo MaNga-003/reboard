@@ -31,7 +31,7 @@ describe("rapor örneği: 10 t tekstil, 1.000 m² satılabilir panel, %85 kesim 
   });
 
   it("müşterinin kullanılabilir alanı 850 m²", () => {
-    expect(r.usableAreaM2.toString()).toBe("850");
+    expect(r.usableAreaM2?.toString()).toBe("850");
   });
 
   it("abonelik ücreti belirlenmediği için SaaS katkısı bilinmiyor (null), sıfır değil", () => {
@@ -62,7 +62,7 @@ describe("rapordaki olumsuz senaryo: atık bugün 2.000 TL/t'ye satılıyor", ()
 
 describe("koridor oluşmayan senaryo", () => {
   it("giderler yükselince alt sınır üst sınırı aşar ve no_corridor koşulu eklenir", () => {
-    const r = runScenario({ ...REPORT_SCENARIO, reboardCosts: { ...REPORT_SCENARIO.reboardCosts, material: 200_000 } });
+    const r = runScenario({ ...REPORT_SCENARIO, material: 200_000 });
     expect(r.corridor.exists).toBe(false);
     expect(r.corridor.lower.conditions).toContain("no_corridor");
     expect(r.corridor.upper.conditions).toContain("no_corridor");

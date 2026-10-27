@@ -32,6 +32,9 @@ export default async function AppLayout({ children, params }: LayoutProps<"/[loc
             <Link href="/panel" className={`${tap} underline-offset-4 hover:underline`}>
               {t("nav.dashboard")}
             </Link>
+            <Link href="/senaryo" className={`${tap} underline-offset-4 hover:underline`}>
+              {t("nav.scenario")}
+            </Link>
           </nav>
           <p data-testid="viewer" className="ms-auto px-3 text-sm">
             {t("auth.signedInAs", { org: viewer.orgName, role: t(`roles.${role}`) })}

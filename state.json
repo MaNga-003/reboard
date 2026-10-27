@@ -1,7 +1,7 @@
 {
   "$schema": "./docs/state.schema.json",
   "project": "ReBoard SaaS platformu",
-  "updated_at": "2026-10-27T19:19:00+03:00",
+  "updated_at": "2026-10-27T19:45:00+03:00",
   "current_phase": "F2",
   "deadlines": {
     "demo_freeze": "2026-10-29T18:00:00+03:00",
@@ -275,7 +275,7 @@
       "id": "T2.5",
       "phase": "F2",
       "mode": "otonom",
-      "status": "yapılacak",
+      "status": "sürüyor",
       "title": "Senaryo ekranı: formüller, varsayımlar, sonuç sınıfları, olumsuz senaryo",
       "acceptance": "Girdi değişince sonuç yeniden hesaplanır; olumsuz senaryo kırmızı ve açıklamalı gösterilir",
       "evidence": null,
@@ -284,7 +284,8 @@
       ],
       "decisions": [
         "D-002",
-        "D-011"
+        "D-011",
+        "D-026"
       ]
     },
     {
@@ -615,8 +616,8 @@
       "id": "M-5",
       "claim": "Hesaplar doğru",
       "threshold": "para birimi/vergi temeli uyuşmazlığı hata; boş girdi null; src/domain kapsamı ≥ %90",
-      "last_value": "377/377 test (birim ve entegrasyon); src/domain kapsamı satır %100, dal %98,7, fonksiyon %99,5 (impact.ts dal %88,9, supply.ts %96,6, passport.ts %97,1); eşik %90",
-      "measured_at": "2026-10-27T19:17:00+03:00",
+      "last_value": "389/389 test (birim ve entegrasyon); src/domain kapsamı satır %100, dal %98,6, fonksiyon %99,6 (impact.ts dal %88,9, supply.ts %96,6, synthetic-scenario.ts %95,8, passport.ts %97,1); eşik %90",
+      "measured_at": "2026-10-27T19:45:00+03:00",
       "test": "tests/unit/calc"
     },
     {
@@ -671,24 +672,24 @@
       "id": "M-12",
       "claim": "Erişilebilir",
       "threshold": "0 ciddi/kritik axe ihlali; dokunma hedefi ≥ 44×44 px",
-      "last_value": "/tr, /en, giriş, panel (TR ve EN, tablolar açık), pazar listesi, ilan ayrıntısı, yeni ilan, izlenebilirlik sayfaları, açık pasaport (sağlam ve bozuk): 0 ciddi/kritik ihlal; 5 genişlikte 44 px altı hedef 0; projeksiyon klavyeyle gezilir (Home/End, aria-live)",
-      "measured_at": "2026-10-27T19:17:00+03:00",
-      "test": "tests/e2e/smoke.spec.ts, tests/e2e/auth.spec.ts, tests/e2e/market.spec.ts, tests/e2e/trace.spec.ts, tests/e2e/panel.spec.ts, tests/e2e/passport.spec.ts"
+      "last_value": "/tr, /en, giriş, panel (TR ve EN, tablolar açık), pazar listesi, ilan ayrıntısı, yeni ilan, izlenebilirlik sayfaları, açık pasaport (sağlam ve bozuk), senaryo (rapor, olumsuz, EN): 0 ciddi/kritik ihlal; 5 genişlikte 44 px altı hedef 0; projeksiyon klavyeyle gezilir (Home/End, aria-live)",
+      "measured_at": "2026-10-27T19:45:00+03:00",
+      "test": "tests/e2e/smoke.spec.ts, tests/e2e/auth.spec.ts, tests/e2e/market.spec.ts, tests/e2e/trace.spec.ts, tests/e2e/panel.spec.ts, tests/e2e/passport.spec.ts, tests/e2e/scenario.spec.ts"
     },
     {
       "id": "M-13",
       "claim": "Yerleşim bozulmaz",
       "threshold": "0 px sayfa taşması; main içerik kutusundan taşan 0 öğe; kaydırılan kaptan kaçan 0 mutlak konumlu öğe",
-      "last_value": "giriş, panel, pazar, izlenebilirlik ve pasaport; 5 genişlik: 0 px, 0 öğe, 0 kaçak. Panel bulgusu: sr-only'nin -1 px kenar boşluğu ipucu metnini 1 px taşırıyordu, düzeltildi",
-      "measured_at": "2026-10-27T19:17:00+03:00",
-      "test": "tests/e2e/smoke.spec.ts, tests/e2e/auth.spec.ts, tests/e2e/market.spec.ts, tests/e2e/trace.spec.ts, tests/e2e/panel.spec.ts, tests/e2e/passport.spec.ts"
+      "last_value": "giriş, panel, pazar, izlenebilirlik, pasaport ve senaryo; 5 genişlik: 0 px, 0 öğe, 0 kaçak. Panel bulgusu: sr-only'nin -1 px kenar boşluğu ipucu metnini 1 px taşırıyordu, düzeltildi",
+      "measured_at": "2026-10-27T19:45:00+03:00",
+      "test": "tests/e2e/smoke.spec.ts, tests/e2e/auth.spec.ts, tests/e2e/market.spec.ts, tests/e2e/trace.spec.ts, tests/e2e/panel.spec.ts, tests/e2e/passport.spec.ts, tests/e2e/scenario.spec.ts"
     },
     {
       "id": "M-14",
       "claim": "Çeviri tam",
       "threshold": "0 eksik anahtar",
-      "last_value": "0 eksik (522 yaprak anahtar)",
-      "measured_at": "2026-10-27T19:17:00+03:00",
+      "last_value": "0 eksik (604 yaprak anahtar)",
+      "measured_at": "2026-10-27T19:45:00+03:00",
       "test": "tests/unit/i18n.test.ts"
     },
     {
@@ -775,9 +776,9 @@
       "id": "M-25",
       "claim": "Grafik yazıları çakışmaz",
       "threshold": "0 çakışma; varsayılan eşiklerde 0 düşen yazı; bütün aralıkta < %1,5; gerçek kutu tahminin 0,5 px içinde",
-      "last_value": "100.000 senaryoda 0 çakışma; düşen yazı varsayılanda 0/41.286, bütün aralıkta %1,03; gerçek genişlik 5,26–5,49 px/harf (tahmin 7); mutasyon 7/7 + E2E CHAR_W=5",
+      "last_value": "100.000 senaryoda 0 çakışma; INK 2 px sonrası düşen yazı varsayılanda 0/20.710, bütün aralıkta %1,27; gerçek genişlik 5,26–5,49 px/harf (tahmin 7); bulgu: kalın son harf ucu 1,2 px aşıyordu; mutasyon 7/7 + E2E CHAR_W=5",
       "test": "tests/unit/chart-layout.test.ts, tests/e2e/panel.spec.ts",
-      "measured_at": "2026-10-27T18:24:00+03:00"
+      "measured_at": "2026-10-27T19:45:00+03:00"
     },
     {
       "id": "M-26",
@@ -794,6 +795,14 @@
       "last_value": "E2E 4/4 (tam paket 60/60); mutasyon 16/16; bulgu: adı gizli alıcı zincirinin ucu yayımlanıyordu, kaldırıldı",
       "measured_at": "2026-10-27T19:17:00+03:00",
       "test": "tests/integration/passport.test.ts, tests/unit/traceability/passport.test.ts, tests/e2e/passport.spec.ts"
+    },
+    {
+      "id": "M-28",
+      "claim": "Senaryo ekranı doğru hesaplar, olumsuzu kırmızı ve açıklamalı gösterir",
+      "threshold": "rapor sayıları birebir; bilinmeyen 0 olmaz; kırmızı kutu çizgisi tehlike dolgusu, 4 px, zemine ≥ 3:1; çip yazısı ≥ 4,5:1; 0 ciddi a11y ihlali",
+      "last_value": "birim 12/12, E2E 6/6 (tam paket 66/66, 3 ardışık koşu); mutasyon alan 16/16, arayüz 5/5",
+      "measured_at": "2026-10-27T19:45:00+03:00",
+      "test": "tests/unit/calc/scenario.test.ts, tests/e2e/scenario.spec.ts"
     }
   ]
 }

@@ -54,6 +54,7 @@ next-env.d.ts
 # test çıktıları
 /test-results/
 /playwright-report/
+/.vitest/
 /blob-report/
 /.lighthouseci/
 

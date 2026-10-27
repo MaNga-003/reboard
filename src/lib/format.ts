@@ -35,3 +35,9 @@ export const fmtSignedPercent = (share: number, locale: string, maxFraction = 1)
 /** Saat, saniyesiyle: art arda iki doğrulamanın zamanı ayırt edilsin. */
 export const fmtTime = (v: Date | string, locale: string) =>
   new Intl.DateTimeFormat(tag(locale), { timeStyle: "medium", timeZone: ZONE }).format(new Date(v));
+
+/** Para tutarı: tam sayıysa kuruşsuz, değilse iki haneyle ("222,50"); karışık hane sayısı sütunu bulandırır. */
+export function fmtMoney(v: Decimal, locale: string) {
+  const digits = v.isInteger() ? 0 : 2;
+  return new Intl.NumberFormat(tag(locale), { minimumFractionDigits: digits, maximumFractionDigits: digits }).format(Number(v.toString()));
+}

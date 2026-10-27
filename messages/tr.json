@@ -666,5 +666,113 @@
       "hint": "QR, bu sayfanın adresini etiket çapasıyla birlikte taşır. Panel etiketine basılır.",
       "label": "{code} pasaportunun QR kodu"
     }
+  },
+  "scenario": {
+    "title": "Senaryo",
+    "intro": "Maliyet raporundaki formüller, raporun sentetik örneğiyle. Bir girdiyi değiştirin, sonuçlar hemen yeniden hesaplanır. Boş bırakılan girdi bilinmiyor sayılır; ona dayanan sonuç da bilinmiyor olur.",
+    "taxNote": "Tutarlar KDV hariç ve sentetik bir dönem içindir.",
+    "presets": {
+      "label": "Hazır senaryolar",
+      "base": "Rapor örneği",
+      "negative": "Olumsuz senaryo: atık bugün 2.000 TL/t'ye satılıyor"
+    },
+    "resultsTitle": "Sonuçlar",
+    "inputsTitle": "Girdiler",
+    "updated": "Sonuçlar güncellendi. Kırmızı sonuç sayısı: {count}.",
+    "groups": {
+      "volume": "Miktar ve fiyatlar",
+      "factory": "Tekstil fabrikası",
+      "customer": "Panel müşterisi",
+      "reboard": "ReBoard giderleri",
+      "saas": "SaaS aboneliği (aylık)"
+    },
+    "fieldLabel": "{label} ({unit})",
+    "units": {
+      "t": "t",
+      "m2": "m²",
+      "try": "TL",
+      "try_per_t": "TL/t",
+      "try_per_m2": "TL/m²",
+      "try_per_month": "TL/ay",
+      "percent": "%"
+    },
+    "fields": {
+      "wasteT": "Tekstil atığı",
+      "sellableAreaM2": "Satılabilir panel alanı",
+      "panelPricePerM2": "Panel fiyatı",
+      "acceptanceFeePerT": "Kabul bedeli, fabrika öder",
+      "wastePaymentPerT": "Atık bedeli, ReBoard öder",
+      "collection": "Bugün toplama gideri",
+      "transportNow": "Bugün taşıma gideri",
+      "disposalPerT": "Bugün bertaraf bedeli",
+      "wasteSalePerT": "Bugün atık satış geliri",
+      "handling": "ReBoard'la elleçleme gideri",
+      "transportNext": "ReBoard'la taşıma gideri",
+      "equivalentProduct": "Eşdeğer mevcut ürün",
+      "delivery": "Mevcut ürünün teslimi",
+      "cuttingCoating": "Mevcut ürünün kesimi ve kaplaması",
+      "switchingTrial": "Geçiş denemesi",
+      "extraProcessing": "ReBoard için ek işleme",
+      "customerCutYield": "Kesim verimi",
+      "material": "Malzeme",
+      "operations": "Operasyon",
+      "fixed": "Sabit gider",
+      "depreciation": "Amortisman",
+      "subscriptionPerMonth": "Abonelik ücreti",
+      "customerCostPerMonth": "Müşteriye bağlı bulut, harita ve destek gideri"
+    },
+    "invalid": "Sıfır ya da pozitif bir sayı girin. Bu alan bilinmiyor sayıldı.",
+    "invalidPercent": "0 ile 100 arasında bir sayı girin. Bu alan bilinmiyor sayıldı.",
+    "money": "{amount} TL",
+    "perM2": "{amount} TL/m²",
+    "corridorValue": "{lower} – {upper}",
+    "loss": "Zarar",
+    "noCorridor": "Koridor yok",
+    "usableArea": "Müşterinin kullanılabilir alanı: {area}.",
+    "conditions": {
+      "equivalence_unverified": "Teknik eşdeğerlik doğrulanmadı; kazanç koşullu.",
+      "before_financing_and_tax": "Finansman ve vergi öncesi.",
+      "no_corridor": "Alt sınır üst sınırı aşıyor."
+    },
+    "results": {
+      "factory": {
+        "title": "Tekstil fabrikası kazancı",
+        "formula": "Bugünkü net atık gideri (toplama + taşıma + bertaraf − atık satışı) − ReBoard'la net gider (elleçleme + taşıma + kabul bedeli − ReBoard'un ödediği atık bedeli).",
+        "parts": "{now} − {next} = {result}",
+        "alert": "Fabrika ReBoard'a geçince bugünkünden fazla öder: bugünkü atık satış geliri ile yeni giderleri, kaçındığı giderden büyük. ReBoard atık bedeli öderse ya da kabul bedeli düşerse fark kapanır; ödeme ReBoard'un sonucundan düşer."
+      },
+      "customer": {
+        "title": "Panel müşterisi kazancı",
+        "formula": "Eşdeğer mevcut ürünün toplam gideri (ürün + teslim + kesim ve kaplama) − ReBoard'lu ürünün toplam gideri (panel + geçiş denemesi + ek işleme).",
+        "parts": "{now} − {next} = {result}",
+        "alert": "ReBoard'lu ürün müşteriye mevcut üründen pahalıya geliyor. Panel fiyatı ya da geçiş giderleri düşmeli."
+      },
+      "reboard": {
+        "title": "ReBoard faaliyet sonucu",
+        "formula": "Panel ve kabul gelirleri − malzeme (atık bedeli dahil), operasyon, sabit gider ve amortisman.",
+        "parts": "{now} − {next} = {result}",
+        "alert": "ReBoard'un giderleri gelirlerini aşıyor. Panel fiyatı ya da satılan alan artmalı ya da giderler düşmeli."
+      },
+      "corridor": {
+        "title": "Panel fiyat koridoru",
+        "formula": "Alt sınır: (dönem giderleri − panel dışı gelir) ÷ satılabilir alan. Üst sınır: (müşterinin mevcut gideri − geçiş ve ek işleme) ÷ gerekli brüt alan.",
+        "parts": "Alt: {lowerNum} ÷ {area} = {lower}. Üst: {upperNum} ÷ {area} = {upper}.",
+        "alert": "Bu giderlerle hem ReBoard'un giderini karşılayan hem müşteriye kazandıran bir fiyat yok. Ürün, gider ya da iş modeli yeniden ele alınmalı."
+      },
+      "saas": {
+        "title": "SaaS katkısı (aylık)",
+        "formula": "Abonelik − müşteriye bağlı bulut, harita, iletişim ve destek gideri. Abonelik ücreti henüz belirlenmedi.",
+        "parts": "{now} − {next} = {result}",
+        "alert": "Abonelik, müşteriye bağlı gideri karşılamıyor."
+      }
+    },
+    "compare": {
+      "title": "Rapor örneği ve olumsuz senaryo",
+      "intro": "Raporun olumsuz senaryosu gizlenmez. Fabrika atığını bugün 2.000 TL/t'ye satıyorsa ReBoard'a vermek ona zarar ettirir; diğer tarafların sonucu değişmez.",
+      "result": "Sonuç",
+      "base": "Rapor örneği",
+      "negative": "Olumsuz senaryo"
+    },
+    "m2": "{value} m²"
   }
 }

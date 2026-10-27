@@ -23,7 +23,7 @@
 | 4 | 1:35–2:05 | `/izlenebilirlik` | Parti kabulü: beyan ve tartım farkı, kanıt yükleme; üretim partisi ve kütle dengesi; soy ağacı | "Her kilogram kantar fişine ve bir sonraki adıma bağlı." |
 | 5 | 2:05–2:30 | `/panel` | Doğrulanmış ve beyan edilen kg; kaç günlük hammadde kaldığı; uyarı | "Stok 7 günün altına inmeden uyarıyor." |
 | 6 | 2:30–2:50 | `/pasaport/[lot]` (telefondan QR ile) | Kaynak bileşimi, "test edilmedi" etiketi, zincir doğrulaması ve etiket çapası: geçti | "Alıcı panelin nereden geldiğini hesap açmadan görüyor; kayıt sonradan değişirse doğrulama düşüyor." |
-| 7 | 2:50–3:00 | `/senaryo` | Fabrika kazancı, fiyat koridoru, sonuç sınıfı rozetleri | "Rakamlar sentetik; pilotla gerçekleşene dönecek." |
+| 7 | 2:50–3:00 | `/senaryo` | Rapor örneği: fabrika kazancı, fiyat koridoru, "Sentetik" rozetleri. "Olumsuz senaryo" düğmesi: fabrika kutusu kırmızı ve açıklamalı. İstenirse atık bedeline 1000 yazılır: fabrikanın zararı kapanır, ReBoard'un sonucu aynı tutarda düşer | "Rakamlar sentetik; olumsuz senaryoyu da gösteriyoruz. Pilotla gerçekleşene dönecek." |
 
 ## 3. Demo rolleri
 

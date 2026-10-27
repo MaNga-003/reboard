@@ -83,7 +83,7 @@ function Frame({
 }
 
 // Görünmez ama okunur metin. sr-only'nin -1 px kenar boşluğu kabın dışına taşıyordu (panel.spec, gutterBreaches).
-const hidden = "pointer-events-none absolute top-0 left-0 size-px overflow-hidden whitespace-nowrap [clip-path:inset(50%)]";
+export const hidden = "pointer-events-none absolute top-0 left-0 size-px overflow-hidden whitespace-nowrap [clip-path:inset(50%)]";
 
 function Tip({ x, width, children }: { x: number; width: number; children: ReactNode }) {
   // İpucu noktanın sağına; sağ yarıdaysa soluna: kenarı aşmaz.

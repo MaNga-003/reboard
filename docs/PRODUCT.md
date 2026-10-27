@@ -101,7 +101,7 @@ Panel girişten sonraki ilk ekrandır (`/panel`). Kurum yalnızca kendi gördü�
 
 ### 3.4 Senaryo
 
-Şerife'nin rapordaki formülleri girdileriyle birlikte gösterilir:
+Şerife'nin rapordaki formülleri girdileriyle birlikte gösterilir (`/senaryo`, D-026):
 
 - fabrika kazancı;
 - panel müşterisi kazancı;
@@ -109,7 +109,14 @@ Panel girişten sonraki ilk ekrandır (`/panel`). Kurum yalnızca kendi gördü�
 - fiyat koridoru;
 - SaaS katkısı.
 
-Her sonuç sınıf rozetini taşır. Olumsuz senaryo gizlenmez.
+Ekranın parçaları:
+
+- **Hazır senaryolar:** rapor örneği ve olumsuz senaryo. Elle girilen değerler bir hazır senaryoyla aynıysa o düğme seçili görünür.
+- **Girdiler:** beş grupta 23 alan: miktar ve fiyatlar, tekstil fabrikası, panel müşterisi, ReBoard giderleri, SaaS aboneliği. Birim alan etiketinde yazar. Girdi değişince sonuçlar hemen yeniden hesaplanır; girdiler kaydedilmez.
+- **Sonuç kutuları:** değer, sınıf rozeti, koşullar (ör. teknik eşdeğerlik doğrulanmadı), formül ve formülün sayılarla yazılmış ara toplamları. Müşteri kutusu kullanılabilir alanı da yazar.
+- **Kırmızı:** zarar eden taraf ve oluşmayan fiyat koridoru. Kutunun üst çizgisi kırmızı olur, "Zarar" ya da "Koridor yok" çipi ve nedenini anlatan cümle eklenir. Kırmızı sonuç sayısı ekran okuyucuya okunur.
+- **Bilinmeyen ve geçersiz girdi:** boş alan bilinmiyor sayılır, ona dayanan sonuç "bilinmiyor" yazar. Geçersiz alanın altında nedeni yazar ve alan bilinmiyor sayılır.
+- **Karşılaştırma tablosu:** rapor örneği ile olumsuz senaryo yan yana. Olumsuz senaryo gizlenmez; hesaplayıcıya dokunulmasa da görünür.
 
 ## 4. MVP kapsamı (30 Ekim demosu)
 
