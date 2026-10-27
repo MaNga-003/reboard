@@ -1,7 +1,7 @@
 {
   "$schema": "./docs/state.schema.json",
   "project": "ReBoard SaaS platformu",
-  "updated_at": "2026-10-27T19:17:00+03:00",
+  "updated_at": "2026-10-27T19:19:00+03:00",
   "current_phase": "F2",
   "deadlines": {
     "demo_freeze": "2026-10-29T18:00:00+03:00",
@@ -259,10 +259,10 @@
       "id": "T2.4",
       "phase": "F2",
       "mode": "otonom",
-      "status": "sürüyor",
+      "status": "tamam",
       "title": "Dijital ürün pasaportu (açık), QR ve hash doğrulama",
       "acceptance": "Girişsiz açılır; doğrulama ucu sağlam zincirde ok=true, bozuk zincirde brokenAt döner",
-      "evidence": null,
+      "evidence": "/pasaport/[lot] girişsiz açılır (yalnızca is_public lot); /api/verify/[lot] sağlam zincirde ok=true, bozuk olayda brokenAt ve reason, çapa uymazsa anchor_mismatch; okunamayan çapa 400, bilinmeyen lot 404; no-store ve CORS *. Not, kanıt, fiyat ve alıcı adı sızmaz; adı gizli zincirde sayı, uç, sıra ve hash yazılmaz (D-025). QR sunucuda SVG, M düzeyi: ekranda 4,53 px/modül, SC 0,806 (5 genişlik × TR/EN), %7 lekede 0 okunamayan konum (M-26). pnpm test:coverage 377/377, src/domain satır %100 dal %98,7; pnpm test:e2e 60/60; lint, typecheck, build yeşil. Mutasyon 16/16 (M-27) ve E2E %30 soluk QR 4/4 düştü. Commit 93c2a42; yayın reboard-n0un21q64 (reboard-lovat.vercel.app); canlı denetim run 40539705028 yeşil: çerezsiz pasaport PL-2026-001 sağlam, QR canlı adresi ve çapayı taşır, /api/verify 4 zincir ok, çapa eşleşir, bilinmeyen lot 404",
       "depends_on": [
         "T1.3"
       ],
