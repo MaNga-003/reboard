@@ -1,7 +1,7 @@
 {
   "$schema": "./docs/state.schema.json",
   "project": "ReBoard SaaS platformu",
-  "updated_at": "2026-10-28T01:35:00+03:00",
+  "updated_at": "2026-10-28T01:50:00+03:00",
   "current_phase": "F2",
   "deadlines": {
     "demo_freeze": "2026-10-29T18:00:00+03:00",
@@ -288,16 +288,16 @@
         "D-026",
         "D-029"
       ],
-      "note": "D-029 (2026-10-28): varsayılan girdiler kaynaklı (yalnızca ayda 10 t, ekip planı); rapor örneği yalnızca testte; altta 5 kaynaklı karşılaştırma satırı."
+      "note": "D-029 (2026-10-28): varsayılan girdiler kaynaklı (yalnızca ayda 10 t, ekip planı); rapor örneği yalnızca testte; altta kaynaklı karşılaştırma satırları. Canlıda reboard-bqgmtcx6t, live-smoke 40593323959 yeşil (levha satırları canlı seed'i bekliyor, T4.1)."
     },
     {
       "id": "T2.6",
       "phase": "F2",
       "mode": "otonom",
-      "status": "sürüyor",
+      "status": "tamam",
       "title": "SaaS gider hesabı (saas_costs), tarihli resmî fiyat kaynaklarıyla",
       "acceptance": "Aylık sabit ve müşteri başı gider tablosu; her fiyatta kaynak URL'si ve tarih bulunur",
-      "evidence": null,
+      "evidence": "5e40081: saas_costs (D-027), /senaryo altında iki kurulumlu gider tablosu, her satırda https kaynak ve okunma tarihi; birim 7/7, E2E 7/7, mutasyon alan/seed/depo 18/18, arayüz 4/4. Canlı (2026-10-28): db:migrate:live (0005, 6 migrasyon), db:prices:live (8 satır; zincirin 63 olayı aynen), yayın reboard-bqgmtcx6t → reboard-lovat.vercel.app (52218d1, D-029 ile birlikte). Canlı denetim live-smoke 40593323959: 30/30 yeşil (SaaS: 4 toplam, 10 satır, 10 kaynak, 10 tarih, en az 991,05 TL/ay; senaryo: yalnız 10 t dolu, 5 sonuç bilinmiyor, 0 kırmızı, 3 kaynaklı satır). CI 40592668226 yeşil.",
       "depends_on": [
         "T1.1"
       ],
@@ -830,8 +830,8 @@
       "id": "M-29",
       "claim": "SaaS gider tablosu doğru, kaynaklı ve dürüst",
       "threshold": "beklenen değer fiyat sayfasından ve kurdan; bilinmeyen 0 olmaz; her satırda https kaynak ve tarih; tablo kabı 0 px kayar; 0 ciddi a11y ihlali",
-      "last_value": "birim 7/7, entegrasyon 2 yeni, E2E 7/7 (tam paket 67/67); mutasyon alan/seed/depo 18/18, arayüz 4/4, yerleşim ölçüsü eski yerleşimde 14 bulgu; canlı denetim yerelde yeşil, canlı yayın bekliyor",
-      "measured_at": "2026-10-27T20:16:00+03:00",
+      "last_value": "birim 7/7, entegrasyon 2 yeni, E2E 7/7 (tam paket 67/67); mutasyon alan/seed/depo 18/18, arayüz 4/4, yerleşim ölçüsü eski yerleşimde 14 bulgu; canlıda live-smoke 40593323959 yeşil (4 toplam, 10 satır, 10 kaynak, 10 tarih)",
+      "measured_at": "2026-10-28T01:50:00+03:00",
       "test": "tests/unit/calc/saas-costs.test.ts, tests/integration/seed.test.ts, tests/e2e/scenario.spec.ts, scripts/live-smoke.mjs"
     }
   ]
