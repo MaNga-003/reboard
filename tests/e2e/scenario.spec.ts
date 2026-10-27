@@ -1,12 +1,17 @@
-// Senaryo ekranı (T2.5, M-28): rapor sayıları, girdi değişince yeniden hesap, olumsuz senaryonun kırmızı ve açıklamalı
-// gösterilmesi, bilinmeyen ve geçersiz girdi, ekrandaki kırmızının okunurluğu ve beş genişlikte yerleşim (M-12, M-13).
+// Senaryo ekranı (T2.5, M-28): kaynaklı varsayılan girdiler ve dayanakları (D-029), karşılaştırma için kaynaklı değerler,
+// rapor girdileri elle yazılınca rapor sayıları, olumsuz senaryonun kırmızı ve açıklamalı gösterilmesi, bilinmeyen ve
+// geçersiz girdi, ekrandaki kırmızının okunurluğu ve beş genişlikte yerleşim (M-12, M-13).
 import { expect, test, type Page } from "@playwright/test";
+import en from "../../messages/en.json";
+import tr from "../../messages/tr.json";
+import { SCENARIO_REFERENCES } from "../../src/db/repo/scenario";
 import { contrastRatio } from "../../src/design/color";
 import { statusHex } from "../../src/design/tokens";
 import { buildDemo } from "../../src/db/seed/demo";
-import { REPORT_SCENARIO, formFromParams, paramsFromForm, runScenario, type ScenarioForm } from "../../src/domain/calc";
+import { SCENARIO_FIELDS, formFromParams, paramsFromForm, runScenario, type ScenarioForm } from "../../src/domain/calc";
 import type { Decimal } from "../../src/domain/result";
 import { fmtMoney } from "../../src/lib/format";
+import { REPORT_SCENARIO } from "../fixtures/report-scenario";
 import { WIDTHS, escapedAbsolutes, gutterBreaches, overflow, seriousViolations, signIn, smallTargets } from "./helpers";
 
 const rgbHex = (css: string) => {
@@ -20,15 +25,74 @@ async function openScenario(page: Page, locale = "tr") {
   // Menüden gelinir: bağlantı da ölçülür.
   await page.getByRole("navigation").getByRole("link", { name: locale === "tr" ? "Senaryo" : "Scenario" }).click();
   await expect(page).toHaveURL(new RegExp(`/${locale}/senaryo$`));
-  await expect(page.locator("[data-preset=base]")).toHaveAttribute("aria-pressed", "true");
+  // Kaynaklı girdilerle açılır; dönülecek bir şey olmadığı için düğme kapalı.
+  await expect(page.locator("[data-preset=sourced]")).toBeDisabled();
 }
 
 const card = (page: Page, id: string) => page.locator(`[data-kpi="scenario-${id}"]`);
 const value = (page: Page, id: string) => card(page, id).locator("[data-value]");
 const field = (page: Page, key: string) => page.locator(`#sc-${key}`);
 
-test("rapor örneği: sonuçlar raporla aynı, sınıflı; SaaS bilinmiyor; formül ara toplamlarıyla; olumsuz senaryo tabloda kırmızı", async ({ page }) => {
+/** Raporun yeniden kurulan girdileri (yalnız testte; D-029) forma elle yazılır. */
+async function typeReport(page: Page, extra: Partial<ScenarioForm> = {}) {
+  const form = { ...formFromParams(REPORT_SCENARIO), ...extra };
+  for (const f of SCENARIO_FIELDS) await field(page, f.key).fill(form[f.key]);
+  await expect(page.locator("[data-preset=sourced]")).toBeEnabled();
+}
+
+test("kaynaklı varsayılan: yalnız ekip planındaki 10 t dolu, sonuçlar bilinmiyor; her girdinin altında dayanağı yazar", async ({ page }) => {
   await openScenario(page);
+  for (const f of SCENARIO_FIELDS) {
+    await expect(field(page, f.key), f.key).toHaveValue(f.key === "wasteT" ? "10" : "");
+    await expect(field(page, f.key), f.key).toHaveAttribute("aria-describedby", `sc-${f.key}-hint`);
+    await expect(page.locator(`#sc-${f.key}-hint`), f.key).toHaveText(tr.scenario.basis[f.basis]);
+  }
+  for (const id of ["factory", "customer", "reboard", "corridor", "saas"]) await expect(value(page, id), id).toHaveText("bilinmiyor");
+  const kpis = page.locator('[data-kpi^="scenario-"]');
+  await expect(kpis).toHaveCount(5);
+  for (const k of await kpis.all()) await expect(k.locator("[data-result-class]")).toHaveAttribute("data-result-class", "synthetic");
+  await expect(page.locator('[data-kpi][data-alert="true"]')).toHaveCount(0);
+  expect(await seriousViolations(page)).toEqual([]);
+});
+
+test("karşılaştırma için kaynaklı değerler: hesaba girmez; her satırda tutar, KDV durumu, kaynak bağlantısı, okunma tarihi ve sınıf", async ({ page }) => {
+  await openScenario(page);
+  // Beklenen tutarlar kaynak belgelerden (İBB tarifesi, satıcı sayfaları, Eurostat); seed'den değil.
+  const want: Record<string, { value: string; note: RegExp; read: string }> = {
+    ibbSeymen: { value: "700 TL/t", note: /KDV dahil/, read: "27 Eki 2026" },
+    ibbKomurcuoda: { value: "785 TL/t", note: /KDV dahil/, read: "27 Eki 2026" },
+    particleboard: { value: "1.471 – 1.911 TL/levha", note: /KDV durumu yazmıyor/, read: "28 Eki 2026" },
+    mdf: { value: "3.155 – 3.260 TL/levha", note: /KDV dahil/, read: "28 Eki 2026" },
+    electricity: { value: "3,975 TL/kWh", note: /KDV ve geri alınabilir vergiler hariç/, read: "27 Eki 2026" },
+  };
+  const refs = buildDemo(new Date()).referenceValues;
+  const rows = page.locator("tr[data-reference]");
+  await expect(rows).toHaveCount(SCENARIO_REFERENCES.length);
+  for (const r of SCENARIO_REFERENCES) {
+    const row = page.locator(`tr[data-reference="${r.id}"]`);
+    const w = want[r.id];
+    await expect(row.locator("td[data-value] > span").first(), r.id).toHaveText(w.value);
+    await expect(row.locator("th"), r.id).toContainText(w.note);
+    await expect(row.locator(`[data-input="${r.input}"]`), r.id).toHaveText(`İlgili girdi: ${tr.scenario.fields[r.input]}`);
+    const url = refs.find((x) => x.key === r.keys[0])!.sourceUrl;
+    expect(url).toMatch(/^https:\/\//);
+    // Aralığın iki ucu aynı sayfadan okunur.
+    for (const k of r.keys) expect(refs.find((x) => x.key === k)!.sourceUrl, k).toBe(url);
+    const src = row.locator("[data-source]");
+    await expect(src.getByRole("link")).toHaveAttribute("href", url);
+    await expect(src.getByRole("link")).toHaveText(new URL(url).host);
+    await expect(src).toContainText(`Okunma: ${w.read}`);
+    await expect(row.locator("[data-result-class]")).toHaveAttribute("data-result-class", "sourced_estimate");
+  }
+  await expect(page.locator("#sc-references [data-result-class]")).toHaveAttribute("data-result-class", "sourced_estimate");
+  // Hesaba girmez: kaynaklı değerler ekrandayken sonuçlar hâlâ bilinmiyor.
+  await expect(value(page, "factory")).toHaveText("bilinmiyor");
+  expect(await seriousViolations(page)).toEqual([]);
+});
+
+test("rapor girdileri yazılınca rapor sayıları çıkar; olumsuz senaryo kırmızı, açıklamalı ve okunur; atık bedeli farkı kapatır", async ({ page }) => {
+  await openScenario(page);
+  await typeReport(page);
   // Beklenen sayılar raporun metninden (DATA_DICTIONARY §6), alan işlevinden değil.
   await expect(value(page, "factory")).toHaveText("10.000 TL");
   await expect(value(page, "customer")).toHaveText("31.111 TL");
@@ -42,31 +106,17 @@ test("rapor örneği: sonuçlar raporla aynı, sınıflı; SaaS bilinmiyor; form
   await expect(card(page, "customer").locator("[data-condition=equivalence_unverified]")).toBeVisible();
   await expect(card(page, "reboard").locator("[data-condition=before_financing_and_tax]")).toBeVisible();
   await expect(card(page, "customer")).toContainText("850 m²");
-
-  const kpis = page.locator('[data-kpi^="scenario-"]');
-  await expect(kpis).toHaveCount(5);
-  for (const k of await kpis.all()) await expect(k.locator("[data-result-class]")).toHaveAttribute("data-result-class", "synthetic");
   await expect(page.locator('[data-kpi][data-alert="true"]')).toHaveCount(0);
 
-  // Karşılaştırma tablosu: olumsuz senaryoda yalnızca fabrika kırmızı; rapor sütununda hiçbiri.
-  const neg = page.locator('tr[data-row="factory"] [data-cell="negative"]');
-  await expect(neg).toHaveAttribute("data-alert", "true");
-  await expect(neg).toContainText(/^[−-]10\.000 TL/);
-  await expect(neg.locator("[data-level=danger]")).toHaveText("Zarar");
-  await expect(page.locator('td[data-alert="true"]')).toHaveCount(1);
-  await expect(page.locator("#sc-compare [data-result-class]")).toHaveAttribute("data-result-class", "synthetic");
-  expect(await seriousViolations(page)).toEqual([]);
-});
-
-test("olumsuz senaryo: fabrika kırmızı ve açıklamalı, kırmızı ekranda okunur; atık bedeli farkı kapatır ve ReBoard'dan düşer", async ({ page }) => {
-  await openScenario(page);
-  await page.locator("[data-preset=negative]").click();
-  await expect(page.locator("[data-preset=negative]")).toHaveAttribute("aria-pressed", "true");
+  // Raporun olumsuz senaryosu: atık bugün 2.000 TL/t'ye satılıyor.
+  await field(page, "wasteSalePerT").fill("2000");
   const factory = card(page, "factory");
   await expect(factory).toHaveAttribute("data-alert", "true");
   await expect(value(page, "factory")).toHaveText(/^[−-]10\.000 TL$/);
   await expect(factory.locator("[data-level=danger]")).toHaveText("Zarar");
   await expect(factory.locator("[data-explain]")).toContainText("atık bedeli");
+  await expect(value(page, "customer")).toHaveText("31.111 TL");
+  await expect(value(page, "reboard")).toHaveText("17.500 TL");
   await expect(page.locator('[data-kpi][data-alert="true"]')).toHaveCount(1);
   await expect(page.getByRole("status")).toHaveText("Sonuçlar güncellendi. Kırmızı sonuç sayısı: 1.");
 
@@ -89,16 +139,18 @@ test("olumsuz senaryo: fabrika kırmızı ve açıklamalı, kırmızı ekranda o
   await expect(value(page, "factory")).toHaveText("0 TL");
   await expect(factory).toHaveAttribute("data-alert", "false");
   await expect(value(page, "reboard")).toHaveText("7.500 TL");
-  await expect(page.locator("[aria-pressed=true]")).toHaveCount(0);
 
-  // Elle girilen değer hazır senaryoyla aynıysa o düğme seçili görünür.
-  await page.locator("[data-preset=base]").click();
-  await field(page, "wasteSalePerT").fill("2000");
-  await expect(page.locator("[data-preset=negative]")).toHaveAttribute("aria-pressed", "true");
+  // Kaynaklı girdilere dönünce yazılanlar silinir, sonuçlar yeniden bilinmiyor.
+  await page.locator("[data-preset=sourced]").click();
+  await expect(page.locator("[data-preset=sourced]")).toBeDisabled();
+  await expect(field(page, "wasteT")).toHaveValue("10");
+  await expect(field(page, "wasteSalePerT")).toHaveValue("");
+  await expect(value(page, "factory")).toHaveText("bilinmiyor");
 });
 
 test("bilinmeyen ve geçersiz girdi: sonuç bilinmiyor olur, 0 olmaz; zarar ve koridor yokluğu kırmızı; ekran alan işleviyle aynı", async ({ page }) => {
   await openScenario(page);
+  await typeReport(page);
   await field(page, "wasteT").fill("");
   await expect(value(page, "factory")).toHaveText("bilinmiyor");
   await expect(value(page, "reboard")).toHaveText("bilinmiyor");
@@ -115,8 +167,11 @@ test("bilinmeyen ve geçersiz girdi: sonuç bilinmiyor olur, 0 olmaz; zarar ve k
   await expect(page.locator("#sc-customerCutYield-hint")).toContainText("0 ile 100");
   await expect(card(page, "customer")).toContainText("kullanılabilir alanı: bilinmiyor.");
 
-  await page.locator("[data-preset=base]").click();
+  // Düzeltilen alanın altında yeniden dayanağı yazar.
+  await field(page, "collection").fill("6150");
   await expect(field(page, "collection")).not.toHaveAttribute("aria-invalid", "true");
+  await expect(page.locator("#sc-collection-hint")).toHaveText(tr.scenario.basis.supplierData);
+  await field(page, "customerCutYield").fill("85");
   await field(page, "material").fill("200000");
   await expect(card(page, "reboard")).toHaveAttribute("data-alert", "true");
   await expect(card(page, "corridor")).toHaveAttribute("data-alert", "true");
@@ -141,11 +196,14 @@ test("bilinmeyen ve geçersiz girdi: sonuç bilinmiyor olur, 0 olmaz; zarar ve k
 
 test("İngilizce: aynı sonuçlar, İngilizce biçim, 0 ciddi a11y ihlali", async ({ page }) => {
   await openScenario(page, "en");
-  await expect(value(page, "factory")).toHaveText("10,000 TL");
+  await expect(page.locator("#sc-wasteT-hint")).toHaveText(en.scenario.basis.teamPlan);
+  await expect(page.locator('tr[data-reference="particleboard"] td[data-value] > span').first()).toHaveText("1,471 – 1,911 TL/sheet");
+  await expect(page.locator('tr[data-reference="electricity"] td[data-value] > span').first()).toHaveText("3.975 TL/kWh");
+  await typeReport(page, { wasteSalePerT: "2000" });
+  await expect(value(page, "customer")).toHaveText("31,111 TL");
   await expect(value(page, "corridor")).toHaveText("222.50 – 271.11 TL/m²");
   await expect(value(page, "saas")).toHaveText("unknown");
   await expect(card(page, "factory").locator("[data-result-class]")).toHaveText("Synthetic");
-  await page.locator("[data-preset=negative]").click();
   await expect(card(page, "factory").locator("[data-level=danger]")).toHaveText("Loss");
   await expect(saasValue(page, "commercial-monthly")).toHaveText("at least 991.05 TL/month");
   await expect(saasKpi(page, "commercial-monthly").locator("[data-unknown]")).toHaveText("Unknown: Domain name.");
@@ -207,16 +265,15 @@ for (const locale of ["tr", "en"]) {
   test(`senaryo (${locale}) beş genişlikte taşmaz, dokunma hedefi ≥ 44 px`, async ({ page }) => {
     await openScenario(page, locale);
     // En uzun durum: olumsuz senaryo açıklaması ve geçersiz alan uyarısı açık.
-    await page.locator("[data-preset=negative]").click();
-    await field(page, "customerCutYield").fill("120");
+    await typeReport(page, { wasteSalePerT: "2000", customerCutYield: "120" });
     for (const width of WIDTHS) {
       await page.setViewportSize({ width, height: 900 });
       expect(await overflow(page), `${width} px`).toBeLessThanOrEqual(0);
       expect(await gutterBreaches(page), `${width} px`).toEqual([]);
       expect(await escapedAbsolutes(page), `${width} px`).toEqual([]);
       expect(await smallTargets(page), `${width} px`).toEqual([]);
-      // SaaS tablosu kendi içinde de kaymaz: kaynak bağlantısı her genişlikte kaydırmadan görünür (T2.6).
-      const hidden = await page.locator("[data-stage] [role=region]").evaluateAll((rs) =>
+      // Kaynaklı tablolar kendi içinde de kaymaz: kaynak bağlantısı her genişlikte kaydırmadan görünür (T2.6, D-029).
+      const hidden = await page.locator("[data-stage] [role=region], section[aria-labelledby=sc-references] [role=region]").evaluateAll((rs) =>
         rs.flatMap((r) => {
           const box = r.getBoundingClientRect();
           const out = r.scrollWidth - r.clientWidth > 0 ? [`${r.getAttribute("aria-label")} ${r.scrollWidth - r.clientWidth} px kayıyor`] : [];

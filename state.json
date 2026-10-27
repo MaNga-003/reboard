@@ -1,7 +1,7 @@
 {
   "$schema": "./docs/state.schema.json",
   "project": "ReBoard SaaS platformu",
-  "updated_at": "2026-10-28T00:05:00+03:00",
+  "updated_at": "2026-10-28T01:35:00+03:00",
   "current_phase": "F2",
   "deadlines": {
     "demo_freeze": "2026-10-29T18:00:00+03:00",
@@ -285,8 +285,10 @@
       "decisions": [
         "D-002",
         "D-011",
-        "D-026"
-      ]
+        "D-026",
+        "D-029"
+      ],
+      "note": "D-029 (2026-10-28): varsayılan girdiler kaynaklı (yalnızca ayda 10 t, ekip planı); rapor örneği yalnızca testte; altta 5 kaynaklı karşılaştırma satırı."
     },
     {
       "id": "T2.6",
@@ -410,8 +412,10 @@
         "T2.4"
       ],
       "decisions": [
-        "D-003"
-      ]
+        "D-003",
+        "D-029"
+      ],
+      "note": "Canlı Neon'da senaryo karşılaştırmasının 4 levha satırı yok (yalnız İBB x2 ve elektrik); tam canlı seed'den sonra scripts/live-smoke.mjs içindeki satır eşiği [3, 5] yerine 5 yapılır (D-029)."
     },
     {
       "id": "T4.2",
@@ -460,7 +464,7 @@
       "id": "T4.5",
       "phase": "F4",
       "mode": "hibrit",
-      "status": "yapılacak",
+      "status": "sürüyor",
       "title": "Sunum ile platform rakamlarının tutarlılığı (Şerife ve İrem onayı)",
       "acceptance": "Uyumsuzluk listesi çıkar ve ekip her maddeye karar verir",
       "evidence": null,
@@ -469,8 +473,10 @@
       ],
       "decisions": [
         "D-011",
-        "D-028"
-      ]
+        "D-028",
+        "D-029"
+      ],
+      "note": "Sunum kaynakçası ve iddiaları doğrulandı (.private/kaynak-dogrulama.md); İrem'in yanıtları işlendi (prototip yok, bağlayıcı adayları PET/CoPET ve pMDI, ölçüler hedef, 6. ve 7. madde künyeleri). Senaryodaki kaynaksız varsayılanlar kaldırıldı (D-029). 785 TL/t KDV tutarsızlığı yalnızca test örneğinde ve supplier_baseline seed'inde kaldı; Şerife'nin girdi dosyası bekleniyor. Sunum düzeltmeleri ekipte (Q-3)."
     },
     {
       "id": "T4.6",
@@ -489,16 +495,17 @@
       "id": "T4.7",
       "phase": "F4",
       "mode": "otonom",
-      "status": "yapılacak",
+      "status": "sürüyor",
       "title": "Platformdaki olgusal bilgilerin birincil kaynak denetimi (D-028)",
       "acceptance": "Arayüz metinleri, seed, referans değerler ve belgelerdeki her olgu listelenir; her biri birincil kaynak bağlantısı ve okunma tarihiyle doğrulanır ya da arayüzden kalkar; doğrulanamayanlar açık soru olur; kaynaksız olgu sayısı 0",
       "evidence": null,
       "depends_on": [],
       "decisions": [
         "D-011",
-        "D-028"
+        "D-028",
+        "D-029"
       ],
-      "note": "İlk bulgu düzeltildi: İBB tarifesi KDV dahil ve 2026 için geçerli; tesis adları tarifede (2026-10-27)."
+      "note": "İlk bulgu düzeltildi: İBB tarifesi KDV dahil ve 2026 için geçerli; tesis adları tarifede (2026-10-27). Senaryo: kaynaksız 22 varsayılan girdi arayüzden kalktı, yerine dayanak metni geldi; 4 yeni kaynaklı karşılaştırma satırı (Arcline sunta, Arkutorman MDF, 2026-10-28) (D-029)."
     },
     {
       "id": "T5.1",
@@ -556,23 +563,7 @@
     {
       "id": "Q-3",
       "owner": "ekip",
-      "question": "Sunumdaki 'prototip tamamlandı', '1,5 milyon ton', '%85', '8 milyon m³' ifadeleri ve yazılım iddiaları (anlık konum takibi, karbon hesaplama MVP'si, rota optimizasyonu) jüri belgesinin diliyle nasıl uyumlanacak?",
-      "blocks": [
-        "T4.5"
-      ]
-    },
-    {
-      "id": "Q-5",
-      "owner": "kullanıcı",
-      "question": "Jupyter paketi (scenario_inputs.json) yok. Senaryo girdileri kaynaklı değerler ve 'varsayım' diye işaretli kalemlerle yeniden kurulsun mu? Kurulursa Şerife yalnızca varsayım satırlarını onaylar ya da düzeltir; 785 TL/t bertaraf bedelinin KDV sorunu da bu tabloda çözülür.",
-      "blocks": [
-        "T4.5"
-      ]
-    },
-    {
-      "id": "Q-6",
-      "owner": "ekip",
-      "question": "İrem: prototip gerçekten üretildi mi; 'doğa dostu, düşük formaldehitli reçine' hangi bağlayıcı; '5 cm / birkaç mm' ve '550–750 kg/m³' kaynaklı mı, hedef mi?",
+      "question": "Sunumdaki düzeltmeler (öneriler .private/kaynak-dogrulama.md, 3. bölüm) ekipçe uygulanacak mı? Açık kalanlar: (1) Türkiye için '1,5 milyon ton' ve '%85' sayılarının birincil kaynağı bulunamadı; bilinmiyorsa Eurostat'ın 2022 sayısı (361.500 t) kullanılsın mı? (2) '8 milyon m³' yerine FAOSTAT 2024 görünür tüketimi (≈8,61 milyon m³) yazılsın mı? (3) Yazılım iddiaları (anlık konum takibi, karbon hesabı, rota optimizasyonu) platformda yok; 'planlanan' diye yazılsın mı? (4) PET/CoPET için 'formaldehit içermez' ifadesine tedarikçinin güvenlik bilgi formu (SDS) var mı? (5) Biyobazlı aday olarak PLA bikomponent elyaf testlere eklensin mi?",
       "blocks": [
         "T4.5"
       ]
@@ -647,8 +638,8 @@
       "id": "M-5",
       "claim": "Hesaplar doğru",
       "threshold": "para birimi/vergi temeli uyuşmazlığı hata; boş girdi null; src/domain kapsamı ≥ %90",
-      "last_value": "398/398 test (birim ve entegrasyon); src/domain kapsamı satır %100 (605/605), dal %98,6, fonksiyon %99,6; eşik %90",
-      "measured_at": "2026-10-27T20:16:00+03:00",
+      "last_value": "400/400 test (birim ve entegrasyon); src/domain kapsamı satır %100, dal %98,6, fonksiyon %99,6; eşik %90",
+      "measured_at": "2026-10-28T01:20:00+03:00",
       "test": "tests/unit/calc"
     },
     {
@@ -703,16 +694,16 @@
       "id": "M-12",
       "claim": "Erişilebilir",
       "threshold": "0 ciddi/kritik axe ihlali; dokunma hedefi ≥ 44×44 px",
-      "last_value": "/tr, /en, giriş, panel (TR ve EN, tablolar açık), pazar listesi, ilan ayrıntısı, yeni ilan, izlenebilirlik sayfaları, açık pasaport (sağlam ve bozuk), senaryo (rapor, olumsuz, EN): 0 ciddi/kritik ihlal; 5 genişlikte 44 px altı hedef 0; projeksiyon klavyeyle gezilir (Home/End, aria-live); SaaS gider tablosu TR ve EN 0 ihlal, 0 küçük hedef",
-      "measured_at": "2026-10-27T20:16:00+03:00",
+      "last_value": "/tr, /en, giriş, panel (TR ve EN, tablolar açık), pazar listesi, ilan ayrıntısı, yeni ilan, izlenebilirlik sayfaları, açık pasaport (sağlam ve bozuk), senaryo (kaynaklı varsayılan, karşılaştırma tablosu, test girdileriyle olumsuz hâl, EN): 0 ciddi/kritik ihlal; 5 genişlikte 44 px altı hedef 0; projeksiyon klavyeyle gezilir (Home/End, aria-live); SaaS gider tablosu TR ve EN 0 ihlal, 0 küçük hedef",
+      "measured_at": "2026-10-28T01:20:00+03:00",
       "test": "tests/e2e/smoke.spec.ts, tests/e2e/auth.spec.ts, tests/e2e/market.spec.ts, tests/e2e/trace.spec.ts, tests/e2e/panel.spec.ts, tests/e2e/passport.spec.ts, tests/e2e/scenario.spec.ts"
     },
     {
       "id": "M-13",
       "claim": "Yerleşim bozulmaz",
       "threshold": "0 px sayfa taşması; main içerik kutusundan taşan 0 öğe; kaydırılan kaptan kaçan 0 mutlak konumlu öğe",
-      "last_value": "giriş, panel, pazar, izlenebilirlik, pasaport ve senaryo; 5 genişlik: 0 px, 0 öğe, 0 kaçak. Panel bulgusu: sr-only'nin -1 px kenar boşluğu ipucu metnini 1 px taşırıyordu, düzeltildi; SaaS tablosu kabı 5 genişlikte 0 px kayar, kaynak bağlantıları görünür alanda",
-      "measured_at": "2026-10-27T20:16:00+03:00",
+      "last_value": "giriş, panel, pazar, izlenebilirlik, pasaport ve senaryo; 5 genişlik: 0 px, 0 öğe, 0 kaçak. Panel bulgusu: sr-only'nin -1 px kenar boşluğu ipucu metnini 1 px taşırıyordu, düzeltildi; SaaS tablosu kabı 5 genişlikte 0 px kayar, kaynak bağlantıları görünür alanda; senaryo karşılaştırma tablosu: nowrap 360 px'te kabı TR 25, EN 26 px kaydırıyordu, düzeltildi (0)",
+      "measured_at": "2026-10-28T01:20:00+03:00",
       "test": "tests/e2e/smoke.spec.ts, tests/e2e/auth.spec.ts, tests/e2e/market.spec.ts, tests/e2e/trace.spec.ts, tests/e2e/panel.spec.ts, tests/e2e/passport.spec.ts, tests/e2e/scenario.spec.ts"
     },
     {
@@ -829,11 +820,11 @@
     },
     {
       "id": "M-28",
-      "claim": "Senaryo ekranı doğru hesaplar, olumsuzu kırmızı ve açıklamalı gösterir",
-      "threshold": "rapor sayıları birebir; bilinmeyen 0 olmaz; kırmızı kutu çizgisi tehlike dolgusu, 4 px, zemine ≥ 3:1; çip yazısı ≥ 4,5:1; 0 ciddi a11y ihlali",
-      "last_value": "birim 12/12, E2E 6/6 (tam paket 66/66, 3 ardışık koşu); mutasyon alan 16/16, arayüz 5/5",
-      "measured_at": "2026-10-27T19:45:00+03:00",
-      "test": "tests/unit/calc/scenario.test.ts, tests/e2e/scenario.spec.ts"
+      "claim": "Senaryo ekranı doğru hesaplar, olumsuzu kırmızı ve açıklamalı gösterir, kaynaksız varsayılan göstermez",
+      "threshold": "rapor sayıları birebir; kaynaksız varsayılan 0; bilinmeyen 0 olmaz; kırmızı kutu çizgisi tehlike dolgusu, 4 px, zemine ≥ 3:1; çip yazısı ≥ 4,5:1; 0 ciddi a11y ihlali",
+      "last_value": "birim 14/14, E2E 8/8 (tam paket 68/68); varsayılan 23 girdinin 1'i dolu (10 t, ekip planı), 22'si bilinmiyor; 5 kaynaklı karşılaştırma satırı; bozma 2026-10-28: 785 varsayılanı 1 birim testi, dayanak metni 3 ve MDF fiyatı 1 E2E testiyle yakalandı; önceki alan 16/16, arayüz 5/5",
+      "measured_at": "2026-10-28T01:20:00+03:00",
+      "test": "tests/unit/calc/scenario.test.ts, tests/unit/calc/report-example.test.ts, tests/fixtures/report-scenario.ts, tests/e2e/scenario.spec.ts"
     },
     {
       "id": "M-29",

@@ -669,12 +669,21 @@
   },
   "scenario": {
     "title": "Senaryo",
-    "intro": "Maliyet raporundaki formüller, raporun sentetik örneğiyle. Bir girdiyi değiştirin, sonuçlar hemen yeniden hesaplanır. Boş bırakılan girdi bilinmiyor sayılır; ona dayanan sonuç da bilinmiyor olur.",
-    "taxNote": "Tutarlar KDV hariç ve sentetik bir dönem içindir.",
+    "intro": "Maliyet raporundaki formüller. Varsayılan girdi yalnızca dayanağı olan değerdir: ekip planındaki ayda 10 t atık. Öteki girdilerin henüz kaynağı yok; fabrikadan, alıcıdan ve pilottan gelecek. Bu yüzden boş, sonuçlar da bilinmiyor. Bir girdi yazın, sonuçlar hemen yeniden hesaplanır. Her girdinin altında dayanağı ya da neden bilinmediği yazar.",
+    "taxNote": "Tutarları KDV hariç girin. Girdiğiniz değerlerle hesaplanan sonuçlar sentetiktir.",
     "presets": {
-      "label": "Hazır senaryolar",
-      "base": "Rapor örneği",
-      "negative": "Olumsuz senaryo: atık bugün 2.000 TL/t'ye satılıyor"
+      "sourced": "Kaynaklı girdilere dön"
+    },
+    "basis": {
+      "teamPlan": "Varsayılan: ekip planı, Ocak 2027'de ayda 10 t atık işleyen pilot tesis (sunum, 7. slayt).",
+      "notMeasured": "Bilinmiyor: panel üretilmedi, verim ölçülmedi.",
+      "notDecided": "Bilinmiyor: henüz karar verilmedi.",
+      "supplierData": "Bilinmiyor: fabrikanın kendi kaydından gelir.",
+      "noLocalTariff": "Bilinmiyor: fabrikanın faturasından gelir. Aşağıdaki İBB tarifesi yalnızca karşılaştırma içindir.",
+      "buyerTrial": "Bilinmiyor: alıcının bugünkü faturasından ve deneme siparişinden gelir.",
+      "noRecipe": "Bilinmiyor: reçete seçilmedi.",
+      "noPlant": "Bilinmiyor: tesis ve ekipman seçilmedi.",
+      "saasTable": "Bilinmiyor: kullanım ölçülünce aşağıdaki SaaS gider tablosuna yazılır."
     },
     "resultsTitle": "Sonuçlar",
     "inputsTitle": "Girdiler",
@@ -766,14 +775,44 @@
         "alert": "Abonelik, müşteriye bağlı gideri karşılamıyor."
       }
     },
-    "compare": {
-      "title": "Rapor örneği ve olumsuz senaryo",
-      "intro": "Raporun olumsuz senaryosu gizlenmez. Fabrika atığını bugün 2.000 TL/t'ye satıyorsa ReBoard'a vermek ona zarar ettirir; diğer tarafların sonucu değişmez.",
-      "result": "Sonuç",
-      "base": "Rapor örneği",
-      "negative": "Olumsuz senaryo"
-    },
-    "m2": "{value} m²"
+    "m2": "{value} m²",
+    "references": {
+      "title": "Karşılaştırma için kaynaklı değerler",
+      "intro": "Bunlar senaryo girdisi değildir ve hesaba girmez; girdiyi doldururken karşılaştırmak içindir. Her satırda kaynak bağlantısı ve okunma tarihi var. KDV durumu kaynağın yazdığı gibidir.",
+      "columns": {
+        "item": "Kaynaklı değer",
+        "value": "Tutar"
+      },
+      "input": "İlgili girdi: {field}",
+      "range": "{low} – {high}",
+      "items": {
+        "ibbSeymen": {
+          "label": "İBB düzenli depolama kabul bedeli, Seymen (2026)",
+          "note": "İstanbul tarifesi; Antalya için yalnızca karşılaştırma. Tarifeye göre KDV dahil.",
+          "value": "{amount} TL/t"
+        },
+        "ibbKomurcuoda": {
+          "label": "İBB düzenli depolama kabul bedeli, Kömürcüoda (2026)",
+          "note": "İstanbul tarifesi; Antalya için yalnızca karşılaştırma. Tarifeye göre KDV dahil.",
+          "value": "{amount} TL/t"
+        },
+        "particleboard": {
+          "label": "18 mm sunta levha, 1830×3660 mm",
+          "note": "Tek satıcının liste fiyatı; sayfadaki dört ürünün aralığı. Sayfada KDV durumu yazmıyor. Teslim, kesim ve kaplama hariç.",
+          "value": "{amount} TL/levha"
+        },
+        "mdf": {
+          "label": "18 mm ham MDF levha, 1830×3660 mm",
+          "note": "Tek satıcının havale/EFT liste fiyatı; sayfadaki iki ürünün aralığı. Sayfaya göre KDV dahil. Teslim, kesim ve kaplama hariç.",
+          "value": "{amount} TL/levha"
+        },
+        "electricity": {
+          "label": "Hane dışı tüketici elektrik fiyatı, Türkiye, 2026 ilk yarı",
+          "note": "Yıllık 20–499 MWh tüketim bandı; KDV ve geri alınabilir vergiler hariç. Pilotun sözleşme fiyatı değildir.",
+          "value": "{amount} TL/kWh"
+        }
+      }
+    }
   },
   "saasCosts": {
     "title": "SaaS giderleri",

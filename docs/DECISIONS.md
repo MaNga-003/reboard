@@ -137,6 +137,24 @@ Biçim: **Karar**, **Neden**, **Tarih**, kararı kim verdi (K: kullanıcı, C: C
 - **Neden:** Yarışmadan sonra şirketleşme seçeneği açık kalır. Sonradan açık lisansa geçmek kolaydır; yayımlanmış bir sürümü geri kapatmak mümkün değildir.
 - **Tarih:** 2026-10-27 · K
 
+### D-029 — Senaryonun varsayılan girdileri yalnızca dayanağı olan değerlerdir
+- **Karar:**
+  - Hesaplayıcı kaynaklı girdilerle açılır (`SOURCED_SCENARIO`). Tek değer ekip planından gelir: Ocak 2027'de ayda 10 t atık işleyen pilot tesis (sunum, 7. slayt). Öteki 22 girdi `null`; onlara dayanan sonuçlar "bilinmiyor" yazar.
+  - Her girdinin bir dayanağı vardır (`ScenarioBasis`): ekip planı, ölçülmedi, karar verilmedi, fabrikanın kaydı, yerel tarife yok, alıcının teklifi ve denemesi, reçete seçilmedi, tesis seçilmedi, SaaS gider tablosu. Dayanak alanın altında yazar ve seed'de `model_inputs.source` alanına yazılır.
+  - Rapor örneğinin yeniden kurulan girdileri ve olumsuz senaryo yalnızca testte durur (`tests/fixtures/report-scenario.ts`). Hazır senaryo düğmeleri kalktı; tek düğme kaynaklı girdilere döndürür. Elle girilen değerlerle kırmızı uyarılar aynen çalışır (D-026).
+  - Hesaplayıcının altında "Karşılaştırma için kaynaklı değerler" tablosu durur:
+    - İBB düzenli depolama kabul bedeli: Seymen 700, Kömürcüoda 785 TL/t, tarifeye göre KDV dahil.
+    - 18 mm sunta, 1830×3660 mm: 1.471–1.911 TL/levha (Arcline); sayfada KDV durumu yazmıyor.
+    - 18 mm ham MDF, 1830×3660 mm: 3.155–3.260 TL/levha (Arkutorman), sayfaya göre KDV dahil.
+    - Hane dışı tüketici elektrik fiyatı: 3,975 TL/kWh (Eurostat, 2026 ilk yarı), KDV hariç.
+  - Bu değerler hesaba girmez. Her satırda ilgili girdi, kaynak bağlantısı, okunma tarihi ve `sourced_estimate` rozeti bulunur. Satırları `src/db/repo/scenario.ts` içindeki `scenarioReferences(tenant)` okur; aralığın bir ucu eksikse satır gösterilmez.
+  - Seed'deki `calc_runs` kayıtları kaynaklı girdilerden üretilir; beş sonucun hepsi bilinmiyor.
+- **Neden:**
+  - Kullanıcının kararı: kaynaksız iddia ya da açıklama olmayacak; kaynak yoksa eklenmeyecek (D-028).
+  - Rapor örneğinin girdileri raporda yayımlanan sonuçlardan geriye doğru kuruldu; hiçbirinin kaynağı yok. Ekranda varsayılan olarak durmaları sentetik sayıları kaynaklı gibi gösterirdi.
+  - Kaynaklı değerler girdinin yerine konamaz: İBB tarifesi İstanbul'un ve KDV dahil, levha fiyatları tek satıcının liste fiyatı, elektrik fiyatı ulusal ortalama. Bu yüzden girdi olarak değil, karşılaştırma olarak gösterilir.
+- **Tarih:** 2026-10-28 · K
+
 ### D-028 — Platforma giren her bilgi birincil kaynakla doğrulanır
 - **Karar:**
   - Arayüz metni, seed, referans değer ya da belge fark etmez: olgu bildiren her bilgi platforma eklenmeden önce birincil kaynaktan okunarak doğrulanır. Birincil kaynak resmî tarife, istatistik kurumu, mevzuat metni, hakemli yayın ya da fiyatı veren firmanın kendi sayfasıdır.
@@ -169,20 +187,18 @@ Biçim: **Karar**, **Neden**, **Tarih**, kararı kim verdi (K: kullanıcı, C: C
 ### D-026 — Senaryo ekranı: tarayıcıda aynı alan işleviyle hesap, açık girdiler ve kırmızı uyarılar
 - **Karar:**
   - `/senaryo` girişle açılır. Hesap tarayıcıda, sunucudakiyle aynı alan işleviyle yapılır (`runScenario`). Girdi değişince sonuç beklemeden yenilenir. Girdiler kaydedilmez.
-  - Formüldeki her satır ekranda ayrı bir girdidir (23 alan, `SCENARIO_FIELDS`); gizli sabit yoktur. Hazır senaryolar: rapor örneği ve olumsuz senaryo (atık bugün 2.000 TL/t'ye satılıyor).
+  - Formüldeki her satır ekranda ayrı bir girdidir (23 alan, `SCENARIO_FIELDS`); gizli sabit yoktur. Varsayılan girdiler ve kaynaklı karşılaştırma değerleri D-029'dadır.
   - Boş girdi bilinmiyor sayılır (`null`) ve ona dayanan sonuç da bilinmiyor olur. Geçersiz girdi (eksi, harf, boşluklu sayı, 4'ten fazla ondalık, %100'ü aşan yüzde) de bilinmiyor sayılır ve alanın altında nedeni yazar. Ondalık ayırıcı nokta ya da virgül olabilir.
   - ReBoard'un ödediği atık bedeli fabrikanın yeni net giderinden düşer ve aynı tutar ReBoard'un malzeme giderine eklenir.
   - Zarar, bilinen ve sıfırdan küçük sonuçtur. Bilinmeyen sonuç zarar sayılmaz. Oluşmayan fiyat koridoru da kırmızı gösterilir.
   - Kırmızı hiçbir zaman yalnızca renkle verilmez: kutunun 4 px kırmızı üst çizgisi, "Zarar" ya da "Koridor yok" çipi, nedenini ve çıkış yolunu anlatan cümle birlikte gelir. Kırmızı sonuç sayısı ekran okuyucuya da okunur.
   - Her sonucun altında formül ve formülün sayılarla yazılmış ara toplamları bulunur.
-  - Olumsuz senaryo, hesaplayıcıya dokunulmasa da sayfanın altındaki karşılaştırma tablosunda görünür.
   - Abonelik ücreti belirlenmediği için fabrikanın yeni giderine yazılmaz; SaaS katkısı ayrı ve aylık gösterilir.
   - Seed'deki `model_inputs` anahtarları alan adlarından türetilir (`wasteT` → `waste_t`).
 - **Neden:**
   - Jüri bir girdiyi değiştirip sonucun nasıl tepki verdiğini görebilmeli. Ağ gidiş dönüşü olmadan hesap anında yenilenir. Aynı işlev seed'deki `calc_runs` kayıtlarını da ürettiği için ekran ile kayıt birbirinden ayrışamaz.
   - Bilinmeyeni sıfır saymak sonucu iyimser gösterir (D-011). Geçersiz girdiyi sessizce düzeltmek de aynı hatadır.
   - Atık bedeli yalnızca fabrikaya yazılsaydı ödeme yoktan var olurdu. İki tarafa yazılınca fabrikanın zararı kapandığında ReBoard'un sonucu aynı tutarda düşer; testte toplam korunur.
-  - Olumsuz senaryo rapordadır; gizlenirse ekran rapordan daha iyimser görünür.
 - **Tarih:** 2026-10-27 · C
 
 ### D-025 — Açık ürün pasaportu: süzülmüş görünüm, etiket çapası ve doğrulama ucu

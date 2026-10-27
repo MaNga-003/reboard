@@ -669,12 +669,21 @@
   },
   "scenario": {
     "title": "Scenario",
-    "intro": "The formulas from the cost report, with the report's synthetic example. Change an input and the results are recalculated at once. An input left empty counts as unknown, and so does every result that depends on it.",
-    "taxNote": "Amounts exclude VAT and cover a synthetic period.",
+    "intro": "Formulas from the cost report. The only default input is the one with a basis: the team plan's 10 t of waste a month. The other inputs have no source yet; they will come from the factory, the buyer and the pilot. So they are empty and the results are unknown. Type an input and the results recalculate at once. Under each input you see its basis or why it is unknown.",
+    "taxNote": "Enter amounts excluding VAT. Results calculated from your inputs are synthetic.",
     "presets": {
-      "label": "Ready scenarios",
-      "base": "Report example",
-      "negative": "Downside scenario: the waste sells today for 2,000 TL/t"
+      "sourced": "Back to sourced inputs"
+    },
+    "basis": {
+      "teamPlan": "Default: team plan, a pilot plant processing 10 t of waste a month from January 2027 (presentation, slide 7).",
+      "notMeasured": "Unknown: no panel produced, yield not measured.",
+      "notDecided": "Unknown: not decided yet.",
+      "supplierData": "Unknown: comes from the factory's own records.",
+      "noLocalTariff": "Unknown: comes from the factory's invoice. The Istanbul tariff below is for comparison only.",
+      "buyerTrial": "Unknown: comes from the buyer's current invoice and the trial order.",
+      "noRecipe": "Unknown: no recipe chosen.",
+      "noPlant": "Unknown: plant and equipment not chosen.",
+      "saasTable": "Unknown: written into the SaaS cost table below once usage is measured."
     },
     "resultsTitle": "Results",
     "inputsTitle": "Inputs",
@@ -766,14 +775,44 @@
         "alert": "The subscription does not cover the cost per customer."
       }
     },
-    "compare": {
-      "title": "Report example and downside scenario",
-      "intro": "The report's downside scenario is not hidden. If the factory sells its waste today for 2,000 TL/t, giving it to ReBoard costs the factory money; the other results do not change.",
-      "result": "Result",
-      "base": "Report example",
-      "negative": "Downside scenario"
-    },
-    "m2": "{value} m²"
+    "m2": "{value} m²",
+    "references": {
+      "title": "Sourced values for comparison",
+      "intro": "These are not scenario inputs and do not enter the calculation; they are there to compare against while you fill in the inputs. Each row has its source link and the date it was read. VAT status is as the source states it.",
+      "columns": {
+        "item": "Sourced value",
+        "value": "Amount"
+      },
+      "input": "Related input: {field}",
+      "range": "{low} – {high}",
+      "items": {
+        "ibbSeymen": {
+          "label": "Istanbul Metropolitan Municipality landfill gate fee, Seymen (2026)",
+          "note": "Istanbul tariff; for Antalya, comparison only. VAT included according to the tariff.",
+          "value": "{amount} TL/t"
+        },
+        "ibbKomurcuoda": {
+          "label": "Istanbul Metropolitan Municipality landfill gate fee, Kömürcüoda (2026)",
+          "note": "Istanbul tariff; for Antalya, comparison only. VAT included according to the tariff.",
+          "value": "{amount} TL/t"
+        },
+        "particleboard": {
+          "label": "18 mm particleboard sheet, 1830×3660 mm",
+          "note": "One seller's list price; range of the four products on the page. The page does not state VAT. Excludes delivery, cutting and coating.",
+          "value": "{amount} TL/sheet"
+        },
+        "mdf": {
+          "label": "18 mm raw MDF sheet, 1830×3660 mm",
+          "note": "One seller's bank-transfer list price; range of the two products on the page. VAT included according to the page. Excludes delivery, cutting and coating.",
+          "value": "{amount} TL/sheet"
+        },
+        "electricity": {
+          "label": "Electricity price for non-household consumers, Türkiye, 2026 H1",
+          "note": "Annual consumption band 20–499 MWh; excludes VAT and recoverable taxes. Not the pilot's contract price.",
+          "value": "{amount} TL/kWh"
+        }
+      }
+    }
   },
   "saasCosts": {
     "title": "SaaS costs",

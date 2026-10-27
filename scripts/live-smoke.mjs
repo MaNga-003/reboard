@@ -118,18 +118,31 @@ if (process.env.DEMO_PASSWORD) {
     check(anchored.ok === true && anchored.anchorChecked === true && `${base}/tr/pasaport/${lot}?a=${v.anchor}` === qr, "etiket çapası eşleşir ve QR'dakiyle aynı", v.anchor?.slice(0, 16));
     check((await get("/api/verify/PL-1999-999")).status === 404, "bilinmeyen lot 404");
   }
-  // Senaryo (T2.5, D-026): rapor sayıları sunucuda da aynı; olumsuz senaryo karşılaştırmada tek kırmızı hücre.
+  // Senaryo (T2.5, D-026, D-029): kaynaklı varsayılanla açılır; ayda 10 t dışında girdi boş, 5 sonuç bilinmiyor, kırmızı yok.
   const scenario = await fetch(base + "/tr/senaryo", { redirect: "manual", headers: { cookie: prodCookie, "user-agent": "reboard-live-smoke" } });
   const scenarioPage = await scenario.text();
-  // Sayfanın altındaki SaaS gider tablosu kaynaklı tahmindir; senaryo sınıfı ondan önceki bölümde sayılır.
-  const [scenarioHtml, saasHtml = ""] = scenarioPage.split('aria-labelledby="sc-saas"');
+  // Sayfanın altındaki karşılaştırma ve SaaS gider tabloları kaynaklı tahmindir; senaryo sınıfı onlardan önceki bölümde sayılır.
+  const [scenarioTop, saasHtml = ""] = scenarioPage.split('aria-labelledby="sc-saas"');
+  const [scenarioHtml, refHtml = ""] = scenarioTop.split('aria-labelledby="sc-references"');
   const scenarioKpis = (scenarioHtml.match(/data-kpi="scenario-/g) ?? []).length;
   const scenarioClasses = new Set([...scenarioHtml.matchAll(/data-result-class="([a-z_]+)"/g)].map((m) => m[1]));
-  const redCells = (scenarioHtml.match(/data-cell="negative" data-alert="true"/g) ?? []).length;
+  const unknownKpis = (scenarioHtml.match(/<dd data-value[^>]*>bilinmiyor</g) ?? []).length;
+  const redKpis = (scenarioHtml.match(/data-kpi="scenario-[a-z]+" data-alert="true"/g) ?? []).length;
+  const filled = [...scenarioHtml.matchAll(/<input[^>]*id="sc-([A-Za-z]+)"[^>]*>/g)].filter((m) => !/value=""/.test(m[0])).map((m) => m[1]);
   check(
-    scenario.status === 200 && scenarioKpis === 5 && scenarioClasses.size === 1 && scenarioClasses.has("synthetic") && scenarioHtml.includes("222,50 – 271,11 TL/m²") && redCells === 1,
-    "girişli /tr/senaryo: 5 sonuç, hepsi Sentetik, koridor rapordaki gibi, olumsuz senaryoda 1 kırmızı",
-    `${scenario.status} · ${scenarioKpis} sonuç · ${[...scenarioClasses].join(",")} · ${redCells} kırmızı`,
+    scenario.status === 200 && scenarioKpis === 5 && scenarioClasses.size === 1 && scenarioClasses.has("synthetic") && unknownKpis === 5 && redKpis === 0 && filled.join() === "wasteT",
+    "girişli /tr/senaryo: kaynaklı varsayılan; yalnız ayda 10 t dolu, 5 sonuç Sentetik ve bilinmiyor, kırmızı yok",
+    `${scenario.status} · ${scenarioKpis} sonuç · ${[...scenarioClasses].join(",")} · ${unknownKpis} bilinmiyor · ${redKpis} kırmızı · dolu: ${filled.join(",")}`,
+  );
+  // Karşılaştırma için kaynaklı değerler (D-029): her satırda https kaynak ve okunma tarihi. Levha satırları canlıda tam seed'le (T4.1) gelir; o zamana kadar 3 satır.
+  const refRows = (refHtml.match(/<tr[^>]*data-reference="/g) ?? []).length;
+  const refSources = (refHtml.match(/data-source[^>]*>(?:(?!<\/th>).)*?<a href="https:\/\//gs) ?? []).length;
+  const refDates = (refHtml.match(/>Okunma: 2[78] Eki 2026</g) ?? []).length;
+  const refClasses = new Set([...refHtml.matchAll(/data-result-class="([a-z_]+)"/g)].map((m) => m[1]));
+  check(
+    [3, 5].includes(refRows) && refSources === refRows && refDates === refRows && refClasses.size === 1 && refClasses.has("sourced_estimate") && refHtml.includes(">700 TL/t<") && refHtml.includes(">785 TL/t<"),
+    "girişli /tr/senaryo karşılaştırma değerleri: her satır kaynaklı ve tarihli; İBB 700 ve 785 TL/t",
+    `${refRows} satır · ${refSources} kaynak · ${refDates} tarih · ${[...refClasses].join(",")}`,
   );
   // SaaS gider tablosu (T2.6, D-027): 4 toplam kutusu, 10 satır, her satırda https kaynak ve okunma tarihi; alt sınır yazılır.
   const saasKpis = (saasHtml.match(/data-kpi="saas-/g) ?? []).length;

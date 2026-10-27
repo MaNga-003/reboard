@@ -5,7 +5,7 @@
 import { sha256 } from "@noble/hashes/sha2.js";
 import { bytesToHex, utf8ToBytes } from "@noble/hashes/utils.js";
 import type { Role } from "../../domain/access";
-import { REPORT_NEGATIVE_SCENARIO, REPORT_SCENARIO, SCENARIO_FIELDS, runScenario, type ScenarioParams } from "../../domain/calc";
+import { SCENARIO_FIELDS, SOURCED_SCENARIO, runScenario, type ScenarioBasis, type ScenarioParams } from "../../domain/calc";
 import type { Composition } from "../../domain/fibre";
 import { crowFliesKm } from "../../domain/geo";
 import { SHEET_AREA_M2, TARGET_THICKNESS_MM, sheetMassKg } from "../../domain/panel";
@@ -78,9 +78,24 @@ export const personaUser = (p: DemoPersona): DemoUser => DEMO_USERS.find((u) => 
 
 // Kaynakların resmî sayfadan okunup doğrulandığı gün.
 const SOURCED_AT = new Date("2026-10-27T00:00:00Z");
+// Sunta ve MDF satıcı sayfalarının okunduğu gün.
+const MARKET_READ_AT = new Date("2026-10-28T00:00:00Z");
 const DAY = 86_400_000;
 const S = "synthetic" as const;
 const SE = "sourced_estimate" as const;
+
+/** Senaryo girdisinin dayanağı (D-029); model_inputs.source sütununa yazılır. Ekrandaki metin messages/*.json → scenario.basis. */
+const BASIS_NOTE: Record<ScenarioBasis, string> = {
+  teamPlan: "Ekip planı: Ocak 2027'de ayda 10 t atık işleyen pilot tesis (sunum, 7. slayt)",
+  notMeasured: "Bilinmiyor: panel üretilmedi, verim ölçülmedi",
+  notDecided: "Bilinmiyor: henüz karar verilmedi",
+  supplierData: "Bilinmiyor: fabrikanın kendi kaydından gelir",
+  noLocalTariff: "Bilinmiyor: fabrikanın faturasından gelir; İBB tarifesi yalnız karşılaştırma",
+  buyerTrial: "Bilinmiyor: alıcının teklifinden ve deneme siparişinden gelir",
+  noRecipe: "Bilinmiyor: reçete seçilmedi",
+  noPlant: "Bilinmiyor: tesis ve ekipman seçilmedi",
+  saasTable: "Bilinmiyor: müşteri başı pay kullanım ölçülünce SaaS gider tablosuna yazılır",
+};
 
 /** Ad → sabit UUID (RFC 9562 sürüm 8). Günlük sıfırlamada pasaport bağlantıları değişmesin. */
 export function demoId(name: string): string {
@@ -312,6 +327,41 @@ export function buildDemo(now: Date): DemoData {
         scopeNote: "Hesap: 1,830 m × 3,660 m. Hedef ölçüdür, üretilmiş levha ölçümü değildir.",
         resultClass: SE,
       },
+      // Eşdeğer ürün için piyasa karşılaştırması (D-029): tek satıcının sayfasındaki en düşük ve en yüksek fiyat.
+      ...(
+        [
+          ["particleboard_18mm_sheet_min", "1471", "YE 2026/2 SUNTA kapak"],
+          ["particleboard_18mm_sheet_max", "1911", "YE 2026/2 SUNTA Platinum"],
+        ] as const
+      ).map(([key, value, product]) => ({
+        key,
+        value,
+        unit: "TL/levha",
+        currency: "TRY" as const,
+        period: "2026-10-28",
+        sourceName: `Arcline sunta sayfası: ${product}, 1830×3660×18 mm`,
+        sourceUrl: "https://www.arcline.com.tr/sunta-dsp",
+        retrievedAt: MARKET_READ_AT,
+        scopeNote: "Sayfadaki dört 18 mm, 1830×3660 mm sunta ürününün fiyat aralığının ucu. Sayfada KDV durumu yazmıyor. Tek satıcının liste fiyatıdır; teslim, kesim ve kaplama hariç.",
+        resultClass: SE,
+      })),
+      ...(
+        [
+          ["mdf_18mm_sheet_min", "3155", "Çamsan Ordu"],
+          ["mdf_18mm_sheet_max", "3260", "Yıldız Entegre"],
+        ] as const
+      ).map(([key, value, brand]) => ({
+        key,
+        value,
+        unit: "TL/levha",
+        currency: "TRY" as const,
+        period: "2026-10-28",
+        sourceName: `Arkutorman ham MDF sayfası: ${brand}, 18 mm, 1830×3660 mm`,
+        sourceUrl: "https://www.arkutorman.com/urun/18mm-1830-3660mm-ham-mdf-yildiz-entegre",
+        retrievedAt: MARKET_READ_AT,
+        scopeNote: "Sayfadaki iki 18 mm, 1830×3660 mm ham MDF ürününün havale/EFT fiyatı; sayfaya göre KDV dahil. Tek satıcının liste fiyatıdır; teslim, kesim ve kaplama hariç.",
+        resultClass: SE,
+      })),
     ],
     // Resmî fiyat sayfaları 27 Ekim 2026'da okundu (D-027). Satırın açıklaması messages/*.json → saasCosts.notes.<key>.
     // null: bilinmiyor ya da kullanıma bağlı; 0: ücretsiz ya da müşteri sayısıyla değişmez.
@@ -1019,19 +1069,17 @@ export function buildDemo(now: Date): DemoData {
   input("planned_daily_need_kg", 400, "kg", R, thisMonth, "Sentetik üretim planı");
   input("days_of_cover_green_min", 14, null, R, thisMonth, "Varsayılan eşik (gün)");
   input("days_of_cover_yellow_min", 7, null, R, thisMonth, "Varsayılan eşik (gün)");
-  const p = REPORT_SCENARIO;
-  const sc = "Maliyet raporunun sentetik model örneği";
-  // Senaryonun bütün girdileri (D-026); anahtar alan adının yılan biçimi: wasteT → waste_t.
+  // Senaryonun bütün girdileri (D-026) kaynaklı varsayılanlarıyla (D-029); anahtar alan adının yılan biçimi: wasteT → waste_t.
+  const p = SOURCED_SCENARIO;
   for (const f of SCENARIO_FIELDS) {
-    const note = p[f.key] === null ? `${sc}; belirlenmedi` : sc;
-    input(f.key.replace(/[A-Z]/g, (c) => `_${c.toLowerCase()}`), p[f.key], f.unit === "t" || f.unit === "m2" ? f.unit : null, null, "sentetik-donem", note);
+    input(f.key.replace(/[A-Z]/g, (c) => `_${c.toLowerCase()}`), p[f.key], f.unit === "t" || f.unit === "m2" ? f.unit : null, null, "senaryo", BASIS_NOTE[f.basis]);
   }
 
-  // Hesap kayıtları: formül sürümü, girdi hash'i ve çıktılar.
+  // Hesap kayıtları: formül sürümü, girdi hash'i ve çıktılar. Kaynaklı girdilerle sonuçlar bilinmiyor çıkar; kayıt bunu saklar.
   const run = (formula: string, params: ScenarioParams, outputs: Record<string, unknown>, r: Result) => {
     const inputs = paramsJson(params);
     data.calcRuns.push({
-      id: demoId(`calc:${formula}:${params === p ? "base" : "negative"}`),
+      id: demoId(`calc:${formula}:sourced`),
       orgId: null,
       formula,
       formulaVersion: r.formulaVersion,
@@ -1047,8 +1095,6 @@ export function buildDemo(now: Date): DemoData {
   run("reboard_operating_result", p, resultJson(base.reboard), base.reboard);
   run("price_corridor", p, { lower: resultJson(base.corridor.lower), upper: resultJson(base.corridor.upper), exists: base.corridor.exists }, base.corridor.lower);
   run("saas_contribution", p, resultJson(base.saas), base.saas);
-  const negative = runScenario(REPORT_NEGATIVE_SCENARIO);
-  run("factory_gain", REPORT_NEGATIVE_SCENARIO, resultJson(negative.factory), negative.factory);
 
   return data;
 }

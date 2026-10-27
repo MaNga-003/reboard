@@ -3,9 +3,8 @@
 import fc from "fast-check";
 import { describe, expect, it } from "vitest";
 import {
-  REPORT_NEGATIVE_SCENARIO,
-  REPORT_SCENARIO,
   SCENARIO_FIELDS,
+  SOURCED_SCENARIO,
   formFromParams,
   isLoss,
   paramsFromForm,
@@ -14,6 +13,7 @@ import {
   type ScenarioParams,
 } from "@/domain/calc";
 import { Decimal } from "@/domain/result";
+import { REPORT_NEGATIVE_SCENARIO, REPORT_SCENARIO } from "../../fixtures/report-scenario";
 
 const str = (d: Decimal | null) => (d === null ? null : d.toString());
 
@@ -22,6 +22,26 @@ describe("alan listesi", () => {
     const keys = SCENARIO_FIELDS.map((f) => f.key);
     expect(new Set(keys).size).toBe(keys.length);
     expect([...keys].sort()).toEqual(Object.keys(REPORT_SCENARIO).sort());
+    expect([...keys].sort()).toEqual(Object.keys(SOURCED_SCENARIO).sort());
+  });
+});
+
+describe("kaynaklı varsayılanlar (D-029)", () => {
+  it("yalnız ekip planına dayanan girdi değer taşır: ayda 10 t atık; öteki her girdi bilinmiyor", () => {
+    for (const f of SCENARIO_FIELDS) {
+      if (f.basis === "teamPlan") expect(SOURCED_SCENARIO[f.key], f.key).not.toBeNull();
+      else expect(SOURCED_SCENARIO[f.key], f.key).toBeNull();
+    }
+    expect(SOURCED_SCENARIO.wasteT).toBe(10);
+  });
+
+  it("hesaplayıcı varsayılan olarak kaynaklı girdilerle açılır; sonuçların hiçbiri uydurulmaz, kırmızı da yoktur", () => {
+    const r = runScenario();
+    for (const k of ["factory", "customer", "reboard", "saas"] as const) expect(r[k].value, k).toBeNull();
+    expect(r.corridor.lower.value).toBeNull();
+    expect(r.corridor.upper.value).toBeNull();
+    expect(scenarioAlerts(r)).toEqual({ factory: false, customer: false, reboard: false, corridor: false, saas: false });
+    expect(formFromParams(SOURCED_SCENARIO).wasteT).toBe("10");
   });
 });
 

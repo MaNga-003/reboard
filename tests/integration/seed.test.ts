@@ -72,6 +72,10 @@ describe("demo seed", () => {
       "eurostat_tr_textile_waste_2022",
       "ibb_gate_fee_komurcuoda",
       "ibb_gate_fee_seymen",
+      "mdf_18mm_sheet_max",
+      "mdf_18mm_sheet_min",
+      "particleboard_18mm_sheet_max",
+      "particleboard_18mm_sheet_min",
       "sheet_area_m2",
       "usd_try",
     ]);

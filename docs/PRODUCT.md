@@ -101,7 +101,7 @@ Panel girişten sonraki ilk ekrandır (`/panel`). Kurum yalnızca kendi gördü�
 
 ### 3.4 Senaryo
 
-Şerife'nin rapordaki formülleri girdileriyle birlikte gösterilir (`/senaryo`, D-026):
+Şerife'nin rapordaki formülleri gösterilir (`/senaryo`, D-026, D-029):
 
 - fabrika kazancı;
 - panel müşterisi kazancı;
@@ -111,12 +111,12 @@ Panel girişten sonraki ilk ekrandır (`/panel`). Kurum yalnızca kendi gördü�
 
 Ekranın parçaları:
 
-- **Hazır senaryolar:** rapor örneği ve olumsuz senaryo. Elle girilen değerler bir hazır senaryoyla aynıysa o düğme seçili görünür.
+- **Varsayılan girdiler** (D-029): yalnızca dayanağı olan değer dolu gelir: ekip planındaki ayda 10 t atık. Öteki girdiler boştur, sonuçlar "bilinmiyor" yazar. Her alanın altında dayanağı ya da neden bilinmediği yazar. "Kaynaklı girdilere dön" düğmesi elle girilen değerleri siler.
 - **Girdiler:** beş grupta 23 alan: miktar ve fiyatlar, tekstil fabrikası, panel müşterisi, ReBoard giderleri, SaaS aboneliği. Birim alan etiketinde yazar. Girdi değişince sonuçlar hemen yeniden hesaplanır; girdiler kaydedilmez.
 - **Sonuç kutuları:** değer, sınıf rozeti, koşullar (ör. teknik eşdeğerlik doğrulanmadı), formül ve formülün sayılarla yazılmış ara toplamları. Müşteri kutusu kullanılabilir alanı da yazar.
 - **Kırmızı:** zarar eden taraf ve oluşmayan fiyat koridoru. Kutunun üst çizgisi kırmızı olur, "Zarar" ya da "Koridor yok" çipi ve nedenini anlatan cümle eklenir. Kırmızı sonuç sayısı ekran okuyucuya okunur.
 - **Bilinmeyen ve geçersiz girdi:** boş alan bilinmiyor sayılır, ona dayanan sonuç "bilinmiyor" yazar. Geçersiz alanın altında nedeni yazar ve alan bilinmiyor sayılır.
-- **Karşılaştırma tablosu:** rapor örneği ile olumsuz senaryo yan yana. Olumsuz senaryo gizlenmez; hesaplayıcıya dokunulmasa da görünür.
+- **Karşılaştırma için kaynaklı değerler** (D-029): İBB düzenli depolama kabul bedeli, 18 mm sunta ve ham MDF levha fiyatı, hane dışı elektrik fiyatı. Hesaba girmez. Her satırda ilgili girdi, kaynak bağlantısı, okunma tarihi ve kaynağın yazdığı KDV durumu bulunur.
 - **SaaS giderleri** (D-027): platformun kendi işletme gideri iki kurulum için ayrı tabloda durur: bugünkü demo kurulumu ve ticari kurulum. Her kurulumun aylık sabit ve müşteri başı toplamı TL olarak yazar. Bilinmeyen kalem varsa toplam "bilinmiyor" ya da "en az …" olur ve bilinmeyen kalemler adıyla listelenir. Her satırda kaynak bağlantısı ve okunma tarihi, tablonun üstünde TCMB kuru bulunur.
 
 ## 4. MVP kapsamı (30 Ekim demosu)

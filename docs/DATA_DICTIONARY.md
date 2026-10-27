@@ -155,7 +155,7 @@ Tanımlar maliyet raporundan birebir alınmıştır (D-002). Her sonuç `{value,
 | Fiyat koridoru (TL/m²) | Alt = (dönem toplam giderleri − panel dışı gelirler) ÷ satılabilir alan. Üst = (müşterinin mevcut toplam gideri − geçiş ve ek işleme giderleri) ÷ gerekli ReBoard brüt alanı. Alan ≤ 0 ya da bilinmiyorsa sınır `null` | Alt > üst ise `no_corridor` |
 | SaaS katkısı | abonelik − müşteriye bağlı bulut, harita, iletişim ve destek gideri | |
 
-**Sentetik model örneği** (`src/domain/calc/synthetic-scenario.ts`). Rapordaki örnek: 10 t tekstil, 1.000 m² satılabilir panel, müşteri kesim verimi %85 (kullanılabilir 850 m²). Raporun girdi dosyası elimizde olmadığından girdiler, raporda yayımlanan sonuçları birebir üretecek biçimde **yeniden kuruldu**. Sonuçlar raporla aynıdır; tek tek kalemler Şerife'nin dosyasıyla aynı olmayabilir (T4.5'te karşılaştırılır).
+**Sentetik model örneği** (`tests/fixtures/report-scenario.ts`; yalnızca testte, D-029). Girdilerin kaynağı olmadığı için ekranda gösterilmez; test, formüllerin raporun sonuçlarını birebir ürettiğini kilitler. Rapordaki örnek: 10 t tekstil, 1.000 m² satılabilir panel, müşteri kesim verimi %85 (kullanılabilir 850 m²). Raporun girdi dosyası elimizde olmadığından girdiler, raporda yayımlanan sonuçları birebir üretecek biçimde **yeniden kuruldu**. Sonuçlar raporla aynıdır; tek tek kalemler Şerife'nin dosyasıyla aynı olmayabilir (T4.5'te karşılaştırılır).
 
 | Taraf | Girdi (TL, KDV hariç) | Sonuç |
 | --- | --- | --- |
@@ -166,7 +166,7 @@ Tanımlar maliyet raporundan birebir alınmıştır (D-002). Her sonuç `{value,
 | Fiyat koridoru | Alt (227.500 − 5.000) ÷ 1.000; üst (281.111 − 10.000) ÷ 1.000 | **222,50–271,11 TL/m²** |
 | SaaS katkısı | Abonelik ücreti belirlenmedi | **bilinmiyor** |
 
-> **Bilinen tutarsızlık (T4.5):** Fabrika satırındaki bertaraf girdisi 785 TL/t, İBB Kömürcüoda tarifesindeki tutara eşittir. O tarifede ücretlere KDV dahildir; bu tablo ise KDV hariçtir. Sonuçların raporla aynı kalması için tutar şimdilik değiştirilmedi. Şerife'nin girdi dosyası gelince kalem ve vergi temeli düzeltilir. Sağlayıcı bugünkü gider seed'indeki (`supplier_baseline.gate_fee`) 785 TL/t için de aynı durum geçerlidir.
+> **Bilinen tutarsızlık (T4.5):** Fabrika satırındaki bertaraf girdisi 785 TL/t, İBB Kömürcüoda tarifesindeki tutara eşittir. O tarifede ücretlere KDV dahildir; bu tablo ise KDV hariçtir. Tutar artık ekranda varsayılan değildir (D-029); yalnızca bu test örneğinde ve sağlayıcı bugünkü gider seed'inde (`supplier_baseline.gate_fee`) durur. Şerife'nin girdi dosyası gelince kalem ve vergi temeli düzeltilir.
 
 **Senaryo ekranının girdileri** (`SCENARIO_FIELDS`, D-026). Her girdi ayrı bir alandır; tutarlar KDV hariç ve sentetik dönem içindir.
 
@@ -178,6 +178,15 @@ Tanımlar maliyet raporundan birebir alınmıştır (D-002). Her sonuç `{value,
 | ReBoard giderleri | malzeme, operasyon, sabit gider, amortisman (TL) |
 | SaaS aboneliği | abonelik ücreti ve müşteriye bağlı gider (TL/ay) |
 
+- **Dayanak** (`basis`, D-029): her girdinin dayanağı alanın altında yazar ve seed'de `model_inputs.source` olur. Varsayılan değer yalnızca `teamPlan` alanında vardır; ötekiler `null`.
+  - `teamPlan`: tekstil atığı, ayda 10 t (ekip planı, sunum 7. slayt).
+  - `notMeasured`: satılabilir panel alanı (panel üretilmedi).
+  - `notDecided`: panel fiyatı, kabul bedeli, atık bedeli, abonelik ücreti.
+  - `supplierData`: toplama, bugünkü taşıma, atık satış geliri, elleçleme, ReBoard'la taşıma (fabrikanın kaydı).
+  - `noLocalTariff`: bertaraf (fabrikanın faturası; İBB tarifesi yalnızca karşılaştırma).
+  - `buyerTrial`: panel müşterisinin kalemleri ve kesim verimi (alıcının teklifi ve deneme siparişi).
+  - `noRecipe`: malzeme. `noPlant`: operasyon, sabit gider, amortisman.
+  - `saasTable`: müşteriye bağlı SaaS gideri (kullanım ölçülünce SaaS gider tablosundan).
 - **Atık bedeli:** ReBoard'un ödediği tutar (t × TL/t) fabrikanın yeni net giderinden düşer ve ReBoard'un malzeme giderine eklenir. İki sonucun toplamı ödemeden etkilenmez.
 - **Abonelik:** ücret belirlenmediği için senaryoda fabrikanın yeni giderine yazılmaz; SaaS katkısı ayrı ve aylıktır.
 - **Kesim verimi:** ekranda 0–100, hesapta 0–1. Kullanılabilir alan = satılabilir alan × kesim verimi.
@@ -203,7 +212,7 @@ Tanımlar maliyet raporundan birebir alınmıştır (D-002). Her sonuç `{value,
 
 ## 7. Referans değerler (`reference_values`)
 
-Değerler 2026-10-27'de resmî kaynaktan yeniden okunarak doğrulandı. Sınıfları `sourced_estimate`.
+Değerler 2026-10-27 ve 2026-10-28'de kaynağından okunarak doğrulandı. Sınıfları `sourced_estimate`. Levha fiyatları senaryoda hesaba girmez, karşılaştırma içindir (D-029).
 
 | Anahtar | Değer | Kaynak | Doğrulama ve not |
 | --- | --- | --- | --- |
@@ -212,13 +221,15 @@ Değerler 2026-10-27'de resmî kaynaktan yeniden okunarak doğrulandı. Sınıfl
 | `ibb_gate_fee_seymen` | 700 TL/t | [İBB ücret tarifesi, EK-2](https://cevre.ibb.istanbul/wp-content/uploads/2025/12/EK2-Ucret-Tarifesi.pdf), kalem 1.1 | Tarifeden okundu: "Düzenli Depolama Tesisine Kabul Bedeli (Silivri - Seymen)". Tarifenin açıklamalarına göre **ücretlere KDV dahildir** ve tarife 01.01.2026–31.12.2026 arasında geçerlidir. İstanbul tesisi; Antalya için yalnızca karşılaştırma referansı |
 | `ibb_gate_fee_komurcuoda` | 785 TL/t | Aynı tarife, kalem 1.2 | Tarifeden okundu: "(Şile - Kömürcüoda)". KDV dahil; geçerlilik ve kapsam notu yukarıdakiyle aynı |
 | `usd_try` | 49,5523 TL/USD | [TCMB, 19.10.2026](https://www.tcmb.gov.tr/kurlar/202610/19102026.xml), döviz satış | İki ekip belgesi farklı tarihler kullanıyor; çelişki yok. Maliyet raporu [K8] ile TCMB 16.10.2026 dosyasına gidiyor; o gün döviz satış kuru 49,4463. Jüri belgesi "20 Ekim tarihli" kuru ithal360 sayfasından alıyor; o değer TCMB'nin 19.10.2026'da yayımladığı 49,5523'tür. Platform bu ikinci değeri kullanır |
+| `particleboard_18mm_sheet_min`, `particleboard_18mm_sheet_max` | 1.471 – 1.911 TL/levha | [Arcline sunta sayfası](https://www.arcline.com.tr/sunta-dsp), 18 mm, 1830×3660 mm | 2026-10-28'de okundu. Sayfadaki dört ürünün en düşüğü ("YE 2026/2 SUNTA kapak") ve en yükseği ("YE 2026/2 SUNTA Platinum"). Sayfada KDV durumu yazmıyor. Tek satıcının liste fiyatı; teslim, kesim ve kaplama hariç |
+| `mdf_18mm_sheet_min`, `mdf_18mm_sheet_max` | 3.155 – 3.260 TL/levha | [Arkutorman ham MDF sayfası](https://www.arkutorman.com/urun/18mm-1830-3660mm-ham-mdf-yildiz-entegre), 18 mm, 1830×3660 mm | 2026-10-28'de okundu. Sayfadaki iki ürünün havale/EFT fiyatı: Çamsan Ordu 3.155, Yıldız Entegre 3.260. Sayfaya göre KDV dahil. Tek satıcının liste fiyatı; teslim, kesim ve kaplama hariç |
 | `sheet_area_m2` | 6,6978 m² | Standart levha 1830×3660 mm (ekip planı) | Alan sabiti `src/domain/panel.ts` içinde `SHEET_AREA_M2`; levha kütlesi `sheetMassKg(yoğunluk, kalınlık)`. Hedef ölçüdür, üretilmiş levha ölçümü değildir |
 
 ## 8. Demo verisi (seed, T1.4)
 
 Kaynak: `src/db/seed/demo.ts`. Yükleme `pnpm db:seed` (yerel) ve `pnpm db:seed:live` (Neon) ile yapılır, ikisi de yalnızca `DEMO_MODE=true` iken çalışır. Denetim `tests/integration/seed.test.ts` dosyasındadır (M-20).
 
-- **Sınıf:** demo kayıtlarının tamamı `synthetic`. Yalnızca §7'deki referans değerler ve `saas_costs` satırları `sourced_estimate`; bunlar resmî sayfadan 2026-10-27'de okundu.
+- **Sınıf:** demo kayıtlarının tamamı `synthetic`. Yalnızca §7'deki referans değerler ve `saas_costs` satırları `sourced_estimate`; bunlar kaynağından 2026-10-27 ve 2026-10-28'de okundu.
 - **Kurumlar (8):** Antalya'da ilçe düzeyinde, 2 ondalığa yuvarlanmış konumla. Adlar kurgusaldır.
   - Kaynaklar: Konfeksiyon A ve Örme Fabrikası B (`textile_factory`), Belediye Toplama C (`municipality`).
   - Taşıyıcılar: Taşıyıcı D ve Taşıyıcı E.
@@ -238,8 +249,8 @@ Kaynak: `src/db/seed/demo.ts`. Yükleme `pnpm db:seed` (yerel) ve `pnpm db:seed:
   - Bağlayıcısı `unknown` olan partinin bağlayıcı gideri `null`.
   - Belediyenin bertaraf gideri `null`.
   - İpek içeren, üretici talebiyle eşleşmemesi gereken bir ilan.
-- **Hesap kayıtları:** `calc_runs` satırları rapordaki sentetik senaryodan `runScenario` ile üretilir: temel senaryo ve olumsuz senaryo. Girdiler ondalık metin olarak saklanır, girdi hash'i kanonik JSON'un SHA-256 özetidir.
-- **Ölçülen hacim (2026-10-27):**
-  - 369 satır (9 kullanıcı, 9 üyelik ve 9 hesap dahil; ay sınırına göre aylık sabit gider satırı sayısı değişebilir): 19 atık partisi (17'si doğrulanmış), 5 üretim partisi, 6 panel lotu (132 levha), 63 zincir olayı (5 kurum).
+- **Hesap kayıtları:** `calc_runs` satırları kaynaklı varsayılan girdilerden (`SOURCED_SCENARIO`) `runScenario` ile üretilir: beş formül, sonuçların hepsi bilinmiyor (D-029). Kimlikleri `calc:<formül>:sourced` tohumundan türer. Girdiler ondalık metin olarak saklanır (bilinmeyen `null`), girdi hash'i kanonik JSON'un SHA-256 özetidir.
+- **Ölçülen hacim (2026-10-28):**
+  - 388 satır (9 kullanıcı, 9 üyelik ve 9 hesap; 10 referans değeri, 8 SaaS gider satırı, 26 model girdisi, 5 hesap kaydı dahil; ay sınırına göre aylık sabit gider satırı sayısı değişebilir): 19 atık partisi (17'si doğrulanmış), 5 üretim partisi, 6 panel lotu (132 levha), 63 zincir olayı (5 kurum).
   - Doğrulanmış kabul edilen kg: 16.412,5. Bunun 11.697 kg'ı tahsis edildi; stok 4.715,5 kg.
   - Planlı ihtiyaç günde 400 kg olduğundan stok yaklaşık 11,8 gün yeter; bu sarı eşiktir.

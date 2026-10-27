@@ -1,8 +1,10 @@
 // Maliyet raporundaki "Sentetik model örneği" sonuçları (M-5). Beklenen sayılar raporun metninden alınmıştır;
 // girdiler yeniden kurulduğu için bu test, yeniden kurulan girdilerin raporu birebir ürettiğini kilitler.
+// Yeniden kurulan girdilerin kaynağı yok; bu yüzden yalnız testte durur, ekranda gösterilmez (D-029).
 import { describe, expect, it } from "vitest";
-import { REPORT_NEGATIVE_SCENARIO, REPORT_SCENARIO, runScenario } from "@/domain/calc";
+import { runScenario } from "@/domain/calc";
 import { FORMULA_VERSION } from "@/domain/result";
+import { REPORT_NEGATIVE_SCENARIO, REPORT_SCENARIO } from "../../fixtures/report-scenario";
 
 describe("rapor örneği: 10 t tekstil, 1.000 m² satılabilir panel, %85 kesim verimi", () => {
   const r = runScenario(REPORT_SCENARIO);

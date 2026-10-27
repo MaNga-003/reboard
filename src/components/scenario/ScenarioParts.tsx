@@ -1,8 +1,7 @@
 import { useLocale, useTranslations } from "next-intl";
 import { StatusChip } from "@/components/panel/Status";
 import { ResultClassBadge } from "@/components/ResultClassBadge";
-import { TableWrap, td, th } from "@/components/trace/Table";
-import { REPORT_NEGATIVE_SCENARIO, REPORT_SCENARIO, runScenario, scenarioAlerts, type ScenarioRun } from "@/domain/calc";
+import { scenarioAlerts, type ScenarioRun } from "@/domain/calc";
 import { weakestClass, type Decimal, type Result } from "@/domain/result";
 import { fmtMoney, fmtNumber } from "@/lib/format";
 
@@ -94,62 +93,5 @@ export function ResultCard({ run, id }: { run: ScenarioRun; id: ResultId }) {
         <dd className="text-sm">{t("scenario.usableArea", { area: text.area(run.usableAreaM2) })}</dd>
       )}
     </div>
-  );
-}
-
-/** Rapor örneği ile olumsuz senaryo yan yana; hesaplayıcıya dokunulmasa da olumsuz senaryo görünür. */
-export function ScenarioCompare() {
-  const t = useTranslations();
-  const text = useScenarioText();
-  const runs = [
-    ["base", runScenario(REPORT_SCENARIO)],
-    ["negative", runScenario(REPORT_NEGATIVE_SCENARIO)],
-  ] as const;
-  const resultClass = weakestClass(runs.flatMap(([, run]) => RESULT_IDS.map((id) => classOf(run, id))));
-  return (
-    <section aria-labelledby="sc-compare" className="grid gap-3">
-      <h2 id="sc-compare" className="flex flex-wrap items-center gap-2 text-2xl font-semibold">
-        {t("scenario.compare.title")}
-        <ResultClassBadge value={resultClass} />
-      </h2>
-      <p className="max-w-prose">{t("scenario.compare.intro")}</p>
-      <TableWrap label={t("scenario.compare.title")}>
-        <table className="w-full">
-          <thead>
-            <tr>
-              {/* th, tablonun "start" hizasını miras almaz (tarayıcı ortalar); hiza hücreye yazılır. */}
-              <th scope="col" className={`${th} text-start`}>
-                {t("scenario.compare.result")}
-              </th>
-              {runs.map(([id]) => (
-                <th key={id} scope="col" className={`${th} text-start`}>
-                  {t(`scenario.compare.${id}`)}
-                </th>
-              ))}
-            </tr>
-          </thead>
-          <tbody>
-            {RESULT_IDS.map((rid) => (
-              <tr key={rid} data-row={rid} className="border-t border-fg/30">
-                <th scope="row" className={`${td} text-start font-normal`}>
-                  {t(`scenario.results.${rid}.title`)}
-                </th>
-                {runs.map(([sid, run]) => {
-                  const alert = scenarioAlerts(run)[rid];
-                  return (
-                    <td key={sid} data-cell={sid} data-alert={alert} className={td}>
-                      <span className="flex flex-wrap items-center gap-2">
-                        <span className="whitespace-nowrap">{text.value(run, rid)}</span>
-                        {alert && <StatusChip level="danger" label={t(rid === "corridor" ? "scenario.noCorridor" : "scenario.loss")} />}
-                      </span>
-                    </td>
-                  );
-                })}
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </TableWrap>
-    </section>
   );
 }

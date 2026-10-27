@@ -1,8 +1,6 @@
-// Raporun "Sentetik model örneği": 10 t tekstil, satılabilir ve tamamı satıldığı varsayılan 1.000 m² panel,
-// müşteri kesim verimi %85. Raporun girdi dosyası (scenario_inputs.json) elde olmadığından girdiler,
-// raporda yayımlanan sonuçları birebir üretecek biçimde yeniden kuruldu: fabrika 10.000 TL,
-// panel müşterisi 31.111 TL, ReBoard 17.500 TL, fiyat koridoru 222,50–271,11 TL/m².
-// Bütün tutarlar SENTETİKTİR (D-011). Hesapta gizli sabit yoktur: her kalem bir girdidir (D-026).
+// Senaryo hesaplayıcısının alan modeli (T2.5). Formüller maliyet raporundan (D-026): her kalem bir girdidir, gizli sabit yoktur.
+// Varsayılan girdiler yalnız dayanağı olan değerlerdir (D-029); dayanağı olmayan girdi boş kalır ve "bilinmiyor" sayılır.
+// Raporun sentetik örneğini üretmek için yeniden kurulan girdiler yalnız testte durur (tests/fixtures/report-scenario.ts).
 import { Decimal, type MoneyLine, type QuantityLine, type Result } from "../result";
 import { factoryGain, panelCustomerGain, priceCorridor, reboardOperatingResult, saasContribution } from "./formulas";
 import { minus, sumMoney, type MoneyContext } from "./money";
@@ -12,67 +10,56 @@ export type Amount = Decimal.Value | null;
 
 export type ScenarioUnit = "t" | "m2" | "try" | "try_per_t" | "try_per_m2" | "try_per_month" | "percent";
 export type ScenarioGroup = "volume" | "factory" | "customer" | "reboard" | "saas";
+/** Girdinin dayanağı: ekip planı ya da değerin neden bilinmediği. Ekranda girdinin altında yazar (D-029). */
+export type ScenarioBasis =
+  | "teamPlan"
+  | "notMeasured"
+  | "notDecided"
+  | "supplierData"
+  | "noLocalTariff"
+  | "buyerTrial"
+  | "noRecipe"
+  | "noPlant"
+  | "saasTable";
 
 /** Ekrandaki sıra ve gruplar. Tutarlar dönem toplamıdır; "_per_t" olanlar atık miktarıyla çarpılır. */
 export const SCENARIO_FIELDS = [
-  { key: "wasteT", group: "volume", unit: "t" },
-  { key: "sellableAreaM2", group: "volume", unit: "m2" },
-  { key: "panelPricePerM2", group: "volume", unit: "try_per_m2" },
-  { key: "acceptanceFeePerT", group: "volume", unit: "try_per_t" },
-  { key: "wastePaymentPerT", group: "volume", unit: "try_per_t" },
-  { key: "collection", group: "factory", unit: "try" },
-  { key: "transportNow", group: "factory", unit: "try" },
-  { key: "disposalPerT", group: "factory", unit: "try_per_t" },
-  { key: "wasteSalePerT", group: "factory", unit: "try_per_t" },
-  { key: "handling", group: "factory", unit: "try" },
-  { key: "transportNext", group: "factory", unit: "try" },
-  { key: "equivalentProduct", group: "customer", unit: "try" },
-  { key: "delivery", group: "customer", unit: "try" },
-  { key: "cuttingCoating", group: "customer", unit: "try" },
-  { key: "switchingTrial", group: "customer", unit: "try" },
-  { key: "extraProcessing", group: "customer", unit: "try" },
-  { key: "customerCutYield", group: "customer", unit: "percent" },
-  { key: "material", group: "reboard", unit: "try" },
-  { key: "operations", group: "reboard", unit: "try" },
-  { key: "fixed", group: "reboard", unit: "try" },
-  { key: "depreciation", group: "reboard", unit: "try" },
-  { key: "subscriptionPerMonth", group: "saas", unit: "try_per_month" },
-  { key: "customerCostPerMonth", group: "saas", unit: "try_per_month" },
-] as const satisfies readonly { key: string; group: ScenarioGroup; unit: ScenarioUnit }[];
+  { key: "wasteT", group: "volume", unit: "t", basis: "teamPlan" },
+  { key: "sellableAreaM2", group: "volume", unit: "m2", basis: "notMeasured" },
+  { key: "panelPricePerM2", group: "volume", unit: "try_per_m2", basis: "notDecided" },
+  { key: "acceptanceFeePerT", group: "volume", unit: "try_per_t", basis: "notDecided" },
+  { key: "wastePaymentPerT", group: "volume", unit: "try_per_t", basis: "notDecided" },
+  { key: "collection", group: "factory", unit: "try", basis: "supplierData" },
+  { key: "transportNow", group: "factory", unit: "try", basis: "supplierData" },
+  { key: "disposalPerT", group: "factory", unit: "try_per_t", basis: "noLocalTariff" },
+  { key: "wasteSalePerT", group: "factory", unit: "try_per_t", basis: "supplierData" },
+  { key: "handling", group: "factory", unit: "try", basis: "supplierData" },
+  { key: "transportNext", group: "factory", unit: "try", basis: "supplierData" },
+  { key: "equivalentProduct", group: "customer", unit: "try", basis: "buyerTrial" },
+  { key: "delivery", group: "customer", unit: "try", basis: "buyerTrial" },
+  { key: "cuttingCoating", group: "customer", unit: "try", basis: "buyerTrial" },
+  { key: "switchingTrial", group: "customer", unit: "try", basis: "buyerTrial" },
+  { key: "extraProcessing", group: "customer", unit: "try", basis: "buyerTrial" },
+  { key: "customerCutYield", group: "customer", unit: "percent", basis: "buyerTrial" },
+  { key: "material", group: "reboard", unit: "try", basis: "noRecipe" },
+  { key: "operations", group: "reboard", unit: "try", basis: "noPlant" },
+  { key: "fixed", group: "reboard", unit: "try", basis: "noPlant" },
+  { key: "depreciation", group: "reboard", unit: "try", basis: "noPlant" },
+  { key: "subscriptionPerMonth", group: "saas", unit: "try_per_month", basis: "notDecided" },
+  { key: "customerCostPerMonth", group: "saas", unit: "try_per_month", basis: "saasTable" },
+] as const satisfies readonly { key: string; group: ScenarioGroup; unit: ScenarioUnit; basis: ScenarioBasis }[];
 
 export type ScenarioKey = (typeof SCENARIO_FIELDS)[number]["key"];
 export type ScenarioParams = Record<ScenarioKey, Amount>;
 
-export const REPORT_SCENARIO: ScenarioParams = {
+/**
+ * Varsayılan girdiler (D-029). Tek değer ekip planından: Ocak 2027'de ayda 10 t atık işleyen pilot tesis (sunum, 7. slayt).
+ * Öteki girdilerin kamuya açık bir kaynağı yok: fabrikaya, alıcıya ya da henüz seçilmemiş reçete ve tesise özgüler.
+ */
+export const SOURCED_SCENARIO: ScenarioParams = {
+  ...(Object.fromEntries(SCENARIO_FIELDS.map((f) => [f.key, null])) as ScenarioParams),
   wasteT: 10,
-  sellableAreaM2: 1000,
-  panelPricePerM2: 240,
-  acceptanceFeePerT: 500,
-  wastePaymentPerT: 0,
-  collection: 6150,
-  transportNow: 6000,
-  // İBB Kömürcüoda tarifesiyle aynı tutar; tarife KDV dahil, bu senaryo KDV hariç. Rapor sonuçları korunsun diye Şerife'nin girdisi gelene dek değişmez (T4.5).
-  disposalPerT: 785,
-  wasteSalePerT: 0,
-  handling: 2000,
-  transportNext: 3000,
-  equivalentProduct: 263_111,
-  delivery: 8000,
-  cuttingCoating: 10_000,
-  switchingTrial: 4000,
-  extraProcessing: 6000,
-  customerCutYield: 0.85,
-  material: 120_000,
-  operations: 62_500,
-  fixed: 30_000,
-  depreciation: 15_000,
-  // Abonelik ücreti henüz belirlenmedi.
-  subscriptionPerMonth: null,
-  customerCostPerMonth: null,
 };
-
-/** Rapordaki olumsuz senaryo: fabrika atığı bugün 2.000 TL/t'ye satıyorsa fabrika 10.000 TL kaybeder. */
-export const REPORT_NEGATIVE_SCENARIO: ScenarioParams = { ...REPORT_SCENARIO, wasteSalePerT: 2000 };
 
 export const SCENARIO_CTX: MoneyContext = { currency: "TRY", taxBasis: "excl_vat", period: "sentetik-donem" };
 
@@ -89,7 +76,7 @@ const dec = (v: Amount) => (v === null ? null : new Decimal(v));
 const times = (a: Amount, b: Amount) => (a === null || b === null ? null : new Decimal(a).times(b));
 const total = (lines: MoneyLine[]) => sumMoney(lines, SCENARIO_CTX).value;
 
-export function runScenario(p: ScenarioParams = REPORT_SCENARIO) {
+export function runScenario(p: ScenarioParams = SOURCED_SCENARIO) {
   const acceptance = times(p.wasteT, p.acceptanceFeePerT);
   const wastePayment = times(p.wasteT, p.wastePaymentPerT);
   const panelRevenue = times(p.panelPricePerM2, p.sellableAreaM2);
