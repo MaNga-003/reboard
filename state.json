@@ -1,7 +1,7 @@
 {
   "$schema": "./docs/state.schema.json",
   "project": "ReBoard SaaS platformu",
-  "updated_at": "2026-10-27T19:45:00+03:00",
+  "updated_at": "2026-10-27T19:51:00+03:00",
   "current_phase": "F2",
   "deadlines": {
     "demo_freeze": "2026-10-29T18:00:00+03:00",
@@ -275,10 +275,10 @@
       "id": "T2.5",
       "phase": "F2",
       "mode": "otonom",
-      "status": "sürüyor",
+      "status": "tamam",
       "title": "Senaryo ekranı: formüller, varsayımlar, sonuç sınıfları, olumsuz senaryo",
       "acceptance": "Girdi değişince sonuç yeniden hesaplanır; olumsuz senaryo kırmızı ve açıklamalı gösterilir",
-      "evidence": null,
+      "evidence": "4f88228: /senaryo, 23 girdi, tarayıcıda runScenario ile anında yeniden hesap (D-026). Birim 389/389 (senaryo 12), src/domain satır %100, dal %98,6; E2E 66/66 üç ardışık koşu (scenario.spec 6/6: rapor sayıları, olumsuz senaryo kırmızı 4 px çizgi + çip + açıklama, kontrast ≥ 4,73, axe 0, 5 genişlik TR/EN). Mutasyon: alan 16/16, arayüz 5/5. Yayın reboard-7c4w3wb1n; canlı denetim 40544565441 yeşil (/tr/senaryo 5 sonuç Sentetik, koridor 222,50–271,11, 1 kırmızı hücre); CI 40544350723 yeşil. Canlı model_inputs anahtarları yeni adlara bir sonraki canlı seed'de (T4.1) geçer.",
       "depends_on": [
         "T1.2"
       ],
