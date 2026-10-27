@@ -38,12 +38,12 @@ flowchart LR
 | Katman | Klasör | Kural |
 | --- | --- | --- |
 | Sayfalar | `src/app/[locale]/…` | Yalnızca sunum. İş kuralı içermez |
-| Bileşenler | `src/components/…` | `ui/`: temel bileşenler. `story/`: kare dizisi oynatıcı. `market/`: ilan kartı, fiyat metni, ilan haritası (`MarketMap`). `trace/`: kabul, kanıt ve üretim formları (`keep.ts`: hata dönüşünde girilen değerler silinmez), olay zaman çizelgesi, zincir durumu, miktar (`Qty`, `data-kg`) ve kaydırılan tablo kabı (`TableWrap`) |
+| Bileşenler | `src/components/…` | `ui/`: temel bileşenler. `story/`: kare dizisi oynatıcı. `market/`: ilan kartı, fiyat metni, ilan haritası (`MarketMap`). `trace/`: kabul, kanıt ve üretim formları (`keep.ts`: hata dönüşünde girilen değerler silinmez), olay zaman çizelgesi, zincir durumu, miktar (`Qty`, `data-kg`) ve kaydırılan tablo kabı (`TableWrap`). `panel/`: sınıf rozetli gösterge (`Kpi`, `KgTotalText`), simge ve yazılı durum çipi (`StatusChip`), bağımlılıksız SVG grafikler (`Charts.tsx`: `ProjectionChart`, `MonthlyChart`; klavye imleci, `aria-live` duyurusu) ve React'sız saf yerleşim modülü (`chart-layout.ts`: ölçek, kesin çakışma geometrisi, kısa biçim ve çizgi üstü yedekli etiket yerleşimi) |
 | Sunucu eylemleri | ilgili rota klasöründe `actions.ts` | Her eylem `src/lib/action.ts` kapısından geçer (oturum → rol → Zod), sonra repository'ye gider |
 | Alan | `src/domain/…` | Saf TypeScript. I/O yok, birim testli. Tek gerçek kaynak burası |
 | Repository | `src/db/repo/…` | Bütün özel sorgular `withTenant(orgId)` üzerinden geçer (D-016) |
 | Şema | `src/db/schema/…` | Drizzle. Migrasyonlar `drizzle/` klasöründe |
-| Tasarım | `src/design/` | `wada.json`: sözlüğün 159 rengi (MIT, `WADA_LICENSE.md`). `tokens.ts`: Wada adlarıyla tanımlı paletler ve `<html>` üzerine yazılan CSS değişkenleri. `color.ts`: kontrast, OKLab ΔE, ton farkı ve CVD benzetimi; testler ve palet önizlemesi bunu kullanır. `map.ts`: harita noktası renkleri, ölçülen altlık örnekleri ve dokunma yarıçapı (M-22) |
+| Tasarım | `src/design/` | `wada.json`: sözlüğün 159 rengi (MIT, `WADA_LICENSE.md`). `tokens.ts`: Wada adlarıyla tanımlı paletler, durum renkleri (`STATUS`) ve `<html>` üzerine yazılan CSS değişkenleri. `color.ts`: kontrast, OKLab ΔE, ton farkı ve CVD benzetimi; testler ve palet önizlemesi bunu kullanır. `map.ts`: harita noktası renkleri, ölçülen altlık örnekleri ve dokunma yarıçapı (M-22) |
 | Çeviri | `messages/{tr,en}.json`, `src/i18n/` | next-intl. `src/proxy.ts` dil önekini yönetir (`/` → `/tr` ya da `/en`; API ve uzantılı dosyalar hariç). Anahtarların iki dilde eşit olduğu test edilir |
 | Kimlik | `src/lib/auth.ts`, `src/lib/viewer.ts` | `getAuth()` tembel başlatılır; build sırasında veritabanı ve secret denetimi tetiklenmez. `createAuth(db, ayarlar)` testlerde PGlite ile kurulur. `getViewer()` sayfaların ve eylemlerin tek kimlik kaynağıdır (`server-only`). Uç: `src/app/api/auth/[...all]/route.ts` |
 | Veritabanı istemcisi | `src/db/client.ts` | `getDb()`: `DATABASE_URL` varsa node-postgres, yoksa `.data/pglite`. Migrasyon: `pnpm db:migrate` (`scripts/db-migrate.ts`) |
@@ -125,6 +125,8 @@ Alanların anlamları ve birimleri `docs/DATA_DICTIONARY.md` dosyasında.
 - Kütle dengesi (`massBalance`): `|Σ girdi − çıktı − fire − nem kaybı| ÷ Σ girdi ≤ %2`. Tolerans aşılırsa açıklama zorunludur (`balanceNoteMissing`). Değerlerden biri bilinmiyorsa ya da girdi 0 ise denge iddia edilmez (`withinTolerance: null`). Negatif kg reddedilir.
 - Soy ağacı (`genealogy(lotId)`): panel lotundan üretim partisine, oradan atık partilerine iner. Lotun payı, partide tek lot varsa 1, yoksa alan oranıdır; herhangi bir lotun alanı bilinmiyorsa pay da bilinmez. Sonuç; lotun tekstil kg'ını, bunun doğrulanmış kısmını, sağlayıcıya ve life göre dağılımını ve en zayıf sonuç sınıfını verir. Lot sayfasında iç içe liste olarak gösterilir (D-023).
 
+- Etki ve tedarik paneli `src/db/repo/panel.ts` içindeki `panelData(db, orgId, now)` ile okunur. Fonksiyon yalnızca okur: kurumun gördüğü partileri, üretimleri, lotları, atık anlaşmalarının teslimlerini ve `model_inputs` içindeki ihtiyaç ve eşik girdilerini `withTenant` ile toplar. Hesabı `impactSummary` ve `supplyView` yapar. Panel teslimi stoğa girmez; hammadde akışı yalnızca atık ilanlarından doğan anlaşmalardır.
+
 ## 5. Alan modülleri (`src/domain`)
 
 | Modül | İçerik |
@@ -132,9 +134,9 @@ Alanların anlamları ve birimleri `docs/DATA_DICTIONARY.md` dosyasında.
 | `result.ts` | `Result` tipi `{value: Decimal \| null, unit, period, currency?, taxBasis?, resultClass, inputRefs, formulaVersion, conditions}`. `null` "bilinmiyor" anlamına gelir. `weakestClass` sonucun sınıfını girdilerin en zayıfından türetir |
 | `calc/` | `money.ts`: kalem toplama ve `null` yayılımı. `formulas.ts`: fabrika kazancı, panel müşterisi kazancı, ReBoard faaliyet sonucu, fiyat koridoru ve SaaS katkısı. `synthetic-scenario.ts`: rapordaki sentetik örnek. Para birimi, vergi temeli, dönem ya da birim uyuşmazsa, hiç girdi yoksa `CalcError` fırlatır |
 | `traceability/` | `canonical.ts`: `canonicalJson`, `kgText`. `chain.ts`: `hashEvent`, `nextEvent`, `verifyChain`. `mass-balance.ts`: `massBalance`, `balanceNoteMissing`. `genealogy.ts`: `genealogy(lotId, graph)`, `splitByComposition`. Lif listesi `src/domain/fibre.ts` dosyasında |
-| `impact/` | `recoveredKg({verifiedOnly})`, `inPanelKg`, `co2eRange(kg, factors)`. CO₂e alt ve üst sınırla, kaynağıyla birlikte döner |
+| `impact.ts` | `kgTotal` (bilinen toplam ve bilinmeyen kalem sayısı; alt sınır), `classOf` (en zayıf sınıf), `monthsBack` (Türkiye takvimiyle aylar), `impactSummary` (doğrulanmış, beyan edilen ve panele giren kg; karşı taraf payları; ilk kaydın ayından başlayan en çok 6 aylık trend). CO₂e hesaplanmaz; doğrulanmış katsayı kaynağı yok |
 | `market.ts` | İlan türleri ve birimleri, taraflar, ödeme yönü, ilan, teklif, yanıt ve geri çekme kuralları, teslim planı (`deliveryPlan`), eşleşme skoru (`matchScore`, `compositionFit`), İstanbul takvim günü (D-021) |
-| `supply.ts` | `onTimeRate`. T2.3'te `inventoryKg`, `daysOfCover`, `projectedCover`, `hhi` eklenecek |
+| `supply.ts` | `onTimeRate`, `coverThresholds`, `daysOfCover`, `coverLevel`, `projectStock` (30 gün, günlük adım), `hhi` (son 90 gün, 1.800 eşiği), `supplyView` (üretime hazır stok, doğrulama bekleyen, uyarılar, tedarikçi satırları; D-024) |
 | `fibre.ts`, `geo.ts`, `access.ts`, `panel.ts` | Lif listesi ve bileşim payları; kuş uçuşu mesafe; roller; panel ölçüleri |
 
 ## 6. Kimlik, roller ve kiracılar

@@ -97,15 +97,21 @@ Bir hesabın sınıfı, girdilerinin **en zayıf** sınıfıdır. Sıralama en z
 
 | Metrik | TR | Tanım |
 | --- | --- | --- |
-| `recovered_kg_verified` | Doğrulanmış geri kazanım | `verified = true` olan partilerin `accepted_kg` toplamı. Ana metrik |
+| `recovered_kg_verified` | Doğrulanmış geri kazanım | `verified = true` olan partilerin kabul edilen kg'ı (`weighed_kg − rejected_kg`) toplamı. Ana metrik (D-013) |
 | `recovered_kg_declared` | Beyan edilen geri kazanım | Bütün partilerin `declared_kg` toplamı. Ayrı gösterilir |
-| `in_panel_kg` | Panele giren tekstil | Panel lotlarına ulaşan `allocated_kg` toplamı |
-| `co2e_range` | CO₂e aralığı | `[kg × alt katsayı, kg × üst katsayı]`, kaynağıyla. Sınıfı `sourced_estimate`; tek sayı gösterilmez. Doğrulanmış katsayı kaynağı henüz yok (`docs/RESEARCH.md` §3); o zamana kadar değer "bilinmiyor" |
-| `inventory_kg` | Stok | Kabul edilen − tahsis edilen |
-| `days_of_cover` | Kaç günlük hammadde kaldığı | `inventory_kg ÷ planlı günlük ihtiyaç`. Eşikler ayarlanabilir; varsayılan 14 ve 7 |
+| `in_panel_kg` | Panele giren tekstil | Panel lotu açılmış üretim partilerine giren `allocated_kg` toplamı. Yalnızca üretim yapan kurumda gösterilir |
+| `co2e_range` | CO₂e aralığı | `[kg × alt katsayı, kg × üst katsayı]`, kaynağıyla. Sınıfı `sourced_estimate`; tek sayı gösterilmez. Doğrulanmış katsayı kaynağı henüz yok (`docs/RESEARCH.md` §3). Panel bu yüzden CO₂e göstermez ve nedenini yazar |
+| `kg_total` | Kg toplamı | Bilinen değerlerin toplamı ve bilinmeyen kalem sayısı. Hepsi bilinmiyorsa "bilinmiyor"; bir kısmı bilinmiyorsa toplam alt sınırdır ve "en az" diye yazılır (`kgTotal`, `src/domain/impact.ts`) |
+| `monthly_verified_kg` | Aylık doğrulanmış kg | Teslim alma ayına (Türkiye takvimi) göre `recovered_kg_verified`. Kurumun ilk kaydının ayından başlar, en çok son 6 ay |
+| `usable_stock_kg` | Üretime hazır stok | Doğrulanmış partilerin kalanı toplamı. Kalan = kabul edilen − tahsis edilen (`remainingKg`). Doğrulama bekleyen parti üretime giremediği için bu sayıya girmez (D-024) |
+| `pending_kg` | Doğrulama bekleyen | Kantar fişi kontrol edilmemiş partilerin kabul edilen kg'ı ve parti sayısı. Ayrı gösterilir |
+| `planned_daily_need_kg` | Planlı günlük ihtiyaç | `model_inputs` anahtarı. Kurumun kendi satırı platform geneli satırın önüne geçer; aynı düzeyde en yeni dönem kullanılır |
+| `days_of_cover` | Kaç günlük hammadde | `usable_stock_kg ÷ planned_daily_need_kg`. İhtiyaç bilinmiyor ya da 0 ise "bilinmiyor". Düzey: eşik `days_of_cover_green_min` ve üstü yeterli, `days_of_cover_yellow_min` altı kritik, arası dikkat. Eşikler `model_inputs` içinden gelir; ikisi birlikte ve tutarlı değilse varsayılan 14 ve 7 kullanılır |
+| `stock_projection` | 30 günlük stok projeksiyonu | Günlük adım: o güne düşen planlı teslimlerin kg'ı eklenir, ihtiyaç düşülür, stok 0'ın altına inmez. Teslimin günü `max(1, ⌈(planlanan − şimdi) ÷ 24 saat⌉)`. Kg'ı bilinmeyen teslim projeksiyona girmez, sayısı yazılır. Planlı kg ayıklamadan önce olduğu için projeksiyon iyimserdir; sınıfı en çok `pilot_projection` |
 | `on_time_rate` | Zamanında teslim | `delivered_at ≤ planned_at + 1 gün` olan teslimlerin vadesi gelmiş teslimlere oranı. Vadesi gelmiş: teslim edilmiş, iptal edilmiş ya da planlı tarihi 1 günden fazla geçmiş. Vadesi gelmiş teslim yoksa `null`. Pazar yerinde yalnızca izleyenin taraf olduğu teslimlerden hesaplanır (`src/domain/supply.ts`) |
-| `declared_vs_weighed` | Beyan ile tartım farkı | `(weighed − declared) ÷ declared` |
-| `hhi` | Tedarikçi yoğunlaşması | Tedarikçi paylarının karelerinin toplamı (0–10.000) |
+| `declared_vs_weighed` | Beyan ile tartım farkı | `(Σ weighed − Σ declared) ÷ Σ declared`, yalnızca ikisi de bilinen partilerden. İşaretli yüzde olarak yazılır |
+| `hhi` | Tedarikçi yoğunlaşması | Son 90 günde teslim alınan partilerin kabul edilen kg'ına göre tedarikçi paylarının (yüzde) karelerinin toplamı, 0–10.000. 1.800 üstü yüksek yoğunlaşmadır ve uyarı çıkar (`docs/RESEARCH.md` §1). Pencerede kg yoksa "bilinmiyor" |
+| `supply_alert` | Tedarik uyarısı | `cover` (gün sayısı eşiğin altında), `need_missing`, `projected_danger` (bugün kritik değilken projeksiyonun kritik düzeye indiği ilk gün), `stockout`, `overdue` (planlı tarih 1 günden fazla geçti), `pending`, `stock_unknown`, `concentration`. Kritikten dikkate doğru sıralanır |
 | `match_score` | Eşleşme skoru | 0–100 tamsayı (D-021, `src/domain/market.ts`). Ağırlıklar: bileşim 40, miktar 20, yakınlık 20, güvenilirlik 20. Bileşim uyumu `Σ min(arz payı, talep payı) ÷ talebin bilinen payı`; miktar `min(arz ÷ talep, 1)`; yakınlık `max(0, 1 − kuş uçuşu km ÷ 100)`; güvenilirlik `on_time_rate`. İpek içeren atık eşleşmez. Bilinmeyen bileşenin ağırlığı skordan düşülür; kalan ağırlık (`knownWeight`) ekranda yazar. Hiçbir bileşen bilinmiyorsa `null` |
 
 ## 6. Ekonomi (Şerife'nin raporu)

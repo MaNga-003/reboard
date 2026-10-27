@@ -7,6 +7,8 @@ export default defineConfig({
     environment: "node",
     include: ["tests/unit/**/*.test.ts", "tests/integration/**/*.test.ts"],
     testTimeout: 30_000,
+    // PGlite kurulumu (migrasyon) kapsam ölçümüyle yük altında 10 sn varsayılanını aştı (2 dosya, 2026-10-27).
+    hookTimeout: 30_000,
     coverage: {
       provider: "v8",
       include: ["src/domain/**/*.ts", "src/design/**/*.ts"],

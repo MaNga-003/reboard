@@ -9,6 +9,7 @@
 | [Reverse Resources](https://circulareconomy.europa.eu/platform/fr/node/2363) (AB Döngüsel Ekonomi Platformu) | Model önce fabrika için bir dijital atık deposu sunuyor, eşleştirme sonra geliyor: "önce araç için gelir, ağ için kalır" | Sağlayıcı kendi atığının panele dönüştüğünü görür; pazar yeri tek başına değer değil |
 | [Endüstriyel simbiyozda güven, sistematik derleme](https://www.researchsquare.com/article/rs-6274333/v1) | Güven şeffaflık, belgelenmiş miktar ve tekrar eden işlemle oluşuyor | Doğrulanmış kg ana metrik (D-013); tedarikçi güvenilirliği skoru |
 | [Platform başarısı, ajan tabanlı model](https://www.sciencedirect.com/science/article/pii/S0921800924003999) (Ecological Economics) | Kritik kütleye ulaşmadan platform sönüyor; erken aşamada bir çapa oyuncu gerekiyor | ReBoard üreticisi çapa alıcıdır; demo Antalya OSB bağlamında |
+| [ABD Adalet Bakanlığı ve FTC, 2023 Birleşme Rehberi](https://www.justice.gov/atr/media/1329301/dl?inline), §2.1 | HHI 1.800'ün üstündeki piyasa "yüksek yoğunlaşmış" sayılıyor. Rehber rekabet hukuku içindir; tek alıcının tedarik riskine uyarlaması bizim yorumumuzdur | Tedarik panelinde HHI son 90 günün kabul edilen kg'ıyla hesaplanır, 1.800 üstünde yoğunlaşma uyarısı çıkar (D-024) |
 
 ## 2. İzlenebilirlik ve ürün pasaportu
 

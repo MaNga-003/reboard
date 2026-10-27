@@ -75,18 +75,25 @@ sequenceDiagram
 
 ### 3.3 Etki ve tedarik paneli
 
+Panel girişten sonraki ilk ekrandır (`/panel`). Kurum yalnızca kendi gördüğü kayıtlardan hesaplanan sayıları görür (D-016). Her gösterge sonuç sınıfı rozeti taşır; demo verisinde hepsi "Sentetik"tir (D-011).
+
 - **Etki:**
-  - Doğrulanmış kg ana sayıdır.
-  - Beyan edilen kg ayrı gösterilir.
-  - Panele giren kg ayrıca gösterilir.
-  - Ayrıca kaynak dağılımı ve aylık trend.
-- **Tedarik:**
-  - Stok.
-  - Kaç günlük hammadde kaldığı: 14 gün ve üstü yeşil, 7–14 gün sarı, 7 günden az kırmızı.
-  - Planlı teslimlerle 30 günlük projeksiyon.
-  - Tedarikçi güvenilirliği: zamanında teslim yüzdesi, beyan ile tartım farkı.
-  - Tedarikçi yoğunlaşması (HHI).
-  - Uyarılar.
+  - Ana sayı doğrulanmış kg'dır: teslim alan tarafın tarttığı ve kantar fişini kontrol ettiği miktar (D-013).
+  - Beyan edilen kg ve "doğrulanmış parti / toplam parti" ayrı göstergedir. Üretim yapan kurumda panele giren kg da gösterilir.
+  - Kaynak dağılımı tablosu: üretici için sağlayıcılar, sağlayıcı için teslim ettiği kurumlar; kg ve pay.
+  - Aylık doğrulanmış kg sütun grafiği: kurumun ilk kaydının ayından başlar, en çok 6 ay. İki aydan az veri varsa grafik çizilmez, tablo açık gelir.
+  - CO₂e gösterilmez; nedeni panelde yazar (doğrulanmış katsayı kaynağı yok).
+  - Kaydı olmayan kurum "0 kg" görmez; ilk parti gelince göstergelerin oluşacağını söyleyen boş durum görür.
+- **Tedarik** (yalnızca hammadde teslim alan kurum):
+  - Kaç günlük hammadde: üretime hazır stok ÷ planlı günlük ihtiyaç. Düzey çipi simge ve yazıyla gelir: Yeterli (14 gün ve üstü), Dikkat (7–14), Kritik (7'nin altı). Eşikler kurumun girdisinden gelir, yoksa varsayılandır; hangisi olduğu ekranda yazar.
+  - Üretime hazır stok yalnızca doğrulanmış partilerin kalanıdır. Doğrulama bekleyen kg ve parti sayısı ayrı göstergedir (D-024).
+  - Bilinmeyen kalem varsa toplam "en az" diye yazılır; hepsi bilinmiyorsa "bilinmiyor".
+  - Uyarılar, kritikten dikkate sıralı: gün sayısı eşiğin altında; ihtiyaç girilmemiş; planlı teslimlerle bile kritik düzeye iniş günü; stokun bittiği gün; geciken teslim; doğrulama bekleyen partiler; kalanı bilinmeyen partiler; tedarik yoğunlaşması.
+  - 30 günlük stok projeksiyonu çizgi grafiği: eşik çizgileri, planlı teslim noktaları ve kritik düzeye iniş günü işaretlidir. Klavyeyle (ok tuşları, Home, End) gezilir, seçilen gün ekran okuyucuya okunur.
+  - Yaklaşan teslimler (30 gün) tablosu.
+  - Tedarikçi güvenilirliği tablosu: zamanında teslim (oran ve adet), tartım − beyan farkı, son 90 gün payı, parti sayısı. Altında HHI ve 1.800 eşiği yazar.
+- Her grafiğin altında "Tablo olarak göster" açılır tablosu vardır; grafikteki her sayı orada da bulunur.
+- Kurumun izinleri sayfanın altında açılır listededir.
 
 ### 3.4 Senaryo
 

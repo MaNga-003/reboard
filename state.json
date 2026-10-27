@@ -1,7 +1,7 @@
 {
   "$schema": "./docs/state.schema.json",
   "project": "ReBoard SaaS platformu",
-  "updated_at": "2026-10-27T15:18:00+03:00",
+  "updated_at": "2026-10-27T18:24:00+03:00",
   "current_phase": "F2",
   "deadlines": {
     "demo_freeze": "2026-10-29T18:00:00+03:00",
@@ -243,15 +243,16 @@
       "id": "T2.3",
       "phase": "F2",
       "mode": "otonom",
-      "status": "yapılacak",
+      "status": "tamam",
       "title": "Etki ve tedarik sürekliliği paneli",
       "acceptance": "Doğrulanmış ve beyan edilen kg ayrı gösterilir; kaç günlük hammadde kaldığı eşik renkleriyle görünür; uyarılar listelenir",
-      "evidence": null,
+      "evidence": "/panel: etki (doğrulanmış, beyan, panelde kg, aylık grafik) ve tedarik (üretime hazır stok, kaç günlük, Yeterli/Dikkat/Kritik çipi, uyarılar, 30 günlük projeksiyon, yaklaşan teslimler, sağlayıcı güvenilirliği, HHI), TR ve EN, tablo görünümleri. pnpm test:coverage 346/346, src/domain satır %100 dal %98,5 fonksiyon %99,5; pnpm test:e2e 56/56 × 3; lint, typecheck, build yeşil. Grafik yazıları (M-25): 100.000 rastgele senaryoda 0 çakışma, varsayılan eşiklerde 0 düşen yazı, 7/7 birim mutasyon ve CHAR_W=5 E2E mutasyonu yakalandı.",
       "depends_on": [
         "T1.4"
       ],
       "decisions": [
-        "D-013"
+        "D-013",
+        "D-024"
       ]
     },
     {
@@ -581,8 +582,8 @@
       "id": "M-1",
       "claim": "Metin kontrastı",
       "threshold": "normal ≥ 4.5, büyük/arayüz ≥ 3",
-      "last_value": null,
-      "measured_at": null,
+      "last_value": "17 test yeşil; en düşük gövde 6,11 (C), çip yazısı 4,73 (C/danger); bozma: koyu durum dolgusu 5 hata",
+      "measured_at": "2026-10-27T18:24:00+03:00",
       "test": "tests/unit/design-tokens.test.ts"
     },
     {
@@ -613,8 +614,8 @@
       "id": "M-5",
       "claim": "Hesaplar doğru",
       "threshold": "para birimi/vergi temeli uyuşmazlığı hata; boş girdi null; src/domain kapsamı ≥ %90",
-      "last_value": "27/27 test; src/domain kapsamı %100 (satır, dal, fonksiyon); 4/4 mutasyon yakalandı",
-      "measured_at": "2026-10-27T01:55:00+03:00",
+      "last_value": "346/346 test (birim ve entegrasyon); src/domain kapsamı satır %100, dal %98,5, fonksiyon %99,5 (impact.ts dal %88,9, supply.ts %96,6); eşik %90",
+      "measured_at": "2026-10-27T18:24:00+03:00",
       "test": "tests/unit/calc"
     },
     {
@@ -637,8 +638,8 @@
       "id": "M-8",
       "claim": "Grafik renkleri ayrışır",
       "threshold": "ΔE ≥ 0,25; CVD ≥ 0,1; durum tonu farkı ≥ 30°",
-      "last_value": null,
-      "measured_at": null,
+      "last_value": "Durumlar: ton ≥ 57,9°, ΔE ≥ 0,168, CVD ≥ 0,130, dolgu–zemin ≥ 0,109; kategori paleti ilk çok serili grafikte yazılacak",
+      "measured_at": "2026-10-27T18:24:00+03:00",
       "test": "tests/unit/design-tokens.test.ts"
     },
     {
@@ -669,33 +670,33 @@
       "id": "M-12",
       "claim": "Erişilebilir",
       "threshold": "0 ciddi/kritik axe ihlali; dokunma hedefi ≥ 44×44 px",
-      "last_value": "/tr, /en, giriş, panel, pazar listesi (harita açılır kutusu dahil), ilan ayrıntısı, yeni ilan, izlenebilirlik (genel bakış, teslim alma, parti, yeni üretim, lot) TR ve EN: 0 ciddi/kritik ihlal; 5 genişlikte 44 px altı hedef 0; bozma yakalandı",
-      "measured_at": "2026-10-27T15:11:00+03:00",
-      "test": "tests/e2e/smoke.spec.ts, tests/e2e/auth.spec.ts, tests/e2e/market.spec.ts, tests/e2e/trace.spec.ts"
+      "last_value": "/tr, /en, giriş, panel (TR ve EN, tablolar açık), pazar listesi, ilan ayrıntısı, yeni ilan, izlenebilirlik sayfaları: 0 ciddi/kritik ihlal; 5 genişlikte 44 px altı hedef 0; projeksiyon klavyeyle gezilir (Home/End, aria-live)",
+      "measured_at": "2026-10-27T18:24:00+03:00",
+      "test": "tests/e2e/smoke.spec.ts, tests/e2e/auth.spec.ts, tests/e2e/market.spec.ts, tests/e2e/trace.spec.ts, tests/e2e/panel.spec.ts"
     },
     {
       "id": "M-13",
       "claim": "Yerleşim bozulmaz",
       "threshold": "0 px sayfa taşması; main içerik kutusundan taşan 0 öğe; kaydırılan kaptan kaçan 0 mutlak konumlu öğe",
-      "last_value": "giriş, panel, pazar ve izlenebilirlik sayfaları; 5 genişlik: 0 px, 0 öğe, 0 kaçak. Önce sr-only başlık 16 px, SHA-256 notu 360 px'te 210 px taşırıyordu; relative bozması escapedAbsolutes ile 5 genişlikte yakalandı",
-      "measured_at": "2026-10-27T15:11:00+03:00",
-      "test": "tests/e2e/smoke.spec.ts, tests/e2e/auth.spec.ts, tests/e2e/market.spec.ts, tests/e2e/trace.spec.ts"
+      "last_value": "giriş, panel, pazar ve izlenebilirlik; 5 genişlik: 0 px, 0 öğe, 0 kaçak. Panel bulgusu: sr-only'nin -1 px kenar boşluğu ipucu metnini 1 px taşırıyordu, düzeltildi",
+      "measured_at": "2026-10-27T18:24:00+03:00",
+      "test": "tests/e2e/smoke.spec.ts, tests/e2e/auth.spec.ts, tests/e2e/market.spec.ts, tests/e2e/trace.spec.ts, tests/e2e/panel.spec.ts"
     },
     {
       "id": "M-14",
       "claim": "Çeviri tam",
       "threshold": "0 eksik anahtar",
-      "last_value": "0 eksik (415 yaprak anahtar)",
-      "measured_at": "2026-10-27T15:11:00+03:00",
+      "last_value": "0 eksik (490 yaprak anahtar)",
+      "measured_at": "2026-10-27T18:24:00+03:00",
       "test": "tests/unit/i18n.test.ts"
     },
     {
       "id": "M-15",
       "claim": "Dürüstlük",
       "threshold": "her KPI'da sonuç sınıfı rozeti",
-      "last_value": null,
-      "measured_at": null,
-      "test": "tests/e2e/honesty.spec.ts"
+      "last_value": "Üretici 8, sağlayıcı 2 gösterge, TR ve EN: 0 ihlal; demo sınıfları yalnız synthetic; bozma: rozet kaldırılınca 3 test düştü",
+      "measured_at": "2026-10-27T18:24:00+03:00",
+      "test": "tests/e2e/panel.spec.ts"
     },
     {
       "id": "M-16",
@@ -760,6 +761,22 @@
       "last_value": "E2E 10/10 (tam paket 46/46 × 3); birim ve entegrasyon 66/66; traceability kapsamı %100; bozma ekran 4/4, birim 2/2, depo 1/1",
       "measured_at": "2026-10-27T15:11:00+03:00",
       "test": "tests/e2e/trace.spec.ts, tests/integration/trace.test.ts, tests/unit/traceability/batches.test.ts"
+    },
+    {
+      "id": "M-24",
+      "claim": "Panel sayıları kendi içinde tutarlı",
+      "threshold": "gün = stok ÷ ihtiyaç (Decimal eşitliği); çip = coverLevel; grafik iniş günü = uyarı günü",
+      "last_value": "yeşil (birim, entegrasyon, E2E)",
+      "test": "tests/unit/supply.test.ts, tests/unit/impact.test.ts, tests/integration/panel.test.ts, tests/e2e/panel.spec.ts",
+      "measured_at": "2026-10-27T18:24:00+03:00"
+    },
+    {
+      "id": "M-25",
+      "claim": "Grafik yazıları çakışmaz",
+      "threshold": "0 çakışma; varsayılan eşiklerde 0 düşen yazı; bütün aralıkta < %1,5; gerçek kutu tahminin 0,5 px içinde",
+      "last_value": "100.000 senaryoda 0 çakışma; düşen yazı varsayılanda 0/41.286, bütün aralıkta %1,03; gerçek genişlik 5,26–5,49 px/harf (tahmin 7); mutasyon 7/7 + E2E CHAR_W=5",
+      "test": "tests/unit/chart-layout.test.ts, tests/e2e/panel.spec.ts",
+      "measured_at": "2026-10-27T18:24:00+03:00"
     }
   ]
 }

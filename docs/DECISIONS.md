@@ -136,6 +136,23 @@ Biçim: **Karar**, **Neden**, **Tarih**, kararı kim verdi (K: kullanıcı, C: C
 - **Neden:** Yarışmadan sonra şirketleşme seçeneği açık kalır. Sonradan açık lisansa geçmek kolaydır; yayımlanmış bir sürümü geri kapatmak mümkün değildir.
 - **Tarih:** 2026-10-27 · K
 
+### D-024 — Tedarik paneli: üretime hazır stok, eşikler ve uyarılar
+- **Karar:**
+  - Kaç günlük hammadde, yalnızca doğrulanmış partilerin kalanından hesaplanır. Doğrulama bekleyen kg ve parti sayısı ayrı göstergede ve uyarıda durur.
+  - Düzey eşikleri kurumun `model_inputs` girdisinden gelir (`days_of_cover_green_min`, `days_of_cover_yellow_min`). İkisi birlikte ve tutarlı değilse varsayılan 14 ve 7 gün kullanılır; ekranda hangisinin kullanıldığı yazar.
+  - 30 günlük projeksiyon planlı teslimlerin ayıklama öncesi kg'ını ekler, bu yüzden iyimserdir ve sınıfı en çok "pilot projeksiyon" olur. Bugün kritik değilken projeksiyon kritik düzeye iniyorsa ilk gün ayrı bir uyarıdır ve grafikte işaretlenir.
+  - Tedarikçi yoğunlaşması son 90 günde kabul edilen kg'la hesaplanan HHI'dır; 1.800 üstü uyarıdır.
+  - Aylık trend kurumun ilk kaydının ayından başlar, en çok 6 ay.
+  - Durum çipi: dolgu (Cobalt Green, Orange Yellow, Carmine Red), `text` renginde kenarlık, simge ve yazı (Yeterli, Dikkat, Kritik).
+- **Neden:**
+  - Kantar fişi kontrol edilmemiş parti üretime giremez (T2.2). Onu stoğa saymak gün sayısını şişirir; tedarik kararı yanlış güvenle verilir.
+  - Eşikler ürüne ve tesise göre değişir. Pilot verisi gelene kadar plandaki 14 ve 7 gün varsayılandır.
+  - Bugün sarı görünen stok, sipariş için kalan süreyi saklayabilir; kritik düzeye iniş günü bu süreyi görünür kılar.
+  - HHI ve 1.800 eşiği kaynaklıdır (`docs/RESEARCH.md` §1). 90 günlük pencere, artık teslim etmeyen tedarikçilerin bugünkü yapıyı gizlemesini önler.
+  - Kurum akışa girmeden önceki aylara "0 kg" yazmak düşüş gibi okunur.
+  - Zemine 3:1 tutan koyu durum üçlüleri renk körlüğü benzetiminde en çok 0,089 ΔE ayrıştı (eşik 0,1). Açık dolgu ve kenarlıkla bütün ölçüler geçti (`docs/DESIGN_SYSTEM.md` §3).
+- **Tarih:** 2026-10-27 · C
+
 ### D-023 — Soy ağacı iç içe liste olarak gösterilir, React Flow kullanılmaz
 - **Karar:**
   - Lot sayfasındaki soy ağacı (lot → üretim partisi → atık partileri) iç içe `<ul>` listesidir. Her atık partisi satırında sağlayıcı, doğrulama durumu, tahsis edilen kg ve lota düşen kg yazar.

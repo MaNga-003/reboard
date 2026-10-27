@@ -7,6 +7,12 @@
   --color-accent: var(--rb-accent);
   --color-on-accent: var(--rb-on-accent);
   --color-secondary: var(--rb-secondary);
+  --color-ok: var(--rb-ok);
+  --color-on-ok: var(--rb-on-ok);
+  --color-warn: var(--rb-warn);
+  --color-on-warn: var(--rb-on-warn);
+  --color-danger: var(--rb-danger);
+  --color-on-danger: var(--rb-on-danger);
   --font-sans: var(--font-inter);
   --font-display: var(--font-fraunces);
 }

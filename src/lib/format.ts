@@ -20,3 +20,14 @@ export const fmtPercent = (share: number, locale: string, maxFraction = 0) =>
 /** Olay zamanı: gün ve saat, İstanbul saatiyle. */
 export const fmtDateTime = (v: Date | string, locale: string) =>
   new Intl.DateTimeFormat(tag(locale), { dateStyle: "medium", timeStyle: "short", timeZone: ZONE }).format(new Date(v));
+
+/** "2026-10" → "Eki 26" / "Oct 26": grafik ekseni için kısa ay. */
+export const fmtMonth = (month: string, locale: string) =>
+  new Intl.DateTimeFormat(tag(locale), { month: "short", year: "2-digit", timeZone: ZONE }).format(new Date(`${month}-15T12:00:00Z`));
+
+/** Grafik ekseni için kısa gün: "3 Kas" / "3 Nov". */
+export const fmtShortDate = (v: Date, locale: string) => new Intl.DateTimeFormat(tag(locale), { day: "numeric", month: "short", timeZone: ZONE }).format(v);
+
+/** İşaretli pay (oran × 100): "+%2,5", "−%1"; sıfır işaretsiz. */
+export const fmtSignedPercent = (share: number, locale: string, maxFraction = 1) =>
+  new Intl.NumberFormat(tag(locale), { style: "percent", maximumFractionDigits: maxFraction, signDisplay: "exceptZero" }).format(share / 100);

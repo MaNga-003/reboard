@@ -47,14 +47,36 @@ export function paletteHex(id: PaletteId): Record<RoleName, string> {
   return Object.fromEntries(Object.entries(roles).map(([role, name]) => [role, wadaHex(name)])) as Record<RoleName, string>;
 }
 
+export type StatusName = "ok" | "warn" | "danger";
+
+/**
+ * Durum dolguları paletten bağımsızdır; üstündeki yazı paletin metin ya da zemin rengidir (hangisi okunursa).
+ * Açık dolgular zemine karşı 3:1 tutmaz; bu yüzden durum çipi metin renginde kenarlık taşır ve durum hiçbir zaman
+ * yalnızca renkle anlatılmaz (simge + yazı). Ölçümler: tests/unit/design-tokens.test.ts, DESIGN_SYSTEM §3.
+ */
+export const STATUS: Record<StatusName, { fill: string; on: "text" | "bg" }> = {
+  ok: { fill: "Cobalt Green", on: "text" },
+  warn: { fill: "Orange Yellow", on: "text" },
+  danger: { fill: "Carmine Red", on: "bg" },
+};
+
+export function statusHex(id: PaletteId = ACTIVE_PALETTE): Record<StatusName, { fill: string; on: string }> {
+  const hex = paletteHex(id);
+  return Object.fromEntries(
+    Object.entries(STATUS).map(([k, s]) => [k, { fill: wadaHex(s.fill), on: hex[s.on] }]),
+  ) as Record<StatusName, { fill: string; on: string }>;
+}
+
 /** <html> üzerine yazılan CSS değişkenleri; globals.css bunları Tailwind temasına bağlar. */
 export function cssVariables(id: PaletteId = ACTIVE_PALETTE): Record<string, string> {
   const hex = paletteHex(id);
+  const status = statusHex(id);
   return {
     "--rb-bg": hex.bg,
     "--rb-text": hex.text,
     "--rb-accent": hex.accent,
     "--rb-on-accent": hex.onAccent,
     "--rb-secondary": hex.secondary,
+    ...Object.fromEntries(Object.entries(status).flatMap(([k, v]) => [[`--rb-${k}`, v.fill], [`--rb-on-${k}`, v.on]])),
   };
 }
