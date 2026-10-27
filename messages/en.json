@@ -298,6 +298,13 @@
       "panel_fields": "A panel listing has no fibre composition or silk field.",
       "not_owner": "Only the owner of the record can do that.",
       "offer_not_open": "The offer is no longer open."
+    },
+    "map": {
+      "title": "Listings map",
+      "legend": "Each dot shows the listings in one district; the number beside it is how many. Accent-coloured dots with a dark ring are your listings. Tap a dot to open the listing, or the list of listings in that district. The list below has the same information.",
+      "fallback": "The map could not load on this device (no WebGL or connection). Listing locations are given in the list below.",
+      "attribution": "Base map:",
+      "here": "Listings at this location"
     }
   },
   "currency": {

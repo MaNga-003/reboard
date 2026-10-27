@@ -127,6 +127,19 @@ Biçim: **Karar**, **Neden**, **Tarih**, kararı kim verdi (K: kullanıcı, C: C
 - **Neden:** Yarışmadan sonra şirketleşme seçeneği açık kalır. Sonradan açık lisansa geçmek kolaydır; yayımlanmış bir sürümü geri kapatmak mümkün değildir.
 - **Tarih:** 2026-10-27 · K
 
+### D-022 — İlan haritası: MapLibre ve OpenFreeMap, listeyle yedekli
+- **Karar:**
+  - `/pazar` listesinin üstünde MapLibre GL ve OpenFreeMap "positron" altlığı kullanılır; API anahtarı ve çerez yoktur. Harita yalnızca ilçe düzeyindeki konumu gösterir; aynı bilgi aşağıdaki listede de bulunur. WebGL ya da altlık yoksa harita yerine yedek metin çıkar.
+  - Aynı koordinattaki ilanlar tek noktada birleşir ve yanında sayıları yazar. Noktaya dokununca tek ilan açılır; birden çok ilan varsa başlıkları bağlantı olarak listelenir.
+  - Nokta renkleri `src/design/map.ts` içinden gelir. Kendi ilanı vurgu dolgulu ve koyu halkalıdır; diğerleri koyu dolgulu ve açık halkalıdır. Her noktanın bir katmanı ölçülen altlık örneklerine karşı ≥ 3:1 olur (M-22). Dokunma alanı görünmez bir katmanla 44 px çapındadır.
+  - Harita düğmesi (yakınlaştırma, pusula) konmaz. Atıf haritanın altında kendi metnimizle yazılır.
+- **Neden:**
+  - Konum, eşleşme skorundaki yakınlık bileşenini görünür kılar. Ama demo ağı ya da eski cihaz yüzünden pazar yeri haritaya bağımlı kalmamalı.
+  - MapLibre'nin hazır düğmeleri 29×29 px'tir ve dokunma hedefi kuralını (M-12) bozar.
+  - Vurgu rengi açık altlıkta 1,64:1'de kaldı; halka bu yüzden gerekti.
+  - Karo isteği kullanıcının IP adresini OpenFreeMap'e gösterir; başka kişisel veri gönderilmez.
+- **Tarih:** 2026-10-27 · C
+
 ### D-021 — Pazar yeri kuralları: miktar, teslim planı ve eşleşme skoru
 - **Karar:**
   - Tekrarlı ilanda (`weekly`, `monthly`) miktar **her teslim** içindir. Teklif ilanın biriminde verilir ve ilandaki miktarı aşamaz; ilk teslim günü geçmişte ya da uygunluk penceresi dışında olamaz.

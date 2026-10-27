@@ -25,3 +25,20 @@ export const roundCoord = (p: Point): Point => {
   check(p);
   return { lat: Math.round(p.lat * 100) / 100, lon: Math.round(p.lon * 100) / 100 };
 };
+
+export type Located = Point & { id: string; own: boolean };
+export type PointGroup = Point & { ids: string[]; own: boolean };
+
+/** Konum ilçe düzeyinde olduğundan aynı ilçedeki ilanlar üst üste düşer; harita onları tek noktada sayıyla gösterir. */
+export function groupByPoint(items: readonly Located[]): PointGroup[] {
+  const groups = new Map<string, PointGroup>();
+  for (const it of items) {
+    check(it);
+    const key = `${it.lat},${it.lon}`;
+    const g = groups.get(key) ?? { lat: it.lat, lon: it.lon, ids: [], own: false };
+    g.ids.push(it.id);
+    g.own ||= it.own;
+    groups.set(key, g);
+  }
+  return [...groups.values()];
+}

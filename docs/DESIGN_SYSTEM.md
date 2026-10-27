@@ -23,6 +23,7 @@ Uzay finali (hikâyenin son bölümü): Deep Indigo `#051230` ve Dull Violet Bla
 - **Durum tokenları:** `ok`, `warn`, `danger`, `info`. Kaç günlük hammadde eşikleri ve uyarılar bunları kullanır. Aralarındaki ton farkı en az 30° olur. Durum renkle tek başına anlatılmaz; simge ve metin de bulunur.
 - **Sonuç sınıfı rozetleri:** `synthetic`, `sourced_estimate`, `pilot_projection`, `realized`. Her birinin rengi ayrıdır (ΔE ≥ 0,25) ve rozet her zaman metin taşır.
 - **Grafik kategorileri:** 159 Wada renginden seçilir. Her çift arasında ΔE en az 0,25, renk körlüğü benzetiminde en az 0,1 olur.
+- **Harita noktaları** (`src/design/map.ts`): kendi ilanı `accent` dolgu ve `text` halka; diğerleri `text` dolgu ve `bg` halka; sayı `text` rengiyle `bg` hale üstünde, dolgunun yanında. Altlık dışarıdan geldiği için renkler ölçülen altlık örneklerine karşı denetlenir. A ve C paletlerinde vurgu üstü metin 4,5:1 altında kaldığından sayı dolgunun üstüne yazılmaz.
 - Tokenlar CSS değişkeni olarak Tailwind 4 `@theme` bloğuna aktarılır. Bileşenlerde sabit hex yazılmaz.
 
 ## 3. Ölçülen eşikler
@@ -34,6 +35,7 @@ Uzay finali (hikâyenin son bölümü): Deep Indigo `#051230` ve Dull Violet Bla
 | Renk körü de ayırır | Machado 2009 benzetimi (protan, deutan, tritan) ve ΔE | ≥ 0,1 | aynı |
 | Durum renkleri ayrı | OKLCh ton farkı | ≥ 30° | aynı |
 | Renkler Wada'dan | Hex, `palettes.json` içinde var | %100 | aynı |
+| Harita noktası altlıkta seçilir | WCAG kontrastı, altlık örneklerine ve ekran pikseline karşı | Nokta ≥ 3; etiket ≥ 4,5 | `tests/unit/map.test.ts`, `tests/e2e/market.spec.ts` (M-22) |
 
 ## 4. Tipografi
 

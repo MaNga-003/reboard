@@ -38,12 +38,12 @@ flowchart LR
 | Katman | Klasör | Kural |
 | --- | --- | --- |
 | Sayfalar | `src/app/[locale]/…` | Yalnızca sunum. İş kuralı içermez |
-| Bileşenler | `src/components/…` | `ui/`: temel bileşenler. `story/`: kare dizisi oynatıcı. `charts/`, `map/`, `trace/`: soy ağacı |
+| Bileşenler | `src/components/…` | `ui/`: temel bileşenler. `story/`: kare dizisi oynatıcı. `market/`: ilan kartı, fiyat metni, ilan haritası (`MarketMap`). `charts/`, `trace/`: soy ağacı |
 | Sunucu eylemleri | ilgili rota klasöründe `actions.ts` | Her eylem `src/lib/action.ts` kapısından geçer (oturum → rol → Zod), sonra repository'ye gider |
 | Alan | `src/domain/…` | Saf TypeScript. I/O yok, birim testli. Tek gerçek kaynak burası |
 | Repository | `src/db/repo/…` | Bütün özel sorgular `withTenant(orgId)` üzerinden geçer (D-016) |
 | Şema | `src/db/schema/…` | Drizzle. Migrasyonlar `drizzle/` klasöründe |
-| Tasarım | `src/design/` | `wada.json`: sözlüğün 159 rengi (MIT, `WADA_LICENSE.md`). `tokens.ts`: Wada adlarıyla tanımlı paletler ve `<html>` üzerine yazılan CSS değişkenleri. `color.ts`: kontrast, OKLab ΔE, ton farkı ve CVD benzetimi; testler ve palet önizlemesi bunu kullanır |
+| Tasarım | `src/design/` | `wada.json`: sözlüğün 159 rengi (MIT, `WADA_LICENSE.md`). `tokens.ts`: Wada adlarıyla tanımlı paletler ve `<html>` üzerine yazılan CSS değişkenleri. `color.ts`: kontrast, OKLab ΔE, ton farkı ve CVD benzetimi; testler ve palet önizlemesi bunu kullanır. `map.ts`: harita noktası renkleri, ölçülen altlık örnekleri ve dokunma yarıçapı (M-22) |
 | Çeviri | `messages/{tr,en}.json`, `src/i18n/` | next-intl. `src/proxy.ts` dil önekini yönetir (`/` → `/tr` ya da `/en`; API ve uzantılı dosyalar hariç). Anahtarların iki dilde eşit olduğu test edilir |
 | Kimlik | `src/lib/auth.ts`, `src/lib/viewer.ts` | `getAuth()` tembel başlatılır; build sırasında veritabanı ve secret denetimi tetiklenmez. `createAuth(db, ayarlar)` testlerde PGlite ile kurulur. `getViewer()` sayfaların ve eylemlerin tek kimlik kaynağıdır (`server-only`). Uç: `src/app/api/auth/[...all]/route.ts` |
 | Veritabanı istemcisi | `src/db/client.ts` | `getDb()`: `DATABASE_URL` varsa node-postgres, yoksa `.data/pglite`. Migrasyon: `pnpm db:migrate` (`scripts/db-migrate.ts`) |
@@ -94,6 +94,7 @@ Alanların anlamları ve birimleri `docs/DATA_DICTIONARY.md` dosyasında.
 - Okuma: `listMarket` (süzgeç, eşleşme skoru, güvenilirlik) ve `listingDetail` (teklifler, anlaşmalar, teslimler). İkisi de yalnızca `withTenant` görünürlüğüyle okur.
 - `drizzle/0004_teslim_kutlesi_bos.sql`: `deliveries.planned_kg` boş bırakılabilir (m² teslim).
 - Server Action'lar `src/app/[locale]/(app)/pazar/actions.ts` içindedir: oturum → rol → Zod → depo. Hata kodu `market.errors.*` metnine çevrilir; yok ile yetkisiz aynı koddur (`not_found`). Tek düğmeli eylemler sonucu `?durum=` ya da `?hata=` ile ilan sayfasına döndürür; JavaScript olmadan da çalışır.
+- İlan haritası (D-022) `src/components/market/MarketMap.tsx` istemci bileşenidir. MapLibre GL 6 dinamik içe aktarılır, yani yalnızca `/pazar` açılınca yüklenir. İşçi dosyası `maplibre-gl-worker.mjs`, `new URL(…, import.meta.url)` ile Turbopack'e statik varlık olarak kopyalatılır. Altlık OpenFreeMap "positron"dır. Gruplama `groupByPoint` (`src/domain/geo.ts`) ile yapılır; renkler `src/design/map.ts` dosyasından gelir.
 
 ## 4. Gözetim zinciri ve olay modeli (D-012)
 
@@ -175,7 +176,7 @@ Alanların anlamları ve birimleri `docs/DATA_DICTIONARY.md` dosyasında.
 
 - Server Actions `src/lib/action.ts` kapısından geçer: oturum, rol, sonra Zod.
 - Kayıt ve kurum açma kapalıdır; oturumsuz kurum uç noktaları 401 döner (M-4).
-- `next.config.ts` üzerinden güvenlik başlıkları uygulanır: CSP, `X-Content-Type-Options`, `Referrer-Policy`.
+- `next.config.ts` üzerinden güvenlik başlıkları uygulanır: `X-Content-Type-Options`, `Referrer-Policy`, `X-Frame-Options`, `Permissions-Policy`. CSP henüz yok (R-6). Eklenince harita için `connect-src` ve `img-src` içine `https://tiles.openfreemap.org`, `worker-src` içine `'self'` girer.
 - Kanıt dosyalarında yalnızca PDF, PNG, JPEG ve WebP kabul edilir; dosya en fazla 5 MB olabilir ve SHA-256 özeti tutulur.
 - Gizli bilgiler yalnızca ortam değişkenlerinde durur; CI'da gitleaks çalışır. `.env.example` dosyası yalnızca anahtar adlarını içerir.
 - Log'larda kişisel veri tutulmaz. Konum ilçe düzeyinde ya da yaklaşık 1 km'ye yuvarlanmış olarak saklanır.

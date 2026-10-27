@@ -1,6 +1,8 @@
 // Pazar yeri (T2.1): ilan → teklif → kabul → anlaşma ve teslim planı; izleyici salt okur; erişilebilirlik, taşma, dokunma hedefi.
 // Testler ortak veritabanına yazar: her ilan benzersiz başlıkla açılır, sayımlar yalnızca o ilana bakar.
 import { expect, test, type Page } from "@playwright/test";
+import { contrastRatio } from "../../src/design/color";
+import { MARKER, markerColors } from "../../src/design/map";
 import { addDays, deliveryPlan, istanbulDay, planStart } from "../../src/domain/market";
 import { TAP_MIN, WIDTHS, overflow, personaPage, seriousViolations, signIn, smallTargets } from "./helpers";
 
@@ -103,6 +105,103 @@ test("kendi ilanına teklif formu çıkmaz; ipeksiz süzgeci ipekli ve bilinmeye
   await expect(page).toHaveURL(/\/tr\/pazar\/[0-9a-f-]{36}$/);
   await expect(page.getByRole("button", { name: "İlanı kapat" })).toHaveCount(1);
   await expect(page.getByRole("button", { name: "Teklifi gönder" })).toHaveCount(0);
+});
+
+/**
+ * Ekran görüntüsünde dolgu rengindeki ilk beneği bulur; halkanın ve beneğin hemen dışındaki altlığın gerçek renklerini
+ * (kanal medyanı) döndürür. Görüntü CSP'siz boş sayfada çözülür: ölçü, kullanıcının gördüğü son render üzerindedir.
+ */
+async function measureDot(page: Page, png: Buffer, fillHex: string, ringPx: number) {
+  const scratch = await page.context().newPage();
+  try {
+    return await scratch.evaluate(
+      async ({ b64, fillHex, ringPx }) => {
+        const img = new Image();
+        img.src = `data:image/png;base64,${b64}`;
+        await img.decode();
+        const cv = document.createElement("canvas");
+        cv.width = img.width;
+        cv.height = img.height;
+        const ctx = cv.getContext("2d")!;
+        ctx.drawImage(img, 0, 0);
+        const d = ctx.getImageData(0, 0, cv.width, cv.height).data;
+        const [r, g, b] = [1, 3, 5].map((i) => parseInt(fillHex.slice(i, i + 2), 16));
+        const fill: [number, number][] = [];
+        for (let k = 0; k < d.length; k += 4) if (Math.abs(d[k] - r) + Math.abs(d[k + 1] - g) + Math.abs(d[k + 2] - b) <= 6) fill.push([(k / 4) % cv.width, Math.floor(k / 4 / cv.width)]);
+        if (!fill.length) return null;
+        // İlk vuruştan yakın piksellerin ağırlık merkezine yürü: benek merkezine oturur; yarıçap alandan çıkar.
+        let [cx, cy] = fill[0];
+        let near = fill;
+        for (let i = 0; i < 4; i++) {
+          near = fill.filter(([x, y]) => Math.hypot(x - cx, y - cy) <= 16);
+          cx = near.reduce((s, p) => s + p[0], 0) / near.length;
+          cy = near.reduce((s, p) => s + p[1], 0) / near.length;
+        }
+        const radius = Math.sqrt(near.length / Math.PI);
+        const band = (from: number, to: number, leftOnly: boolean) => {
+          const ch: number[][] = [[], [], []];
+          for (let y = Math.floor(cy - to); y <= cy + to; y++)
+            for (let x = Math.floor(cx - to); x <= cx + to; x++) {
+              const dist = Math.hypot(x - cx, y - cy);
+              if (dist < from || dist > to || (leftOnly && x > cx - 2) || x < 0 || y < 0 || x >= cv.width || y >= cv.height) continue;
+              const k = (y * cv.width + x) * 4;
+              for (let c = 0; c < 3; c++) ch[c].push(d[k + c]);
+            }
+          const hex = ch.map((v) => v.sort((a, b) => a - b)[v.length >> 1].toString(16).padStart(2, "0")).join("");
+          return `#${hex}`;
+        };
+        // Halka bandının kenarları kenar yumuşatmalı: ortası alınır. Dış bant yalnız solda: sayı etiketi sağda.
+        return { x: cx, y: cy, radius, ring: band(radius + 0.75, radius + ringPx - 0.75, false), outside: band(radius + ringPx + 3, radius + ringPx + 7, true) };
+      },
+      { b64: png.toString("base64"), fillHex, ringPx },
+    );
+  } finally {
+    await scratch.close();
+  }
+}
+
+test("harita: açılır ya da yedek metne düşer; aynı ilçedekiler tek noktada; kendi noktası halkalı ve dokununca ilanları listeler", async ({ page }) => {
+  await signIn(page, "producer");
+  await page.goto("/tr/pazar");
+  const map = page.locator("[data-map-state]");
+  await expect(map).not.toHaveAttribute("data-map-state", "loading", { timeout: 20_000 });
+  const cards = await page.locator("article[data-listing-id]").count();
+  const points = Number(await map.getAttribute("data-points"));
+  const groups = Number(await map.getAttribute("data-groups"));
+  expect(points).toBeGreaterThan(0);
+  expect(points).toBeLessThanOrEqual(cards);
+  // Seed'de aynı ilçede birden çok ilan var: birleşmezse noktalar üst üste biner.
+  expect(groups).toBeLessThan(points);
+  if ((await map.getAttribute("data-map-state")) !== "ready") {
+    await expect(page.getByText("Harita bu cihazda açılamadı", { exact: false })).toBeVisible();
+    return;
+  }
+
+  // Üreticinin seed'de iki ilanı aynı ilçede: vurgu dolgulu benek ekranda bulunur. Halka ya da dolgu, çevresindeki
+  // gerçek altlığa karşı ≥ 3:1 olmalı (WCAG 1.4.11). Beklenen renk kaynaktan değil ekrandan okunur: döngüsel test olmaz.
+  const c = markerColors();
+  let spot: Awaited<ReturnType<typeof measureDot>> = null;
+  for (let i = 0; i < 20 && !spot; i++) {
+    spot = await measureDot(page, await map.screenshot(), c.own.fill, MARKER.ownRing);
+    if (!spot) await page.waitForTimeout(500);
+  }
+  expect(spot, "kendi ilanı beneği ekranda bulunamadı").not.toBeNull();
+  const seen = Math.max(contrastRatio(spot!.ring, spot!.outside), contrastRatio(c.own.fill, spot!.outside));
+  expect(seen, `halka ${spot!.ring}, dolgu ${c.own.fill}, altlık ${spot!.outside}`).toBeGreaterThanOrEqual(3);
+
+  // Görünen beneğin dışına ama 44 px dokunma alanının içine dokun.
+  await map.click({ position: { x: spot!.x + MARKER.hitRadius - 4, y: spot!.y } });
+  const popup = page.locator(".rb-map-popup");
+  await expect(popup.getByRole("list", { name: "Bu konumdaki ilanlar" })).toBeVisible();
+  const links = popup.getByRole("link");
+  expect(await links.count()).toBeGreaterThanOrEqual(2);
+  for (const href of await links.evaluateAll((els) => els.map((a) => a.getAttribute("href")))) expect(href).toMatch(/^\/tr\/pazar\/[0-9a-f-]{36}$/);
+  expect(await seriousViolations(page)).toEqual([]);
+  expect(await smallTargets(page)).toEqual([]);
+  const first = (await links.first().textContent()) ?? "";
+  await links.first().click();
+  await expect(page).toHaveURL(/\/tr\/pazar\/[0-9a-f-]{36}$/);
+  await expect(page.getByRole("heading", { level: 1 })).toHaveText(first);
 });
 
 for (const locale of ["tr", "en"] as const) {

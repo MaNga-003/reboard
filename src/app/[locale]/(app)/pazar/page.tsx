@@ -1,5 +1,6 @@
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { ListingCard } from "@/components/market/ListingCard";
+import { MarketMap } from "@/components/market/MarketMap";
 import { control } from "@/components/market/fields";
 import { getDb } from "@/db/client";
 import { listMarket } from "@/db/repo/market";
@@ -80,6 +81,10 @@ export default async function MarketPage({ params, searchParams }: PageProps<"/[
           </button>
         </div>
       </form>
+
+      <MarketMap
+        points={rows.flatMap(({ listing: l, own }) => (l.lat !== null && l.lon !== null ? [{ id: l.id, title: l.title, own, lon: l.lon, lat: l.lat }] : []))}
+      />
 
       <section aria-labelledby="results-title" className="grid gap-4">
         <h2 id="results-title" className="text-2xl font-semibold">

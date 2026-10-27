@@ -1,7 +1,7 @@
 {
   "$schema": "./docs/state.schema.json",
   "project": "ReBoard SaaS platformu",
-  "updated_at": "2026-10-27T08:58:00+03:00",
+  "updated_at": "2026-10-27T09:10:00+03:00",
   "current_phase": "F1",
   "deadlines": {
     "demo_freeze": "2026-10-29T18:00:00+03:00",
@@ -204,10 +204,10 @@
       "id": "T2.1",
       "phase": "F2",
       "mode": "otonom",
-      "status": "sürüyor",
+      "status": "tamam",
       "title": "Pazar yeri: ilan listesi, filtre, harita, detay, ilan oluşturma, teklif ve kabul",
       "acceptance": "E2E: sağlayıcı ilan verir, üretici teklif eder, sağlayıcı kabul eder, anlaşma ve teslim planı oluşur",
-      "evidence": null,
+      "evidence": "E2E market.spec 11/11 (toplam 36/36), Vitest 222/222; domain ve design kapsamı eşik üstünde. Bilerek bozma: depo 4/4, ekran 2/2, harita 3/3 (halka rengi, dokunma katmanı, gruplama). Akış ilk yayında: reboard-6krzksseg, canlı denetim 40457828135 15/15 (7 kart). Harita: 12 ilan 5 noktada, halka 12,23:1 (M-22).",
       "depends_on": [
         "T1.4",
         "T1.5"
@@ -215,7 +215,8 @@
       "decisions": [
         "D-011",
         "D-016",
-        "D-021"
+        "D-021",
+        "D-022"
       ]
     },
     {
@@ -565,6 +566,11 @@
       "id": "R-5",
       "risk": "Türk Telekom Güvenli İnternet filtresi *.vercel.app adreslerini yönlendiriyor; jüri ya da salon ağı da filtreli olabilir",
       "mitigation": "Canlı denetim GitHub Actions'ta (live-smoke.yml); özel alan adı (Q-4); çevrimdışı demo (T4.2); salon ağı 29 Ekim'de denenir"
+    },
+    {
+      "id": "R-6",
+      "risk": "CSP başlığı yok; XSS'e karşı ikinci savunma hattı eksik",
+      "mitigation": "T4.1 öncesi izin listesiyle CSP eklenir (harita için tiles.openfreemap.org); eklenince bütün e2e yeniden koşulur"
     }
   ],
   "metrics": [
@@ -660,24 +666,24 @@
       "id": "M-12",
       "claim": "Erişilebilir",
       "threshold": "0 ciddi/kritik axe ihlali; dokunma hedefi ≥ 44×44 px",
-      "last_value": "/tr, /en, giriş, panel, pazar listesi, ilan ayrıntısı, yeni ilan (TR, EN): 0 ciddi/kritik ihlal; 5 genişlikte 44 px altı hedef 0; bozma yakalandı",
-      "measured_at": "2026-10-27T08:51:00+03:00",
+      "last_value": "/tr, /en, giriş, panel, pazar listesi (harita açılır kutusu dahil), ilan ayrıntısı, yeni ilan (TR, EN): 0 ciddi/kritik ihlal; 5 genişlikte 44 px altı hedef 0; bozma yakalandı",
+      "measured_at": "2026-10-27T09:10:00+03:00",
       "test": "tests/e2e/smoke.spec.ts, tests/e2e/auth.spec.ts, tests/e2e/market.spec.ts"
     },
     {
       "id": "M-13",
       "claim": "Yerleşim bozulmaz",
       "threshold": "360–1440 px'te 0 taşma ve çakışma (TR, EN)",
-      "last_value": "giriş, panel, pazar listesi, ilan ayrıntısı, yeni ilan; 5 genişlik: 0 px taşma",
-      "measured_at": "2026-10-27T08:51:00+03:00",
+      "last_value": "giriş, panel, pazar listesi (haritalı), ilan ayrıntısı, yeni ilan; 5 genişlik: 0 px taşma",
+      "measured_at": "2026-10-27T09:10:00+03:00",
       "test": "tests/e2e/smoke.spec.ts, tests/e2e/auth.spec.ts, tests/e2e/market.spec.ts"
     },
     {
       "id": "M-14",
       "claim": "Çeviri tam",
       "threshold": "0 eksik anahtar",
-      "last_value": "0 eksik (224 yaprak anahtar)",
-      "measured_at": "2026-10-27T08:51:00+03:00",
+      "last_value": "0 eksik (229 yaprak anahtar)",
+      "measured_at": "2026-10-27T09:10:00+03:00",
       "test": "tests/unit/i18n.test.ts"
     },
     {
@@ -732,9 +738,17 @@
       "id": "M-21",
       "claim": "Pazar yeri akışı doğru",
       "threshold": "ilan → teklif → kabul → anlaşma ve teslim planı yeşil; eşzamanlı kabulde tam 1 anlaşma; 0 sızıntı",
-      "last_value": "E2E 10/10; birim ve entegrasyon 42/42; market/supply/fibre kapsamı %100; bozma depo 4/4, ekran 2/2",
-      "measured_at": "2026-10-27T08:51:00+03:00",
+      "last_value": "E2E 11/11; birim ve entegrasyon 42/42; market/supply/fibre kapsamı %100; bozma depo 4/4, ekran 2/2",
+      "measured_at": "2026-10-27T09:10:00+03:00",
       "test": "tests/e2e/market.spec.ts, tests/integration/market.test.ts, tests/unit/market.test.ts"
+    },
+    {
+      "id": "M-22",
+      "claim": "Harita noktaları seçilir ve dokunulur",
+      "threshold": "nokta ≥ 3:1 (altlık örnekleri ve ekran pikseli); etiket ≥ 4,5:1; dokunma alanı ≥ 44 px",
+      "last_value": "A/B/C: 0 zayıf çift; ekranda halka 12,23:1 (önce 1,64:1); 44 px dokunma alanı; bozma 3/3",
+      "measured_at": "2026-10-27T09:10:00+03:00",
+      "test": "tests/unit/map.test.ts, tests/e2e/market.spec.ts"
     }
   ]
 }

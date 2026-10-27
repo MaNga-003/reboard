@@ -32,7 +32,7 @@ sequenceDiagram
   participant P as Platform
   participant U as Üretici
   S->>P: Atık ilanı (bileşim %, ipek yok, kg, ilçe, sıklık, pencere)
-  U->>P: İlanı bulur (süzgeç, eşleşme skoru ve gerekçesi)
+  U->>P: İlanı bulur (süzgeç, harita, eşleşme skoru ve gerekçesi)
   U->>P: Teklif (fiyat ya da kabul bedeli, miktar, tarih)
   S->>P: Teklifi kabul eder
   P->>P: Anlaşma ve teslim planı oluşur
@@ -43,11 +43,12 @@ sequenceDiagram
 - İlan türleri: `waste_offer`, `waste_request`, `panel_offer`, `panel_request`.
 - Fiyat yön bağımsızdır: sağlayıcı atık için para alabilir ya da kabul bedeli ödeyebilir. Alan işaretli tutulur ve "kim kime öder" açıkça yazılır.
 - Mesafe yalnızca "kuş uçuşu" etiketiyle gösterilir.
-- Ekranlar: `/pazar` (süzgeç: tür, ipeksiz, sıralama; kartlar), `/pazar/[id]` (ilan, teklif formu, teklifler, anlaşmalar ve teslim planı), `/pazar/yeni`.
+- Ekranlar: `/pazar` (süzgeç: tür, ipeksiz, sıralama; harita; kartlar), `/pazar/[id]` (ilan, teklif formu, teklifler, anlaşmalar ve teslim planı), `/pazar/yeni`.
 - Tekrarlı ilanda miktar her teslim içindir. Teklif ilanın biriminde verilir, ilandaki miktarı aşamaz; ilk teslim günü pencere içinde olur (D-021).
 - Tek seferlik ilan kabulde kapanır, diğer açık teklifler reddedilir. Tekrarlı ilan açık kalır.
 - Kabulle anlaşma ve teslim planı oluşur: 09:00 TSİ, haftalık ya da aylık, pencere bitişine ya da 60 güne kadar.
 - Eşleşme skoru gerekçesiyle gösterilir: bileşim, miktar, yakınlık, sizinle zamanında teslim. Bilinmeyen bileşen 0 sayılmaz; skorun hangi ağırlıktan hesaplandığı yazar. İpek içeren atık eşleşmez.
+- Harita ilçe düzeyindeki konumu gösterir. Aynı ilçedeki ilanlar tek noktada sayıyla birleşir; dokununca ilan ya da ilan listesi açılır. Harita açılamazsa aynı bilgi listede kalır (D-022).
 - Teklifleri yalnızca ilan sahibi ve teklifi veren görür. İzleyici rolü okur, ilan ya da teklif veremez.
 
 ### 3.2 İzlenebilirlik

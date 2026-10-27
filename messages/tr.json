@@ -298,6 +298,13 @@
       "panel_fields": "Panel ilanında lif bileşimi ve ipek alanı olmaz.",
       "not_owner": "Bu işlemi yalnızca kaydın sahibi yapabilir.",
       "offer_not_open": "Teklif artık açık değil."
+    },
+    "map": {
+      "title": "İlan haritası",
+      "legend": "Her nokta bir ilçedeki ilanları gösterir; yanındaki sayı o ilçedeki ilan sayısıdır. Vurgu renkli, koyu halkalı noktalar sizin ilanlarınız. Noktaya dokununca ilan ya da o ilçenin ilan listesi açılır. Aynı bilgiler aşağıdaki listede de var.",
+      "fallback": "Harita bu cihazda açılamadı (WebGL ya da bağlantı yok). İlanların konumu aşağıdaki listede yazıyor.",
+      "attribution": "Altlık harita:",
+      "here": "Bu konumdaki ilanlar"
     }
   },
   "currency": {
