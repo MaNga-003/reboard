@@ -166,6 +166,8 @@ Tanımlar maliyet raporundan birebir alınmıştır (D-002). Her sonuç `{value,
 | Fiyat koridoru | Alt (227.500 − 5.000) ÷ 1.000; üst (281.111 − 10.000) ÷ 1.000 | **222,50–271,11 TL/m²** |
 | SaaS katkısı | Abonelik ücreti belirlenmedi | **bilinmiyor** |
 
+> **Bilinen tutarsızlık (T4.5):** Fabrika satırındaki bertaraf girdisi 785 TL/t, İBB Kömürcüoda tarifesindeki tutara eşittir. O tarifede ücretlere KDV dahildir; bu tablo ise KDV hariçtir. Sonuçların raporla aynı kalması için tutar şimdilik değiştirilmedi. Şerife'nin girdi dosyası gelince kalem ve vergi temeli düzeltilir. Sağlayıcı bugünkü gider seed'indeki (`supplier_baseline.gate_fee`) 785 TL/t için de aynı durum geçerlidir.
+
 **Senaryo ekranının girdileri** (`SCENARIO_FIELDS`, D-026). Her girdi ayrı bir alandır; tutarlar KDV hariç ve sentetik dönem içindir.
 
 | Grup | Girdiler (birim) |
@@ -207,8 +209,8 @@ Değerler 2026-10-27'de resmî kaynaktan yeniden okunarak doğrulandı. Sınıfl
 | --- | --- | --- | --- |
 | `eurostat_tr_textile_waste_2022` | 361.500 t | [Eurostat `env_wasgen`](https://ec.europa.eu/eurostat/databrowser/view/env_wasgen/default/table?lang=en): TR, W076, TOTAL_HH, HAZ_NHAZ, 2022 | API'den aynı değer okundu. Ülke düzeyinde, bütün faaliyetler ve haneler; yerel fabrika tonajı değildir. Kapsam notu zorunlu |
 | `electricity_tl_kwh_2026h1` | 3,975 TL/kWh | [Eurostat `nrg_pc_205`](https://ec.europa.eu/eurostat/databrowser/view/nrg_pc_205/default/table?lang=en): TR, MWH20-499, X_VAT, NAC, 2026-S1 | API'den aynı değer okundu. Yıllık 20–499 MWh bandı, KDV ve geri alınabilir vergiler hariç ulusal fiyat; pilotun sözleşme fiyatı değildir |
-| `ibb_gate_fee_seymen` | 700 TL/t | [İBB ücret tarifesi, EK-2](https://cevre.ibb.istanbul/wp-content/uploads/2025/12/EK2-Ucret-Tarifesi.pdf), kalem 1.1 | Tutar tarifede var. Tesis adı rapordan alındı; PDF'te makineyle okunamadı. KDV durumu doğrulanmadı |
-| `ibb_gate_fee_komurcuoda` | 785 TL/t | Aynı tarife, kalem 1.2 | Yukarıdakiyle aynı not |
+| `ibb_gate_fee_seymen` | 700 TL/t | [İBB ücret tarifesi, EK-2](https://cevre.ibb.istanbul/wp-content/uploads/2025/12/EK2-Ucret-Tarifesi.pdf), kalem 1.1 | Tarifeden okundu: "Düzenli Depolama Tesisine Kabul Bedeli (Silivri - Seymen)". Tarifenin açıklamalarına göre **ücretlere KDV dahildir** ve tarife 01.01.2026–31.12.2026 arasında geçerlidir. İstanbul tesisi; Antalya için yalnızca karşılaştırma referansı |
+| `ibb_gate_fee_komurcuoda` | 785 TL/t | Aynı tarife, kalem 1.2 | Tarifeden okundu: "(Şile - Kömürcüoda)". KDV dahil; geçerlilik ve kapsam notu yukarıdakiyle aynı |
 | `usd_try` | 49,5523 TL/USD | [TCMB, 19.10.2026](https://www.tcmb.gov.tr/kurlar/202610/19102026.xml), döviz satış | Maliyet raporu 16.10.2026 dosyasını gösteriyor; o gün döviz satış 49,4463. 49,5523 değeri 19.10.2026 döviz satış kurudur (T4.5'te ekiple düzeltilecek) |
 | `sheet_area_m2` | 6,6978 m² | Standart levha 1830×3660 mm (ekip planı) | Alan sabiti `src/domain/panel.ts` içinde `SHEET_AREA_M2`; levha kütlesi `sheetMassKg(yoğunluk, kalınlık)`. Hedef ölçüdür, üretilmiş levha ölçümü değildir |
 

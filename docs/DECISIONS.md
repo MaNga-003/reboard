@@ -137,6 +137,16 @@ Biçim: **Karar**, **Neden**, **Tarih**, kararı kim verdi (K: kullanıcı, C: C
 - **Neden:** Yarışmadan sonra şirketleşme seçeneği açık kalır. Sonradan açık lisansa geçmek kolaydır; yayımlanmış bir sürümü geri kapatmak mümkün değildir.
 - **Tarih:** 2026-10-27 · K
 
+### D-028 — Platforma giren her bilgi birincil kaynakla doğrulanır
+- **Karar:**
+  - Arayüz metni, seed, referans değer ya da belge fark etmez: olgu bildiren her bilgi platforma eklenmeden önce birincil kaynaktan okunarak doğrulanır. Birincil kaynak resmî tarife, istatistik kurumu, mevzuat metni, hakemli yayın ya da fiyatı veren firmanın kendi sayfasıdır.
+  - Ekip belgeleri (sunum, maliyet raporu, jüri cevapları, ekip planı) tek başına kaynak sayılmaz. Onlardan gelen bilgi de aynı biçimde doğrulanır.
+  - Doğrulanan bilgi kaynak bağlantısı ve okunma tarihiyle kaydedilir.
+  - Doğrulanamayan ya da kaynaklar arasında çelişen bilgi platforma eklenmez; ekibe soru olarak gider ve `state.json` açık sorularına yazılır.
+  - Platformda bugün bulunan bilgiler de bu kurala göre denetlenir (T4.7).
+- **Neden:** Kullanıcının kararı. Ekip belgeleri birbiriyle çelişti: sunum "prototip tamamlandı" diyor, jüri belgesi "test etmedik" diyor. Sentetik senaryoda da KDV dahil bir tarife KDV hariç girdi gibi kullanıldı. Platformun vaadi doğrulanabilir etkidir; doğrulanmamış bilgi bu vaadi zayıflatır.
+- **Tarih:** 2026-10-27 · K
+
 ### D-027 — SaaS gider tablosu: iki kurulum, kaynaklı fiyatlar, bilinmeyen kalem alt sınır yapar
 - **Karar:**
   - `saas_costs` her satırda bir kalem tutar: benzersiz `key` (çeviri anahtarı da budur), kurulum (`demo`, `commercial`; ikisinde de geçerse `both`), kalem türü, sağlayıcı ve plan, aylık sabit tutar, müşteri başı aylık tutar, kullanıma bağlı birim fiyat ve birimi, para birimi, vergi temeli, kaynak URL'si, okunma tarihi ve sonuç sınıfı.

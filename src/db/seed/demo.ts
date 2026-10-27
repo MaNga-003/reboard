@@ -275,7 +275,7 @@ export function buildDemo(now: Date): DemoData {
         sourceName: "İBB ücret tarifesi EK-2, kalem 1.1",
         sourceUrl: "https://cevre.ibb.istanbul/wp-content/uploads/2025/12/EK2-Ucret-Tarifesi.pdf",
         retrievedAt: SOURCED_AT,
-        scopeNote: "İstanbul tesis kabul bedeli; Antalya için karşılaştırma referansı. Tesis adı maliyet raporundan; KDV durumu doğrulanmadı.",
+        scopeNote: "İstanbul, Silivri - Seymen düzenli depolama tesisi kabul bedeli; Antalya için yalnızca karşılaştırma referansı. Tarifeye göre ücretlere KDV dahildir; tarife 01.01.2026–31.12.2026 için geçerlidir.",
         resultClass: SE,
       },
       {
@@ -287,7 +287,7 @@ export function buildDemo(now: Date): DemoData {
         sourceName: "İBB ücret tarifesi EK-2, kalem 1.2",
         sourceUrl: "https://cevre.ibb.istanbul/wp-content/uploads/2025/12/EK2-Ucret-Tarifesi.pdf",
         retrievedAt: SOURCED_AT,
-        scopeNote: "İstanbul tesis kabul bedeli; Antalya için karşılaştırma referansı. Tesis adı maliyet raporundan; KDV durumu doğrulanmadı.",
+        scopeNote: "İstanbul, Şile - Kömürcüoda düzenli depolama tesisi kabul bedeli; Antalya için yalnızca karşılaştırma referansı. Tarifeye göre ücretlere KDV dahildir; tarife 01.01.2026–31.12.2026 için geçerlidir.",
         resultClass: SE,
       },
       {
@@ -958,7 +958,8 @@ export function buildDemo(now: Date): DemoData {
       disposalCost: collectable ? n2(t.times(615)) : null,
       transportCost: n2(t.times(600)),
       gateFee: n2(t.times(785)),
-      source: "Sentetik; kabul bedeli İBB 785 TL/t referansıyla kuruldu",
+      // İBB tarifesi KDV dahildir, satır KDV hariç işaretli; Şerife'nin girdisiyle düzeltilecek (T4.5).
+      source: "Sentetik; kabul bedeli İBB Kömürcüoda tarifesindeki 785 TL/t (KDV dahil) tutarıyla kuruldu",
       resultClass: S,
     });
   }

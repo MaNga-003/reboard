@@ -1,7 +1,7 @@
 {
   "$schema": "./docs/state.schema.json",
   "project": "ReBoard SaaS platformu",
-  "updated_at": "2026-10-27T23:24:00+03:00",
+  "updated_at": "2026-10-27T23:45:00+03:00",
   "current_phase": "F2",
   "deadlines": {
     "demo_freeze": "2026-10-29T18:00:00+03:00",
@@ -468,7 +468,8 @@
         "T2.3"
       ],
       "decisions": [
-        "D-011"
+        "D-011",
+        "D-028"
       ]
     },
     {
@@ -483,6 +484,21 @@
         "T4.4"
       ],
       "decisions": []
+    },
+    {
+      "id": "T4.7",
+      "phase": "F4",
+      "mode": "otonom",
+      "status": "yapılacak",
+      "title": "Platformdaki olgusal bilgilerin birincil kaynak denetimi (D-028)",
+      "acceptance": "Arayüz metinleri, seed, referans değerler ve belgelerdeki her olgu listelenir; her biri birincil kaynak bağlantısı ve okunma tarihiyle doğrulanır ya da arayüzden kalkar; doğrulanamayanlar açık soru olur; kaynaksız olgu sayısı 0",
+      "evidence": null,
+      "depends_on": [],
+      "decisions": [
+        "D-011",
+        "D-028"
+      ],
+      "note": "İlk bulgu düzeltildi: İBB tarifesi KDV dahil ve 2026 için geçerli; tesis adları tarifede (2026-10-27)."
     },
     {
       "id": "T5.1",
@@ -540,7 +556,23 @@
     {
       "id": "Q-3",
       "owner": "ekip",
-      "question": "Sunumdaki 'prototip tamamlandı' ve '1,5 milyon ton' ifadeleri ile jüri belgesinin dili nasıl uyumlanacak?",
+      "question": "Sunumdaki 'prototip tamamlandı', '1,5 milyon ton', '%85', '8 milyon m³' ifadeleri ve yazılım iddiaları (anlık konum takibi, karbon hesaplama MVP'si, rota optimizasyonu) jüri belgesinin diliyle nasıl uyumlanacak?",
+      "blocks": [
+        "T4.5"
+      ]
+    },
+    {
+      "id": "Q-5",
+      "owner": "ekip",
+      "question": "Şerife: senaryo girdi dosyası (scenario_inputs.json, source_manifest.json), kur tarihi (16.10 mı 19.10 mı) ve bertaraf bedelinin vergi temeli (785 TL/t KDV dahil)",
+      "blocks": [
+        "T4.5"
+      ]
+    },
+    {
+      "id": "Q-6",
+      "owner": "ekip",
+      "question": "İrem: prototip gerçekten üretildi mi; 'doğa dostu, düşük formaldehitli reçine' hangi bağlayıcı; '5 cm / birkaç mm' ve '550–750 kg/m³' kaynaklı mı, hedef mi?",
       "blocks": [
         "T4.5"
       ]

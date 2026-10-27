@@ -51,6 +51,7 @@ export const REPORT_SCENARIO: ScenarioParams = {
   wastePaymentPerT: 0,
   collection: 6150,
   transportNow: 6000,
+  // İBB Kömürcüoda tarifesiyle aynı tutar; tarife KDV dahil, bu senaryo KDV hariç. Rapor sonuçları korunsun diye Şerife'nin girdisi gelene dek değişmez (T4.5).
   disposalPerT: 785,
   wasteSalePerT: 0,
   handling: 2000,

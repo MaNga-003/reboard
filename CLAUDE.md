@@ -55,6 +55,13 @@ Her mesai sonunda (kullanıcı "mesaiyi bitiriyoruz" dediğinde ya da oturum kap
 - CO₂e yalnızca kaynaklı bir aralık olarak gösterilir. Kuş uçuşu mesafe "kuş uçuşu" diye etiketlenir.
 - Reçete seçilmedi, test edilmedi: arayüzde dayanım ya da maliyet üstünlüğü iddia edilmez.
 
+## Bilgi doğrulama (kullanıcı kararı, 2026-10-27; D-028)
+
+- Platforma olgu bildiren bir bilgi (sayı, tarih, tarife, yasa, iddia) eklemeden önce birincil kaynağı açılır ve bilgi oradan okunur.
+- Ekip belgeleri tek başına kaynak değildir; onlardan gelen bilgi de doğrulanır.
+- Kaynak bağlantısı ve okunma tarihi bilginin yanına kaydedilir (seed'de `sourceUrl` ve `retrievedAt`, belgede bağlantı).
+- Doğrulanamayan ya da çelişen bilgi eklenmez. Ekibe sorulacak soru `state.json` içindeki `open_questions` alanına yazılır ve kullanıcıya iletilir.
+
 ## Komutlar
 
 ```bash
