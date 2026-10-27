@@ -18,7 +18,7 @@
 | # | Süre | Ekran | Ne gösterilir | Söylenecek ana cümle |
 | --- | --- | --- | --- | --- |
 | 1 | 0:00–0:40 | `/` | Hikâye: lif → panel → Dünya; sondaki sayaç ve "Sentetik" rozeti | "Platform ilk günden yalnızca doğrulanmış kilogramı sayıyor." |
-| 2 | 0:40–1:10 | `/pazar` (Sağlayıcı: Ege Tekstil) | Atık ilanı: bileşim, ipek yok, kg, ilçe; haritada görünür | "Fabrika atığını bir dakikada ilana çeviriyor." |
+| 2 | 0:40–1:10 | `/pazar` (Sağlayıcı: Konfeksiyon A) | Atık ilanı: bileşim, ipek yok, kg, ilçe; haritada görünür | "Fabrika atığını bir dakikada ilana çeviriyor." |
 | 3 | 1:10–1:35 | `/pazar` (Üretici: ReBoard) | Eşleşme skoru, kuş uçuşu mesafe; teklif; sağlayıcı kabul eder; teslim planı | "Kabul edilen teklif tedarik takvimine giriyor." |
 | 4 | 1:35–2:05 | `/izlenebilirlik` | Parti kabulü: beyan ve tartım farkı, kanıt yükleme; üretim partisi ve kütle dengesi; soy ağacı | "Her kilogram kantar fişine ve bir sonraki adıma bağlı." |
 | 5 | 2:05–2:30 | `/panel` | Doğrulanmış ve beyan edilen kg; kaç günlük hammadde kaldığı; uyarı | "Stok 7 günün altına inmeden uyarıyor." |
@@ -29,11 +29,11 @@
 
 | Rol | Organizasyon | Ne yapabilir |
 | --- | --- | --- |
-| Sağlayıcı | Ege Tekstil | Atık ilanı verir, teklif kabul eder, kendi partilerini görür |
-| Üretici | ReBoard | Teklif verir, parti kabul eder, üretim partisi ve panel lotu açar |
-| Alıcı | Akdeniz Mobilya | Panel talebi verir, pasaportu görür |
+| Sağlayıcı | Konfeksiyon A | Atık ilanı verir, teklif kabul eder, kendi partilerini görür |
+| Üretici | ReBoard Pilot Tesisi | Teklif verir, parti kabul eder, üretim partisi ve panel lotu açar |
+| Alıcı | Mobilya Atölyesi F | Panel talebi verir, pasaportu görür |
 
-Rol değiştirici sağ üstte durur. Yalnızca `DEMO_MODE=true` iken görünür.
+Rol değiştirici sağ üstte durur. Yalnızca `DEMO_MODE=true` iken görünür. Kurum adları kurgusaldır (`src/db/seed/demo.ts`); verinin ayrıntısı `docs/DATA_DICTIONARY.md` §8'de.
 
 ## 4. Sorun çıkarsa
 

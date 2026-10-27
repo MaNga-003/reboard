@@ -126,7 +126,7 @@ Alanların anlamları ve birimleri `docs/DATA_DICTIONARY.md` dosyasında.
   - `operator`: kayıt girer.
   - `viewer`: yalnızca okur.
 - Herkese açık sayfalar: `/`, `/pasaport/[lot]`, `/api/verify/[lot]` ve etki sayacı.
-- Demo modunda "demo rolüyle gir" düğmesi bulunur. Seçenekler: Sağlayıcı (Ege Tekstil), Üretici (ReBoard), Alıcı (Akdeniz Mobilya).
+- Demo modunda "demo rolüyle gir" düğmesi bulunur. Seçenekler: Sağlayıcı (Konfeksiyon A), Üretici (ReBoard Pilot Tesisi), Alıcı (Mobilya Atölyesi F). Demo kurumlarının adları kurgusaldır ve harfle kodlanır; gerçek bir firmayla karışmaz.
 
 ## 7. Hikâye sayfası (D-004)
 
@@ -158,6 +158,10 @@ Alanların anlamları ve birimleri `docs/DATA_DICTIONARY.md` dosyasında.
   - Vercel CLI ile yapılır (`pnpm deploy:prod`). `.vercelignore` bir izin listesidir: her şey dışarıda kalır, yalnızca derleme için gereken yollar yüklenir. `tests/unit/deploy-config.test.ts` bunu denetler.
   - `vercel.json` çatıyı (`nextjs`) ve fonksiyon bölgesini (`fra1`) sabitler.
   - Vercel'de `DATABASE_URL` (Neon havuzlu bağlantı) ve `BETTER_AUTH_SECRET` gizli değişkendir; `BETTER_AUTH_URL` canlı adrestir.
+- Demo verisi (T1.4):
+  - `src/db/seed/demo.ts` saf bir fonksiyondur: `buildDemo(now)`. Tarihler `now`'a göre görelidir; kimlikler addan türetilen sabit UUID'lerdir (sürüm 8), sözde rastgele sayılar tohumludur. Aynı `now` aynı satırları ve aynı hash zincirini verir; pasaport bağlantıları günden güne değişmez.
+  - `src/db/seed/index.ts`, `seedDemo(db)`: yalnızca `DEMO_MODE=true` iken çalışır. Tek işlemde `SET LOCAL reboard.allow_reset = 'on'` ile şemadaki bütün tabloları boşaltır ve yeniden ekler; bir ekleme düşerse eski veri yerinde kalır. `DEMO_PASSWORD` verilirse demo hesaplarına Better Auth parola özeti yazılır.
+  - Komutlar: `pnpm db:seed` (yerel PGlite) ve `pnpm db:seed:live` (Neon; `.env.local` ardından `.env.neon` okunur, sonraki dosya `DATABASE_URL`'i ezer).
   - Neon'a migrasyon `pnpm db:migrate:live` ile uygulanır; doğrudan bağlantı git dışındaki `.env.neon` dosyasında durur. Next bu dosyayı otomatik yüklemez, böylece yerel geliştirme PGlite'ta kalır. Bağlantılar `sslmode=verify-full` kullanır.
   - Neon Postgres 18, PGlite Postgres 17 tabanlıdır; migrasyonlar ikisinde de denendi.
   - Türk Telekom "Güvenli İnternet" filtresi `*.vercel.app` adreslerini yönlendiriyor (R-5). Canlı denetim bu yüzden GitHub Actions'ta çalışır: `gh workflow run live-smoke.yml` (`scripts/live-smoke.mjs`).

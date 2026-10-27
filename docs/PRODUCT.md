@@ -16,9 +16,9 @@ Karışık tekstil atığı (kırpıntı, hatalı kumaş, kullanılmış giysi) 
 
 | Kişi | Örnek kurum (demo) | Ne ister | Platformda ne yapar |
 | --- | --- | --- | --- |
-| **Atık sağlayıcı** | Ege Tekstil (konfeksiyon fabrikası), belediye toplama noktası, geri dönüşüm tesisi | Atık giderini düşürmek, atığın nereye gittiğini belgelemek | Atık ilanı verir, teklifi kabul eder, teslim eder, kendi atığının panele dönüştüğünü görür |
-| **Üretici** | ReBoard | Kesintisiz ve bileşimi bilinen hammadde | Atık talebi verir, teklif eder, partiyi tartıp kabul eder, üretim partisi açar, panel ilanı verir |
-| **Panel alıcısı** | Akdeniz Mobilya (mobilya), iç mimarlık firması | Kökeni belgeli, uygun fiyatlı levha | Panel talebi verir, teklifi kabul eder, pasaportu okur |
+| **Atık sağlayıcı** | Konfeksiyon A ve Örme Fabrikası B (tekstil fabrikası), Belediye Toplama C, geri dönüşüm tesisi | Atık giderini düşürmek, atığın nereye gittiğini belgelemek | Atık ilanı verir, teklifi kabul eder, teslim eder, kendi atığının panele dönüştüğünü görür |
+| **Üretici** | ReBoard Pilot Tesisi | Kesintisiz ve bileşimi bilinen hammadde | Atık talebi verir, teklif eder, partiyi tartıp kabul eder, üretim partisi açar, panel ilanı verir |
+| **Panel alıcısı** | Mobilya Atölyesi F, Mağaza Dekor G | Kökeni belgeli, uygun fiyatlı levha | Panel talebi verir, teklifi kabul eder, pasaportu okur |
 | **Taşıyıcı** (F5) | Bölgesel nakliye | Planlı yük | MVP'de yalnızca teslim kaydındaki taşıyıcı adı ve teklif tutarı |
 | **Jüri ve ziyaretçi** | | Hızlı ve dürüst bir resim | Hikâyeyi izler, etki sayacını ve pasaportu açar, "demo rolüyle gir" der |
 

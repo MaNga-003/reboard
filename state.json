@@ -1,8 +1,8 @@
 {
   "$schema": "./docs/state.schema.json",
   "project": "ReBoard SaaS platformu",
-  "updated_at": "2026-10-27T00:05:04.694Z",
-  "current_phase": "F0",
+  "updated_at": "2026-10-27T04:30:54.492Z",
+  "current_phase": "F1",
   "deadlines": {
     "demo_freeze": "2026-10-29T18:00:00+03:00",
     "competition": "2026-10-30T09:00:00+03:00"
@@ -173,17 +173,16 @@
       "id": "T1.4",
       "phase": "F1",
       "mode": "otonom",
-      "status": "sürüyor",
+      "status": "tamam",
       "title": "Sentetik seed (3 kaynak, 2 taşıyıcı, 2 alıcı, ReBoard) ve kaynaklı referans değerler",
       "acceptance": "Seed bütün tabloları doldurur; seed'deki her sayı resultClass taşır; demo kayıtlarının tamamı synthetic",
-      "evidence": null,
+      "evidence": "src/db/seed/demo.ts (buildDemo(now): saf, deterministik) ve src/db/seed/index.ts (seedDemo: DEMO_MODE guard, tek işlemde TRUNCATE + ekleme). tests/integration/seed.test.ts 16/16: 28 tablodan invitation, session, verification dışındaki 25'i dolu; demo satırları synthetic, yalnız reference_values (6) ve saas_costs (3) sourced_estimate; 5 kurum zinciri DB'den okununca verifyChain ok; 5 üretim partisinin kütle dengesi tolerans içinde ya da açıklamalı (1 bilerek aşan); tahsis yalnız doğrulanmış ve üretimden önce gelen partilerden, kabul edilen kg'ı aşmadan. Bilerek bozma 2/2 yakalandı. pnpm db:seed yerel PGlite'a 366 satır yükledi. tests/unit/panel.test.ts 3/3 (levha 6,6978 m²). Toplam 147 test yeşil.",
       "depends_on": [
         "T1.1"
       ],
       "decisions": [
         "D-011"
-      ],
-      "note": "Biten: batch_inputs result_class taşıyor (migrasyon 0003); kuş uçuşu mesafe src/domain/geo.ts ve testleri; referans değerler resmî kaynaktan doğrulandı (Eurostat env_wasgen 361.500 t ve nrg_pc_205 3,975 TL/kWh aynı; İBB 700 ve 785 TL/t tarifenin 1.1 ve 1.2 kalemlerinde; TCMB 49,5523 = 19.10.2026 döviz satış, rapordaki 16.10 bağlantısı yanlış). CO₂e katsayı kaynağı (Refashion) 404: doğrulanmış kaynak bulunana kadar seed'e girmez. Sıradaki: src/db/seed/demo.ts (now'a bağlı, deterministik demoId ve PRNG; 8 org, 20 atık partisi, 5 üretim partisi, zincirler), src/db/seed/index.ts (DEMO_MODE=true iken public tablolarını SET LOCAL reboard.allow_reset ile TRUNCATE edip ekler), scripts/db-seed.ts ve db:seed:live, tests/integration/seed.test.ts (session, verification, invitation dışında her tablo dolu; demo kayıtları synthetic)."
+      ]
     },
     {
       "id": "T1.5",
@@ -716,6 +715,14 @@
       "last_value": "0 bulgu (7 commit, CI); bilerek bozma: eski geçmişte 10 satırın 10u yakalandı",
       "measured_at": "2026-10-27T02:12:00+03:00",
       "test": "scripts/no-ai-attribution.mjs"
+    },
+    {
+      "id": "M-20",
+      "claim": "Demo verisi dürüst ve tutarlı",
+      "threshold": "boş tablo yalnız invitation/session/verification; synthetic dışı sınıf yalnız kaynaklı satırlarda; zincir ve kütle dengesi ok; 0 hatalı tahsis",
+      "last_value": "16/16 test; 366 satır; 63 olay 5 zincirde ok; 1/5 parti tolerans dışı ve açıklamalı; bozma 2/2",
+      "measured_at": "2026-10-27T04:30:54.492Z",
+      "test": "tests/integration/seed.test.ts"
     }
   ]
 }

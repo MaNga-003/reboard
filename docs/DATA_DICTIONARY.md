@@ -151,4 +151,33 @@ Değerler 2026-10-27'de resmî kaynaktan yeniden okunarak doğrulandı. Sınıfl
 | `ibb_gate_fee_seymen` | 700 TL/t | [İBB ücret tarifesi, EK-2](https://cevre.ibb.istanbul/wp-content/uploads/2025/12/EK2-Ucret-Tarifesi.pdf), kalem 1.1 | Tutar tarifede var. Tesis adı rapordan alındı; PDF'te makineyle okunamadı. KDV durumu doğrulanmadı |
 | `ibb_gate_fee_komurcuoda` | 785 TL/t | Aynı tarife, kalem 1.2 | Yukarıdakiyle aynı not |
 | `usd_try` | 49,5523 TL/USD | [TCMB, 19.10.2026](https://www.tcmb.gov.tr/kurlar/202610/19102026.xml), döviz satış | Maliyet raporu 16.10.2026 dosyasını gösteriyor; o gün döviz satış 49,4463. 49,5523 değeri 19.10.2026 döviz satış kurudur (T4.5'te ekiple düzeltilecek) |
-| `sheet_area_m2` | 6,70 m² | Standart levha 1830×3660 mm | Hesap: 1,830 × 3,660 = 6,6978 m² |
+| `sheet_area_m2` | 6,6978 m² | Standart levha 1830×3660 mm (ekip planı) | Alan sabiti `src/domain/panel.ts` içinde `SHEET_AREA_M2`; levha kütlesi `sheetMassKg(yoğunluk, kalınlık)`. Hedef ölçüdür, üretilmiş levha ölçümü değildir |
+
+## 8. Demo verisi (seed, T1.4)
+
+Kaynak: `src/db/seed/demo.ts`. Yükleme `pnpm db:seed` (yerel) ve `pnpm db:seed:live` (Neon) ile yapılır, ikisi de yalnızca `DEMO_MODE=true` iken çalışır. Denetim `tests/integration/seed.test.ts` dosyasındadır (M-20).
+
+- **Sınıf:** demo kayıtlarının tamamı `synthetic`. Yalnızca §7'deki referans değerler ve `saas_costs` satırları `sourced_estimate`; bunlar resmî sayfadan 2026-10-27'de okundu.
+- **Kurumlar (8):** Antalya'da ilçe düzeyinde, 2 ondalığa yuvarlanmış konumla. Adlar kurgusaldır.
+  - Kaynaklar: Konfeksiyon A ve Örme Fabrikası B (`textile_factory`), Belediye Toplama C (`municipality`).
+  - Taşıyıcılar: Taşıyıcı D ve Taşıyıcı E.
+  - Alıcılar: Mobilya Atölyesi F ve Mağaza Dekor G.
+  - Üretici: ReBoard Pilot Tesisi.
+- **Tarihler:** `now`'a göre görelidir; demo her gün yeniden yüklendiğinde aynı görünür. Son 60 gün geçmiş, önümüzdeki 22 gün planlı teslimdir.
+- **Akış:**
+  - Teslim edilen her sevkiyat bir atık partisine dönüşür; kantar fişi ve irsaliye kanıt olarak bağlanır.
+  - Üretim partileri yalnızca doğrulanmış partilerden, ilk giren ilk çıkar sırasıyla ve üretimden önce teslim alınmış kg'dan beslenir.
+  - Her olay kurumun hash zincirine eklenir.
+- **Bilerek bırakılan durumlar:** arayüzün her yolu gösterebilmesi için eklendi.
+  - Tartımı bekleyen bir parti: `weighed_kg = null`, doğrulanmamış.
+  - Kantar fişi kontrol bekleyen bir parti: fiş `declared` durumunda, parti doğrulanmamış.
+  - Kütle dengesi %2'yi aşan bir üretim partisi; açıklaması yazılı.
+  - İptal edilmiş bir teslim ve 1–2 gün geciken teslimler (tedarikçi güvenilirliği için).
+  - Bağlayıcısı `unknown` olan partinin bağlayıcı gideri `null`.
+  - Belediyenin bertaraf gideri `null`.
+  - İpek içeren, üretici talebiyle eşleşmemesi gereken bir ilan.
+- **Hesap kayıtları:** `calc_runs` satırları rapordaki sentetik senaryodan `runScenario` ile üretilir: temel senaryo ve olumsuz senaryo. Girdiler ondalık metin olarak saklanır, girdi hash'i kanonik JSON'un SHA-256 özetidir.
+- **Ölçülen hacim (2026-10-27):**
+  - 366 satır (ay sınırına göre aylık sabit gider satırı sayısı değişebilir): 19 atık partisi (17'si doğrulanmış), 5 üretim partisi, 6 panel lotu (132 levha), 63 zincir olayı (5 kurum).
+  - Doğrulanmış kabul edilen kg: 16.412,5. Bunun 11.697 kg'ı tahsis edildi; stok 4.715,5 kg.
+  - Planlı ihtiyaç günde 400 kg olduğundan stok yaklaşık 11,8 gün yeter; bu sarı eşiktir.
