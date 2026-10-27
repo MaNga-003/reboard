@@ -141,6 +141,7 @@ Biçim: **Karar**, **Neden**, **Tarih**, kararı kim verdi (K: kullanıcı, C: C
 - **Karar:**
   - Arayüz metni, seed, referans değer ya da belge fark etmez: olgu bildiren her bilgi platforma eklenmeden önce birincil kaynaktan okunarak doğrulanır. Birincil kaynak resmî tarife, istatistik kurumu, mevzuat metni, hakemli yayın ya da fiyatı veren firmanın kendi sayfasıdır.
   - Ekip belgeleri (sunum, maliyet raporu, jüri cevapları, ekip planı) tek başına kaynak sayılmaz. Onlardan gelen bilgi de aynı biçimde doğrulanır.
+  - Doğrulama belgelerin kendi kaynakçasından başlar: maliyet raporundaki [K1]–[K10] atıfları, jüri belgesindeki bağlantılar ve sunumun KAYNAKÇA slaydı. Atıf izlenir ve bilgi atıf yapılan kaynakta okunur. Yalnızca başka bir ekip belgesine dayanan bilgi doğrulanmamış sayılır; sunumdaki "Agent 003 proje kanvası" atfı buna örnektir.
   - Doğrulanan bilgi kaynak bağlantısı ve okunma tarihiyle kaydedilir.
   - Doğrulanamayan ya da kaynaklar arasında çelişen bilgi platforma eklenmez; ekibe soru olarak gider ve `state.json` açık sorularına yazılır.
   - Platformda bugün bulunan bilgiler de bu kurala göre denetlenir (T4.7).
