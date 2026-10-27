@@ -25,6 +25,34 @@ export async function smallTargets(page: Page) {
 
 export const overflow = (page: Page) => page.evaluate(() => document.documentElement.scrollWidth - window.innerWidth);
 
+/**
+ * main içindeki öğeler kenar boşluğuna taşmaz: main'in içerik kutusu dışına çıkan her öğe ve kaç px taştığı.
+ * Yalnızca sayfa taşmasına bakmak yetmiyor: Windows'ta tarih alanı boşluğa 16 px girip ekran kenarında duruyor,
+ * Linux'ta 3 px daha geniş çizildiği için taşıyordu. Kaydırılan ya da kırpılan kapların içi sayılmaz.
+ */
+export async function gutterBreaches(page: Page) {
+  return page.evaluate(() => {
+    const main = document.querySelector("main");
+    if (!main) return ["main yok"];
+    const cs = getComputedStyle(main);
+    const box = main.getBoundingClientRect();
+    const left = box.left + parseFloat(cs.paddingLeft);
+    const right = box.right - parseFloat(cs.paddingRight);
+    const clipped = (el: Element) => {
+      for (let p = el.parentElement; p && p !== main; p = p.parentElement) if (getComputedStyle(p).overflowX !== "visible") return true;
+      return false;
+    };
+    const out: string[] = [];
+    for (const el of main.querySelectorAll<HTMLElement>("*")) {
+      const r = el.getBoundingClientRect();
+      if (!r.width || !r.height || clipped(el)) continue;
+      const over = Math.max(r.right - right, left - r.left);
+      if (over > 0.5) out.push(`${el.tagName.toLowerCase()}${el.id ? `#${el.id}` : ""} "${(el.textContent ?? "").trim().slice(0, 25)}" ${over.toFixed(1)} px`);
+    }
+    return out;
+  });
+}
+
 export async function signIn(page: Page, persona: string, locale = "tr") {
   await page.goto(`/${locale}/giris`);
   await page.locator(`main [data-persona="${persona}"]`).click();

@@ -55,13 +55,16 @@ export function ListingForm({ locale, defaultKind, today, until }: { locale: str
             ))}
           </select>
         </Field>
-        <div className="grid grid-cols-2 gap-4">
-          <Field id="windowStart" label={f("windowStart")}>
-            <input {...a11y("windowStart", "windowStart", bad)} type="date" defaultValue={today} className={control} />
-          </Field>
-          <Field id="windowEnd" label={f("windowEnd")}>
-            <input {...a11y("windowEnd", "windowEnd", bad)} type="date" defaultValue={until} className={control} />
-          </Field>
+        {/* Tarih alanı ~175 px'in altına inmiyor: iki sütun yalnızca kap ≥ 24rem iken (M-13, kenar boşluğu). */}
+        <div className="@container">
+          <div className="grid gap-4 @sm:grid-cols-2">
+            <Field id="windowStart" label={f("windowStart")}>
+              <input {...a11y("windowStart", "windowStart", bad)} type="date" defaultValue={today} className={control} />
+            </Field>
+            <Field id="windowEnd" label={f("windowEnd")}>
+              <input {...a11y("windowEnd", "windowEnd", bad)} type="date" defaultValue={until} className={control} />
+            </Field>
+          </div>
         </div>
       </div>
 

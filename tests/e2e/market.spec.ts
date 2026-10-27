@@ -4,7 +4,7 @@ import { expect, test, type Page } from "@playwright/test";
 import { contrastRatio } from "../../src/design/color";
 import { MARKER, markerColors } from "../../src/design/map";
 import { addDays, deliveryPlan, istanbulDay, planStart } from "../../src/domain/market";
-import { TAP_MIN, WIDTHS, overflow, personaPage, seriousViolations, signIn, smallTargets } from "./helpers";
+import { TAP_MIN, WIDTHS, gutterBreaches, overflow, personaPage, seriousViolations, signIn, smallTargets } from "./helpers";
 
 const uniqueTitle = (tag: string) => `E2E ${tag} ${Date.now()}-${Math.floor(Math.random() * 1e4)}`;
 
@@ -224,6 +224,7 @@ for (const width of WIDTHS) {
     for (const path of ["/tr/pazar", detail, "/tr/pazar/yeni"]) {
       await page.goto(path);
       expect(await overflow(page), path).toBeLessThanOrEqual(0);
+      expect(await gutterBreaches(page), path).toEqual([]);
       expect(await smallTargets(page), path).toEqual([]);
     }
   });

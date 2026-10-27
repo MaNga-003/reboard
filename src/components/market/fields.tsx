@@ -5,7 +5,7 @@ export const control = "min-h-11 w-full rounded border border-fg/60 bg-bg px-3 p
 
 export function Field({ id, label, hint, children }: { id: string; label: string; hint?: string; children: ReactNode }) {
   return (
-    <div className="grid content-start gap-1">
+    <div className="grid min-w-0 content-start gap-1">
       <label htmlFor={id}>{label}</label>
       {children}
       {hint && (

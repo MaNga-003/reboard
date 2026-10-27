@@ -2,7 +2,7 @@
 // Sunucu seed'li veritabanıyla ve DEMO_PASSWORD ile çalışır (CI: db:seed adımı).
 import { expect, test } from "@playwright/test";
 import { permissionList } from "../../src/domain/access";
-import { TAP_MIN, WIDTHS, overflow, seriousViolations, signIn, smallTargets } from "./helpers";
+import { TAP_MIN, WIDTHS, gutterBreaches, overflow, seriousViolations, signIn, smallTargets } from "./helpers";
 
 const allowed = (role: string) => permissionList(role).filter((p) => p.allowed).length;
 
@@ -64,10 +64,12 @@ for (const width of WIDTHS) {
     await page.setViewportSize({ width, height: 800 });
     await page.goto("/tr/giris");
     expect(await overflow(page)).toBeLessThanOrEqual(0);
+    expect(await gutterBreaches(page)).toEqual([]);
     expect(await smallTargets(page)).toEqual([]);
     await signIn(page, "producer");
     await page.locator("header summary").click();
     expect(await overflow(page)).toBeLessThanOrEqual(0);
+    expect(await gutterBreaches(page)).toEqual([]);
     expect(await smallTargets(page)).toEqual([]);
   });
 }
