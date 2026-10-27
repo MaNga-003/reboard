@@ -163,6 +163,7 @@ Kaynak: `src/db/seed/demo.ts`. Yükleme `pnpm db:seed` (yerel) ve `pnpm db:seed:
   - Taşıyıcılar: Taşıyıcı D ve Taşıyıcı E.
   - Alıcılar: Mobilya Atölyesi F ve Mağaza Dekor G.
   - Üretici: ReBoard Pilot Tesisi.
+- **Kullanıcılar (9):** her kurumun sahibi ve ReBoard Pilot Tesisi'nde bir izleyici. E-posta biçimi `<anahtar>@demo.reboard.example` (ayrılmış `.example` alan adı, posta gitmez). Parola özeti yalnızca `DEMO_PASSWORD` verilirse yazılır; verilmezse hesap satırı oluşmaz ve giriş yapılamaz.
 - **Tarihler:** `now`'a göre görelidir; demo her gün yeniden yüklendiğinde aynı görünür. Son 60 gün geçmiş, önümüzdeki 22 gün planlı teslimdir.
 - **Akış:**
   - Teslim edilen her sevkiyat bir atık partisine dönüşür; kantar fişi ve irsaliye kanıt olarak bağlanır.
@@ -178,6 +179,6 @@ Kaynak: `src/db/seed/demo.ts`. Yükleme `pnpm db:seed` (yerel) ve `pnpm db:seed:
   - İpek içeren, üretici talebiyle eşleşmemesi gereken bir ilan.
 - **Hesap kayıtları:** `calc_runs` satırları rapordaki sentetik senaryodan `runScenario` ile üretilir: temel senaryo ve olumsuz senaryo. Girdiler ondalık metin olarak saklanır, girdi hash'i kanonik JSON'un SHA-256 özetidir.
 - **Ölçülen hacim (2026-10-27):**
-  - 366 satır (ay sınırına göre aylık sabit gider satırı sayısı değişebilir): 19 atık partisi (17'si doğrulanmış), 5 üretim partisi, 6 panel lotu (132 levha), 63 zincir olayı (5 kurum).
+  - 369 satır (9 kullanıcı, 9 üyelik ve 9 hesap dahil; ay sınırına göre aylık sabit gider satırı sayısı değişebilir): 19 atık partisi (17'si doğrulanmış), 5 üretim partisi, 6 panel lotu (132 levha), 63 zincir olayı (5 kurum).
   - Doğrulanmış kabul edilen kg: 16.412,5. Bunun 11.697 kg'ı tahsis edildi; stok 4.715,5 kg.
   - Planlı ihtiyaç günde 400 kg olduğundan stok yaklaşık 11,8 gün yeter; bu sarı eşiktir.

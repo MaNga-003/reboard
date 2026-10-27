@@ -6,7 +6,7 @@ import { afterAll, beforeAll, describe, expect, it } from "vitest";
 import { createPgliteDb } from "@/db/client";
 import * as schema from "@/db/schema";
 import { appTables, buildDemo, seedDemo } from "@/db/seed";
-import { DEMO_ORGS, demoId } from "@/db/seed/demo";
+import { DEMO_USERS, demoId } from "@/db/seed/demo";
 import { Decimal } from "@/domain/result";
 import { balanceNoteMissing, genealogy, massBalance, verifyChain, type ChainedEvent } from "@/domain/traceability";
 
@@ -161,7 +161,7 @@ describe("demo seed", () => {
 
   it("demo hesaplarının parolası düz metin tutulmaz", async () => {
     const accounts = await db.select().from(schema.account);
-    expect(accounts).toHaveLength(Object.keys(DEMO_ORGS).length);
+    expect(accounts).toHaveLength(DEMO_USERS.length);
     for (const a of accounts) {
       expect(a.providerId).toBe("credential");
       expect(a.password).not.toContain("seed-test-parolasi");

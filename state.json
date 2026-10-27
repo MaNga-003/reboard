@@ -1,7 +1,7 @@
 {
   "$schema": "./docs/state.schema.json",
   "project": "ReBoard SaaS platformu",
-  "updated_at": "2026-10-27T04:35:57.000Z",
+  "updated_at": "2026-10-27T08:20:35+03:00",
   "current_phase": "F1",
   "deadlines": {
     "demo_freeze": "2026-10-29T18:00:00+03:00",
@@ -188,10 +188,10 @@
       "id": "T1.5",
       "phase": "F1",
       "mode": "otonom",
-      "status": "yapılacak",
+      "status": "tamam",
       "title": "Kimlik, organizasyonlar ve roller, demo rol değiştirici; çapraz kiracı testleri",
       "acceptance": "A organizasyonunun kullanıcısı B'nin özel kayıtlarına 0 erişim (test)",
-      "evidence": null,
+      "evidence": "Roller src/domain/access.ts (tek tablo), Better Auth rolleri ondan kurulur (src/lib/auth.ts; kayıt ve kurum açma kapalı, girişte etkin kurum). withTenant: src/db/repo/tenant.ts (22 tablo kataloğu, list/get/owns/assertOwns); membership.ts; viewer.ts (server-only); action.ts kapısı. Ekranlar: /giris (4 demo rolü, e-posta formu), (app)/panel, başlıkta rol değiştirici. tests/integration/tenant-isolation.test.ts 13/13: repository 3061 deneme 0 başarılı, HTTP 98 deneme 0 başarılı, bozma 9/9 yakalandı. auth-roles 2/2, access 7/7, action 4/4. Toplam 173 Vitest testi yeşil; src/domain kapsamı satır %95,96. tests/e2e/auth.spec.ts ve smoke: 25/25 (a11y 0 ciddi, 5 genişlikte taşma 0, dokunma hedefi < 44 px 0; bozma yakalandı). Canlı: Neon yeniden yüklendi (369 satır, 9 kullanıcı); Vercel'e DEMO_MODE ve gizli DEMO_PASSWORD eklendi; yayın reboard-ia91mcehs → reboard-lovat.vercel.app.",
       "depends_on": [
         "T1.1"
       ],
@@ -591,9 +591,9 @@
     {
       "id": "M-4",
       "claim": "Çapraz kiracı erişimi",
-      "threshold": "0",
-      "last_value": null,
-      "measured_at": null,
+      "threshold": "0 başarılı çapraz kiracı erişimi (repository ve HTTP), 0 sızıntı",
+      "last_value": "repository 3061 deneme / HTTP 98 deneme: 0 başarılı; 8 kurum × 22 tablo 0 sızıntı; bozma 9/9",
+      "measured_at": "2026-10-27T08:20:35+03:00",
       "test": "tests/integration/tenant-isolation.test.ts"
     },
     {
@@ -656,17 +656,17 @@
       "id": "M-12",
       "claim": "Erişilebilir",
       "threshold": "0 ciddi/kritik axe ihlali; dokunma hedefi ≥ 44×44 px",
-      "last_value": "/tr ve /en: 0 ciddi/kritik ihlal (dokunma hedefi henüz ölçülmedi)",
-      "measured_at": "2026-10-27T01:35:00+03:00",
-      "test": "tests/e2e/smoke.spec.ts"
+      "last_value": "/tr, /en, giriş ve panel (TR, EN): 0 ciddi/kritik ihlal; 5 genişlikte 44 px altı hedef 0",
+      "measured_at": "2026-10-27T08:20:35+03:00",
+      "test": "tests/e2e/smoke.spec.ts, tests/e2e/auth.spec.ts"
     },
     {
       "id": "M-13",
       "claim": "Yerleşim bozulmaz",
       "threshold": "360–1440 px'te 0 taşma ve çakışma (TR, EN)",
-      "last_value": "/tr ve /en, 5 genişlik: 0 px taşma",
-      "measured_at": "2026-10-27T01:35:00+03:00",
-      "test": "tests/e2e/smoke.spec.ts"
+      "last_value": "/tr, /en, /tr/giris, /tr/panel, 5 genişlik: 0 px taşma",
+      "measured_at": "2026-10-27T08:20:35+03:00",
+      "test": "tests/e2e/smoke.spec.ts, tests/e2e/auth.spec.ts"
     },
     {
       "id": "M-14",
@@ -720,8 +720,8 @@
       "id": "M-20",
       "claim": "Demo verisi dürüst ve tutarlı",
       "threshold": "boş tablo yalnız invitation/session/verification; synthetic dışı sınıf yalnız kaynaklı satırlarda; zincir ve kütle dengesi ok; 0 hatalı tahsis",
-      "last_value": "16/16 test; 366 satır; 63 olay 5 zincirde ok; 1/5 parti tolerans dışı ve açıklamalı; bozma 2/2",
-      "measured_at": "2026-10-27T04:30:54.492Z",
+      "last_value": "16/16 test; 369 satır (9 kullanıcı); 63 olay 5 zincirde ok; 1/5 parti tolerans dışı ve açıklamalı; bozma 2/2",
+      "measured_at": "2026-10-27T08:20:35+03:00",
       "test": "tests/integration/seed.test.ts"
     }
   ]

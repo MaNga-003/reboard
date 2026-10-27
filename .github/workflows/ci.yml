@@ -41,6 +41,13 @@ jobs:
       - run: pnpm test:coverage
       - run: pnpm build
       - run: pnpm db:migrate
+      # Demo parolası her çalıştırmada üretilir; seed ve sunucu aynı değeri ortamdan okur.
+      - name: Demo verisi
+        run: |
+          p=$(openssl rand -hex 16)
+          echo "::add-mask::$p"
+          echo "DEMO_PASSWORD=$p" >> "$GITHUB_ENV"
+      - run: pnpm db:seed
       - uses: actions/cache@v6
         with:
           path: ~/.cache/ms-playwright

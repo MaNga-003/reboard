@@ -54,8 +54,14 @@ Biçim: **Karar**, **Neden**, **Tarih**, kararı kim verdi (K: kullanıcı, C: C
 - **Neden:** Testler için Docker gerekmiyor, otonom çalışılabiliyor. Canlı ile yerel arasında SQL lehçesi aynı.
 - **Tarih:** 2026-10-27 · C
 
-### D-010 — Kimlik: Better Auth ve organizasyon rolleri
-- **Karar:** Better Auth, Drizzle adaptörüyle kullanılır: e-posta ile parola girişi ve organizasyon ile rol modeli (sahip, yönetici, operatör, izleyici). Jüri için "demo rolüyle gir" seçeneği bulunur. Demo parolaları depoda değil, ortam değişkenlerinde tutulur.
+### D-010 — Kimlik: Better Auth, kurum rolleri, kapalı kayıt
+- **Karar:**
+  - Better Auth, Drizzle adaptörüyle kullanılır: e-posta ile parola girişi ve organizasyon eklentisi.
+  - Roller sahip, yönetici, operatör ve izleyicidir. Yetki tablosu tek yerde durur (`src/domain/access.ts`); Better Auth rolleri bu tablodan kurulur. Operatör kanıt yükler ama mutabık sayamaz (görev ayrılığı); izleyici hiçbir yazma eylemi yapamaz.
+  - Rol her istekte üyelik tablosundan okunur; oturuma yazılmış bir role güvenilmez.
+  - Kayıt ve kurum açma kapalıdır. Hesaplar seed ile, Faz 5'te davetle açılır.
+  - Jüri için "demo rolüyle gir": Tedarikçi, Üretici, Panel alıcısı ve İzleyici. Rol değiştirmek önceki oturumu kapatır. Demo parolası depoda değil, ortam değişkeninde (`DEMO_PASSWORD`) durur.
+- **Neden:** Herkese açık bir demoda kayıt formu saldırı ve çöp veri kapısıdır. Rol farkı jüriye tek tıkla gösterilebilmeli.
 - **Tarih:** 2026-10-27 · C
 
 ### D-011 — Dürüstlük kuralları
@@ -95,7 +101,12 @@ Biçim: **Karar**, **Neden**, **Tarih**, kararı kim verdi (K: kullanıcı, C: C
 - **Tarih:** 2026-10-27 · C
 
 ### D-016 — Kiracı izolasyonu
-- **Karar:** Özel verilere erişim tek bir repository katmanından geçer (`withTenant(orgId)`). Çapraz kiracı erişimi otomatik testlerle denetlenir. Postgres RLS Faz 5'te ikinci savunma hattı olarak eklenecek.
+- **Karar:**
+  - Kurum verisine erişim tek bir repository katmanından geçer: `withTenant(db, orgId)` (`src/db/repo/tenant.ts`). Görünürlük kuralı her sorguya eklenir; çağıranın koşulu onu gevşetemez.
+  - Paylaşılanlar bilinçli olarak sınırlıdır: açık ilanlar, herkese açık kurum profilleri ve panel lotları, taraf olunan teklif, anlaşma ve teslimler, sağlayıcının teslim ettiği partinin tartım sonucu, kurumdan bağımsız kaynaklı değerler. Geri kalan her şey yalnızca sahibine açıktır.
+  - Yazma hakkı görmekten dardır: yalnızca sahibi yazar. Yok ile yetkisiz aynı hatayı verir.
+  - Çapraz kiracı erişimi otomatik testle ölçülür (M-4). Postgres RLS Faz 5'te ikinci savunma hattı olarak eklenecek.
+- **Neden:** Rakip fabrikalar aynı platformda; bir kurumun maliyet ve hacim verisi başkasına sızarsa güven biter. Tek katman, tek test edilebilir sınır demektir.
 - **Tarih:** 2026-10-27 · C
 
 ### D-017 — Belgeler yalnızca güncel durumu tutar

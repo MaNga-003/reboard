@@ -10,7 +10,9 @@
     "dashboard": "Dashboard",
     "scenario": "Scenario",
     "language": "Language",
-    "skipStory": "Skip the story"
+    "skipStory": "Skip the story",
+    "brand": "ReBoard",
+    "main": "Main menu"
   },
   "resultClass": {
     "synthetic": "Synthetic",
@@ -27,6 +29,102 @@
     "headline": "From textile waste to panels, every kilogram verified.",
     "lead": "ReBoard connects the factories that supply textile waste, the panel producer and buyers in one traceable chain.",
     "cta": "Go to the marketplace",
-    "demoNotice": "All data in this demo is synthetic. The panel recipe has not been selected or tested yet."
+    "demoNotice": "All data in this demo is synthetic. The panel recipe has not been selected or tested yet.",
+    "signIn": "Enter the demo"
+  },
+  "auth": {
+    "title": "Sign in",
+    "demoTitle": "Sign in with a demo role",
+    "demoLead": "Ready-made accounts for the jury and the team. Pick a role; each role sees only its own organisation's records.",
+    "demoUnavailable": "Demo sign-in is turned off in this environment.",
+    "demoFailed": "Demo sign-in is not working right now. Please tell the team.",
+    "emailTitle": "Sign in with email",
+    "email": "Email",
+    "password": "Password",
+    "submit": "Sign in",
+    "invalid": "Wrong email or password.",
+    "signOut": "Sign out",
+    "switchRole": "Switch role",
+    "demoBar": "Demo: all data is synthetic.",
+    "signedInAs": "{org} · {role}"
+  },
+  "personas": {
+    "supplier": {
+      "label": "Supplier",
+      "desc": "Lists textile waste and delivers batches."
+    },
+    "producer": {
+      "label": "Producer",
+      "desc": "Accepts and weighs waste, makes panels."
+    },
+    "buyer": {
+      "label": "Panel buyer",
+      "desc": "Requests and receives panels."
+    },
+    "viewer": {
+      "label": "Viewer",
+      "desc": "Read-only access to the producer's records."
+    }
+  },
+  "roles": {
+    "owner": "Owner",
+    "admin": "Admin",
+    "operator": "Operator",
+    "viewer": "Viewer"
+  },
+  "orgKind": {
+    "textile_factory": "Textile factory",
+    "municipality": "Municipality",
+    "recycler": "Recycling facility",
+    "producer": "Panel producer",
+    "panel_buyer": "Panel buyer",
+    "carrier": "Carrier"
+  },
+  "permissions": {
+    "listing": {
+      "create": "Create listings",
+      "update": "Edit listings",
+      "close": "Close listings"
+    },
+    "offer": {
+      "create": "Make offers",
+      "respond": "Respond to offers"
+    },
+    "delivery": {
+      "plan": "Plan deliveries",
+      "update": "Update deliveries"
+    },
+    "wasteBatch": {
+      "receive": "Receive batches",
+      "update": "Edit batches"
+    },
+    "evidence": {
+      "upload": "Upload evidence",
+      "check": "Reconcile evidence"
+    },
+    "production": {
+      "create": "Open production batches"
+    },
+    "panelLot": {
+      "create": "Open panel lots"
+    },
+    "economics": {
+      "write": "Enter costs and revenue"
+    },
+    "demo": {
+      "reset": "Reset demo data"
+    }
+  },
+  "panel": {
+    "title": "Dashboard",
+    "welcome": "Welcome, {name}.",
+    "organization": "Organisation",
+    "kind": "Organisation type",
+    "role": "Role",
+    "permissionsTitle": "What this role can do",
+    "permissionsLead": "Read access comes from the organisation, not the role: every user sees only their own organisation's records and shared ones.",
+    "allowed": "allowed",
+    "denied": "not allowed",
+    "comingSoon": "Supply and impact indicators will be added to this page."
   }
 }

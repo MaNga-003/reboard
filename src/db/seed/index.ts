@@ -5,7 +5,7 @@ import { getTableName, is, sql } from "drizzle-orm";
 import { PgTable } from "drizzle-orm/pg-core";
 import type { Db } from "../client";
 import * as schema from "../schema";
-import { buildDemo, userIdOf, DEMO_ORGS, type DemoData } from "./demo";
+import { buildDemo, DEMO_USERS, type DemoData } from "./demo";
 
 export { buildDemo } from "./demo";
 
@@ -53,11 +53,11 @@ export async function seedDemo(db: Db, { now = new Date(), password, env = proce
   // Parola yoksa hesaplar girişsiz kalır; rol değiştirici T1.5'te parolayı kullanır.
   const accounts = password
     ? await Promise.all(
-        Object.values(DEMO_ORGS).map(async (o) => ({
-          id: `demo-account-${o.key}`,
-          accountId: userIdOf(o),
+        DEMO_USERS.map(async (u) => ({
+          id: `demo-account-${u.key}`,
+          accountId: u.id,
           providerId: "credential",
-          userId: userIdOf(o),
+          userId: u.id,
           password: await hashPassword(password),
         })),
       )

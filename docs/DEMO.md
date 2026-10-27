@@ -27,13 +27,16 @@
 
 ## 3. Demo rolleri
 
+Giriş `/giris` sayfasındaki dört düğmeyle yapılır; parola sorulmaz. Her rol kendi kurumunun kayıtlarını ve paylaşılanları görür (D-016).
+
 | Rol | Organizasyon | Ne yapabilir |
 | --- | --- | --- |
-| Sağlayıcı | Konfeksiyon A | Atık ilanı verir, teklif kabul eder, kendi partilerini görür |
-| Üretici | ReBoard Pilot Tesisi | Teklif verir, parti kabul eder, üretim partisi ve panel lotu açar |
-| Alıcı | Mobilya Atölyesi F | Panel talebi verir, pasaportu görür |
+| Tedarikçi | Konfeksiyon A (sahip) | Atık ilanı verir, teklif kabul eder, kendi partilerinin tartımını görür |
+| Üretici | ReBoard Pilot Tesisi (sahip) | Teklif verir, parti kabul eder, üretim partisi ve panel lotu açar |
+| Panel alıcısı | Mobilya Atölyesi F (sahip) | Panel talebi verir, pasaportu görür |
+| İzleyici | ReBoard Pilot Tesisi (izleyici) | Üreticinin kayıtlarını okur; hiçbir şey yazamaz. Rol farkını göstermek için |
 
-Rol değiştirici sağ üstte durur. Yalnızca `DEMO_MODE=true` iken görünür. Kurum adları kurgusaldır (`src/db/seed/demo.ts`); verinin ayrıntısı `docs/DATA_DICTIONARY.md` §8'de.
+Rol değiştirici başlığın altındaki "Demo: veriler sentetiktir. Rol değiştir" satırındadır. Yalnızca `DEMO_MODE=true` iken görünür. Rol değiştirmek önceki oturumu kapatır. `/panel` sayfası rolün yapabildiklerini listeler; İzleyici'de hepsi "yapamaz" görünür. Kurum adları kurgusaldır (`src/db/seed/demo.ts`); verinin ayrıntısı `docs/DATA_DICTIONARY.md` §8'de.
 
 ## 4. Sorun çıkarsa
 

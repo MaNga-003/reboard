@@ -25,3 +25,5 @@ jobs:
       - run: node scripts/live-smoke.mjs "$LIVE_URL"
         env:
           LIVE_URL: ${{ inputs.url }}
+          # Varsa demo girişi de denenir; değer Vercel'dekiyle aynı olmalı.
+          DEMO_PASSWORD: ${{ secrets.DEMO_PASSWORD }}

@@ -39,13 +39,13 @@ flowchart LR
 | --- | --- | --- |
 | Sayfalar | `src/app/[locale]/…` | Yalnızca sunum. İş kuralı içermez |
 | Bileşenler | `src/components/…` | `ui/`: temel bileşenler. `story/`: kare dizisi oynatıcı. `charts/`, `map/`, `trace/`: soy ağacı |
-| Sunucu eylemleri | `src/server/actions/…` | Her eylem Zod şemasıyla doğrular, oturumu ve rolü denetler, repository'ye gider |
+| Sunucu eylemleri | ilgili rota klasöründe `actions.ts` | Her eylem `src/lib/action.ts` kapısından geçer (oturum → rol → Zod), sonra repository'ye gider |
 | Alan | `src/domain/…` | Saf TypeScript. I/O yok, birim testli. Tek gerçek kaynak burası |
 | Repository | `src/db/repo/…` | Bütün özel sorgular `withTenant(orgId)` üzerinden geçer (D-016) |
 | Şema | `src/db/schema/…` | Drizzle. Migrasyonlar `drizzle/` klasöründe |
 | Tasarım | `src/design/` | `wada.json`: sözlüğün 159 rengi (MIT, `WADA_LICENSE.md`). `tokens.ts`: Wada adlarıyla tanımlı paletler ve `<html>` üzerine yazılan CSS değişkenleri. `color.ts`: kontrast, OKLab ΔE, ton farkı ve CVD benzetimi; testler ve palet önizlemesi bunu kullanır |
 | Çeviri | `messages/{tr,en}.json`, `src/i18n/` | next-intl. `src/proxy.ts` dil önekini yönetir (`/` → `/tr` ya da `/en`; API ve uzantılı dosyalar hariç). Anahtarların iki dilde eşit olduğu test edilir |
-| Kimlik | `src/lib/auth.ts` | `getAuth()` tembel başlatılır; build sırasında veritabanı ve secret denetimi tetiklenmez. Uç: `src/app/api/auth/[...all]/route.ts` |
+| Kimlik | `src/lib/auth.ts`, `src/lib/viewer.ts` | `getAuth()` tembel başlatılır; build sırasında veritabanı ve secret denetimi tetiklenmez. `createAuth(db, ayarlar)` testlerde PGlite ile kurulur. `getViewer()` sayfaların ve eylemlerin tek kimlik kaynağıdır (`server-only`). Uç: `src/app/api/auth/[...all]/route.ts` |
 | Veritabanı istemcisi | `src/db/client.ts` | `getDb()`: `DATABASE_URL` varsa node-postgres, yoksa `.data/pglite`. Migrasyon: `pnpm db:migrate` (`scripts/db-migrate.ts`) |
 
 ## 3. Veri modeli
@@ -120,13 +120,40 @@ Alanların anlamları ve birimleri `docs/DATA_DICTIONARY.md` dosyasında.
 
 ## 6. Kimlik, roller ve kiracılar
 
-- Better Auth kullanılır: e-posta ve parola, oturum çerezi, organizasyon eklentisi.
-- Roller:
-  - `owner` ve `admin`: her şeyi yapabilir.
-  - `operator`: kayıt girer.
-  - `viewer`: yalnızca okur.
-- Herkese açık sayfalar: `/`, `/pasaport/[lot]`, `/api/verify/[lot]` ve etki sayacı.
-- Demo modunda "demo rolüyle gir" düğmesi bulunur. Seçenekler: Sağlayıcı (Konfeksiyon A), Üretici (ReBoard Pilot Tesisi), Alıcı (Mobilya Atölyesi F). Demo kurumlarının adları kurgusaldır ve harfle kodlanır; gerçek bir firmayla karışmaz.
+- Better Auth kullanılır: e-posta ve parola, oturum çerezi, organizasyon eklentisi (D-010).
+- **Hesap açma kapalı:** `disableSignUp` ve `allowUserToCreateOrganization: false`. Hesaplar ve kurumlar yalnızca seed ile açılır (Faz 5'te davetle).
+- **Roller** tek tabloda durur: `src/domain/access.ts` (`STATEMENTS`, `GRANTS`, `can`). Better Auth rolleri `src/lib/auth.ts` içinde bu tablodan kurulur; `tests/unit/auth-roles.test.ts` iki tarafın her rol ve eylemde aynı kararı verdiğini denetler.
+  - `owner`: her şey; kurumu silebilir.
+  - `admin`: her şey; kurumu silemez.
+  - `operator`: ilan, teklif, teslim, parti, üretim, lot ve maliyet kaydı girer. Kanıt yükler ama mutabık sayamaz; demo verisini sıfırlayamaz.
+  - `viewer`: hiçbir yazma eylemi yapamaz.
+  - Rol yalnızca yazma hakkını belirler. Okuma hakkı kiracılıktan gelir.
+- **Oturum ve etkin kurum:**
+  - Girişte kullanıcının ilk üyeliği oturuma etkin kurum olarak yazılır (`databaseHooks.session.create.before`).
+  - Rol oturumdan okunmaz: `src/lib/viewer.ts` içindeki `getViewer()` her istekte üyelik tablosundan çözer (`src/db/repo/membership.ts`). Üyelik kaldırılınca erişim hemen biter. Etkin kurumda üyelik yoksa ilk üyeliğe düşer.
+  - `requireViewer(locale)` oturum yoksa `/giris` sayfasına yönlendirir. Layout ve her sayfa ayrı çağırır; layout denetimi tek başına sınır değildir.
+- **Server Action kapısı:** `src/lib/action.ts` içindeki `authorize(viewer, izin, şema, girdi)` önce oturuma, sonra role, en son Zod şemasına bakar. Yetkisiz kişi girdi hatasının ayrıntısını görmez.
+- **Kiracı katmanı** (`src/db/repo/tenant.ts`, D-016): `withTenant(db, orgId)` şunları verir: `list`, `get`, `owns`, `assertOwns`, `visible`. Görünürlük kuralı sorguya her zaman `and` ile eklenir.
+
+  | Tablo | Kurum X görür |
+  | --- | --- |
+  | `organization`, `org_profiles` | kendisini ve herkese açık profilleri |
+  | `listings` | kendi ilanlarını ve açık ilanları |
+  | `offers` | verdiği teklifleri ve kendi ilanlarına gelenleri |
+  | `deals`, `deliveries` | taraf olduklarını |
+  | `waste_batches` | teslim aldıklarını ve sağlayıcısı olduklarını; tartım sonucu iki tarafa da görünür |
+  | `panel_lots` | kendi lotlarını ve herkese açık lotları (pasaport) |
+  | `model_inputs`, `calc_runs` | kendi satırlarını ve platform geneli satırları |
+  | `saas_costs`, `reference_values` | hepsini (kaynaklı, kurumdan bağımsız) |
+  | kalan 10 tablo (üretim, tahsis, gözetim zinciri, kanıt, maliyet, işlem) | yalnızca kendi satırlarını |
+
+  - Kanıt dosyasının içeriği (`evidence_register.content`) listelere girmez.
+  - Yazma hakkı görmekten dardır: `assertOwns` satırın sahibi başkaysa da satır yoksa da aynı hatayı verir; satırın varlığı sızdırılmaz.
+  - Kimlik tabloları (`user`, `session`, `account`, `verification`, `member`, `invitation`) bu katmandan okunmaz. Bir test, şemadaki her tablonun ya katalogda ya bu listede olduğunu denetler; yeni bir tablo kuralsız kalamaz.
+- **Ekranlar:** `/giris` sayfasında demo rolleri ve e-posta formu bulunur. `(app)` grubundaki sayfalar oturum ister; şimdilik yalnızca `/panel`. Başlıkta kurum · rol, demo modunda "Rol değiştir" menüsü ve çıkış düğmesi bulunur.
+- Herkese açık sayfalar: `/`, `/giris`, `/pasaport/[lot]`, `/api/verify/[lot]` ve etki sayacı.
+- **Demo rolleri:** Tedarikçi (Konfeksiyon A, sahip), Üretici (ReBoard Pilot Tesisi, sahip), Panel alıcısı (Mobilya Atölyesi F, sahip), İzleyici (ReBoard Pilot Tesisi, izleyici). Parola yalnızca `DEMO_PASSWORD` ortam değişkenindedir. Demo kurumlarının adları kurgusaldır ve harfle kodlanır; gerçek bir firmayla karışmaz.
+- Postgres RLS, ikinci savunma hattı olarak Faz 5'te eklenecek.
 
 ## 7. Hikâye sayfası (D-004)
 
@@ -134,7 +161,8 @@ Alanların anlamları ve birimleri `docs/DATA_DICTIONARY.md` dosyasında.
 
 ## 8. Güvenlik
 
-- Server Actions girdiyi Zod ile doğrular ve rolü denetler.
+- Server Actions `src/lib/action.ts` kapısından geçer: oturum, rol, sonra Zod.
+- Kayıt ve kurum açma kapalıdır; oturumsuz kurum uç noktaları 401 döner (M-4).
 - `next.config.ts` üzerinden güvenlik başlıkları uygulanır: CSP, `X-Content-Type-Options`, `Referrer-Policy`.
 - Kanıt dosyalarında yalnızca PDF, PNG, JPEG ve WebP kabul edilir; dosya en fazla 5 MB olabilir ve SHA-256 özeti tutulur.
 - Gizli bilgiler yalnızca ortam değişkenlerinde durur; CI'da gitleaks çalışır. `.env.example` dosyası yalnızca anahtar adlarını içerir.
@@ -152,7 +180,7 @@ Alanların anlamları ve birimleri `docs/DATA_DICTIONARY.md` dosyasında.
 - Ortam değişkenleri:
   - `DATABASE_URL`: boşsa PGlite kullanılır.
   - `BETTER_AUTH_SECRET`, `BETTER_AUTH_URL`
-  - `DEMO_MODE`, `DEMO_PASSWORD`
+  - `DEMO_MODE`, `DEMO_PASSWORD`. Canlıda Vercel'de (`DEMO_PASSWORD` gizli); CI her çalıştırmada rastgele bir parola üretir; canlı denetim için GitHub sırrı `DEMO_PASSWORD` Vercel'dekiyle aynıdır.
   - `CRON_SECRET`
 - Yayın:
   - Vercel CLI ile yapılır (`pnpm deploy:prod`). `.vercelignore` bir izin listesidir: her şey dışarıda kalır, yalnızca derleme için gereken yollar yüklenir. `tests/unit/deploy-config.test.ts` bunu denetler.
@@ -165,4 +193,4 @@ Alanların anlamları ve birimleri `docs/DATA_DICTIONARY.md` dosyasında.
   - Neon'a migrasyon `pnpm db:migrate:live` ile uygulanır; doğrudan bağlantı git dışındaki `.env.neon` dosyasında durur. Next bu dosyayı otomatik yüklemez, böylece yerel geliştirme PGlite'ta kalır. Bağlantılar `sslmode=verify-full` kullanır.
   - Neon Postgres 18, PGlite Postgres 17 tabanlıdır; migrasyonlar ikisinde de denendi.
   - Türk Telekom "Güvenli İnternet" filtresi `*.vercel.app` adreslerini yönlendiriyor (R-5). Canlı denetim bu yüzden GitHub Actions'ta çalışır: `gh workflow run live-smoke.yml` (`scripts/live-smoke.mjs`).
-- CI (GitHub Actions) sırasıyla şunları çalıştırır: lint, tip denetimi, Vitest, Playwright (Chromium), `docs:check` ve gitleaks.
+- CI (GitHub Actions) sırasıyla şunları çalıştırır: `docs:check`, atıf denetimi, lint, tip denetimi, Vitest, build, migrasyon, demo seed, Playwright (Chromium). Ayrı bir işte gitleaks çalışır.

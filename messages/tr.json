@@ -10,7 +10,9 @@
     "dashboard": "Panel",
     "scenario": "Senaryo",
     "language": "Dil",
-    "skipStory": "Hikâyeyi atla"
+    "skipStory": "Hikâyeyi atla",
+    "brand": "ReBoard",
+    "main": "Ana menü"
   },
   "resultClass": {
     "synthetic": "Sentetik",
@@ -27,6 +29,102 @@
     "headline": "Atık tekstilden panele, her kilogramı doğrulanmış.",
     "lead": "ReBoard, tekstil atığını sağlayan fabrikaları, panel üreticisini ve alıcıları tek bir izlenebilir zincirde buluşturur.",
     "cta": "Pazar yerine git",
-    "demoNotice": "Bu demodaki verilerin tamamı sentetiktir. Panel reçetesi henüz seçilmedi ve test edilmedi."
+    "demoNotice": "Bu demodaki verilerin tamamı sentetiktir. Panel reçetesi henüz seçilmedi ve test edilmedi.",
+    "signIn": "Demoya gir"
+  },
+  "auth": {
+    "title": "Giriş",
+    "demoTitle": "Demo rolüyle gir",
+    "demoLead": "Jüri ve ekip için hazır hesaplar. Rolü seçin; her rol yalnızca kendi kurumunun kayıtlarını görür.",
+    "demoUnavailable": "Demo girişi bu ortamda kapalı.",
+    "demoFailed": "Demo girişi şu an çalışmıyor. Lütfen ekibe haber verin.",
+    "emailTitle": "E-posta ile giriş",
+    "email": "E-posta",
+    "password": "Parola",
+    "submit": "Giriş yap",
+    "invalid": "E-posta ya da parola hatalı.",
+    "signOut": "Çıkış",
+    "switchRole": "Rol değiştir",
+    "demoBar": "Demo: veriler sentetiktir.",
+    "signedInAs": "{org} · {role}"
+  },
+  "personas": {
+    "supplier": {
+      "label": "Tedarikçi",
+      "desc": "Atık ilanı verir, partilerini teslim eder."
+    },
+    "producer": {
+      "label": "Üretici",
+      "desc": "Atığı kabul eder, tartar, panel üretir."
+    },
+    "buyer": {
+      "label": "Panel alıcısı",
+      "desc": "Panel ister ve teslim alır."
+    },
+    "viewer": {
+      "label": "İzleyici",
+      "desc": "Üreticinin kayıtlarını yalnızca okur."
+    }
+  },
+  "roles": {
+    "owner": "Sahip",
+    "admin": "Yönetici",
+    "operator": "Operatör",
+    "viewer": "İzleyici"
+  },
+  "orgKind": {
+    "textile_factory": "Tekstil fabrikası",
+    "municipality": "Belediye",
+    "recycler": "Geri dönüşüm tesisi",
+    "producer": "Panel üreticisi",
+    "panel_buyer": "Panel alıcısı",
+    "carrier": "Taşıyıcı"
+  },
+  "permissions": {
+    "listing": {
+      "create": "İlan açma",
+      "update": "İlan düzenleme",
+      "close": "İlan kapatma"
+    },
+    "offer": {
+      "create": "Teklif verme",
+      "respond": "Teklife yanıt"
+    },
+    "delivery": {
+      "plan": "Teslim planlama",
+      "update": "Teslim güncelleme"
+    },
+    "wasteBatch": {
+      "receive": "Parti kabulü",
+      "update": "Parti düzenleme"
+    },
+    "evidence": {
+      "upload": "Kanıt yükleme",
+      "check": "Kanıt mutabakatı"
+    },
+    "production": {
+      "create": "Üretim partisi açma"
+    },
+    "panelLot": {
+      "create": "Panel lotu açma"
+    },
+    "economics": {
+      "write": "Maliyet ve gelir girişi"
+    },
+    "demo": {
+      "reset": "Demo verisini sıfırlama"
+    }
+  },
+  "panel": {
+    "title": "Panel",
+    "welcome": "Hoş geldiniz, {name}.",
+    "organization": "Kurum",
+    "kind": "Kurum türü",
+    "role": "Rol",
+    "permissionsTitle": "Bu rolün yapabildikleri",
+    "permissionsLead": "Okuma yetkisi rolden değil kurumdan gelir: her kullanıcı yalnızca kendi kurumunun ve paylaşılan kayıtları görür.",
+    "allowed": "yapabilir",
+    "denied": "yapamaz",
+    "comingSoon": "Tedarik ve etki göstergeleri bu sayfaya eklenecek."
   }
 }

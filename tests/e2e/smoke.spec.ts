@@ -1,4 +1,4 @@
-// Temel duman testi: dil yönlendirmesi, iki dilde açılış, erişilebilirlik, yatay taşma, kimlik ucu.
+// Temel duman testi: dil yönlendirmesi, iki dilde açılış, erişilebilirlik, yatay taşma. Kimlik akışı auth.spec.ts'de.
 import AxeBuilder from "@axe-core/playwright";
 import { expect, test } from "@playwright/test";
 
@@ -31,12 +31,3 @@ for (const locale of ["tr", "en"] as const) {
     });
   }
 }
-
-test("kimlik: e-postayla kayıt veritabanına yazar", async ({ request }) => {
-  const email = `smoke-${Date.now()}@example.test`;
-  const res = await request.post("/api/auth/sign-up/email", {
-    data: { email, password: "duman-testi-parola-1", name: "Duman" },
-  });
-  expect(res.status(), await res.text()).toBe(200);
-  expect((await res.json()).user.email).toBe(email);
-});

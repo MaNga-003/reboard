@@ -4,6 +4,7 @@
 // Aynı `now` ile her çalıştırma aynı kayıtları, aynı kimlikleri ve aynı hash zincirini üretir.
 import { sha256 } from "@noble/hashes/sha2.js";
 import { bytesToHex, utf8ToBytes } from "@noble/hashes/utils.js";
+import type { Role } from "../../domain/access";
 import { REPORT_NEGATIVE_SCENARIO, REPORT_SCENARIO, runScenario, type ScenarioParams } from "../../domain/calc";
 import type { Composition } from "../../domain/fibre";
 import { crowFliesKm } from "../../domain/geo";
@@ -60,6 +61,20 @@ export const DEMO_ORGS = {
 export const DEMO_EMAIL_DOMAIN = "demo.reboard.example";
 export const orgIdOf = (o: DemoOrg) => `demo-${o.key}`;
 export const userIdOf = (o: DemoOrg) => `demo-user-${o.key}`;
+
+export type DemoUser = { id: string; key: string; org: DemoOrg; role: Role; name: string };
+// Her kurumun sahibi ve rol farkını göstermek için ReBoard'da bir izleyici (yalnızca okur).
+export const DEMO_USERS: readonly DemoUser[] = [
+  ...Object.values(DEMO_ORGS).map((o): DemoUser => ({ id: userIdOf(o), key: o.key, org: o, role: "owner", name: `Demo · ${o.name}` })),
+  { id: "demo-user-reboard-izleyici", key: "reboard-izleyici", org: DEMO_ORGS.reboard, role: "viewer", name: "Demo · ReBoard izleyici" },
+];
+export const demoEmail = (u: Pick<DemoUser, "key">) => `${u.key}@${DEMO_EMAIL_DOMAIN}`;
+
+/** Rol değiştiricideki seçenekler (D-010). */
+export const DEMO_PERSONAS = { supplier: "kaynak-a", producer: "reboard", buyer: "alici-f", viewer: "reboard-izleyici" } as const;
+export type DemoPersona = keyof typeof DEMO_PERSONAS;
+export const PERSONA_KEYS = Object.keys(DEMO_PERSONAS) as [DemoPersona, ...DemoPersona[]];
+export const personaUser = (p: DemoPersona): DemoUser => DEMO_USERS.find((u) => u.key === DEMO_PERSONAS[p])!;
 
 // Kaynakların resmî sayfadan okunup doğrulandığı gün.
 const SOURCED_AT = new Date("2026-10-27T00:00:00Z");
@@ -213,9 +228,8 @@ export function buildDemo(now: Date): DemoData {
 
   const data: DemoData = {
     organization: orgs.map((o) => ({ id: orgIdOf(o), name: o.name, slug: o.key, metadata: JSON.stringify({ demo: true }) })),
-    user: orgs.map((o) => ({ id: userIdOf(o), name: `Demo · ${o.name}`, email: `${o.key}@${DEMO_EMAIL_DOMAIN}`, emailVerified: true })),
-    // Rol ayrımı (yönetici, operatör, izleyici) T1.5'te eklenir.
-    member: orgs.map((o) => ({ id: `demo-member-${o.key}`, organizationId: orgIdOf(o), userId: userIdOf(o), role: "owner" })),
+    user: DEMO_USERS.map((u) => ({ id: u.id, name: u.name, email: demoEmail(u), emailVerified: true })),
+    member: DEMO_USERS.map((u) => ({ id: `demo-member-${u.key}`, organizationId: orgIdOf(u.org), userId: u.id, role: u.role })),
     orgProfiles: orgs.map((o) => ({
       orgId: orgIdOf(o),
       kind: o.kind,

@@ -98,3 +98,5 @@ Her sonuç sınıf rozetini taşır. Olumsuz senaryo gizlenmez.
 - Kaynaklı referans değerler **Kaynaklı tahmin** rozeti taşır ve kaynağına bağlanır.
 - Platform reçete, dayanım ya da maliyet üstünlüğü iddia etmez. Test durumu "test edilmedi" ise öyle yazar.
 - İpek kapsam dışıdır; kabulde ayıklanır ve kaydı tutulur.
+- Her kurum yalnızca kendi kayıtlarını ve paylaşılanları görür: açık ilanlar, herkese açık profiller ve lotlar, taraf olduğu teklif, anlaşma ve teslimler. Sağlayıcı, teslim ettiği partinin tartım sonucunu görür (D-016).
+- Hesaplar davetle açılır; herkese açık kayıt yoktur (D-010).
