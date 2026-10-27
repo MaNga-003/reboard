@@ -1,7 +1,7 @@
 {
   "$schema": "./docs/state.schema.json",
   "project": "ReBoard SaaS platformu",
-  "updated_at": "2026-10-27T09:15:00+03:00",
+  "updated_at": "2026-10-27T09:24:00+03:00",
   "current_phase": "F1",
   "deadlines": {
     "demo_freeze": "2026-10-29T18:00:00+03:00",
@@ -223,16 +223,17 @@
       "id": "T2.2",
       "phase": "F2",
       "mode": "otonom",
-      "status": "yapılacak",
+      "status": "sürüyor",
       "title": "İzlenebilirlik: parti kabulü, üretim partisi, soy ağacı, zaman çizelgesi, kanıt kaydı",
       "acceptance": "E2E: teslim alınan parti tartılır, kanıt yüklenir, üretim partisine bağlanır, soy ağacında görünür",
-      "evidence": null,
+      "evidence": "Kısmi (sürüyor): alan kuralları src/domain/traceability/batches.ts (kabul, kanıt türü ve 4 MiB sınırı, D-013 doğrulama, üretim tahsisi, kod üretimi, zaman çizelgesi süzgeci); tests/unit/traceability/batches.test.ts 47/47. Kalan: depo (src/db/repo/trace.ts), eylemler, /izlenebilirlik sayfaları, kanıt indirme ucu, next.config bodySizeLimit, E2E akışı ve belgeler.",
       "depends_on": [
         "T1.3",
         "T1.4"
       ],
       "decisions": [
         "D-012",
+        "D-013",
         "D-018"
       ]
     },

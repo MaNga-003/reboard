@@ -103,7 +103,7 @@ export const evidenceRegister = pgTable("evidence_register", {
   mime: text("mime").notNull(),
   sizeBytes: integer("size_bytes").notNull(),
   sha256: text("sha256").notNull(),
-  // D-018: MVP'de en fazla 5 MB, EvidenceStore arayüzünün arkasında.
+  // D-018: MVP'de en fazla 4 MiB (Vercel gövde sınırı 4,5 MB), EvidenceStore arayüzünün arkasında.
   content: bytea("content"),
   period: text("period"),
   status: evidenceStatus("status").notNull().default("declared"),

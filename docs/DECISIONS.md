@@ -118,8 +118,13 @@ Biçim: **Karar**, **Neden**, **Tarih**, kararı kim verdi (K: kullanıcı, C: C
 - **Tarih:** 2026-10-27 · K
 
 ### D-018 — Kanıt dosyaları MVP'de Postgres'te
-- **Karar:** Tartım fişi, irsaliye ve fatura gibi kanıt dosyaları en fazla 5 MB olarak Postgres'te `bytea` biçiminde tutulur. Erişim `EvidenceStore` arayüzünden geçer, böylece ileride S3 ya da R2'ye geçmek kolay olur. Her dosyanın SHA-256 özeti kaydedilir.
-- **Neden:** Çevrimdışı demoda da çalışıyor ve ek bir hizmet gerektirmiyor.
+- **Karar:**
+  - Tartım fişi, irsaliye ve fatura gibi kanıt dosyaları en fazla 4 MiB (4.194.304 bayt) olarak Postgres'te `bytea` biçiminde tutulur. Erişim `EvidenceStore` arayüzünden geçer, böylece ileride S3 ya da R2'ye geçmek kolay olur.
+  - Her dosyanın SHA-256 özeti kaydedilir ve gözetim zincirine yazılır.
+  - Tür, tarayıcının bildirdiği MIME'den değil dosyanın ilk baytlarından belirlenir: PDF, PNG, JPEG ya da WebP.
+- **Neden:**
+  - Çevrimdışı demoda da çalışıyor ve ek bir hizmet gerektirmiyor.
+  - Vercel işlevleri en fazla 4,5 MB istek gövdesi kabul eder (413 `FUNCTION_PAYLOAD_TOO_LARGE`). Önceki 5 MB sınırı yayında hiç çalışamazdı; çok parçalı form başlıklarına da pay kalsın diye sınır 4 MiB oldu.
 - **Tarih:** 2026-10-27 · C
 
 ### D-019 — Lisans: tüm hakları saklı

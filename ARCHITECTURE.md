@@ -177,7 +177,7 @@ Alanların anlamları ve birimleri `docs/DATA_DICTIONARY.md` dosyasında.
 - Server Actions `src/lib/action.ts` kapısından geçer: oturum, rol, sonra Zod.
 - Kayıt ve kurum açma kapalıdır; oturumsuz kurum uç noktaları 401 döner (M-4).
 - `next.config.ts` üzerinden güvenlik başlıkları uygulanır: `X-Content-Type-Options`, `Referrer-Policy`, `X-Frame-Options`, `Permissions-Policy`. CSP henüz yok (R-6). Eklenince harita için `connect-src` ve `img-src` içine `https://tiles.openfreemap.org`, `worker-src` içine `'self'` girer.
-- Kanıt dosyalarında yalnızca PDF, PNG, JPEG ve WebP kabul edilir; dosya en fazla 5 MB olabilir ve SHA-256 özeti tutulur.
+- Kanıt dosyalarında yalnızca PDF, PNG, JPEG ve WebP kabul edilir; tür dosyanın ilk baytlarından belirlenir, dosya en fazla 4 MiB olabilir (Vercel'in 4,5 MB gövde sınırı, D-018) ve SHA-256 özeti tutulur.
 - Gizli bilgiler yalnızca ortam değişkenlerinde durur; CI'da gitleaks çalışır. `.env.example` dosyası yalnızca anahtar adlarını içerir.
 - Log'larda kişisel veri tutulmaz. Konum ilçe düzeyinde ya da yaklaşık 1 km'ye yuvarlanmış olarak saklanır.
 

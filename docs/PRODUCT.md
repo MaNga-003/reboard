@@ -54,7 +54,7 @@ sequenceDiagram
 ### 3.2 İzlenebilirlik
 
 1. **Teslim alma:** Üretici partiyi tartar. Sağlayıcının beyan ettiği kg ile tartılan kg yan yana yazılır. Nem ölçülür, ipek ve uygunsuz malzeme ayıklanır.
-2. **Kanıt:** Kantar fişi ya da irsaliye yüklenir (PDF, PNG, JPEG, WebP; en fazla 5 MB). Dosyanın SHA-256 özeti saklanır. Kanıt durumu `beyan` → `belgeli` → `mutabık` diye ilerler.
+2. **Kanıt:** Kantar fişi ya da irsaliye yüklenir (PDF, PNG, JPEG, WebP; en fazla 4 MiB). Dosyanın SHA-256 özeti saklanır. Kanıt durumu `beyan` → `belgeli` → `mutabık` diye ilerler.
 3. **Üretim partisi:** Birden çok atık partisi kütleyle bir üretim partisine tahsis edilir. Kütle dengesi denetlenir.
 4. **Panel lotu:** Üretim partisinden m², yoğunluk ve test durumuyla panel lotu çıkar.
 5. **Gözetim zinciri:** Her adım bir EPCIS olayı olarak hash zincirine eklenir.
