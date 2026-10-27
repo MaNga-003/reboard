@@ -265,7 +265,7 @@ export function buildDemo(now: Date): DemoData {
         sourceUrl: "https://ec.europa.eu/eurostat/databrowser/view/env_wasgen/default/table?lang=en",
         retrievedAt: SOURCED_AT,
         license: "Eurostat: kaynak gösterilerek yeniden kullanılabilir",
-        scopeNote: "Ülke düzeyinde, bütün faaliyetler ve haneler. Yerel fabrika tonajı değildir; sunumdaki 1,5 milyon ton farklı kapsamdadır.",
+        scopeNote: "Ülke düzeyinde, bütün faaliyetler ve haneler. Yerel fabrika tonajı değildir.",
         resultClass: SE,
       },
       {

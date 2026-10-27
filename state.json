@@ -1,7 +1,7 @@
 {
   "$schema": "./docs/state.schema.json",
   "project": "ReBoard SaaS platformu",
-  "updated_at": "2026-10-28T01:50:00+03:00",
+  "updated_at": "2026-10-28T01:52:00+03:00",
   "current_phase": "F2",
   "deadlines": {
     "demo_freeze": "2026-10-29T18:00:00+03:00",
@@ -476,7 +476,7 @@
         "D-028",
         "D-029"
       ],
-      "note": "Sunum kaynakçası ve iddiaları doğrulandı (.private/kaynak-dogrulama.md); İrem'in yanıtları işlendi (prototip yok, bağlayıcı adayları PET/CoPET ve pMDI, ölçüler hedef, 6. ve 7. madde künyeleri). Senaryodaki kaynaksız varsayılanlar kaldırıldı (D-029). 785 TL/t KDV tutarsızlığı yalnızca test örneğinde ve supplier_baseline seed'inde kaldı; Şerife'nin girdi dosyası bekleniyor. Sunum düzeltmeleri ekipte (Q-3)."
+      "note": "Sunum kaynakçası ve iddiaları doğrulandı (.private/kaynak-dogrulama.md); İrem'in yanıtları işlendi (prototip yok, bağlayıcı adayları PET/CoPET ve pMDI, ölçüler hedef, 6. ve 7. madde künyeleri). Ekibin 28.10 yanıtları doğrulandı (raporun 8. bölümü): 1,5 Mt için kuruluş belgesi yok, Eurostat seed kapsam notundan sunuma atıf kaldırıldı (canlıya tam seed'le gider, T4.1). Senaryodaki kaynaksız varsayılanlar kaldırıldı (D-029). 785 TL/t KDV tutarsızlığı yalnızca test örneğinde ve supplier_baseline seed'inde kaldı; Şerife'nin girdi dosyası bekleniyor. Sunum düzeltmeleri ekipte (Q-3)."
     },
     {
       "id": "T4.6",
@@ -563,7 +563,7 @@
     {
       "id": "Q-3",
       "owner": "ekip",
-      "question": "Sunumdaki düzeltmeler (öneriler .private/kaynak-dogrulama.md, 3. bölüm) ekipçe uygulanacak mı? Açık kalanlar: (1) Türkiye için '1,5 milyon ton' ve '%85' sayılarının birincil kaynağı bulunamadı; bilinmiyorsa Eurostat'ın 2022 sayısı (361.500 t) kullanılsın mı? (2) '8 milyon m³' yerine FAOSTAT 2024 görünür tüketimi (≈8,61 milyon m³) yazılsın mı? (3) Yazılım iddiaları (anlık konum takibi, karbon hesabı, rota optimizasyonu) platformda yok; 'planlanan' diye yazılsın mı? (4) PET/CoPET için 'formaldehit içermez' ifadesine tedarikçinin güvenlik bilgi formu (SDS) var mı? (5) Biyobazlı aday olarak PLA bikomponent elyaf testlere eklensin mi?",
+      "question": "Sunumdaki düzeltmeler (öneriler .private/kaynak-dogrulama.md, 3. ve 8. bölüm) ekipçe uygulanacak mı? Yanıtlananlar (28.10): yazılım iddiaları 'planlanan' diye yazılacak; PET/CoPET için SDS yok, 'formaldehit içermez' yalnız pMDI için yazılabilir. Açık kalanlar: (1) Türkiye için '1,5 milyon ton' yazan bir kuruluş belgesi bulunamadı; EEA kişi başı atık oranıyla izdüşüm ~1,36 Mt veriyor. Belge iletilmezse Eurostat'ın 2022 sayısı (361.500 t) kullanılsın mı? '%85' için de kaynak yok. (2) YOMSAD/OGM belgesi iletilmedi; '8 milyon m³' yerine 'yaklaşık 8,6 milyon m³ tüketim (FAOSTAT 2024, görünür tüketim)' yazılsın mı? (3) Biyobazlı aday olarak PLA bikomponent elyaf testlere eklensin mi? (yanıt bekleniyor)",
       "blocks": [
         "T4.5"
       ]
