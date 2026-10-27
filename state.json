@@ -1,7 +1,7 @@
 {
   "$schema": "./docs/state.schema.json",
   "project": "ReBoard SaaS platformu",
-  "updated_at": "2026-10-27T04:30:54.492Z",
+  "updated_at": "2026-10-27T04:34:02.210Z",
   "current_phase": "F1",
   "deadlines": {
     "demo_freeze": "2026-10-29T18:00:00+03:00",
@@ -703,9 +703,9 @@
     {
       "id": "M-18",
       "claim": "Gizli bilgi sızmaz",
-      "threshold": "gitleaks 0 bulgu",
-      "last_value": "gitleaks 0 bulgu (7 commit); yayın 67 dosyada 0 hassas",
-      "measured_at": "2026-10-27T02:33:00+03:00",
+      "threshold": "gitleaks 0 gerçek bulgu; yanlış pozitif yalnızca incelenip .gitleaksignore'a parmak iziyle girer",
+      "last_value": "13 commit: 1 yanlış pozitif (generic-api-key, reference_values key alanı electricity_tl_kwh_2026h1), incelendi ve .gitleaksignore'a eklendi; gerçek bulgu 0. Yayın 67 dosyada 0 hassas",
+      "measured_at": "2026-10-27T04:34:02.210Z",
       "test": "CI secrets işi (gitleaks v8.30.1), tests/unit/deploy-config.test.ts"
     },
     {

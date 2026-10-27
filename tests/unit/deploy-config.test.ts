@@ -5,7 +5,7 @@ import { describe, expect, it } from "vitest";
 
 // Depoda izlenen ama bilerek yüklenmeyen üst düzey yollar. Yeni bir yol eklenince test düşer ve karar ister.
 const EXCLUDED = [
-  ".claude", ".env.example", ".gitattributes", ".githooks", ".github", ".gitignore", ".vercelignore",
+  ".claude", ".env.example", ".gitattributes", ".githooks", ".github", ".gitignore", ".gitleaksignore", ".vercelignore",
   ".mcp.json", "AGENTS.md", "ARCHITECTURE.md", "CLAUDE.md", "LICENSE", "README.md", "docs", "drizzle", "drizzle.config.ts",
   "eslint.config.mjs", "playwright.config.ts", "scripts", "state.json", "story", "tests", "vitest.config.mts",
 ];
