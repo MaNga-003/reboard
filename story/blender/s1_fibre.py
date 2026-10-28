@@ -2,6 +2,7 @@
 import math
 
 import lib
+import pressing
 import scraps
 import shredding
 import textile
@@ -74,6 +75,7 @@ def scene():
     weighing.station()
     weighing.bench()
     shredding.station()
+    pressing.station()
     return meta
 
 

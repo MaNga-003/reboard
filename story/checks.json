@@ -1,5 +1,5 @@
 {
-  "scene": "c2f830574ac52c80ee78b1c40dfd5249aa8efc058f8040c385456f29d6f2a1a8",
+  "scene": "114d4fcaf84212f4777b9ed887a0bde00e870ddebb9387d1451c2a41252fa61a",
   "intrusion": {
     "d": {
       "view": {
@@ -12,6 +12,10 @@
           "hits": 0
         },
         "s3": {
+          "rays": 38880,
+          "hits": 0
+        },
+        "s4": {
           "rays": 38880,
           "hits": 0
         }
@@ -67,13 +71,46 @@
               "max": 0
             }
           }
+        },
+        "s4": {
+          "points": 1008,
+          "lights": {
+            "Fill": {
+              "mean": 0,
+              "max": 0
+            },
+            "Key": {
+              "mean": 0,
+              "max": 0
+            },
+            "Rim": {
+              "mean": 0,
+              "max": 0
+            }
+          }
         }
       },
       "reach": {
         "s1": {
           "points": 1008,
           "lights": {
+            "PoolBoard": {
+              "mean": 0,
+              "max": 0
+            },
+            "PoolForm": {
+              "mean": 0,
+              "max": 0
+            },
             "PoolMachine": {
+              "mean": 0,
+              "max": 0
+            },
+            "PoolPress": {
+              "mean": 0,
+              "max": 0
+            },
+            "PoolPressRim": {
               "mean": 0,
               "max": 0
             },
@@ -90,7 +127,23 @@
         "s2": {
           "points": 1008,
           "lights": {
+            "PoolBoard": {
+              "mean": 0,
+              "max": 0
+            },
+            "PoolForm": {
+              "mean": 0,
+              "max": 0
+            },
             "PoolMachine": {
+              "mean": 0,
+              "max": 0
+            },
+            "PoolPress": {
+              "mean": 0,
+              "max": 0
+            },
+            "PoolPressRim": {
               "mean": 0,
               "max": 0
             },
@@ -107,7 +160,23 @@
         "s3": {
           "points": 1008,
           "lights": {
+            "PoolBoard": {
+              "mean": 0,
+              "max": 0
+            },
+            "PoolForm": {
+              "mean": 0,
+              "max": 0
+            },
             "PoolMachine": {
+              "mean": 0,
+              "max": 0
+            },
+            "PoolPress": {
+              "mean": 0,
+              "max": 0
+            },
+            "PoolPressRim": {
               "mean": 0,
               "max": 0
             },
@@ -120,6 +189,27 @@
               "max": 0
             }
           }
+        },
+        "s4": {
+          "points": 1008,
+          "lights": {
+            "PoolBoard": {
+              "mean": 0,
+              "max": 0
+            },
+            "PoolForm": {
+              "mean": 0,
+              "max": 0
+            },
+            "PoolPress": {
+              "mean": 0,
+              "max": 0
+            },
+            "PoolPressRim": {
+              "mean": 0,
+              "max": 0
+            }
+          }
         }
       },
       "control": {
@@ -128,7 +218,8 @@
           "mean": 0.08972,
           "max": 0.44
         },
-        "pool_reach": 0.82869
+        "pool_reach": 0.82869,
+        "pool_reach_s4": 0.53829
       }
     },
     "m": {
@@ -144,6 +235,10 @@
         "s3": {
           "rays": 38880,
           "hits": 0
+        },
+        "s4": {
+          "rays": 38880,
+          "hits": 0
         }
       },
       "shadow": {
@@ -197,13 +292,46 @@
               "max": 0
             }
           }
+        },
+        "s4": {
+          "points": 1008,
+          "lights": {
+            "Fill": {
+              "mean": 0,
+              "max": 0
+            },
+            "Key": {
+              "mean": 0,
+              "max": 0
+            },
+            "Rim": {
+              "mean": 0,
+              "max": 0
+            }
+          }
         }
       },
       "reach": {
         "s1": {
           "points": 1008,
           "lights": {
+            "PoolBoard": {
+              "mean": 0,
+              "max": 0
+            },
+            "PoolForm": {
+              "mean": 0,
+              "max": 0
+            },
             "PoolMachine": {
+              "mean": 0,
+              "max": 0
+            },
+            "PoolPress": {
+              "mean": 0,
+              "max": 0
+            },
+            "PoolPressRim": {
               "mean": 0,
               "max": 0
             },
@@ -220,7 +348,23 @@
         "s2": {
           "points": 1008,
           "lights": {
+            "PoolBoard": {
+              "mean": 0,
+              "max": 0
+            },
+            "PoolForm": {
+              "mean": 0,
+              "max": 0
+            },
             "PoolMachine": {
+              "mean": 0,
+              "max": 0
+            },
+            "PoolPress": {
+              "mean": 0,
+              "max": 0
+            },
+            "PoolPressRim": {
               "mean": 0,
               "max": 0
             },
@@ -237,7 +381,23 @@
         "s3": {
           "points": 1008,
           "lights": {
+            "PoolBoard": {
+              "mean": 0,
+              "max": 0
+            },
+            "PoolForm": {
+              "mean": 0,
+              "max": 0
+            },
             "PoolMachine": {
+              "mean": 0,
+              "max": 0
+            },
+            "PoolPress": {
+              "mean": 0,
+              "max": 0
+            },
+            "PoolPressRim": {
               "mean": 0,
               "max": 0
             },
@@ -250,6 +410,27 @@
               "max": 0
             }
           }
+        },
+        "s4": {
+          "points": 1008,
+          "lights": {
+            "PoolBoard": {
+              "mean": 0,
+              "max": 0
+            },
+            "PoolForm": {
+              "mean": 0,
+              "max": 0
+            },
+            "PoolPress": {
+              "mean": 0,
+              "max": 0
+            },
+            "PoolPressRim": {
+              "mean": 0,
+              "max": 0
+            }
+          }
         }
       },
       "control": {
@@ -258,7 +439,8 @@
           "mean": 0.25833,
           "max": 1
         },
-        "pool_reach": 0.84044
+        "pool_reach": 0.84044,
+        "pool_reach_s4": 0.64933
       }
     }
   },

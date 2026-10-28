@@ -17,6 +17,7 @@ MODULES = {
     2: "s2_scraps",
     3: "s3_weighing",
     4: "s4_shred",
+    5: "s5_press",
 }
 
 

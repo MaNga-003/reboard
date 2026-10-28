@@ -10,7 +10,7 @@ type Intrusion = {
   view: Record<string, { rays: number; hits: number }>;
   shadow: Record<string, { points: number; lights: Record<string, Share> }>;
   reach: Record<string, { points: number; lights: Record<string, Share> }>;
-  control: { view_hits: number; key_shadow: Share; pool_reach: number };
+  control: { view_hits: number; key_shadow: Share; pool_reach: number; pool_reach_s4: number };
 };
 type Checks = {
   scene: string;
@@ -19,13 +19,12 @@ type Checks = {
   belt: { pieces: number; denim_share: number; silk: number };
 };
 
-const SECTIONS = ["s1", "s2", "s3"];
-// 4. bölümün ışıkları; sonraki bölümler ekledikçe bu liste büyür.
-const LATER_LIGHTS: Record<string, string[]> = {
-  s1: ["PoolMachine", "PoolRim", "PoolSort"],
-  s2: ["PoolMachine", "PoolRim", "PoolSort"],
-  s3: ["PoolMachine", "PoolRim", "PoolSort"],
-};
+const SECTIONS = ["s1", "s2", "s3", "s4"];
+// Sonraki bölümlerin ışıkları (4.: PoolMachine, PoolRim, PoolSort; 5.: PoolBoard, PoolForm, PoolPress,
+// PoolPressRim); bölüm ekledikçe bu liste büyür.
+const S5_LIGHTS = ["PoolBoard", "PoolForm", "PoolPress", "PoolPressRim"];
+const S4_ON = [...S5_LIGHTS, "PoolMachine", "PoolRim", "PoolSort"].sort();
+const LATER_LIGHTS: Record<string, string[]> = { s1: S4_ON, s2: S4_ON, s3: S4_ON, s4: S5_LIGHTS };
 // Işık yüzeyi 5×5 örnekle taranır; tek örneğin kesilmesi 0,04 eder. Eşik bunun altında: hiçbir görünen nokta
 // hiçbir ışığın tek örneğinde bile sonraki bölüm eşyasının gölgesinde kalmaz ve sonraki bölüm ışığının tek
 // örneğini bile görmez. Kötü örnekler: top eski yerinde anahtar ışığın ortalama %9'unu (masaüstü) ve %26'sını
@@ -72,8 +71,9 @@ describe("hikâye sahnesi denetimi (story/checks.json)", () => {
         expect(r().control.view_hits).toBeGreaterThan(0);
         expect(r().control.key_shadow.mean).toBeGreaterThan(SHADOW_MAX);
       });
-      it("kontrol: havuz ışıkları her yöne yayılınca 3. bölüme ulaşır", () => {
+      it("kontrol: sonraki bölümlerin havuz ışıkları her yöne yayılınca 3. ve 4. bölüme ulaşır", () => {
         expect(r().control.pool_reach).toBeGreaterThan(REACH_MAX);
+        expect(r().control.pool_reach_s4).toBeGreaterThan(REACH_MAX);
       });
     });
   }
