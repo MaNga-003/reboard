@@ -5,6 +5,7 @@ import { sql } from "drizzle-orm";
 import { migrate } from "drizzle-orm/pglite/migrator";
 import { beforeAll, describe, expect, it } from "vitest";
 import { createPgliteDb } from "@/db/client";
+import { impactCounter } from "@/db/repo/counter";
 import { panelData } from "@/db/repo/panel";
 import { seedDemo } from "@/db/seed";
 import { DEMO_ORGS, orgIdOf } from "@/db/seed/demo";
@@ -87,5 +88,20 @@ describe("kurum sınırı", () => {
     const { impact, supply } = await panelData(db, F, NOW);
     expect(impact).toBeNull();
     expect(supply).toBeNull();
+  });
+});
+
+describe("herkese açık sayaç (D-013)", () => {
+  it("platform genelinde doğrulanmış kabul kg'ı SQL toplamıyla aynı; kurum ayrıntısı taşımaz", async () => {
+    const c = await impactCounter(db);
+    const s = await one(sql`
+      select sum(weighed_kg - rejected_kg) as verified, count(*) as batches,
+        count(*) filter (where weighed_kg is null or rejected_kg is null) as unknown
+      from waste_batches where verified`);
+    expect(c!.verified.kg!.eq(s.verified!)).toBe(true);
+    expect(c!.verified.unknown).toBe(Number(s.unknown));
+    expect(c!.batches).toBe(Number(s.batches));
+    expect(c!.resultClass).toBe("synthetic");
+    expect(Object.keys(c!).sort()).toEqual(["batches", "resultClass", "verified"]);
   });
 });

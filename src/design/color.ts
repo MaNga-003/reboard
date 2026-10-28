@@ -96,6 +96,12 @@ export function simulateCvd(hex: string, kind: CvdKind): string {
   );
 }
 
+/** Yarı saydam rengin altındakiyle bileşimi. Tarayıcılar sRGB gama uzayında karıştırır; ölçü de orada yapılır. */
+export function over(top: string, alpha: number, under: string): string {
+  const [t, u] = [hexToRgb(top), hexToRgb(under)];
+  return "#" + t.map((c, i) => Math.round(clamp01(alpha * c + (1 - alpha) * u[i]) * 255).toString(16).padStart(2, "0")).join("");
+}
+
 /** Üç renk körlüğü türünde en küçük ΔE. */
 export function minCvdDeltaE(a: string, b: string): number {
   return Math.min(...CVD_KINDS.map((k) => deltaE(simulateCvd(a, k), simulateCvd(b, k))));

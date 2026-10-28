@@ -869,5 +869,26 @@
       "neon_launch_storage": "Kullandıkça ödenir. Müşteri başına düşen pay veri büyüklüğü ölçülünce yazılır.",
       "domain": "Alan adı seçilmedi; şimdilik ücretli alan adı alınmıyor. Fiyat uzantıya ve kayıt firmasına göre değişir; müşteri sayısıyla değişmez."
     }
+  },
+  "story": {
+    "label": "ReBoard hikâyesi: tek bir liften Dünya'ya",
+    "skip": "Hikâyeyi geç",
+    "sections": {
+      "s1": "Her şey tek bir lifle başlar.",
+      "s2": "Konfeksiyonda her kesimden geriye kırpıntı kalır.",
+      "s3": "Atık tartılır; beyan ve tartım yan yana yazılır.",
+      "s4": "İpek ayıklanır, kalan lif parçalanır.",
+      "s5": "Bağlayıcıyla preslenir. Reçete henüz seçilmedi ve test edilmedi.",
+      "s6": "18 mm hedeflenen bir levha; her lekesi bir kaynaktan gelir.",
+      "s7": "Panel mobilyaya, mobilya eve girer.",
+      "s8": "Bugüne kadar doğrulanmış geri kazanım"
+    },
+    "counter": {
+      "value": "{kg} kg",
+      "atLeast": "en az {kg} kg",
+      "none": "Henüz doğrulanmış kayıt yok.",
+      "loading": "Yükleniyor",
+      "batches": "{count, plural, one {# doğrulanmış parti} other {# doğrulanmış parti}}"
+    }
   }
 }

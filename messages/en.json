@@ -869,5 +869,26 @@
       "neon_launch_storage": "Pay as you go. The share per customer is filled in once the data size is measured.",
       "domain": "No domain chosen; no paid domain for now. The price depends on the extension and the registrar; it does not change with the number of customers."
     }
+  },
+  "story": {
+    "label": "The ReBoard story: from a single fibre to the Earth",
+    "skip": "Skip the story",
+    "sections": {
+      "s1": "It starts with a single fibre.",
+      "s2": "Every cut in a garment factory leaves scraps behind.",
+      "s3": "Waste is weighed; declared and weighed kg sit side by side.",
+      "s4": "Silk is sorted out; the rest is shredded into fibre.",
+      "s5": "Pressed with a binder. The recipe has not yet been chosen or tested.",
+      "s6": "A board targeted at 18 mm; every fleck comes from a source.",
+      "s7": "The panel becomes furniture; furniture becomes home.",
+      "s8": "Verified recovery so far"
+    },
+    "counter": {
+      "value": "{kg} kg",
+      "atLeast": "at least {kg} kg",
+      "none": "No verified records yet.",
+      "loading": "Loading",
+      "batches": "{count, plural, one {# verified batch} other {# verified batches}}"
+    }
   }
 }

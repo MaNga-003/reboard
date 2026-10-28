@@ -105,7 +105,7 @@ Biçim: **Karar**, **Neden**, **Tarih**, kararı kim verdi (K: kullanıcı, C: C
 ### D-016 — Kiracı izolasyonu
 - **Karar:**
   - Kurum verisine erişim tek bir repository katmanından geçer: `withTenant(db, orgId)` (`src/db/repo/tenant.ts`). Görünürlük kuralı her sorguya eklenir; çağıranın koşulu onu gevşetemez.
-  - Paylaşılanlar bilinçli olarak sınırlıdır: açık ilanlar, herkese açık kurum profilleri ve panel lotları, taraf olunan teklif, anlaşma ve teslimler, taraf olunan anlaşmanın ilanı (kapanmış olsa da), sağlayıcının teslim ettiği partinin tartım sonucu, kurumdan bağımsız kaynaklı değerler. Açık pasaport ayrıca herkese açık lotun soy ağacına dokunan zincirlerin hükmünü ve süzülmüş olaylarını yayımlar (D-025). Geri kalan her şey yalnızca sahibine açıktır.
+  - Paylaşılanlar bilinçli olarak sınırlıdır: açık ilanlar, herkese açık kurum profilleri ve panel lotları, taraf olunan teklif, anlaşma ve teslimler, taraf olunan anlaşmanın ilanı (kapanmış olsa da), sağlayıcının teslim ettiği partinin tartım sonucu, kurumdan bağımsız kaynaklı değerler. Açık pasaport ayrıca herkese açık lotun soy ağacına dokunan zincirlerin hükmünü ve süzülmüş olaylarını yayımlar (D-025). Herkese açık sayaç platform geneli doğrulanmış kg toplamını yayımlar; kurum dökümü vermez (D-013). Geri kalan her şey yalnızca sahibine açıktır.
   - Tek seferlik ilan kabulde kapanır; alıcı teslim alırken ilanın başlığını ve lif bileşimini okumak zorundadır. Bu yüzden anlaşmanın iki tarafı ilanı görmeye devam eder; başka kurum kapanan ilanı görmez.
   - Yazma hakkı görmekten dardır: yalnızca sahibi yazar. Yok ile yetkisiz aynı hatayı verir.
   - Çapraz kiracı erişimi otomatik testle ölçülür (M-4). Postgres RLS Faz 5'te ikinci savunma hattı olarak eklenecek.

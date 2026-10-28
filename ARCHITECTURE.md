@@ -130,6 +130,7 @@ Alanların anlamları ve birimleri `docs/DATA_DICTIONARY.md` dosyasında.
     - Ayrıca `chainRole`, `lotAnchor`, `anchorStatus` ve `fibreRows`.
   - `/[locale]/pasaport/[lot]` sayfası sunucuda çizilir. QR, `src/components/passport/qr.ts` içindeki `qrPath` ile tek bir SVG yoluna çevrilir. `VerifyButton` aynı ucu tarayıcıdan yeniden çağırır.
   - `/api/verify/[lot]?a=<çapa>` ucu üç yanıt verir: 200 ve hüküm; okunamayan çapada 400; lot yoksa ya da açık değilse 404.
+- **Herkese açık sayaç** (D-013): `src/db/repo/counter.ts` içindeki `impactCounter(db)` doğrulanmış bütün atık partilerini okur ve `publicCounter` (`src/domain/impact.ts`) ile toplar. Kiracı katmanından geçmez. Dışarı yalnızca platform geneli kabul edilen kg, parti sayısı ve en zayıf sonuç sınıfı çıkar; kurum, parti kodu ve dönem çıkmaz. Doğrulanmış parti yoksa `null` döner ve sayaç gösterilmez.
 - Kütle dengesi (`massBalance`): `|Σ girdi − çıktı − fire − nem kaybı| ÷ Σ girdi ≤ %2`. Tolerans aşılırsa açıklama zorunludur (`balanceNoteMissing`). Değerlerden biri bilinmiyorsa ya da girdi 0 ise denge iddia edilmez (`withinTolerance: null`). Negatif kg reddedilir.
 - Soy ağacı (`genealogy(lotId)`): panel lotundan üretim partisine, oradan atık partilerine iner. Lotun payı, partide tek lot varsa 1, yoksa alan oranıdır; herhangi bir lotun alanı bilinmiyorsa pay da bilinmez. Sonuç; lotun tekstil kg'ını, bunun doğrulanmış kısmını, sağlayıcıya ve life göre dağılımını ve en zayıf sonuç sınıfını verir. Lot sayfasında iç içe liste olarak gösterilir (D-023).
 

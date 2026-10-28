@@ -567,9 +567,10 @@ def fibre_diffuse(name, color, rough=0.7, sheen=0.6, var=0.2):
     return m
 
 
-def fabric(name, warp, weft=None, pitch=(0.5, 0.6), fuzz=0.7, rough=0.85, twill=3, var=0.12, bump=0.6):
-    """Dokuma kumaş yüzeyi (Object koordinatı, birim = mm): çözgü Y, atkı X yönünde.
-    twill=n ise çözgü n-1 atkının üstünden geçer (ör. 3: denimin 2/1 dimisi), 0 ise bezayağı."""
+def fabric(name, warp, weft=None, pitch=(0.5, 0.6), fuzz=0.7, rough=0.85, twill=3, var=0.12, bump=0.6, coord="Object"):
+    """Dokuma kumaş yüzeyi (birim = mm): çözgü Y, atkı X yönünde. Düz parçada Object koordinatı; dikey ya da
+    kıvrık yüzeyde (çuval) mm cinsinden UV (`coord="UV"`). twill=n ise çözgü n-1 atkının üstünden geçer
+    (ör. 3: denimin 2/1 dimisi), 0 ise bezayağı."""
     weft = weft or warp
     m, b, n = principled(name)
     b.inputs["Roughness"].default_value = rough
@@ -578,7 +579,7 @@ def fabric(name, warp, weft=None, pitch=(0.5, 0.6), fuzz=0.7, rough=0.85, twill=
     pw, pf = pitch
     tc = n.nodes.new("ShaderNodeTexCoord")
     sep = n.nodes.new("ShaderNodeSeparateXYZ")
-    n.link(tc.outputs["Object"], sep.inputs["Vector"])
+    n.link(tc.outputs[coord], sep.inputs["Vector"])
     u = n.math("DIVIDE", sep.outputs["X"], pw)  # çözgü indeksi
     w = n.math("DIVIDE", sep.outputs["Y"], pf)  # atkı indeksi
     iu = n.math("FLOOR", n.math("ADD", u, 0.5))
@@ -598,14 +599,14 @@ def fabric(name, warp, weft=None, pitch=(0.5, 0.6), fuzz=0.7, rough=0.85, twill=
     h_weft = n.math("MULTIPLY", prof_weft, arch_weft)
     height = n.math("ADD", n.math("MULTIPLY", over, h_warp), n.math("MULTIPLY", n.math("SUBTRACT", 1.0, over), h_weft))
     # Lif dokusu: iplik boyunca gerilmiş gürültü, üstteki ipliğin yönüne göre.
-    fib_warp = n.noise(n.coords(scale=(14.0 / pw, 1.2 / pf, 14.0 / pw)), 1.0, 8.0, 0.7)
-    fib_weft = n.noise(n.coords(scale=(1.2 / pw, 14.0 / pf, 14.0 / pw)), 1.0, 8.0, 0.7)
+    fib_warp = n.noise(n.coords(coord, scale=(14.0 / pw, 1.2 / pf, 14.0 / pw)), 1.0, 8.0, 0.7)
+    fib_weft = n.noise(n.coords(coord, scale=(1.2 / pw, 14.0 / pf, 14.0 / pw)), 1.0, 8.0, 0.7)
     fib = n.math("ADD", n.math("MULTIPLY", over, fib_warp), n.math("MULTIPLY", n.math("SUBTRACT", 1.0, over), fib_weft))
     h_all = n.math("MULTIPLY_ADD", fib, 0.35, height)
     n.link(n.bump(h_all, bump, min(pw, pf) * 0.35), b.inputs["Normal"])
     col = n.mix(over, rgba(weft), rgba(warp))
-    blot = n.noise(n.coords(scale=(0.08, 0.08, 0.08)), 3.0, 4.0, 0.5)
-    slub = n.noise(n.coords(scale=(0.6 / pw, 0.02, 0.6 / pw)), 1.0, 3.0, 0.5)
+    blot = n.noise(n.coords(coord, scale=(0.08, 0.08, 0.08)), 3.0, 4.0, 0.5)
+    slub = n.noise(n.coords(coord, scale=(0.6 / pw, 0.02, 0.6 / pw)), 1.0, 3.0, 0.5)
     val = n.math("MULTIPLY_ADD", n.math("ADD", blot, slub), var / 2, 1.0 - var / 2)
     shading = n.math("MULTIPLY", val, n.math("MULTIPLY_ADD", height, 0.35, 0.65))
     n.link(n.shade(col, shading), b.inputs["Base Color"])
@@ -697,6 +698,58 @@ def kraft(name, base, dark, light, unit=1.0, rough=0.72):
     n.link(n.shade(col, tone), b.inputs["Base Color"])
     grain = n.noise(n.coords(scale=(k * 8,) * 3), 1.0, 8.0, 0.6)
     n.link(n.bump(n.math("MULTIPLY_ADD", grain, 0.3, height), 0.22, 0.012 * unit), b.inputs["Normal"])
+    return m
+
+
+def concrete(name, base, dark, light, unit=1.0, rough=0.62):
+    """Perdahlı beton zemin. unit: 1 mm kaç sahne birimi. Mala izi geniş lekeler, agrega benekleri ve
+    aşınmış bölgelerde parlaklık farkı; hepsi Wada renkleri arasında karışım."""
+    m, b, n = principled(name)
+    k = 1.0 / unit
+    trowel = n.noise(n.coords(scale=(k / 900, k / 350, k / 900), rot=(0.0, 0.0, 0.5)), 2.0, 5.0, 0.55)
+    col = n.mix(n.ramp(trowel, 0.35, 0.75), rgba(base), rgba(dark))
+    spots = n.noise(n.coords(scale=(k / 60,) * 3), 3.0, 4.0, 0.5)
+    col = n.mix(n.math("MULTIPLY", n.ramp(spots, 0.62, 0.74), 0.35), col, rgba(light))
+    vor = n.nodes.new("ShaderNodeTexVoronoi")
+    vor.inputs["Scale"].default_value = 1.0
+    n.link(n.coords(scale=(k / 4,) * 3), vor.inputs["Vector"])
+    agg = n.ramp(vor.outputs["Distance"], 0.18, 0.08)
+    col = n.mix(n.math("MULTIPLY", agg, 0.25), col, rgba(dark))
+    fine = n.noise(n.coords(scale=(k / 1.5,) * 3), 1.0, 6.0, 0.6)
+    n.link(n.shade(col, n.math("MULTIPLY_ADD", fine, 0.12, 0.94)), b.inputs["Base Color"])
+    n.link(n.math("MULTIPLY_ADD", trowel, 0.22, rough - 0.11), b.inputs["Roughness"])
+    n.link(n.bump(n.math("MULTIPLY_ADD", agg, 0.4, fine), 0.12, 0.3 * unit), b.inputs["Normal"])
+    return m
+
+
+def tread(name, color="Neutral Gray", pitch=30.0, rough=0.38, unit=1.0):
+    """Baklavalı sac (gözyaşı deseni): her hücrede bir uzun kabartma, komşu hücrede dik açıyla döner.
+    Galvaniz parlaklığı, kabartma tepelerinde aşınma."""
+    m, b, n = principled(name)
+    b.inputs["Metallic"].default_value = 1.0
+    b.inputs["Base Color"].default_value = rgba(color)
+    p = pitch * unit
+    tc = n.nodes.new("ShaderNodeTexCoord")
+    sep = n.nodes.new("ShaderNodeSeparateXYZ")
+    n.link(tc.outputs["Object"], sep.inputs["Vector"])
+    u = n.math("DIVIDE", sep.outputs["X"], p)
+    v = n.math("DIVIDE", sep.outputs["Y"], p)
+    fu = n.math("SUBTRACT", n.math("FRACT", u), 0.5)
+    fv = n.math("SUBTRACT", n.math("FRACT", v), 0.5)
+    odd = n.math("MODULO", n.math("ADD", n.math("ADD", n.math("FLOOR", u), n.math("FLOOR", v)), 1000.0), 2.0)
+    # Hücrede ±45° dönmüş elips: tek hücrede bir eksen, çift hücrede öbürü.
+    a = n.math("MULTIPLY", n.math("ADD", fu, fv), 0.7071)
+    c = n.math("MULTIPLY", n.math("SUBTRACT", fu, fv), 0.7071)
+    along = n.math("ADD", n.math("MULTIPLY", odd, a), n.math("MULTIPLY", n.math("SUBTRACT", 1.0, odd), c))
+    across = n.math("ADD", n.math("MULTIPLY", odd, c), n.math("MULTIPLY", n.math("SUBTRACT", 1.0, odd), a))
+    d = n.math("SQRT", n.math("ADD", n.math("POWER", n.math("DIVIDE", along, 0.36), 2.0),
+                                n.math("POWER", n.math("DIVIDE", across, 0.075), 2.0)))
+    ridge = n.ramp(d, 1.0, 0.55)
+    grime = n.noise(n.coords(scale=(1 / (p * 4),) * 3), 3.0, 6.0, 0.6)
+    n.link(n.math("MULTIPLY_ADD", grime, 0.25, n.math("MULTIPLY_ADD", ridge, -0.12, rough)), b.inputs["Roughness"])
+    n.link(n.shade(rgba(color), n.math("MULTIPLY_ADD", grime, 0.25, n.math("MULTIPLY_ADD", ridge, 0.1, 0.8))),
+           b.inputs["Base Color"])
+    n.link(n.bump(ridge, 0.6, 1.4 * unit), b.inputs["Normal"])
     return m
 
 

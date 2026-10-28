@@ -1,7 +1,7 @@
 {
   "$schema": "./docs/state.schema.json",
   "project": "ReBoard SaaS platformu",
-  "updated_at": "2026-10-28T11:03:18+03:00",
+  "updated_at": "2026-10-28T12:10:00+03:00",
   "current_phase": "F2",
   "deadlines": {
     "demo_freeze": "2026-10-29T18:00:00+03:00",
@@ -350,13 +350,13 @@
       "decisions": [
         "D-004"
       ],
-      "note": "Fotogerçekçi yön (D-004, Cycles). Yazıldı: story/blender/lib.py (Cycles kurulumu, ışık, kamera, malzeme kitaplığı), textile.py (lif düzeyinde 2/1 dimi denim: 16.676 eğri, 4,96 M nokta), s1_fibre.py (1. bölüm), build.py. 1. bölüm önizlemede tamam: açılışta indigo pamuk lifi çapraz uzanır (bükümlü şerit, sarmal fibril çizgisi), kamera saçaktan geri çekilip dimi dokuyu açar; kraft kâğıt lifleri kıvrık ve sonlu; saçak lifleri ~4 kıvrım/mm. Önizleme: %50 çözünürlük, 64 örnek, kare başına 4–8 s (RTX 3050). Sıradaki: 2–8. bölümler, story:render ve story:encode betikleri, mobil 9:16 denemesi."
+      "note": "Fotogerçekçi yön (D-004, Cycles). Yazıldı: story/blender/lib.py (Cycles kurulumu, ışık, kamera, malzeme kitaplığı), textile.py (lif düzeyinde 2/1 dimi denim: 16.676 eğri, 4,96 M nokta), scraps.py (kesim masası: yığılan dışbükey kırpıntılar, saçak lifleri, makas, tebeşir, toplu iğne; Wada 126/199/279), s1_fibre.py (1. bölüm, arka planda kesim masası), s2_scraps.py (2. bölüm: kamera şeritten 210 mm genişliğe geri çekilir), build.py; scripts/story-render.mjs (pnpm story:render) ve scripts/story-encode.mjs (pnpm story:encode, AVIF kalitesi bütçeye göre ikili aramayla). 1. bölüm önizlemede tamam. Sıradaki: kırpıntılı 1. bölüm ve 2. bölüm önizleme denetimi, 3–8. bölümler, mobil 9:16 denemesi."
     },
     {
       "id": "T3.4",
       "phase": "F3",
       "mode": "otonom",
-      "status": "yapılacak",
+      "status": "sürüyor",
       "title": "Kare dizisi oynatıcı ve yedek modlar (hareket azaltma, veri tasarrufu)",
       "acceptance": "Scroll'da kare süresi p99 en fazla 25 ms; hareket azaltma tercihinde statik kareler; mobilde 9:16 dizisi",
       "evidence": null,
@@ -365,7 +365,8 @@
       ],
       "decisions": [
         "D-004"
-      ]
+      ],
+      "note": "Yazıldı: src/components/story/sequence.ts (saf hesaplar: en-boy seçimi, ilerleme → kare, ilk bölüm önce yükleme sırası, saveData ve 2G'de kare atlama, en yakın yüklü kare, çözülmüş kareler için LRU önbellek, scroll yönüne göre çözme penceresi, metin görünürlüğü, cover dikdörtgeni; 11/11 birim testi); source.ts (manifest sunucuda okunur); StoryPlayer.tsx (GSAP ScrollTrigger scrub 0,35 s, yapışkan canvas, AVIF sınaması ve WebP yedeği, çözme penceresi 8 ileri 3 geri, hareket azaltmada bölüm başına statik kare, yönü tarayıcının seçtiği poster, hidrasyondan önce ağa çıkmaz, Hikâyeyi geç bağlantısı); StoryCounter.tsx ve /api/counter (D-013; 60 s önbellek, sonuç sınıfı rozeti, bilinmeyen varsa en az, okunamazsa bilinmiyor). Lenis kaldırıldı (kullanılmıyordu). tests/e2e/story.spec.ts: sayaç ucu ve TR/EN ekran testleri; kare ilerlemesi, hareket azaltma ve 9:16 testleri manifest gelince koşar. Sıradaki: animatik kareleri kodlayıp oynatıcıyı tarayıcıda ölçmek, story-perf (p99 ≤ 25 ms) ve story-contrast testleri."
     },
     {
       "id": "T3.5",
@@ -382,7 +383,8 @@
       "decisions": [
         "D-004",
         "D-014"
-      ]
+      ],
+      "note": "Süre ölçümü (2026-10-28, kırpıntılı 1. bölüm, 1920×1080, RTX 3050, OptiX + OIDN; kare 0 ve 29): 1024 örnek 264/338 s → 360 kare ≈ 30,1 saat; 512 örnek 145/171 s → ≈ 15,8 saat; 256 örnek 66/80 s → ≈ 7,3 saat; eşik 0,01 yalnız %3 kazandırır. 1024'e karşı (kare 29): 512 SSIM 0,990 ΔE p99 0,027; 256 SSIM 0,987 p99 0,032. Kodlama kaybı baskın: 14 MB bütçesi (kare başı ≈ 47 kB) kare 29'u SSIM 0,878'e düşürür ve en düşük kalitede bile 49 kB tutar; SSIM ≥ 0,98 için ≈ 200 kB (AVIF q60) gerekir. Kare 0 20 kB'da 0,995. Kodlanmış karede örnek sayısı farkı q70'te belirginleşir (1024/512/256: 0,986/0,981/0,978), q40'ta kaybolur. Öneri: 512 örnek ve kare başı kalite hedefli kodlama; karar Q-4. Testler yazıldı: story-contrast (kare bağımsız en kötü durum, 4/4) ve story-budget (belge ile kodlayıcı aynı 3/3; kare ölçümü manifest gelince)."
     },
     {
       "id": "T3.6",
@@ -568,6 +570,14 @@
       "blocks": [
         "T4.5"
       ]
+    },
+    {
+      "id": "Q-4",
+      "owner": "kullanıcı",
+      "question": "Final render ayarı: (1) örnek sayısı 256 (≈ 7,3 sa), 512 (≈ 16 sa) ya da 1024 (≈ 30 sa)? (2) 14 MB / ilk bölüm 1,5 MB bütçesi korunup yoğun lif karelerinde sıkıştırma kaybı (SSIM 0,88) kabul mü edilsin, yoksa kare başı kalite hedefi (SSIM ≥ 0,98) için bütçe büyüsün mü? Ölçümler T3.5 notunda.",
+      "blocks": [
+        "T3.5"
+      ]
     }
   ],
   "risks": [
@@ -670,9 +680,9 @@
     {
       "id": "M-9",
       "claim": "Hikâye metni okunur",
-      "threshold": "her bölümde kontrast ≥ 4,5",
-      "last_value": null,
-      "measured_at": null,
+      "threshold": "metin kartı en kötü kare üstünde (altı saf siyah ya da beyaz) her palette kontrast ≥ 4,5",
+      "last_value": "en kötü A 8,80, B 9,16, C 4,91 (kart %90 opak); bozma: %40 opak kartta 3/3 palet düştü",
+      "measured_at": "2026-10-28T11:45:00+03:00",
       "test": "tests/unit/story-contrast.test.ts"
     },
     {

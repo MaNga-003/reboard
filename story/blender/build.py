@@ -14,6 +14,7 @@ import lib  # noqa: E402
 
 MODULES = {
     1: "s1_fibre",
+    2: "s2_scraps",
 }
 
 

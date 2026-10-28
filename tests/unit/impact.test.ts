@@ -1,6 +1,6 @@
 import fc from "fast-check";
 import { describe, expect, it } from "vitest";
-import { classOf, impactSummary, kgTotal, monthsBack, type ImpactBatch, type ImpactProduction } from "@/domain/impact";
+import { classOf, impactSummary, kgTotal, monthsBack, publicCounter, type ImpactBatch, type ImpactProduction } from "@/domain/impact";
 import { Decimal } from "@/domain/result";
 
 const now = new Date("2026-10-27T12:00:00Z");
@@ -134,5 +134,23 @@ describe("impactSummary", () => {
   it("sınıf partilerin en zayıfı", () => {
     const s = impactSummary([batch({ id: "1", resultClass: "realized" }), batch({ id: "2", resultClass: "synthetic" })], null, supplier, now)!;
     expect(s.resultClass).toBe("synthetic");
+  });
+});
+
+describe("publicCounter: herkese açık sayaç", () => {
+  it("doğrulanmış parti yoksa sayaç yok: 0 kg bir başarı sayısı gibi okunur", () => {
+    expect(publicCounter([])).toBeNull();
+  });
+
+  it("kabul edilen kg toplanır; reddedilen düşülür; bilinmeyen 0 sayılmaz; sınıf en zayıfı", () => {
+    const c = publicCounter([
+      { weighedKg: "980", rejectedKg: "30", resultClass: "realized" },
+      { weighedKg: "500", rejectedKg: "0", resultClass: "synthetic" },
+      { weighedKg: null, rejectedKg: "0", resultClass: "synthetic" },
+    ])!;
+    expect(c.verified.kg!.toString()).toBe("1450");
+    expect(c.verified.unknown).toBe(1);
+    expect(c.batches).toBe(3);
+    expect(c.resultClass).toBe("synthetic");
   });
 });

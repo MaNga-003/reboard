@@ -65,6 +65,22 @@ export type Impact = {
   resultClass: ResultClass;
 };
 
+export type PublicCounter = { verified: KgTotal; batches: number; resultClass: ResultClass };
+
+/**
+ * Herkese açık sayaç (D-013): platform genelinde doğrulanmış partilerin kabul edilen kg'ı. Kurum dökümü taşımaz.
+ * Doğrulanmış parti yoksa null: "0 kg" bir başarı sayısı gibi okunur.
+ */
+export function publicCounter(verifiedBatches: readonly Pick<ImpactBatch, "weighedKg" | "rejectedKg" | "resultClass">[]): PublicCounter | null {
+  const resultClass = classOf(verifiedBatches);
+  if (resultClass === null) return null;
+  return {
+    verified: kgTotal(verifiedBatches.map((b) => acceptedKg(b.weighedKg, b.rejectedKg))),
+    batches: verifiedBatches.length,
+    resultClass,
+  };
+}
+
 export const TREND_MONTHS = 6;
 
 /** "2026-10" biçiminde, Türkiye takvimine göre ay; n ay geriye. */
