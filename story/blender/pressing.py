@@ -240,6 +240,16 @@ def _waves(rs, X, Y, scale, n=6, amp=1.0):
     return out * amp / math.sqrt(n / 2)
 
 
+def _blobs(rs, shape, cells, passes=3):
+    """Bulanıklaştırılmış beyaz gürültü (std 1): `cells` hücrelik düzensiz kabarıklar. Kısa dalgalı sinüs
+    toplamı yakında yumurta kolisi gibi düzenli okunuyordu."""
+    f = rs.standard_normal(shape)
+    for _ in range(passes):
+        for ax in (0, 1):
+            f = sum(np.roll(f, k, axis=ax) for k in range(-cells, cells + 1)) / (2 * cells + 1)
+    return (f - f.mean()) / f.std()
+
+
 def mat_field(seed=41, step=15.0):
     """Keçenin yükseklik alanı (yerel; keçe ortası x = masa ortası): kenarda kalınlık sıfıra iner, kenar çizgisi
     dalgalı (makasla kesilmiş değil, serilmiş lif). Döner: X, Y, Z (üst yüz, z), içeride mi."""
@@ -250,8 +260,10 @@ def mat_field(seed=41, step=15.0):
     X, Y = np.meshgrid(xs, ys)
     d = np.minimum(L / 2 - np.abs(X), W / 2 - np.abs(Y)) + _waves(rs, X, Y, 260, amp=22) + _waves(rs, X, Y, 70, amp=8)
     ramp = np.clip(d / 140, 0, 1)
-    # Taranmış keçe düz ama kabarık: uzun dalga hafif, kısa dalga tutam ölçeğinde (110 mm'lik dalga baloncuk gibiydi).
-    h = MAT_H * (1 + _waves(rs, X, Y, 600, amp=0.05) + _waves(rs, X, Y, 45, n=10, amp=0.025)) * ramp * ramp * (3 - 2 * ramp)
+    # Taranmış keçe düz ama kabarık: uzun dalga hafif, kısa kabarıklar tutam ölçeğinde ve düzensiz (110 mm'lik
+    # dalga baloncuk gibiydi).
+    bumps = _blobs(rs, X.shape, 2) * 0.02 + _blobs(rs, X.shape, 1, passes=2) * 0.01
+    h = MAT_H * (1 + _waves(rs, X, Y, 600, amp=0.05) + bumps) * ramp * ramp * (3 - 2 * ramp)
     base = ROLL_Z + SHEET[2]
     return X, Y, np.where(d > 0, base + h, base - 3.0), d > 0
 

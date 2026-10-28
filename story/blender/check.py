@@ -1,11 +1,12 @@
 # Sahne denetimi, render yok (pnpm story:check). Ölçümleri JSON'a yazar; eşikleri tests/unit/story-scene.test.ts koyar.
 #   blender -b --factory-startup -P story/blender/check.py -- --out <dosya.json>
 # 1. Sonraki bölümün eşyaları önceki bölümü bozmaz. Her bölüm sahneye bir şey katar (3.: zemin, tartım köşesi, masa
-#    eşyaları; 4.: ayıklama-parçalama istasyonu ve ışıkları). Bunlar önceki bölümlerin hiçbir karesinde görünmez
+#    eşyaları; 4.: ayıklama-parçalama istasyonu ve ışıkları; 5.: pres istasyonu ve ışıkları). Bunlar önceki
+#    bölümlerin hiçbir karesinde görünmez
 #    (kameradan ışın), görünen noktalara 1. bölümün üç ışığından gölge düşürmez (görünen noktadan ışık yüzeyine ışın)
 #    ve kattıkları ışıklar görünen noktalara doğrudan ulaşmaz (ışığın yayılım konisi, yüzeyin yönü ve arada engel).
 #    Masadaki kumaş topu bir ara anahtar ışığın %11'ini kesiyordu; kontrol ölçümü o yeri sınar. Havuz ışıkları
-#    eğilmeden her yöne yayılınca 3. bölüme ulaşmalı: erişim ölçüsünün körlüğünü bu kontrol yakalar.
+#    eğilmeden her yöne yayılınca 3. ve 4. bölüme ulaşmalı: erişim ölçüsünün körlüğünü bu kontrol yakalar.
 # 2. Çuvaldaki yığın folyo gibi parlamaz: kısa dalgalar büyütülünce kırpıntılar paralel oluklu, dik ve tepeli kalıyordu.
 # 3. Banttaki yük alaca mozaik değil, çoğu denim bir kumaş yığınıdır; ipek iki parça.
 import argparse
@@ -22,17 +23,20 @@ import numpy as np  # noqa: E402
 from mathutils import Vector  # noqa: E402
 
 import lib  # noqa: E402
+import pressing as PR  # noqa: E402
 import s1_fibre as s1  # noqa: E402
 import s2_scraps as s2  # noqa: E402
 import s3_weighing as s3  # noqa: E402
+import s4_shred as s4  # noqa: E402
 import scraps  # noqa: E402
 import shredding as SH  # noqa: E402
 import weighing as W  # noqa: E402
 
-STAGES = {3: (W, ("floor", "station", "bench")), 4: (SH, ("station",))}  # bölüm → sahneye kattığı kurucular
+# bölüm → sahneye kattığı kurucular
+STAGES = {3: (W, ("floor", "station", "bench")), 4: (SH, ("station",)), 5: (PR, ("station",))}
 BASE_LIGHTS = ("Fill", "Key", "Rim")  # 1. bölümün üçlüsü; sonraki bölümlerin ışıkları ayrı denetlenir
 BAD_BOLT = (-330.0, -330.0, 18.0)  # topun anahtar ışığı kestiği eski yeri (x, y, dönüş °)
-SECTIONS = ((1, s1, 0), (2, s2, 30), (3, s3, 60))
+SECTIONS = ((1, s1, 0), (2, s2, 30), (3, s3, 60), (4, s4, 90))
 VIEW_GRID, SHADOW_GRID, LIGHT_GRID = 48, 16, 5  # uzun kenardaki ışın sayısı; ışık yüzeyinde n×n örnek
 SHADOW_FRAMES = (0, 5, 10, 15, 20, 25, 29)  # bölüm içi
 
@@ -153,8 +157,8 @@ def move_bolt(x, y, rot_deg):
 
 
 def intrusion(aspect):
-    """1.–3. bölüm: sonraki bölüm eşyalarının görünmesi, gölgesi ve ışıklarının erişimi; ardından bilerek bozulmuş
-    üç kontrol."""
+    """1.–4. bölüm: sonraki bölüm eşyalarının görünmesi, gölgesi ve ışıklarının erişimi; ardından bilerek bozulmuş
+    dört kontrol."""
     out = {"view": {}, "shadow": {}, "reach": {}}
     cfg = lib.Cfg(aspect, "preview", lib.ROOT)
     for sec, mod, f0 in SECTIONS:
@@ -188,12 +192,13 @@ def intrusion(aspect):
             move_bolt(*BAD_BOLT)
             out["control"] = {"view_hits": hits, "key_shadow": shadow(sc, last, base, hide, only="Key")["Key"]}
             move_bolt(W.BOLT_AT[0], W.BOLT_AT[1], math.degrees(W.BOLT_ROT))
-        if sec == 3:
-            # Kontrol 3: havuz ışıkları eğilmeden her yöne yayılsa (spread π) 3. bölümün kadrajına ulaşmalı.
+        if sec in (3, 4):
+            # Kontrol 3–4: sonraki bölümün havuz ışıkları eğilmeden her yöne yayılsa (spread π) bu bölümün
+            # kadrajına ulaşmalı.
             for name in extra:
                 bpy.data.objects[name].data.spread = math.pi
             wide = reach(sc, pts, extra)
-            out["control"]["pool_reach"] = max(v["mean"] for v in wide.values())
+            out["control"]["pool_reach" if sec == 3 else "pool_reach_s4"] = max(v["mean"] for v in wide.values())
     return out
 
 
