@@ -347,13 +347,54 @@ class N:
         return _sock(n.outputs, "Result_Color")
 
     def coords(self, kind="Object", scale=(1, 1, 1), rot=(0, 0, 0), loc=(0, 0, 0)):
+        # Önce döndür, sonra ölçekle: Mapping düğümü ölçeği dönmeden önce uyguladığı için gerilmiş
+        # desen (lif, damar) tek düğümde hep aynı eksende kalır.
         tc = self.nodes.new("ShaderNodeTexCoord")
+        rt = self.nodes.new("ShaderNodeMapping")
+        rt.inputs["Rotation"].default_value = rot
+        rt.inputs["Location"].default_value = loc
+        self.links.new(tc.outputs[kind], rt.inputs["Vector"])
         mp = self.nodes.new("ShaderNodeMapping")
         mp.inputs["Scale"].default_value = scale
-        mp.inputs["Rotation"].default_value = rot
-        mp.inputs["Location"].default_value = loc
-        self.links.new(tc.outputs[kind], mp.inputs["Vector"])
+        self.links.new(rt.outputs["Vector"], mp.inputs["Vector"])
         return mp.outputs["Vector"]
+
+    def xform(self, vec, scale=(1, 1, 1), rot=(0, 0, 0), loc=(0, 0, 0)):
+        """coords() gibi, ama hazır bir vektörü döndürüp ölçekler."""
+        rt = self.nodes.new("ShaderNodeMapping")
+        rt.inputs["Rotation"].default_value = rot
+        rt.inputs["Location"].default_value = loc
+        self._set(rt.inputs["Vector"], vec)
+        mp = self.nodes.new("ShaderNodeMapping")
+        mp.inputs["Scale"].default_value = scale
+        self.links.new(rt.outputs["Vector"], mp.inputs["Vector"])
+        return mp.outputs["Vector"]
+
+    def warp(self, vec, scale, amount, detail=2.0):
+        """Vektörü düşük frekanslı gürültüyle kaydırır: düz desenler kıvrılır."""
+        nz = self.nodes.new("ShaderNodeTexNoise")
+        nz.inputs["Scale"].default_value = scale
+        nz.inputs["Detail"].default_value = detail
+        self._set(nz.inputs["Vector"], vec)
+        sub = self.nodes.new("ShaderNodeVectorMath")
+        sub.operation = "SUBTRACT"
+        self.links.new(nz.outputs["Color"], sub.inputs[0])
+        sub.inputs[1].default_value = (0.5, 0.5, 0.5)
+        add = self.nodes.new("ShaderNodeVectorMath")
+        add.operation = "MULTIPLY_ADD"
+        self.links.new(sub.outputs[0], add.inputs[0])
+        add.inputs[1].default_value = (amount, amount, amount)
+        self._set(add.inputs[2], vec)
+        return add.outputs[0]
+
+    def ramp(self, x, lo, hi):
+        """x'i [lo, hi] aralığından [0, 1]'e yumuşak geçişle taşır."""
+        mr = self.nodes.new("ShaderNodeMapRange")
+        mr.interpolation_type = "SMOOTHSTEP"
+        mr.inputs["From Min"].default_value = lo
+        mr.inputs["From Max"].default_value = hi
+        self._set(mr.inputs["Value"], x)
+        return mr.outputs["Result"]
 
     def noise(self, vec, scale, detail=6.0, rough=0.55, dims="3D"):
         n = self.nodes.new("ShaderNodeTexNoise")
@@ -427,8 +468,28 @@ def steel(name="Steel", color="Neutral Gray", rough=0.3, brushed=True, scale=1.0
     return m
 
 
-def fibre_hair(name, color, rough=0.45, radial=0.6, var=0.25, ior=1.55):
-    """Tek tek lifler için saç BSDF'i. Renk Wada'dan; lif başına parlaklık sapması `var`."""
+def pick(n, fac, colours):
+    """fac (0–1) ile Wada renklerinden birini seçer; ara ton üretmez (D-014)."""
+    ramp = n.nodes.new("ShaderNodeValToRGB")
+    ramp.color_ramp.interpolation = "CONSTANT"
+    els = ramp.color_ramp.elements
+    k = len(colours)
+    els[0].position, els[0].color = 0.0, rgba(colours[0])
+    if k == 1:
+        els[1].position, els[1].color = 1.0, rgba(colours[0])
+    else:
+        els[1].position, els[1].color = 1.0 / k, rgba(colours[1])
+        for j in range(2, k):
+            els.new(j / k).color = rgba(colours[j])
+    n._set(ramp.inputs["Fac"], fac)
+    return ramp.outputs["Color"]
+
+
+def fibre_hair(name, colours, rough=0.55, radial=0.85, var=0.25, ior=1.55, yarn_weight=0.65, streak=0.18):
+    """Tek tek lifler için saç BSDF'i. Renk Wada listesinden seçilir: iplik başına (`yarn` eğri niteliği)
+    ve lif başına rastgele. `streak` lif boyunca parlaklık dalgası (pamuğun kıvrımlı yüzeyi)."""
+    if isinstance(colours, str):
+        colours = [colours]
     m, out, n = surface_only(name)
     h = n.nodes.new("ShaderNodeBsdfHairPrincipled")
     h.parametrization = "COLOR"
@@ -437,9 +498,60 @@ def fibre_hair(name, color, rough=0.45, radial=0.6, var=0.25, ior=1.55):
     h.inputs["Coat"].default_value = 0.0
     h.inputs["IOR"].default_value = ior
     info = n.nodes.new("ShaderNodeHairInfo")
+    attr = n.nodes.new("ShaderNodeAttribute")
+    attr.attribute_name = "yarn"
+    fac = n.math("MULTIPLY_ADD", attr.outputs["Fac"], yarn_weight, n.math("MULTIPLY", info.outputs["Random"], 1 - yarn_weight))
+    base = pick(n, fac, colours)
+    along = n.nodes.new("ShaderNodeTexNoise")
+    along.noise_dimensions = "2D"
+    along.inputs["Scale"].default_value = 9.0
+    along.inputs["Detail"].default_value = 3.0
+    comb = n.nodes.new("ShaderNodeCombineXYZ")
+    n.link(info.outputs["Intercept"], comb.inputs["X"])
+    n.link(n.math("MULTIPLY", info.outputs["Random"], 97.0), comb.inputs["Y"])
+    n.link(comb.outputs[0], along.inputs["Vector"])
     val = n.math("MULTIPLY_ADD", info.outputs["Random"], var, 1.0 - var / 2)
-    n.link(n.shade(rgba(color), val), h.inputs["Color"])
+    val = n.math("MULTIPLY", val, n.math("MULTIPLY_ADD", along.outputs["Fac"], streak * 2, 1.0 - streak))
+    # Büküm parıltısı: yassı lif ~0,2 mm'de bir döner, ışığı aralıklı yakalar (birim mm).
+    dist = n.math("MULTIPLY", info.outputs["Intercept"], info.outputs["Length"])
+    wave = n.math("SINE", n.math("MULTIPLY_ADD", dist, 2 * math.pi / 0.2, n.math("MULTIPLY", info.outputs["Random"], 61.0)))
+    val = n.math("MULTIPLY", val, n.math("MULTIPLY_ADD", wave, 0.12, 0.92))
+    n.link(n.shade(base, val), h.inputs["Color"])
     n.link(h.outputs[0], out.inputs["Surface"])
+    return m
+
+
+def fibre_ribbon(name, colours, unit=1.0):
+    """Yakın plandaki tek pamuk lifi (UV: u = boy, mm; v = çevre). İndigo halka boyar: yüzey koyu,
+    yer yer açık lekeler. Fibriller lif boyunca ~25° sarmal çizer; ince olduğu için ışığı geçirir."""
+    if isinstance(colours, str):
+        colours = [colours]
+    m, b, n = principled(name)
+    b.inputs["Roughness"].default_value = 0.62
+    b.inputs["Sheen Weight"].default_value = 0.6
+    b.inputs["Sheen Roughness"].default_value = 0.3
+    b.inputs["Coat Weight"].default_value = 0.04
+    b.inputs["Coat Roughness"].default_value = 0.35
+    b.inputs["Subsurface Weight"].default_value = 0.55
+    b.inputs["Subsurface Scale"].default_value = 0.012 * unit
+    tc = n.nodes.new("ShaderNodeTexCoord")
+    sep = n.nodes.new("ShaderNodeSeparateXYZ")
+    n.link(tc.outputs["UV"], sep.inputs["Vector"])
+    u = n.math("DIVIDE", sep.outputs["X"], unit)
+    # Sarmal: çevre (~0,056 mm) her 0,12 mm'de bir tur döner.
+    v = n.math("MULTIPLY_ADD", u, 1.0 / 0.12, sep.outputs["Y"])
+    comb = n.nodes.new("ShaderNodeCombineXYZ")
+    n.link(n.math("MULTIPLY", u, 2.5), comb.inputs["X"])
+    n.link(n.math("MULTIPLY", v, 46.0), comb.inputs["Y"])
+    fib = n.noise(comb.outputs[0], 1.0, 4.0, 0.55)
+    blot = n.noise(n.coords("UV", scale=(1.2 / unit, 2.0, 1.0)), 1.5, 3.0, 0.5)
+    base = rgba(colours[0])
+    if len(colours) > 1:
+        base = n.mix(n.math("MULTIPLY", n.ramp(blot, 0.42, 0.72), 0.55), base, rgba(colours[-1]))
+    val = n.math("MULTIPLY_ADD", fib, 0.3, 0.85)
+    n.link(n.shade(base, val), b.inputs["Base Color"])
+    n.link(n.shade(base, 1.0), b.inputs["Subsurface Radius"])
+    n.link(n.bump(fib, 0.4, 0.0012 * unit), b.inputs["Normal"])
     return m
 
 
@@ -556,6 +668,38 @@ def wood(name, light, dark, scale=1.0, rough=0.55, coat=0.2):
     return m
 
 
+def kraft(name, base, dark, light, unit=1.0, rough=0.72):
+    """Kraft kâğıt: makroda selüloz lifleri seçilir (~40 µm kalın, 1–2 mm uzun). unit: 1 mm kaç sahne birimi."""
+    m, b, n = principled(name)
+    b.inputs["Roughness"].default_value = rough
+    b.inputs["Sheen Weight"].default_value = 0.25
+    k = 1.0 / unit
+    col = rgba(base)
+    height = None
+    tc = n.nodes.new("ShaderNodeTexCoord")
+    # Lifler kıvrık ve sonlu: koordinat bükülür, her çizgi parçalara bölünür (yoksa uzun düz çizik gibi durur).
+    obj = n.warp(tc.outputs["Object"], k * 0.7, 0.5 * unit)
+    layers = (0.3, 1.4, 2.2, 2.9, 0.9, 1.9, 2.6)
+    for i, rot in enumerate(layers):
+        loc = (i * 7.3, i * 3.1, i * 5.7)
+        v = n.xform(obj, (k / 1.3, k / 0.05, k / 0.05), (0.0, 0.0, rot), loc)
+        nz = n.noise(v, 1.0, 1.0, 0.5)
+        streak = n.math("ABSOLUTE", n.math("SUBTRACT", nz, 0.5))
+        streak = n.ramp(streak, 0.05, 0.0)
+        seg = n.noise(n.xform(obj, (k / 1.1, k / 0.25, k / 0.25), (0.0, 0.0, rot), loc), 1.0, 1.0, 0.5)
+        streak = n.math("MULTIPLY", streak, n.ramp(seg, 0.46, 0.56))
+        tone = (dark, light, base)[i % 3]
+        col = n.mix(n.math("MULTIPLY", streak, 0.32 + 0.06 * (i % 2)), col, rgba(tone))
+        height = streak if height is None else n.math("MAXIMUM", height, streak)
+    blot = n.noise(n.coords(scale=(k * 0.6,) * 3), 2.0, 6.0, 0.6)
+    pulp = n.noise(n.coords(scale=(k * 22,) * 3), 1.0, 4.0, 0.6)
+    tone = n.math("MULTIPLY", n.math("MULTIPLY_ADD", blot, 0.16, 0.92), n.math("MULTIPLY_ADD", pulp, 0.1, 0.95))
+    n.link(n.shade(col, tone), b.inputs["Base Color"])
+    grain = n.noise(n.coords(scale=(k * 8,) * 3), 1.0, 8.0, 0.6)
+    n.link(n.bump(n.math("MULTIPLY_ADD", grain, 0.3, height), 0.22, 0.012 * unit), b.inputs["Normal"])
+    return m
+
+
 def paper(name, color, rough=0.8, scale=1.0):
     m, b, n = principled(name)
     b.inputs["Roughness"].default_value = rough
@@ -644,16 +788,19 @@ def mesh_from(name, verts, faces, material=None, smooth_shade=True):
 
 
 def curves(name, strands, material):
-    """strands: [(N,3) dizi, (N,) yarıçap] listesi. Tek Curves nesnesi; Cycles gerçek eğri olarak izler."""
+    """strands: [(N,3) dizi, (N,) yarıçap[, iplik değeri 0–1]] listesi. Tek Curves nesnesi; Cycles gerçek
+    eğri olarak izler. İplik değeri `yarn` eğri niteliğine yazılır (aynı ipliğin lifleri aynı tonu paylaşır)."""
     import numpy as np
 
     c = bpy.data.hair_curves.new(name)
-    c.add_curves([len(p) for p, _ in strands])
-    pos = np.concatenate([p for p, _ in strands]).astype(np.float32)
-    rad = np.concatenate([r for _, r in strands]).astype(np.float32)
+    c.add_curves([len(s[0]) for s in strands])
+    pos = np.concatenate([s[0] for s in strands]).astype(np.float32)
+    rad = np.concatenate([s[1] for s in strands]).astype(np.float32)
     c.position_data.foreach_set("vector", pos.ravel())
     attr = c.attributes.get("radius") or c.attributes.new("radius", "FLOAT", "POINT")
     attr.data.foreach_set("value", rad)
+    yarn = np.array([s[2] if len(s) > 2 else 0.5 for s in strands], dtype=np.float32)
+    c.attributes.new("yarn", "FLOAT", "CURVE").data.foreach_set("value", yarn)
     c.materials.append(material)
     return link(bpy.data.objects.new(name, c))
 

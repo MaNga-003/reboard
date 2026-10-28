@@ -1,7 +1,7 @@
 {
   "$schema": "./docs/state.schema.json",
   "project": "ReBoard SaaS platformu",
-  "updated_at": "2026-10-28T02:25:02+03:00",
+  "updated_at": "2026-10-28T11:03:18+03:00",
   "current_phase": "F2",
   "deadlines": {
     "demo_freeze": "2026-10-29T18:00:00+03:00",
@@ -350,7 +350,7 @@
       "decisions": [
         "D-004"
       ],
-      "note": "Fotogerçekçi yöne geçildi (D-004, Cycles). Yazıldı: story/blender/lib.py (Cycles kurulumu, ışık, kamera, malzeme kitaplığı), textile.py (lif düzeyinde 2/1 dimi denim: 12.644 eğri, 3,85 M nokta), s1_fibre.py (1. bölüm), build.py. İlk önizleme: 0, 15 ve 29. kareler, %50 çözünürlük, 64 örnek, kare başına 5–6 s (RTX 3050). Önizleme henüz incelenmedi. Sıradaki: önizlemeyi incele, pozlama ve ışığı ölçerek ayarla, sonra 2–8. bölümler, story:render ve story:encode betikleri."
+      "note": "Fotogerçekçi yön (D-004, Cycles). Yazıldı: story/blender/lib.py (Cycles kurulumu, ışık, kamera, malzeme kitaplığı), textile.py (lif düzeyinde 2/1 dimi denim: 16.676 eğri, 4,96 M nokta), s1_fibre.py (1. bölüm), build.py. 1. bölüm önizlemede tamam: açılışta indigo pamuk lifi çapraz uzanır (bükümlü şerit, sarmal fibril çizgisi), kamera saçaktan geri çekilip dimi dokuyu açar; kraft kâğıt lifleri kıvrık ve sonlu; saçak lifleri ~4 kıvrım/mm. Önizleme: %50 çözünürlük, 64 örnek, kare başına 4–8 s (RTX 3050). Sıradaki: 2–8. bölümler, story:render ve story:encode betikleri, mobil 9:16 denemesi."
     },
     {
       "id": "T3.4",

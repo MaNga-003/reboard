@@ -94,7 +94,8 @@ Biçim: **Karar**, **Neden**, **Tarih**, kararı kim verdi (K: kullanıcı, C: C
 
 ### D-014 — Renkler yalnızca Sanzo Wada sözlüğünden
 - **Karar:** Arayüz ve hikâye renkleri `MaNga-003/dictionary-of-colour-combinations` deposundaki 159 renkten ve 348 kombinasyondan seçilir. Ana palet kullanıcı tarafından seçilecek (açık soru Q-1). Metin kontrastı ve OKLab ΔE eşikleri otomatik testle denetlenir.
-- **Tarih:** 2026-10-27 · K
+- **Hikâye render'ı:** Malzemelerin temel renkleri, ışıkların ve dünyanın rengi Wada'dan gelir (`lib.rgba(ad)`; ad sözlükte yoksa render durur). Doku içinde iki Wada rengi arasındaki geçiş ve parlaklık değişimi serbesttir; fotogerçekçi ışık zaten ara tonlar üretir. Dünya küresinde NASA Blue Marble fotoğrafı kullanılır; o, renk seçimi değil gerçek görüntüdür.
+- **Tarih:** 2026-10-27 · K (render notu 2026-10-28 · C)
 
 ### D-015 — MVP kapsamı dışında kalanlar
 - **Karar:** Canlı GPS, yapay zekâ ile rota optimizasyonu, ödeme ve emanet hesabı, karbon kredisi, blokzincir ve mobil uygulama MVP'ye girmez.
