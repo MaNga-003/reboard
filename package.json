@@ -26,7 +26,8 @@
     "deploy:prod": "vercel deploy --prod",
     "live:check": "node scripts/live-smoke.mjs",
     "story:render": "node scripts/story-render.mjs",
-    "story:encode": "node scripts/story-encode.mjs"
+    "story:encode": "node scripts/story-encode.mjs",
+    "story:check": "node scripts/story-check.mjs"
   },
   "dependencies": {
     "@electric-sql/pglite": "^0.5.12",

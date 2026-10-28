@@ -61,6 +61,26 @@ test("hareket azaltma: canvas yok, her bölüm tek statik kare ve metniyle", asy
   for (const f of await figures.all()) await expect(f.locator("figcaption")).not.toBeEmpty();
 });
 
+test("AVIF çözülemezse statik hikâye: canvas yok, her bölümün durağan karesi WebP olarak sunucuda", async ({ page }) => {
+  test.skip(!(await hasStory(page)), "kareler henüz kodlanmadı (public/story/manifest.json yok)");
+  await page.setViewportSize({ width: 1440, height: 900 });
+  // AVIF'siz tarayıcının yerine: AVIF istekleri düşer, oynatıcı ilk kareyi çözemez (D-004). Chromium <picture>'da
+  // yine AVIF kaynağını seçtiği için görüntünün kendisi burada ölçülmez; yedeğin dosyası ve yerleşimi ölçülür.
+  await page.route("**/story/**/*.avif", (r) => r.abort());
+  await page.goto("/tr");
+  await expect(page.locator("section figure").first()).toBeVisible();
+  await expect(page.locator("section canvas")).toHaveCount(0);
+  const figures = await page.locator("section figure").all();
+  const manifest = await (await page.request.get("/story/manifest.json")).json();
+  expect(figures.length).toBe(manifest.variants.d.stills.length);
+  for (const f of figures) {
+    await expect(f.locator("figcaption")).not.toBeEmpty();
+    const src = (await f.locator("img").getAttribute("src"))!;
+    expect(src).toMatch(/\.webp$/);
+    expect((await page.request.get(src)).ok(), src).toBe(true);
+  }
+});
+
 test("dikey ekranda 9:16 dizisi seçilir", async ({ page }) => {
   test.skip(!(await hasStory(page)), "kareler henüz kodlanmadı (public/story/manifest.json yok)");
   const manifest = await (await page.request.get("/story/manifest.json")).json();

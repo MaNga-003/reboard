@@ -34,7 +34,7 @@ Kare sayısı masaüstü (16:9) içindir; mobil (9:16) bunun yarısıdır.
 ```mermaid
 flowchart LR
   B[story/blender/*.py<br/>sahne kodu] -->|blender -b -P| R[story/out/{d,m}/*.png<br/>git dışı]
-  R -->|scripts/story-encode.mjs<br/>sharp| E[public/story/{d,m}/*.avif, *.webp]
+  R -->|scripts/story-encode.mjs<br/>sharp| E[public/story/{d,m}/*.avif<br/>durağan karelerde *.webp]
   E --> M[public/story/manifest.json<br/>bölümler, kareler, boyutlar]
   M --> P[StoryPlayer<br/>canvas]
 ```
@@ -43,10 +43,13 @@ flowchart LR
    - `lib.py`: ortak kurulum, ışık, kamera ve malzeme kitaplığı (renkler Wada'dan).
    - `textile.py`: lif düzeyinde 2/1 dimi denim; 1. ve 2. bölüm aynı şeridi kullanır.
    - `scraps.py`: kesim masası. Dışbükey kırpıntılar bir yükseklik alanına üst üste düşer; kenarlarından lif saçağı sarkar. Makas, tebeşir ve toplu iğneler masada durur. Kumaş renkleri Wada 126, 199 ve 279 kombinasyonlarından gelir. 1. bölümde arka planda bulanık, 2. bölümde kadrajın kendisidir.
+   - `weighing.py`: atölyenin geri kalanı. Kraft kâğıtlı kontrplak masa, beton zemin, önde yer kantarı (indikatörün ekranı kameraya dönük değil, karede rakam yok; D-011) ve kantarın üstünde kırpıntı dolu PP çuval. Çuvalın ağzı dışa kıvrılır, kumaşı mathutils gürültüsüyle buruşur; üstündeki kırpıntılar `scraps.heap` ile, daha buruşuk (`crumple`) düşer. Çuvalda rakamsız, çubuk çizgili kraft etiket ve sicim vardır. Kesim masasında 3. bölümün ara kareleri boş kalmasın diye yıkanmış denim topu (dimi görünür; ekru atkıyla uzaktan gri-mor okunuyordu) ve farklı boyda, kaymış katlanmış kumaşlar durur. 1. bölümden beri sahnede durur; ilk iki bölümde kadraj dışında kalır ve gölge de düşürmez: top bir ara anahtar ışığın %9'unu kesip 2. bölümün son karesini karartıyordu, yeri değiştirildi (`pnpm story:check`, M-30).
+   - `check.py`: render etmeden sahne denetimi (`pnpm story:check`, ≈ 2,5 dk). 3. bölümün kattıkları 1. ve 2. bölümün hiçbir karesinde görünmez ve görünen yüzeye gölge düşürmez; çuvaldaki yığın folyo gibi oluklu, dik ya da taşkın değildir. Ölçümler sahne kodunun özetiyle `story/checks.json`'a yazılır; `story/blender` değişip denetim yeniden koşulmazsa `tests/unit/story-scene.test.ts` düşer.
    - `s1_fibre.py` … `s8_*.py`: bölüm sahneleri (1 birim = 1 mm ya da 1 m, bölüme göre).
-2. Dünya dokusu NASA Blue Marble'dan gelir (kamu malı).
-3. Render 16:9 için 1920×1080, 9:16 için 1080×1920 olarak alınır. Animatik için yarı çözünürlük ve düşük örnekleme kullanılır.
-4. `pnpm story:encode` PNG'leri AVIF'e (WebP yedeğiyle) çevirir ve `manifest.json` üretir.
+   - Kamera: 2. bölüm kesim masasının ortasına iner (odak `s2.CENTER`). 3. bölüm oradan geri çekilip azimut 222°'den 200°'ye döner. Bu açıda 1. bölümün üç ışığı klasik üçlü düzen kurar: anahtar ışık sağ önden, arka ışık arkadan, dolgu sol önden. 236°'de anahtar ışık kamera ekseninde kalıyor ve görüntü düzleşiyordu. Işıklar kameraya görünmez (`visible_camera = False`), yansımalarda görünür.
+2. Dünya dokusu NASA Blue Marble Next Generation'dan gelir (Ağustos 2004; künye "NASA Earth Observatory", kaynak `docs/RESEARCH.md` §4).
+3. Render 16:9 için 1920×1080, 9:16 için 1080×1920 olarak alınır. Final render piksel başına 128 örnekle (uyarlamalı eşik 0,004) alınır; 360 kare ≈ 3,6 saat (D-004). Animatik yarı çözünürlükte ve 128 örnekle (eşik 0,02) alınır.
+4. `pnpm story:encode` her kareyi, kendi PNG'sine karşı SSIM 0,97'ye ulaşan en düşük AVIF kalitesiyle kodlar ve `manifest.json` üretir. Böylece sade kare küçük kalır, lif dolu kare inceliğini korur (1. bölümün 0. karesi q20 ile 5 kB, 29. karesi q55 ile 165 kB). Tavan aşılırsa hedef bütün kareler için 0,005 adımla düşer, 0,95'in altına inmez. WebP yalnızca posterde ve her bölümün durağan karesinde (bölümün ortadaki karesi) üretilir.
 5. Ham PNG'ler `story/out/` altında durur ve git'e girmez.
 
 ## 4. Oynatıcı (`src/components/story/StoryPlayer.tsx`)
@@ -54,7 +57,7 @@ flowchart LR
 - Yapışkan (sticky) bir canvas'a çizer. Scroll ilerlemesi GSAP ScrollTrigger ile (scrub 0,35 s) kare indeksine çevrilir; bölüm başına 120 svh scroll.
 - `manifest.json` sunucuda okunur (`source.ts`); manifest yoksa sayfa hikâyesiz açılır.
 - İlk kare posterdir (LCP öğesi). Yönü tarayıcı `<picture>` içindeki `media="(orientation: portrait)"` ile seçer; sunucu yönü bilmediği için telefon böylece yalnızca 9:16 kareyi indirir. Oynatıcı hidrasyon bitip yön ve hareket tercihi öğrenilmeden ağa çıkmaz.
-- AVIF desteği ilk kare çözülerek sınanır; çözülemezse bütün dizi WebP'den gelir.
+- AVIF desteği ilk kare çözülerek sınanır; çözülemezse statik hikâye gösterilir (hareket azaltma modundaki gibi, kareler WebP). Dizinin WebP kopyası yoktur: aynı kalitede AVIF'in 1,7–2,4 katı yer tutar ve yayın paketini 100 MB sınırının üstüne taşırdı.
 - İlk bölümün kareleri önce yüklenir (4 paralel istek); gerisi tarayıcı boştayken (`requestIdleCallback`, Safari'de zamanlayıcı).
 - İndirilen kareler sıkıştırılmış durur; `createImageBitmap` ile yalnızca o anki karenin 8 ilerisi ve 3 gerisi çözülür. Çözülmüş kareler LRU önbellekte tutulur (28 kare; `deviceMemory ≤ 4` ise 15). İstenen kare hazır değilse en yakın çözülmüş kare çizilir, boş kare kalmaz.
 - Masaüstünde 16:9, dar ve dikey ekranda 9:16 dizisi seçilir.
@@ -70,11 +73,15 @@ flowchart LR
 
 | Ölçü | Eşik | Test |
 | --- | --- | --- |
-| Masaüstü dizisi toplamı | ≤ 14 MB | `tests/unit/story-budget.test.ts` (manifest'i dolaşır) |
-| Mobil dizisi toplamı | ≤ 6 MB | aynı |
-| İlk bölüm | ≤ 1,5 MB | aynı |
+| Kare kalitesi (SSIM, kendi PNG'sine karşı) | Hedef 0,97; tavan için en çok 0,95'e iner | `tests/unit/story-budget.test.ts` (manifest'i dolaşır; ham PNG diskteyse yeniden ölçer) |
+| Masaüstü dizisi toplamı | ≤ 25 MB | aynı |
+| Mobil dizisi toplamı | ≤ 12 MB | aynı |
+| İlk bölüm | ≤ 3 MB | aynı |
+| Yayın paketi (CLI yüklemesi, kareler dahil) | ≤ 90 MB (Vercel Hobby sınırı 100 MB) | `tests/unit/deploy-config.test.ts` |
 | Metin kartının en kötü kare üstündeki kontrastı (%90 opak zemin, altında saf siyah ya da beyaz) | Her palette ≥ 4,5 | `tests/unit/story-contrast.test.ts` |
-| Ardışık karelerde sıçrama | SSIM eşiği ilk renderdan sonra kalibre edilir | `tests/unit/story-continuity.test.ts` |
+| Ardışık karelerde sıçrama | SSIM eşiği ilk renderdan sonra kalibre edilir; bölüm sınırındaki bir karelik duraklama sıçrama sayılmaz | `tests/unit/story-continuity.test.ts` |
+| Sonraki bölümün eşyaları önceki bölümlerde | Görünen ışın 0; her ışıkta kesilen pay ≤ 0,02 | `tests/unit/story-scene.test.ts` (`pnpm story:check` ölçer) |
+| Çuvaldaki yığın | Dik yüz ≤ 0,02, oluk ≤ 0,15, tepe ≤ 90 mm, örtü ≥ 0,85 | aynı |
 | Scroll kare süresi | p99 ≤ 25 ms (masaüstü) | `tests/e2e/story-perf.spec.ts` |
 
 ## 6. Takvim ve yedek

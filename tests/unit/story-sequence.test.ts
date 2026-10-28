@@ -13,7 +13,7 @@ import {
 } from "@/components/story/sequence";
 
 const frames = (n: number, step = 1): ManifestFrame[] =>
-  Array.from({ length: n }, (_, i) => ({ index: i * step, avif: "", webp: "", bytes: { avif: 1, webp: 1 } }));
+  Array.from({ length: n }, (_, i) => ({ index: i * step, avif: "", webp: null, quality: 50, ssim: 0.97, bytes: { avif: 1, webp: null } }));
 
 describe("pickAspect", () => {
   it("dikey ekranda 9:16, yatayda 16:9; istenen yoksa eldeki", () => {

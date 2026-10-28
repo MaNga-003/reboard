@@ -1,0 +1,123 @@
+{
+  "scene": "30814a30928b98b785a737e8346630f0c14e03f8201c6e601d55a962263f7f08",
+  "intrusion": {
+    "d": {
+      "view": {
+        "s1": {
+          "rays": 38880,
+          "hits": 0
+        },
+        "s2": {
+          "rays": 38880,
+          "hits": 0
+        }
+      },
+      "shadow": {
+        "s1": {
+          "points": 1008,
+          "lights": {
+            "Fill": {
+              "mean": 0,
+              "max": 0
+            },
+            "Key": {
+              "mean": 0,
+              "max": 0
+            },
+            "Rim": {
+              "mean": 0,
+              "max": 0
+            }
+          }
+        },
+        "s2": {
+          "points": 1008,
+          "lights": {
+            "Fill": {
+              "mean": 0,
+              "max": 0
+            },
+            "Key": {
+              "mean": 0,
+              "max": 0
+            },
+            "Rim": {
+              "mean": 0,
+              "max": 0
+            }
+          }
+        }
+      },
+      "control": {
+        "view_hits": 1204,
+        "key_shadow": {
+          "mean": 0.08972,
+          "max": 0.44
+        }
+      }
+    },
+    "m": {
+      "view": {
+        "s1": {
+          "rays": 38880,
+          "hits": 0
+        },
+        "s2": {
+          "rays": 38880,
+          "hits": 0
+        }
+      },
+      "shadow": {
+        "s1": {
+          "points": 1008,
+          "lights": {
+            "Fill": {
+              "mean": 0,
+              "max": 0
+            },
+            "Key": {
+              "mean": 0,
+              "max": 0
+            },
+            "Rim": {
+              "mean": 0,
+              "max": 0
+            }
+          }
+        },
+        "s2": {
+          "points": 1008,
+          "lights": {
+            "Fill": {
+              "mean": 0,
+              "max": 0
+            },
+            "Key": {
+              "mean": 0,
+              "max": 0
+            },
+            "Rim": {
+              "mean": 0,
+              "max": 0
+            }
+          }
+        }
+      },
+      "control": {
+        "view_hits": 1290,
+        "key_shadow": {
+          "mean": 0.25833,
+          "max": 1
+        }
+      }
+    }
+  },
+  "heap": {
+    "pieces": 82,
+    "steep": 0.0096,
+    "groove": 0.1242,
+    "crest_mm": 70.2,
+    "cover": 0.8891,
+    "control_groove": 0.2139
+  }
+}

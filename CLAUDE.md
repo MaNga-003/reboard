@@ -83,6 +83,7 @@ pnpm docs:check       # belge tutarlılığı
 pnpm progress         # faz faz biten görevler ve ilerleme oranı (mesai sonu raporu)
 pnpm story:render     # Blender ile kareleri render et (story/blender)
 pnpm story:encode     # PNG → AVIF/WebP ve manifest.json
+pnpm story:check      # render etmeden sahne denetimi → story/checks.json (story/blender değişince)
 ```
 
 Ortam (Windows): Bash'te önce `export PATH="/c/Program Files/nodejs:/c/Users/burak/AppData/Roaming/npm:$PATH"`. Blender yolu `C:\Program Files\Blender Foundation\Blender 4.5\blender.exe`; ffmpeg winget ile kurulu.

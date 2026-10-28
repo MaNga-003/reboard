@@ -4,6 +4,7 @@ import math
 import lib
 import scraps
 import textile
+import weighing
 from mathutils import Vector
 
 COLOURS = {
@@ -19,16 +20,11 @@ W0, W1 = 0.6, 13.0  # görüş genişliği (mm): baş ve son kare
 END_AZ, END_EL, END_K = 204, 36, 0.011  # son kare: 2. bölüm buradan devam eder
 
 
-def table(size=4000):
-    m = lib.kraft("Kraft", "Isabella Color", "Maple", "Ivory Buff", unit=1.0)
-    return lib.plane("Table", (size, size), (0, 0, 0), m)
-
-
-def lights(scale=4.0):
+def lights(scale=10.0):
     lib.world("Deep Slate Olive", strength=0.04)
     # Alçak anahtar ışık kâğıdın lifini sıyırır; arka ışık ince lifin kenarını yakar; dolgu zayıf: derinlik kalır.
-    # scale uzaklığı ve boyu büyütür, gücü karesiyle artırır: merkezdeki aydınlık aynı kalır, 2. bölümün
-    # geniş kadrajında ışık kenarlara doğru sönmez.
+    # scale uzaklığı ve boyu büyütür, gücü karesiyle artırır: merkezdeki aydınlık aynı kalır, 3. bölümün
+    # metrelik kadrajında ışık kenarlara doğru sönmez ve kantar ışığın içinde kalmaz.
     lib.area_light(lib.orbit((0, 0, 0), 240 * scale, 250, 30), (0, -2, 0), size=70 * scale,
                    power=560e3 * scale ** 2, color="Sulpher Yellow", name="Key")
     lib.area_light(lib.orbit((0, 0, 0), 220 * scale, 15, 16), (0, 0, 0), size=40 * scale,
@@ -66,11 +62,15 @@ def camera_path(cam, meta, f0, f1):
 
 
 def scene():
-    """Kesim masası: kraft kâğıt, ışık, lif düzeyinde denim şerit ve çevresindeki kırpıntılar (1. ve 2. bölüm)."""
-    table()
+    """Atölye: kraft kâğıtlı masa, ışık, lif düzeyinde denim şerit, çevresindeki kırpıntılar ve tartım köşesi
+    (1.–3. bölüm aynı sahneyi kullanır; ilk ikisinde kantar kadraj dışındadır)."""
+    weighing.table()
+    weighing.floor()
     lights()
     meta = textile.build(textile.Denim(seed=11), COLOURS)
     meta["table"] = scraps.cutting_table()
+    weighing.station()
+    weighing.bench()
     return meta
 
 

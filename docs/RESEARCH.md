@@ -37,6 +37,7 @@
 | [GSAP README](https://cdn.jsdelivr.net/npm/gsap@3.15.0/README.md) | GSAP ve eklentileri ücretsiz | ScrollTrigger lisans sorunu yok |
 | [CSS `animation-timeline` desteği](https://www.cssportal.com/css-properties/animation-timeline.php) | Firefox'ta hâlâ bayrak arkasında | JS tabanlı yapı |
 | [CHI'26: scrollytelling çalışması](https://arxiv.org/abs/2603.04367) | Etkileşimi artırıyor, anlamaya etkisi küçük | Rakamlar hikâyenin dışında, panelde de veriliyor |
+| [NASA Blue Marble Next Generation](https://science.nasa.gov/earth/earth-observatory/blue-marble-next-generation/) (Ağustos 2004, topografya ve batimetri, [5400×2700 dosya](https://assets.science.nasa.gov/dynamicimage/assets/science/esd/eo/images/bmng/bmng-topography-bathymetry/august/world.topo.bathy.200408.3x5400x2700.jpg)); [NASA görsel kullanım kuralları](https://www.nasa.gov/nasa-brand-center/images-and-media/). Okunma: 2026-10-28 | NASA görselleri ABD'de genellikle telif dışı; kaynak belirtilmeli ("NASA Earth Observatory", Reto Stöckli), NASA onayı ima edilmemeli | 8. bölümün Dünya dokusu; künye hikâye altında ve `STORY.md`'de |
 
 ## 5. Altyapı ve hukuk
 

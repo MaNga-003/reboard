@@ -274,8 +274,10 @@ def fray(rs, scrap, surf, G, field, density=0.55, r_f=0.0068):
     return strands
 
 
-def layout(rs, keep_out, count=14, region=(-135, -125, 155, 115), bias=(55, 35), sizes=(38, 105), spread=(70, 55)):
-    """Kırpıntı yerleşimi: denim şeridin çevresi boş kalır; yoğunluk arka tarafa (bias) kayar."""
+def layout(rs, keep_out, count=14, region=(-135, -125, 155, 115), bias=(55, 35), sizes=(38, 105), spread=(70, 55),
+           accept=None):
+    """Kırpıntı yerleşimi: denim şeridin çevresi boş kalır; yoğunluk arka tarafa (bias) kayar.
+    accept(merkez, dünya çevresi) verilirse yalnızca onun kabul ettiği kırpıntı yerleşir (ör. çuval ağzının içi)."""
     scraps = []
     names = list(FABRICS)
     order = ["denim", "canvas", "sienna", "denim_dark", "ocher", "cinnamon", "olive", "ochre_red", "ivory",
@@ -295,6 +297,8 @@ def layout(rs, keep_out, count=14, region=(-135, -125, 155, 115), bias=(55, 35),
             continue
         # Şeridi çevreleyen kutunun içine düşen kırpıntı da olmasın (tam içeride kalanı kenar denetimi yakalamaz).
         if kx0 < cx < kx1 and ky0 < cy < ky1:
+            continue
+        if accept is not None and not accept((cx, cy), W):
             continue
         waves = [(rs.uniform(0.25, 1.1), rs.normal(0, 0.18), rs.normal(0, 0.18), rs.uniform(0, TAU)) for _ in range(3)]
         fold = None
@@ -471,14 +475,24 @@ def build(seed=5, keep_out=(-33, -30, 33, 12), count=14):
     return {"field": field, "objects": objs}
 
 
-def heap(seed, field, region, count, sizes=(60, 150), spread=(80, 60), mesh_step=1.0):
+def heap(seed, field, region, count, sizes=(60, 150), spread=(80, 60), mesh_step=1.0, crumple=1.0, accept=None,
+         max_slope=0.25):
     """Hazır bir yükseklik alanına (ör. çuval ağzındaki tümsek) kırpıntı yığar. Uzak plan için: saçak lifi yok,
-    ızgara daha seyrek. Döner: nesneler."""
+    ızgara daha seyrek. crumple dalga ve kırışık genliğini büyütür: yığındaki kumaş masadaki gibi düz yatmaz.
+    Döner: nesneler."""
     rs = np.random.default_rng(seed)
     cx, cy = (region[0] + region[2]) / 2, (region[1] + region[3]) / 2
     far = (1e9, 1e9, 1e9 + 1, 1e9 + 1)
     objs = []
-    for k, sc in enumerate(layout(rs, far, count, region, (cx, cy), sizes, spread)):
+    for k, sc in enumerate(layout(rs, far, count, region, (cx, cy), sizes, spread, accept)):
+        if crumple != 1.0:
+            # Dalganın eğimi (genlik × dalga sayısı) sınırlı: kısa dalga büyütülünce kırpıntı paralel oluklarla
+            # parlayan folyo gibi okunuyordu. Uzun dalgalar tam büyür.
+            sc.waves = [(min(a * crumple, max_slope / max(math.hypot(kx, ky), 1e-6)), kx, ky, ph)
+                        for a, kx, ky, ph in sc.waves]
+            if sc.fold:
+                p, d, amp, w = sc.fold
+                sc.fold = (p, d, amp * crumple * 0.8, w * crumple * 0.6)
         warp, weft, twill, pitch, _ = FABRICS[sc.fabric]
         mat = lib.fabric(f"Heap_{sc.fabric}_{k}", warp, weft, pitch=pitch, twill=twill, fuzz=0.7, var=0.14, bump=0.5)
         surf, _ = drop(field, sc)

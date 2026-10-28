@@ -5,7 +5,7 @@ import s1_fibre as s1
 from mathutils import Vector
 
 W1, W2 = s1.W1, 210.0  # görüş genişliği (mm): baş ve son kare
-CENTER = Vector((34.0, 18.0, 1.0))  # son karede kadrajın odağı: şerit önde, kırpıntı yığını arkada
+CENTER = Vector((20.0, 4.0, 1.0))  # son karede kadrajın odağı: şerit önde, kırpıntı yığını arkada
 
 
 def camera_path(cam, meta, f0, f1):
@@ -14,7 +14,7 @@ def camera_path(cam, meta, f0, f1):
     def path(t):
         tau = lib.soft(t, 0.35)
         w = lib.expo(W1, W2, tau)
-        g = lib.lerp(start, CENTER, lib.smooth(tau))
+        g = lib.lerp(start, CENTER, lib.smooth(tau) ** 1.5)
         d = lib.dist_for_width(cam, w)
         az = lib.lerp(s1.END_AZ, 222, lib.smooth(t))
         el = lib.lerp(s1.END_EL, 58, lib.smooth(tau))

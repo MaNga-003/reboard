@@ -1,7 +1,7 @@
 {
   "$schema": "./docs/state.schema.json",
   "project": "ReBoard SaaS platformu",
-  "updated_at": "2026-10-28T12:10:00+03:00",
+  "updated_at": "2026-10-28T14:05:00+03:00",
   "current_phase": "F2",
   "deadlines": {
     "demo_freeze": "2026-10-29T18:00:00+03:00",
@@ -350,7 +350,7 @@
       "decisions": [
         "D-004"
       ],
-      "note": "Fotogerçekçi yön (D-004, Cycles). Yazıldı: story/blender/lib.py (Cycles kurulumu, ışık, kamera, malzeme kitaplığı), textile.py (lif düzeyinde 2/1 dimi denim: 16.676 eğri, 4,96 M nokta), scraps.py (kesim masası: yığılan dışbükey kırpıntılar, saçak lifleri, makas, tebeşir, toplu iğne; Wada 126/199/279), s1_fibre.py (1. bölüm, arka planda kesim masası), s2_scraps.py (2. bölüm: kamera şeritten 210 mm genişliğe geri çekilir), build.py; scripts/story-render.mjs (pnpm story:render) ve scripts/story-encode.mjs (pnpm story:encode, AVIF kalitesi bütçeye göre ikili aramayla). 1. bölüm önizlemede tamam. Sıradaki: kırpıntılı 1. bölüm ve 2. bölüm önizleme denetimi, 3–8. bölümler, mobil 9:16 denemesi."
+      "note": "Fotogerçekçi yön (D-004, Cycles). Yazıldı: story/blender/lib.py (Cycles kurulumu, ışık, kamera, malzeme kitaplığı), textile.py (lif düzeyinde 2/1 dimi denim: 16.676 eğri, 4,96 M nokta), scraps.py (kesim masası: yığılan dışbükey kırpıntılar, saçak lifleri, makas, tebeşir, toplu iğne; Wada 126/199/279), s1_fibre.py (1. bölüm, arka planda kesim masası), s2_scraps.py (2. bölüm: kamera şeritten 210 mm genişliğe geri çekilir), build.py; scripts/story-render.mjs (pnpm story:render) ve scripts/story-encode.mjs (pnpm story:encode, AVIF kalitesi bütçeye göre ikili aramayla). 1. bölüm önizlemede tamam. 2. bölümün odağı masanın ortasına alındı (şerit son karede kadrajda). 3. bölüm yazılıyor: weighing.py (kraft kâğıtlı kontrplak masa, beton zemin, yer kantarı, kırpıntı dolu PP çuval, rakamsız kraft etiket ve sicim) ve s3_weighing.py (kamera geri çekilip az 222° → 200°; bu açıda 1. bölümün ışıkları üçlü düzen kurar). Blue Marble kaynağı RESEARCH.md'ye işlendi. 3. bölüm önizlemede tamam (masaüstü ve mobil): masada yıkanmış denim topu ve katlanmış kumaşlar; yığın oluğu 0,214 → 0,124 (kısa dalga eğimi sınırlı), dik 0,0096, tepe 70 mm. Top anahtar ışığın %9'unu kesip 2. bölümün son karesini karartıyordu; yeri değişti, gölge payı 0. Kalıcı denetim: pnpm story:check (story/blender/check.py → story/checks.json, tests/unit/story-scene.test.ts, M-30; bozmada 7/7). 1. ve 2. bölüm eski temel kareyle karşılaştırıldı: tek fark bilinçli ışık ölçeği değişikliği (eski sahneyle SSIM 0,9999). Sıradaki: 4–8. bölümler."
     },
     {
       "id": "T3.4",
@@ -366,7 +366,7 @@
       "decisions": [
         "D-004"
       ],
-      "note": "Yazıldı: src/components/story/sequence.ts (saf hesaplar: en-boy seçimi, ilerleme → kare, ilk bölüm önce yükleme sırası, saveData ve 2G'de kare atlama, en yakın yüklü kare, çözülmüş kareler için LRU önbellek, scroll yönüne göre çözme penceresi, metin görünürlüğü, cover dikdörtgeni; 11/11 birim testi); source.ts (manifest sunucuda okunur); StoryPlayer.tsx (GSAP ScrollTrigger scrub 0,35 s, yapışkan canvas, AVIF sınaması ve WebP yedeği, çözme penceresi 8 ileri 3 geri, hareket azaltmada bölüm başına statik kare, yönü tarayıcının seçtiği poster, hidrasyondan önce ağa çıkmaz, Hikâyeyi geç bağlantısı); StoryCounter.tsx ve /api/counter (D-013; 60 s önbellek, sonuç sınıfı rozeti, bilinmeyen varsa en az, okunamazsa bilinmiyor). Lenis kaldırıldı (kullanılmıyordu). tests/e2e/story.spec.ts: sayaç ucu ve TR/EN ekran testleri; kare ilerlemesi, hareket azaltma ve 9:16 testleri manifest gelince koşar. Sıradaki: animatik kareleri kodlayıp oynatıcıyı tarayıcıda ölçmek, story-perf (p99 ≤ 25 ms) ve story-contrast testleri."
+      "note": "Yazıldı: src/components/story/sequence.ts (saf hesaplar: en-boy seçimi, ilerleme → kare, ilk bölüm önce yükleme sırası, saveData ve 2G'de kare atlama, en yakın yüklü kare, çözülmüş kareler için LRU önbellek, scroll yönüne göre çözme penceresi, metin görünürlüğü, cover dikdörtgeni; 11/11 birim testi); source.ts (manifest sunucuda okunur); StoryPlayer.tsx (GSAP ScrollTrigger scrub 0,35 s, yapışkan canvas, AVIF sınaması (çözülemezse statik hikâye; WebP yalnızca poster ve bölüm durağan karelerinde, D-004), çözme penceresi 8 ileri 3 geri, hareket azaltmada bölüm başına statik kare, yönü tarayıcının seçtiği poster, hidrasyondan önce ağa çıkmaz, Hikâyeyi geç bağlantısı); StoryCounter.tsx ve /api/counter (D-013; 60 s önbellek, sonuç sınıfı rozeti, bilinmeyen varsa en az, okunamazsa bilinmiyor). Lenis kaldırıldı (kullanılmıyordu). tests/e2e/story.spec.ts: sayaç ucu ve TR/EN ekran testleri; kare ilerlemesi, hareket azaltma, AVIF düşürülünce statik yedek ve 9:16 testleri manifest gelince koşar. tests/e2e/story-perf.spec.ts yazıldı: kareler tümüyle inince (canvas data-loaded) hikâye 10 s'de sabit hızla kaydırılır, rAF aralıklarının p99'u ≤ 25 ms ve karelerin en az yarısı çizilmiş olmalı; manifest gelince koşar. Sıradaki: animatik kareleri kodlayıp oynatıcıyı tarayıcıda ölçmek."
     },
     {
       "id": "T3.5",
@@ -384,7 +384,7 @@
         "D-004",
         "D-014"
       ],
-      "note": "Süre ölçümü (2026-10-28, kırpıntılı 1. bölüm, 1920×1080, RTX 3050, OptiX + OIDN; kare 0 ve 29): 1024 örnek 264/338 s → 360 kare ≈ 30,1 saat; 512 örnek 145/171 s → ≈ 15,8 saat; 256 örnek 66/80 s → ≈ 7,3 saat; eşik 0,01 yalnız %3 kazandırır. 1024'e karşı (kare 29): 512 SSIM 0,990 ΔE p99 0,027; 256 SSIM 0,987 p99 0,032. Kodlama kaybı baskın: 14 MB bütçesi (kare başı ≈ 47 kB) kare 29'u SSIM 0,878'e düşürür ve en düşük kalitede bile 49 kB tutar; SSIM ≥ 0,98 için ≈ 200 kB (AVIF q60) gerekir. Kare 0 20 kB'da 0,995. Kodlanmış karede örnek sayısı farkı q70'te belirginleşir (1024/512/256: 0,986/0,981/0,978), q40'ta kaybolur. Öneri: 512 örnek ve kare başı kalite hedefli kodlama; karar Q-4. Testler yazıldı: story-contrast (kare bağımsız en kötü durum, 4/4) ve story-budget (belge ile kodlayıcı aynı 3/3; kare ölçümü manifest gelince)."
+      "note": "Süre ölçümü (2026-10-28, kırpıntılı 1. bölüm, 1920×1080, RTX 3050, OptiX + OIDN; kare 0 ve 29, 360 kareye oranlı): 1024 örnek 264/338 s → ≈ 30,1 sa; 512: 145/171 s → ≈ 15,8 sa; 256: 66/80 s → ≈ 7,3 sa; 128: 32/40 s → ≈ 3,6 sa; 64: 17/20 s → ≈ 1,8 sa. Kazandırmayanlar: eşik 0,01 (%3), sekme sayısını azaltmak (%3), eğri alt bölümü 2 (%2), ribbon eğri (daha yavaş ve kare 29 SSIM 0,935), küçük render (aynı bütçede kare 29 SSIM 0,869 → 0,82–0,86). Ham kare 1024'e karşı (kare 29): 512 SSIM 0,990, 256 0,987, 128 0,983, 64 0,976. Kodlama kaybı baskın: 14 MB bütçesi (kare başı ≈ 47 kB, AVIF q18) kare 29'da 1024/512/256/128/64 için SSIM 0,869/0,869/0,867/0,866/0,863 verir; %100 kırpıntıda 1024, 256, 128 ve 64 ayırt edilmiyor, bütçeli AVIF lifleri siliyor. Kare başı ≈ 200 kB (q60) ile 0,978/0,974/0,971/0,968/0,962. Karar: 128 örnek (kullanıcı, 2026-10-28; D-004). Kalite hedefi → bayt (128 örnek, kendi PNG'sine karşı): kare 0 SSIM ≥ 0,98 için 4 kB; kare 29 0,95 için 108 kB, 0,97 için 165 kB, 0,98 için 221 kB. Vercel Hobby (okunma 2026-10-28): CLI yüklemesi ≤ 100 MB (vercel.com/docs/limits), aylık 100 GB aktarım, aşılınca 30 gün durur (vercel.com/docs/plans/hobby). Bütçe kararı C (kullanıcı, 2026-10-28; D-004): kare başı SSIM 0,97 hedefi (taban 0,95), tavan masaüstü 25 / mobil 12 / ilk bölüm 3 MB. story-encode kare başı ikili arama yapar (AVIF q20–90; örnek: kare 0 q20 5 kB, kare 29 q55 165 kB). WebP aynı SSIM'de AVIF'in 1,7–2,4 katı (kare 29: 282 kB, kare 52: 79 kB'a karşı 33 kB); bu yüzden WebP yalnızca poster ve bölüm durağan karelerinde, AVIF'siz tarayıcı statik hikâyeye geçer. Yayın paketi testi ≤ 90 MB (deploy-config). story-budget belge ile kodlayıcı 4/4. Testler yazıldı: story-contrast (kare bağımsız en kötü durum, 4/4) ve story-budget (belge ile kodlayıcı aynı 3/3; kare ölçümü manifest gelince)."
     },
     {
       "id": "T3.6",
@@ -569,14 +569,6 @@
       "question": "Sunumdaki düzeltmeler (öneriler .private/kaynak-dogrulama.md, 3. ve 8. bölüm) ekipçe uygulanacak mı? Yanıtlananlar (28.10): yazılım iddiaları 'planlanan' diye yazılacak; PET/CoPET için SDS yok, 'formaldehit içermez' yalnız pMDI için yazılabilir; '8 milyon m³' yerine 'yaklaşık 8,6 milyon m³ tüketim (FAOSTAT 2024)' yazılacak. Demodan sonra netleşecek (kullanıcı kararı, 28.10): (1) Türkiye için '1,5 milyon ton' yazan bir kuruluş belgesi bulunamadı; EEA kişi başı atık oranıyla izdüşüm ~1,36 Mt veriyor. Belge iletilmezse Eurostat'ın 2022 sayısı (361.500 t) kullanılsın mı? '%85' için de kaynak yok. (2) Biyobazlı aday olarak PLA bikomponent elyaf testlere eklensin mi?",
       "blocks": [
         "T4.5"
-      ]
-    },
-    {
-      "id": "Q-4",
-      "owner": "kullanıcı",
-      "question": "Final render ayarı: (1) örnek sayısı 256 (≈ 7,3 sa), 512 (≈ 16 sa) ya da 1024 (≈ 30 sa)? (2) 14 MB / ilk bölüm 1,5 MB bütçesi korunup yoğun lif karelerinde sıkıştırma kaybı (SSIM 0,88) kabul mü edilsin, yoksa kare başı kalite hedefi (SSIM ≥ 0,98) için bütçe büyüsün mü? Ölçümler T3.5 notunda.",
-      "blocks": [
-        "T3.5"
       ]
     }
   ],
@@ -844,6 +836,14 @@
       "last_value": "birim 7/7, entegrasyon 2 yeni, E2E 7/7 (tam paket 67/67); mutasyon alan/seed/depo 18/18, arayüz 4/4, yerleşim ölçüsü eski yerleşimde 14 bulgu; canlıda live-smoke 40593323959 yeşil (4 toplam, 10 satır, 10 kaynak, 10 tarih)",
       "measured_at": "2026-10-28T01:50:00+03:00",
       "test": "tests/unit/calc/saas-costs.test.ts, tests/integration/seed.test.ts, tests/e2e/scenario.spec.ts, scripts/live-smoke.mjs"
+    },
+    {
+      "id": "M-30",
+      "claim": "Sonraki bölümün eşyaları önceki bölümü bozmaz; çuvaldaki yığın folyo gibi parlamaz",
+      "threshold": "görünen eşya ışını 0; her ışıkta kesilen pay ≤ 0,02; yığın dik ≤ 0,02, oluk ≤ 0,15, tepe ≤ 90 mm, örtü ≥ 0,85; kontroller eşiği aşar",
+      "last_value": "155.520 kamera ışınında eşya 0; gölge payı 0 (3 ışık, 2 en-boy); kontrol: top eski yerinde anahtar ışığın %9'u (mobil %26); yığın dik 0,0096, oluk 0,124 (kontrol 0,214), tepe 70,2 mm, örtü 0,889; bozma 7/7",
+      "measured_at": "2026-10-28T14:05:00+03:00",
+      "test": "tests/unit/story-scene.test.ts, story/blender/check.py"
     }
   ]
 }

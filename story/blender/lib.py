@@ -16,10 +16,11 @@ FRAMES_PER_SECTION = 30
 SECTIONS = 8
 
 QUALITY = {
-    # örnek sayısı, uyarlamalı eşik, çözünürlük yüzdesi
+    # örnek sayısı, uyarlamalı eşik, çözünürlük yüzdesi. Final 128: tarayıcıya giden karede 1024'ten farkı
+    # SSIM 0,003 (D-004, ölçüm state.json T3.5).
     "preview": (64, 0.04, 50),
     "animatic": (128, 0.02, 50),
-    "final": (1024, 0.004, 100),
+    "final": (128, 0.004, 100),
 }
 
 
@@ -279,6 +280,8 @@ def area_light(loc, target, size=2.0, power=500.0, color=None, size_y=None, spre
         d.color = rgba(color)[:3]
     o = link(bpy.data.objects.new(name, d))
     o.location = loc
+    # Geniş kadrajda ışık panelinin kendisi görüntüye girmesin; parlak yüzeylerdeki yansıması kalır.
+    o.visible_camera = False
     con = o.constraints.new("TRACK_TO")
     con.target = empty(name + "Target", target)
     con.track_axis = "TRACK_NEGATIVE_Z"
@@ -567,15 +570,18 @@ def fibre_diffuse(name, color, rough=0.7, sheen=0.6, var=0.2):
     return m
 
 
-def fabric(name, warp, weft=None, pitch=(0.5, 0.6), fuzz=0.7, rough=0.85, twill=3, var=0.12, bump=0.6, coord="Object"):
+def fabric(name, warp, weft=None, pitch=(0.5, 0.6), fuzz=0.7, rough=0.85, twill=3, var=0.12, bump=0.6, coord="Object",
+           sheen=None):
     """Dokuma kumaş yüzeyi (birim = mm): çözgü Y, atkı X yönünde. Düz parçada Object koordinatı; dikey ya da
     kıvrık yüzeyde (çuval) mm cinsinden UV (`coord="UV"`). twill=n ise çözgü n-1 atkının üstünden geçer
-    (ör. 3: denimin 2/1 dimisi), 0 ise bezayağı."""
+    (ör. 3: denimin 2/1 dimisi), 0 ise bezayağı. `sheen`: havın rengi (yoksa beyaz)."""
     weft = weft or warp
     m, b, n = principled(name)
     b.inputs["Roughness"].default_value = rough
     b.inputs["Sheen Weight"].default_value = fuzz
     b.inputs["Sheen Roughness"].default_value = 0.4
+    if sheen:  # beyaz hav, iri ve koyu kumaşı sıyırma açısında griye çeker
+        b.inputs["Sheen Tint"].default_value = rgba(sheen)
     pw, pf = pitch
     tc = n.nodes.new("ShaderNodeTexCoord")
     sep = n.nodes.new("ShaderNodeSeparateXYZ")
@@ -610,6 +616,52 @@ def fabric(name, warp, weft=None, pitch=(0.5, 0.6), fuzz=0.7, rough=0.85, twill=
     val = n.math("MULTIPLY_ADD", n.math("ADD", blot, slub), var / 2, 1.0 - var / 2)
     shading = n.math("MULTIPLY", val, n.math("MULTIPLY_ADD", height, 0.35, 0.65))
     n.link(n.shade(col, shading), b.inputs["Base Color"])
+    return m
+
+
+def scrap_mass(name, colours, cell=45.0, dark=0.5, rough=0.85):
+    """Yığının derinindeki kumaş kütlesi: kırpıntı boyunda hücreler, her hücre bir kumaş renginde ve gölgede
+    kaldığı için koyu; hücre sınırı kırpıntı arası gibi daha da koyu. Üstteki kırpıntıların arasından görünür."""
+    m, b, n = principled(name)
+    b.inputs["Roughness"].default_value = rough
+    b.inputs["Sheen Weight"].default_value = 0.6
+    vec = n.warp(n.coords(scale=(1 / cell,) * 3), 0.7, 0.5)
+    vor = n.nodes.new("ShaderNodeTexVoronoi")
+    vor.inputs["Scale"].default_value = 1.0
+    n.link(vec, vor.inputs["Vector"])
+    edge = n.nodes.new("ShaderNodeTexVoronoi")
+    edge.feature = "DISTANCE_TO_EDGE"
+    edge.inputs["Scale"].default_value = 1.0
+    n.link(vec, edge.inputs["Vector"])
+    gap = n.ramp(edge.outputs["Distance"], 0.0, 0.08)  # 0 kırpıntı arası, 1 kumaşın üstü
+    col = pick(n, vor.outputs["Color"], colours)
+    nz = n.noise(n.coords(scale=(0.2,) * 3), 3.0, 6.0, 0.6)
+    n.link(n.shade(col, n.math("MULTIPLY", n.math("MULTIPLY_ADD", nz, 0.3, dark * 0.85), n.math("MULTIPLY_ADD", gap, 0.6, 0.4))),
+           b.inputs["Base Color"])
+    n.link(n.bump(n.math("MULTIPLY_ADD", gap, 0.6, nz), 0.4, 1.5), b.inputs["Normal"])
+    return m
+
+
+def bolt_end(name, warp, weft, layer=0.9, rough=0.85):
+    """Top kumaşın kesik ucu: sarılı katların kenarı halka halka görünür, katlar arasında atkının açık rengi.
+    Nesne kökeni top ekseninde, eksen yerel X (birim mm)."""
+    m, b, n = principled(name)
+    b.inputs["Roughness"].default_value = rough
+    b.inputs["Sheen Weight"].default_value = 0.6
+    tc = n.nodes.new("ShaderNodeTexCoord")
+    sep = n.nodes.new("ShaderNodeSeparateXYZ")
+    n.link(tc.outputs["Object"], sep.inputs["Vector"])
+    y, z = sep.outputs["Y"], sep.outputs["Z"]
+    r = n.math("SQRT", n.math("ADD", n.math("MULTIPLY", y, y), n.math("MULTIPLY", z, z)))
+    # Katlar tam daire değil: sarım gerginliği değiştikçe halka hafifçe kayar.
+    wob = n.noise(n.coords(scale=(0.04,) * 3), 2.0, 3.0, 0.5)
+    band = n.math("COSINE", n.math("MULTIPLY", n.math("MULTIPLY_ADD", wob, 2.0, r), 2 * math.pi / layer))
+    seam = n.ramp(band, 0.55, 0.95)
+    ends = n.noise(n.coords(scale=(1.4,) * 3), 2.0, 6.0, 0.6)  # kesik iplik uçları
+    col = n.mix(n.math("MULTIPLY", seam, 0.5), rgba(warp), rgba(weft))
+    col = n.mix(n.math("MULTIPLY", n.ramp(ends, 0.58, 0.74), 0.35), col, rgba(weft))
+    n.link(n.shade(col, n.math("MULTIPLY_ADD", ends, 0.16, 0.9)), b.inputs["Base Color"])
+    n.link(n.bump(n.math("MULTIPLY_ADD", band, 0.5, ends), 0.5, 0.3), b.inputs["Normal"])
     return m
 
 
@@ -706,8 +758,9 @@ def concrete(name, base, dark, light, unit=1.0, rough=0.62):
     aşınmış bölgelerde parlaklık farkı; hepsi Wada renkleri arasında karışım."""
     m, b, n = principled(name)
     k = 1.0 / unit
-    trowel = n.noise(n.coords(scale=(k / 900, k / 350, k / 900), rot=(0.0, 0.0, 0.5)), 2.0, 5.0, 0.55)
-    col = n.mix(n.ramp(trowel, 0.35, 0.75), rgba(base), rgba(dark))
+    # Leke hafif ve neredeyse yönsüz: tam güçte ve 900/350 mm'lik izde zemin mermer damarı gibi okunuyordu.
+    trowel = n.noise(n.coords(scale=(k / 1600, k / 1100, k / 1600), rot=(0.0, 0.0, 0.5)), 2.0, 5.0, 0.55)
+    col = n.mix(n.math("MULTIPLY", n.ramp(trowel, 0.3, 0.8), 0.4), rgba(base), rgba(dark))
     spots = n.noise(n.coords(scale=(k / 60,) * 3), 3.0, 4.0, 0.5)
     col = n.mix(n.math("MULTIPLY", n.ramp(spots, 0.62, 0.74), 0.35), col, rgba(light))
     vor = n.nodes.new("ShaderNodeTexVoronoi")

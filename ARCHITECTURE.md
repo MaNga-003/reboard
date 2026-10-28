@@ -187,7 +187,7 @@ Alanların anlamları ve birimleri `docs/DATA_DICTIONARY.md` dosyasında.
 
 ## 7. Hikâye sayfası (D-004)
 
-`story/blender/*.py` dosyaları Blender 4.5'te render edilir ve ham PNG kareler `story/out/` klasörüne yazılır. `scripts/story-encode.mjs` bu kareleri sharp ile AVIF ve WebP'ye çevirip `public/story/{d,m}/` altına koyar ve `manifest.json` üretir. Sayfada `FrameSequencePlayer` bu kareleri oynatır. Ayrıntılar `docs/STORY.md` dosyasında.
+`story/blender/*.py` dosyaları Blender 4.5'te render edilir ve ham PNG kareler `story/out/` klasörüne yazılır. `scripts/story-encode.mjs` her kareyi sharp ile, kendi PNG'sine karşı SSIM hedefine ulaşan en düşük AVIF kalitesiyle kodlayıp `public/story/{d,m}/` altına koyar ve `manifest.json` üretir; WebP yalnızca poster ve bölümlerin durağan karesi içindir (D-004). Sayfada `StoryPlayer` bu kareleri oynatır. `scripts/story-check.mjs` sahneyi render etmeden denetler (`story/blender/check.py`) ve ölçümü sahne kodunun özetiyle `story/checks.json`'a yazar; CI'da Blender olmadığından `tests/unit/story-scene.test.ts` bu dosyanın güncelliğini ve eşikleri denetler (M-30). Ayrıntılar `docs/STORY.md` dosyasında.
 
 ## 8. Güvenlik
 

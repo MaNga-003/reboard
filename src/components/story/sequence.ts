@@ -2,8 +2,16 @@
 
 export type Aspect = "d" | "m";
 
-export type ManifestFrame = { index: number; avif: string; webp: string; bytes: { avif: number; webp: number } };
-export type ManifestVariant = { width: number; height: number; step: number; frames: ManifestFrame[] };
+/** Her kare AVIF'tir; WebP yalnızca posterde ve bölümlerin durağan karesinde vardır (D-004). ssim: kendi PNG'sine karşı. */
+export type ManifestFrame = {
+  index: number;
+  avif: string;
+  webp: string | null;
+  quality: number;
+  ssim: number;
+  bytes: { avif: number; webp: number | null };
+};
+export type ManifestVariant = { width: number; height: number; step: number; ssimTarget: number; stills: number[]; frames: ManifestFrame[] };
 export type Manifest = { framesPerSection: number; sections: number; variants: Partial<Record<Aspect, ManifestVariant>> };
 
 /** Dikey ya da dar ekranda 9:16 dizisi; yoksa eldeki öteki dizi. */

@@ -1,6 +1,7 @@
 // D-003: yayın Frankfurt'ta; CLI yayını yalnızca izin listesindeki dosyaları yükler (M-18).
 import { execFileSync } from "node:child_process";
-import { readFileSync } from "node:fs";
+import { existsSync, readdirSync, readFileSync, statSync } from "node:fs";
+import { join } from "node:path";
 import { describe, expect, it } from "vitest";
 
 // Depoda izlenen ama bilerek yüklenmeyen üst düzey yollar. Yeni bir yol eklenince test düşer ve karar ister.
@@ -18,6 +19,10 @@ const rules = readFileSync(".vercelignore", "utf8")
 const allowed = new Set(rules.filter((r) => r.startsWith("!/")).map((r) => r.slice(2)));
 // Kural kümesi "/*" ve "!/<ad>" biçiminde kaldıkça bir yol yalnızca üst klasörü izinliyse yüklenir.
 const uploaded = (path: string) => allowed.has(path.split("/")[0]);
+// Vercel Hobby'de CLI yüklemesi en çok 100 MB (vercel.com/docs/limits, okunma 2026-10-28); 10 MB pay (D-004).
+const UPLOAD_LIMIT = 90e6;
+const du = (p: string): number =>
+  statSync(p).isDirectory() ? readdirSync(p).reduce((s, n) => s + du(join(p, n)), 0) : statSync(p).size;
 
 describe("yayın ayarı", () => {
   it("fonksiyonlar fra1'de, çatı Next.js", () => {
@@ -38,6 +43,15 @@ describe("yayın ayarı", () => {
     for (const path of ["src/app/[locale]/page.tsx", "messages/tr.json", "package.json", "pnpm-lock.yaml", "next.config.ts", "tsconfig.json"]) {
       expect(uploaded(path), path).toBe(true);
     }
+  });
+
+  it(`yüklenen dosyaların toplamı ≤ ${UPLOAD_LIMIT / 1e6} MB (hikâye kareleri dahil)`, () => {
+    const total = [...allowed].filter((p) => existsSync(p)).reduce((s, p) => s + du(p), 0);
+    expect(total, `${(total / 1e6).toFixed(1)} MB`).toBeLessThanOrEqual(UPLOAD_LIMIT);
+  });
+
+  it.skipIf(!existsSync("public/story/manifest.json"))("kodlanmış hikâye kareleri yüklenir", () => {
+    expect(uploaded("public/story/manifest.json")).toBe(true);
   });
 
   it("izlenen her üst düzey yol ya yüklenir ya da bilerek dışarıda bırakılır; izinli her yol depoda vardır", () => {

@@ -1,10 +1,11 @@
 "use client";
 // Kare dizisi oynatıcısı (D-004, STORY.md §4). Scroll ilerlemesi yapışkan bir canvas'ta kareye çevrilir; metin HTML'dir.
-// Hesaplar sequence.ts'te; burada yalnızca ağ, çözme ve çizim var. Hareket azaltma tercihinde her bölüm tek statik kare.
+// Hesaplar sequence.ts'te; burada yalnızca ağ, çözme ve çizim var. Hareket azaltma tercihinde ve AVIF çözemeyen
+// tarayıcıda her bölüm tek durağan kare (WebP yalnızca bunlarda var, D-004).
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useTranslations } from "next-intl";
-import { useEffect, useMemo, useRef, useSyncExternalStore, type ReactNode } from "react";
+import { useEffect, useMemo, useRef, useState, useSyncExternalStore, type ReactNode } from "react";
 import { LruCache, coverRect, decodeWindow, frameAt, loadOrder, nearestLoaded, pickAspect, sectionOf, textOpacity, type Aspect } from "./sequence";
 import type { StorySource, StoryVariant } from "./source";
 
@@ -60,6 +61,8 @@ export function StoryPlayer({ source, headline, finale }: { source: StorySource;
   const reduced = useMedia("(prefers-reduced-motion: reduce)");
   const portrait = useMedia("(orientation: portrait)");
   const hydrated = useHydrated();
+  // Kimliği sabit: oynatıcı etkisine bağımlılık olarak gider, etki her çizimde yeniden kurulmaz.
+  const [noAvif, setNoAvif] = useState(false);
   const aspect = pickAspect(portrait ? 9 : 16, portrait ? 16 : 9, Object.keys(source.variants) as Aspect[]);
   const variant = aspect ? source.variants[aspect] : undefined;
   // Kimliği sabit kalmalı: oynatıcının etkisi buna bağlı, her çizimde yeniden kurulmasın.
@@ -68,7 +71,7 @@ export function StoryPlayer({ source, headline, finale }: { source: StorySource;
 
   const text = (s: number) => (s === 7 ? finale : <p className="text-lg leading-snug sm:text-xl">{t(`sections.${KEYS[s]}`)}</p>);
 
-  if (reduced) return <StaticStory aspect={aspect} variant={variant} perSection={source.framesPerSection} sections={sections} headline={headline} text={text} />;
+  if (reduced || noAvif) return <StaticStory aspect={aspect} variant={variant} perSection={source.framesPerSection} sections={sections} headline={headline} text={text} />;
   // Anahtar yok: hidrasyondan sonra 16:9'dan 9:16'ya geçişte poster (LCP öğesi) yeniden takılmasın; etki temizlenip yeniden kurulur.
   return (
     <Sequence
@@ -80,6 +83,7 @@ export function StoryPlayer({ source, headline, finale }: { source: StorySource;
       text={text}
       poster={<Poster variants={source.variants} />}
       active={hydrated}
+      onUnsupported={setNoAvif}
     />
   );
 }
@@ -114,7 +118,17 @@ function Card({ children }: { children: ReactNode }) {
   return <div className="max-w-xl rounded bg-bg/90 px-5 py-4 text-fg shadow-sm">{children}</div>;
 }
 
-function Sequence({ aspect, variant, perSection, sections, headline, text, poster, active }: Props & { poster: ReactNode; active: boolean }) {
+function Sequence({
+  aspect,
+  variant,
+  perSection,
+  sections,
+  headline,
+  text,
+  poster,
+  active,
+  onUnsupported,
+}: Props & { poster: ReactNode; active: boolean; onUnsupported: (unsupported: boolean) => void }) {
   const t = useTranslations("story");
   const root = useRef<HTMLElement>(null);
   const canvas = useRef<HTMLCanvasElement>(null);
@@ -130,7 +144,6 @@ function Sequence({ aspect, variant, perSection, sections, headline, text, poste
     const loaded = new Set<number>();
     const cache = new LruCache<ImageBitmap>(cacheCapacity());
     const abort = new AbortController();
-    let ext: "avif" | "webp" = "avif";
     let current = 0;
     let drawn = -1;
     let dir: 1 | -1 = 1;
@@ -175,23 +188,23 @@ function Sequence({ aspect, variant, perSection, sections, headline, text, poste
     };
 
     const fetchFrame = async (i: number) => {
-      const res = await fetch(frameUrl(aspect, variant.indices[i], ext), { signal: abort.signal });
+      const res = await fetch(frameUrl(aspect, variant.indices[i], "avif"), { signal: abort.signal });
       if (!res.ok) throw new Error(`${res.status}`);
       blobs[i] = await res.blob();
       loaded.add(i);
+      // story-perf ağı ölçmemek için bütün kareler inene kadar bekler.
+      el.dataset.loaded = String(loaded.size);
     };
 
     const load = async () => {
-      // AVIF desteği ilk kareyi çözerek sınanır; çözülemezse bütün dizi WebP'den gelir.
+      // AVIF desteği ilk kareyi çözerek sınanır; çözülemezse statik hikâyeye geçilir. Dizinin WebP kopyası yok:
+      // aynı kalitede 1,7–2,4 kat büyük, yayın paketini 100 MB sınırının üstüne taşırdı (D-004).
       try {
         await fetchFrame(0);
         cache.set(0, await createImageBitmap(blobs[0]!));
       } catch {
-        if (abort.signal.aborted) return;
-        ext = "webp";
-        loaded.delete(0);
-        await fetchFrame(0);
-        cache.set(0, await createImageBitmap(blobs[0]!));
+        if (!abort.signal.aborted) onUnsupported(true);
+        return;
       }
       render();
       const frames = variant.indices.map((index) => ({ index }));
@@ -256,7 +269,7 @@ function Sequence({ aspect, variant, perSection, sections, headline, text, poste
       tween.kill();
       cache.clear();
     };
-  }, [active, aspect, variant, perSection, sections]);
+  }, [active, aspect, variant, perSection, sections, onUnsupported]);
 
   return (
     <section ref={root} aria-label={t("label")} className="relative" style={{ height: `${sections.length * VH_PER_SECTION}svh` }}>
@@ -288,14 +301,14 @@ function Sequence({ aspect, variant, perSection, sections, headline, text, poste
   );
 }
 
-/** Hareket azaltma: her bölümün ortasındaki kare ve metni, alt alta, düz akışta. */
+/** Hareket azaltma ve AVIF'siz tarayıcı: her bölümün durağan karesi (ortadaki kare) ve metni, alt alta, düz akışta. */
 function StaticStory({ aspect, variant, perSection, sections, headline, text }: Props) {
   const t = useTranslations("story");
   return (
     <section aria-label={t("label")} className="mx-auto flex w-full max-w-5xl flex-col gap-10 px-4 py-10">
       {sections.map((s, k) => {
-        const inSection = variant.indices.filter((index) => sectionOf({ index }, perSection) === s);
-        const mid = inSection[Math.floor(inSection.length / 2)];
+        const mid = variant.stills.find((index) => sectionOf({ index }, perSection) === s);
+        if (mid === undefined) return null;
         return (
           <figure key={s} className="flex flex-col gap-3">
             <picture>
