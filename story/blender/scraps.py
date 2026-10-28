@@ -21,6 +21,20 @@ FABRICS = {
     "olive": ("Light Brownish Olive", "Light Brownish Olive", 3, (0.4, 0.45), 0.6),
     "ivory": ("Ivory Buff", "Ivory Buff", 0, (0.25, 0.25), 0.35),
 }
+# İpek saten (4. bölümde ayıklanan): ince, sık ve uzun atlamalı. Çuvaldaki yığının alt katmanı FABRICS renklerini
+# kullanır; ipek ona karışmasın diye ayrı sözlükte.
+SILK = {
+    "silk_red": ("Pompeian Red", "Pompeian Red", 5, (0.1, 0.12), 0.25),
+    "silk_teal": ("Peacock Blue", "Peacock Blue", 5, (0.1, 0.12), 0.25),
+    "silk_violet": ("Eupatorium Purple", "Eupatorium Purple", 5, (0.1, 0.12), 0.25),
+    "silk_gold": ("Golden Yellow", "Golden Yellow", 5, (0.1, 0.12), 0.25),
+    "silk_green": ("Dusky Green", "Dusky Green", 5, (0.1, 0.12), 0.25),
+    "silk_ivory": ("Ivory Buff", "Ivory Buff", 5, (0.1, 0.12), 0.25),
+}
+
+
+def spec(name):
+    return FABRICS[name] if name in FABRICS else SILK[name]
 
 
 # --- Yükseklik alanı: üstteki kumaş alttakinin kenarından yumuşakça aşar ---
@@ -163,7 +177,7 @@ class Scrap:
 
 def drop(field, scrap):
     """Kırpıntıyı alana bırakır; üst yüzey işlevini döndürür (dünya x, y → z)."""
-    t = FABRICS[scrap.fabric][4]
+    t = spec(scrap.fabric)[4]
     G = field.under()
     poly_w = scrap.world(scrap.shape)
     # Yerel → dünya: rölyef yerel koordinatta, alan dünya koordinatında.
@@ -221,7 +235,7 @@ def scrap_mesh(name, scrap, surf, mat, h=0.6):
     Z = surf(W[:, 0], W[:, 1])
     top = np.column_stack([L, Z])
     # Kenar: yerel koordinatta, ayrı köşelerle.
-    t = FABRICS[scrap.fabric][4]
+    t = spec(scrap.fabric)[4]
     ring = _densify(poly, 0.3)
     Wr = scrap.world(ring)
     zr = surf(Wr[:, 0], Wr[:, 1])
@@ -241,7 +255,7 @@ def scrap_mesh(name, scrap, surf, mat, h=0.6):
 
 def fray(rs, scrap, surf, G, field, density=0.55, r_f=0.0068):
     """Kesik kenardan taşan lifler: dışa doğru, alttaki yüzeye yatar."""
-    t = FABRICS[scrap.fabric][4]
+    t = spec(scrap.fabric)[4]
     ring = _densify(scrap.shape, 0.1)
     m = len(ring)
     nxt = np.roll(ring, -1, axis=0)
@@ -275,13 +289,13 @@ def fray(rs, scrap, surf, G, field, density=0.55, r_f=0.0068):
 
 
 def layout(rs, keep_out, count=14, region=(-135, -125, 155, 115), bias=(55, 35), sizes=(38, 105), spread=(70, 55),
-           accept=None):
+           accept=None, order=None):
     """Kırpıntı yerleşimi: denim şeridin çevresi boş kalır; yoğunluk arka tarafa (bias) kayar.
     accept(merkez, dünya çevresi) verilirse yalnızca onun kabul ettiği kırpıntı yerleşir (ör. çuval ağzının içi)."""
     scraps = []
     names = list(FABRICS)
-    order = ["denim", "canvas", "sienna", "denim_dark", "ocher", "cinnamon", "olive", "ochre_red", "ivory",
-             "denim", "canvas", "sienna", "olive", "denim_dark", "cinnamon", "ocher"]
+    order = order or ["denim", "canvas", "sienna", "denim_dark", "ocher", "cinnamon", "olive", "ochre_red", "ivory",
+                      "denim", "canvas", "sienna", "olive", "denim_dark", "cinnamon", "ocher"]
     tries = 0
     while len(scraps) < count and tries < 4000:
         tries += 1
@@ -476,7 +490,7 @@ def build(seed=5, keep_out=(-33, -30, 33, 12), count=14):
 
 
 def heap(seed, field, region, count, sizes=(60, 150), spread=(80, 60), mesh_step=1.0, crumple=1.0, accept=None,
-         max_slope=0.25):
+         max_slope=0.25, order=None, material=None):
     """Hazır bir yükseklik alanına (ör. çuval ağzındaki tümsek) kırpıntı yığar. Uzak plan için: saçak lifi yok,
     ızgara daha seyrek. crumple dalga ve kırışık genliğini büyütür: yığındaki kumaş masadaki gibi düz yatmaz.
     Döner: nesneler."""
@@ -484,7 +498,7 @@ def heap(seed, field, region, count, sizes=(60, 150), spread=(80, 60), mesh_step
     cx, cy = (region[0] + region[2]) / 2, (region[1] + region[3]) / 2
     far = (1e9, 1e9, 1e9 + 1, 1e9 + 1)
     objs = []
-    for k, sc in enumerate(layout(rs, far, count, region, (cx, cy), sizes, spread, accept)):
+    for k, sc in enumerate(layout(rs, far, count, region, (cx, cy), sizes, spread, accept, order)):
         if crumple != 1.0:
             # Dalganın eğimi (genlik × dalga sayısı) sınırlı: kısa dalga büyütülünce kırpıntı paralel oluklarla
             # parlayan folyo gibi okunuyordu. Uzun dalgalar tam büyür.
@@ -493,8 +507,11 @@ def heap(seed, field, region, count, sizes=(60, 150), spread=(80, 60), mesh_step
             if sc.fold:
                 p, d, amp, w = sc.fold
                 sc.fold = (p, d, amp * crumple * 0.8, w * crumple * 0.6)
-        warp, weft, twill, pitch, _ = FABRICS[sc.fabric]
-        mat = lib.fabric(f"Heap_{sc.fabric}_{k}", warp, weft, pitch=pitch, twill=twill, fuzz=0.7, var=0.14, bump=0.5)
+        warp, weft, twill, pitch, _ = spec(sc.fabric)
+        if material:  # ör. ipek: dokuma deseni yerine saten parıltısı
+            mat = material(k, sc.fabric)
+        else:
+            mat = lib.fabric(f"Heap_{sc.fabric}_{k}", warp, weft, pitch=pitch, twill=twill, fuzz=0.7, var=0.14, bump=0.5)
         surf, _ = drop(field, sc)
         objs.append(scrap_mesh(f"Heap_{k}_{sc.fabric}", sc, surf, mat, h=mesh_step))
     return objs

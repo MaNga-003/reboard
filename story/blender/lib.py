@@ -619,6 +619,22 @@ def fabric(name, warp, weft=None, pitch=(0.5, 0.6), fuzz=0.7, rough=0.85, twill=
     return m
 
 
+def satin(name, color, rough=0.24, aniso=0.6, sheen=0.35, var=0.12):
+    """İpek saten: dokusu seçilmeyecek kadar sık, uzun atlamalı ipliklerin yönlü parıltısı. Birim mm."""
+    m, b, n = principled(name)
+    b.inputs["Roughness"].default_value = rough
+    b.inputs["Anisotropic"].default_value = aniso
+    b.inputs["Sheen Weight"].default_value = sheen
+    b.inputs["Sheen Roughness"].default_value = 0.3
+    b.inputs["Sheen Tint"].default_value = rgba(color)
+    tone = n.noise(n.coords(scale=(0.02,) * 3), 3.0, 4.0, 0.5)
+    n.link(n.shade(rgba(color), n.math("MULTIPLY_ADD", tone, var, 1.0 - var / 2)), b.inputs["Base Color"])
+    # Çözgü boyunca ince çizgi: parıltı yüzeyde akar, folyo gibi düz kalmaz.
+    fib = n.noise(n.coords(scale=(0.3, 12.0, 0.3)), 1.0, 6.0, 0.6)
+    n.link(n.bump(fib, 0.12, 0.05), b.inputs["Normal"])
+    return m
+
+
 def scrap_mass(name, colours, cell=45.0, dark=0.5, rough=0.85):
     """Yığının derinindeki kumaş kütlesi: kırpıntı boyunda hücreler, her hücre bir kumaş renginde ve gölgede
     kaldığı için koyu; hücre sınırı kırpıntı arası gibi daha da koyu. Üstteki kırpıntıların arasından görünür."""
@@ -907,6 +923,22 @@ def curves(name, strands, material):
     attr.data.foreach_set("value", rad)
     yarn = np.array([s[2] if len(s) > 2 else 0.5 for s in strands], dtype=np.float32)
     c.attributes.new("yarn", "FLOAT", "CURVE").data.foreach_set("value", yarn)
+    c.materials.append(material)
+    return link(bpy.data.objects.new(name, c))
+
+
+def curves_array(name, P, R, yarn, material):
+    """curves() gibi, ama eşit noktalı çok sayıda eğri dizi olarak: P (n, k, 3), R (n, k), yarn (n,).
+    Yüz binlerce lifte demet listesi kurmak yavaş."""
+    import numpy as np
+
+    n, k, _ = P.shape
+    c = bpy.data.hair_curves.new(name)
+    c.add_curves([k] * n)
+    c.position_data.foreach_set("vector", np.ascontiguousarray(P, np.float32).ravel())
+    attr = c.attributes.get("radius") or c.attributes.new("radius", "FLOAT", "POINT")
+    attr.data.foreach_set("value", np.ascontiguousarray(R, np.float32).ravel())
+    c.attributes.new("yarn", "FLOAT", "CURVE").data.foreach_set("value", np.asarray(yarn, np.float32))
     c.materials.append(material)
     return link(bpy.data.objects.new(name, c))
 
