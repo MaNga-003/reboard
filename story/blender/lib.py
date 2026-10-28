@@ -635,12 +635,15 @@ def satin(name, color, rough=0.24, aniso=0.6, sheen=0.35, var=0.12):
     return m
 
 
-def scrap_mass(name, colours, cell=45.0, dark=0.5, rough=0.85):
+def scrap_mass(name, colours, cell=45.0, dark=0.5, rough=0.85, sheen=None):
     """Yığının derinindeki kumaş kütlesi: kırpıntı boyunda hücreler, her hücre bir kumaş renginde ve gölgede
-    kaldığı için koyu; hücre sınırı kırpıntı arası gibi daha da koyu. Üstteki kırpıntıların arasından görünür."""
+    kaldığı için koyu; hücre sınırı kırpıntı arası gibi daha da koyu. Üstteki kırpıntıların arasından görünür.
+    `sheen`: havın rengi (yoksa beyaz)."""
     m, b, n = principled(name)
     b.inputs["Roughness"].default_value = rough
     b.inputs["Sheen Weight"].default_value = 0.6
+    if sheen:
+        b.inputs["Sheen Tint"].default_value = rgba(sheen)
     vec = n.warp(n.coords(scale=(1 / cell,) * 3), 0.7, 0.5)
     vor = n.nodes.new("ShaderNodeTexVoronoi")
     vor.inputs["Scale"].default_value = 1.0
@@ -711,6 +714,39 @@ def felt(name, base, flecks, scale=1.0, density=0.5, rough=0.9, fuzz=0.8, bump=0
     n.link(n.shade(color, n.math("MULTIPLY_ADD", tone, 0.3, 0.85)), b.inputs["Base Color"])
     hgt = n.noise(n.coords(scale=(scale / size * 2,) * 3), 3.0, 12.0, 0.7)
     n.link(n.bump(hgt, bump, size / scale * 0.2), b.inputs["Normal"])
+    return m
+
+
+def fibre_mass(name, tones, flecks, size=14.0, density=0.6, rough=0.92, sheen=0.9, sss=0.5, bump=0.5):
+    """Açılmış lif yığını (birim mm). Her topak tek tonda: `clump` köşe niteliği (0–1) `tones` içinden seçer;
+    topağın içinde `size` mm boyunda renkli lif benekleri. Pamuk gibi mat, sıyırma açısında hav parıltısı; ışık
+    lif arasında biraz dolaşır (yüzey taş gibi sert gölgelenmesin)."""
+    m, b, n = principled(name)
+    b.inputs["Roughness"].default_value = rough
+    b.inputs["Sheen Weight"].default_value = sheen
+    b.inputs["Sheen Roughness"].default_value = 0.45
+    b.inputs["Subsurface Weight"].default_value = sss
+    b.inputs["Subsurface Scale"].default_value = 12.0  # pamuk topağında ışık santimetrelerce dolaşır
+    attr = n.nodes.new("ShaderNodeAttribute")
+    attr.attribute_name = "clump"
+    color = pick(n, attr.outputs["Fac"], tones)
+    k = len(flecks)
+    for i, rot in enumerate((0.0, 1.1, 2.3, 0.6)):
+        v = n.warp(n.coords(scale=(1 / size, 3 / size, 1 / size), rot=(0.4 * i, 0.0, rot), loc=(i * 3.1, i * 1.7, i * 2.3)),
+                   0.6, 0.35)
+        vor = n.nodes.new("ShaderNodeTexVoronoi")
+        n.link(v, vor.inputs["Vector"])
+        sep = n.nodes.new("ShaderNodeSeparateColor")
+        n.link(vor.outputs["Color"], sep.inputs["Color"])
+        mask = n.math("MULTIPLY", n.math("LESS_THAN", sep.outputs["Green"], density / 2),
+                      n.math("LESS_THAN", vor.outputs["Distance"], 0.4))
+        color = n.mix(mask, color, pick(n, sep.outputs["Red"], flecks if k else tones))
+    tone = n.noise(n.coords(scale=(1 / 30,) * 3), 3.0, 6.0, 0.6)
+    n.link(n.shade(color, n.math("MULTIPLY_ADD", tone, 0.3, 0.85)), b.inputs["Base Color"])
+    n.link(n.shade(color, 1.0), b.inputs["Subsurface Radius"])
+    # Lif dokusu: kıvrık, birkaç mm'lik ince çizgiler.
+    hgt = n.noise(n.warp(n.coords(scale=(0.5, 0.12, 0.5)), 0.3, 1.5), 1.0, 8.0, 0.7)
+    n.link(n.bump(hgt, bump, 0.6), b.inputs["Normal"])
     return m
 
 

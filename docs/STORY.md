@@ -44,7 +44,14 @@ flowchart LR
    - `textile.py`: lif düzeyinde 2/1 dimi denim; 1. ve 2. bölüm aynı şeridi kullanır.
    - `scraps.py`: kesim masası. Dışbükey kırpıntılar bir yükseklik alanına üst üste düşer; kenarlarından lif saçağı sarkar. Makas, tebeşir ve toplu iğneler masada durur. Kumaş renkleri Wada 126, 199 ve 279 kombinasyonlarından gelir. 1. bölümde arka planda bulanık, 2. bölümde kadrajın kendisidir.
    - `weighing.py`: atölyenin geri kalanı. Kraft kâğıtlı kontrplak masa, beton zemin, önde yer kantarı (indikatörün ekranı kameraya dönük değil, karede rakam yok; D-011) ve kantarın üstünde kırpıntı dolu PP çuval. Çuvalın ağzı dışa kıvrılır, kumaşı mathutils gürültüsüyle buruşur; üstündeki kırpıntılar `scraps.heap` ile, daha buruşuk (`crumple`) düşer. Çuvalda rakamsız, çubuk çizgili kraft etiket ve sicim vardır. Kesim masasında 3. bölümün ara kareleri boş kalmasın diye yıkanmış denim topu (dimi görünür; ekru atkıyla uzaktan gri-mor okunuyordu) ve farklı boyda, kaymış katlanmış kumaşlar durur. 1. bölümden beri sahnede durur; ilk iki bölümde kadraj dışında kalır ve gölge de düşürmez: top bir ara anahtar ışığın %9'unu kesip 2. bölümün son karesini karartıyordu, yeri değiştirildi (`pnpm story:check`, M-30).
-   - `check.py`: render etmeden sahne denetimi (`pnpm story:check`, ≈ 2,5 dk). 3. bölümün kattıkları 1. ve 2. bölümün hiçbir karesinde görünmez ve görünen yüzeye gölge düşürmez; çuvaldaki yığın folyo gibi oluklu, dik ya da taşkın değildir. Ölçümler sahne kodunun özetiyle `story/checks.json`'a yazılır; `story/blender` değişip denetim yeniden koşulmazsa `tests/unit/story-scene.test.ts` düşer.
+   - `shredding.py`: 4. bölümün ayıklama ve parçalama istasyonu. Ayıklama bandının üstünde koyu, çoğu denim bir kumaş katmanı ve onun üstünde kırpıntılar var. Bant uzakta kaldığı için kırpıntıların köşesi yuvarlanır, ortası kabarır ve kenarı alttakinin üstüne sarkar (`scraps.heap(drape=…)`). Yassı ve sivri köşeli kırpıntılar kırık fayans mozaiği gibi okunuyordu. Bu uzaklıkta denimin yüz rengi çözgünün rengidir; desendeki %33 ekru, doğrusal ışıkta laciverti leylak griye çekiyordu. Kırpıntıların arasında ayıklanmayı bekleyen iki ipek saten parça var. Ayrılan ipek bandın yanındaki kasada durur. Yazısız yırtma makinesinin çıkış oluğunun önünde bir lif yığını oluşur:
+     - 300 büyük 3B topak ve her birinin yanında 1–4 küçük topak (yüzey altı saçılımlı `lib.fibre_mass`);
+     - 160.000 yüzey tutamı;
+     - havada ve yerde serbest lif.
+
+     Yığının ana tonu mavi-gridir, benekleri çuvaldaki kumaşların renklerinden gelir. Işıklar iki dar açılı tavan havuzu ve yığının arka ışığıdır. Havuzlar çuvalın tersine eğilir, böylece konileri 3. bölümün kadrajına taşmaz.
+   - `s4_shred.py`: Kamera 3. bölümün son karesinden geri çekilip sağa kayar. Masaüstü son karede çuval metin kartının üstünde kalır.
+   - `check.py`: render etmeden sahne denetimi (`pnpm story:check`). Sonraki bölümlerin kattıkları (3.: zemin, tartım köşesi, masa eşyaları; 4.: istasyon ve ışıkları) önceki bölümlerin hiçbir karesinde görünmez ve görünen yüzeye gölge düşürmez. 4. bölümün ışıkları 1.–3. bölümde görünen yüzeylere doğrudan ulaşmaz. Çuvaldaki yığın folyo gibi oluklu, dik ya da taşkın değildir. Banttaki yükün çoğu denimdir ve üstünde iki ipek parça vardır. Ölçümler sahne kodunun özetiyle `story/checks.json`'a yazılır; `story/blender` değişip denetim yeniden koşulmazsa `tests/unit/story-scene.test.ts` düşer.
    - `s1_fibre.py` … `s8_*.py`: bölüm sahneleri (1 birim = 1 mm ya da 1 m, bölüme göre).
    - Kamera: 2. bölüm kesim masasının ortasına iner (odak `s2.CENTER`). 3. bölüm oradan geri çekilip azimut 222°'den 200°'ye döner. Bu açıda 1. bölümün üç ışığı klasik üçlü düzen kurar: anahtar ışık sağ önden, arka ışık arkadan, dolgu sol önden. 236°'de anahtar ışık kamera ekseninde kalıyor ve görüntü düzleşiyordu. Işıklar kameraya görünmez (`visible_camera = False`), yansımalarda görünür.
 2. Dünya dokusu NASA Blue Marble Next Generation'dan gelir (Ağustos 2004; künye "NASA Earth Observatory", kaynak `docs/RESEARCH.md` §4).
@@ -80,8 +87,9 @@ flowchart LR
 | Yayın paketi (CLI yüklemesi, kareler dahil) | ≤ 90 MB (Vercel Hobby sınırı 100 MB) | `tests/unit/deploy-config.test.ts` |
 | Metin kartının en kötü kare üstündeki kontrastı (%90 opak zemin, altında saf siyah ya da beyaz) | Her palette ≥ 4,5 | `tests/unit/story-contrast.test.ts` |
 | Ardışık karelerde sıçrama | SSIM eşiği ilk renderdan sonra kalibre edilir; bölüm sınırındaki bir karelik duraklama sıçrama sayılmaz | `tests/unit/story-continuity.test.ts` |
-| Sonraki bölümün eşyaları önceki bölümlerde | Görünen ışın 0; her ışıkta kesilen pay ≤ 0,02 | `tests/unit/story-scene.test.ts` (`pnpm story:check` ölçer) |
+| Sonraki bölümün eşyaları önceki bölümlerde | Görünen ışın 0; her ışıkta kesilen pay ≤ 0,02; sonraki bölüm ışığının ulaşan payı ≤ 0,02 | `tests/unit/story-scene.test.ts` (`pnpm story:check` ölçer) |
 | Çuvaldaki yığın | Dik yüz ≤ 0,02, oluk ≤ 0,15, tepe ≤ 90 mm, örtü ≥ 0,85 | aynı |
+| Banttaki yük | Denimin alan payı ≥ 0,5; ipek 2 parça | aynı |
 | Scroll kare süresi | p99 ≤ 25 ms (masaüstü) | `tests/e2e/story-perf.spec.ts` |
 
 ## 6. Takvim ve yedek

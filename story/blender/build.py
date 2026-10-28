@@ -16,6 +16,7 @@ MODULES = {
     1: "s1_fibre",
     2: "s2_scraps",
     3: "s3_weighing",
+    4: "s4_shred",
 }
 
 

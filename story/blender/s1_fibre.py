@@ -3,6 +3,7 @@ import math
 
 import lib
 import scraps
+import shredding
 import textile
 import weighing
 from mathutils import Vector
@@ -62,8 +63,9 @@ def camera_path(cam, meta, f0, f1):
 
 
 def scene():
-    """Atölye: kraft kâğıtlı masa, ışık, lif düzeyinde denim şerit, çevresindeki kırpıntılar ve tartım köşesi
-    (1.–3. bölüm aynı sahneyi kullanır; ilk ikisinde kantar kadraj dışındadır)."""
+    """Atölye: kraft kâğıtlı masa, ışık, lif düzeyinde denim şerit, çevresindeki kırpıntılar, tartım köşesi ve
+    ayıklama-parçalama istasyonu (1.–4. bölüm aynı sahneyi kullanır; her bölümde sonrakilerin nesneleri kadraj
+    dışındadır)."""
     weighing.table()
     weighing.floor()
     lights()
@@ -71,6 +73,7 @@ def scene():
     meta["table"] = scraps.cutting_table()
     weighing.station()
     weighing.bench()
+    shredding.station()
     return meta
 
 

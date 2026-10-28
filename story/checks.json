@@ -1,5 +1,5 @@
 {
-  "scene": "cf9ae632528c7e4f824fe7a222c2f29df98ff361eb732c0ac652fd61937bea1f",
+  "scene": "c2f830574ac52c80ee78b1c40dfd5249aa8efc058f8040c385456f29d6f2a1a8",
   "intrusion": {
     "d": {
       "view": {
@@ -8,6 +8,10 @@
           "hits": 0
         },
         "s2": {
+          "rays": 38880,
+          "hits": 0
+        },
+        "s3": {
           "rays": 38880,
           "hits": 0
         }
@@ -42,6 +46,76 @@
               "max": 0
             },
             "Rim": {
+              "mean": 0,
+              "max": 0
+            }
+          }
+        },
+        "s3": {
+          "points": 1008,
+          "lights": {
+            "Fill": {
+              "mean": 0,
+              "max": 0
+            },
+            "Key": {
+              "mean": 0,
+              "max": 0
+            },
+            "Rim": {
+              "mean": 0,
+              "max": 0
+            }
+          }
+        }
+      },
+      "reach": {
+        "s1": {
+          "points": 1008,
+          "lights": {
+            "PoolMachine": {
+              "mean": 0,
+              "max": 0
+            },
+            "PoolRim": {
+              "mean": 0,
+              "max": 0
+            },
+            "PoolSort": {
+              "mean": 0,
+              "max": 0
+            }
+          }
+        },
+        "s2": {
+          "points": 1008,
+          "lights": {
+            "PoolMachine": {
+              "mean": 0,
+              "max": 0
+            },
+            "PoolRim": {
+              "mean": 0,
+              "max": 0
+            },
+            "PoolSort": {
+              "mean": 0,
+              "max": 0
+            }
+          }
+        },
+        "s3": {
+          "points": 1008,
+          "lights": {
+            "PoolMachine": {
+              "mean": 0,
+              "max": 0
+            },
+            "PoolRim": {
+              "mean": 0,
+              "max": 0
+            },
+            "PoolSort": {
               "mean": 0,
               "max": 0
             }
@@ -53,7 +127,8 @@
         "key_shadow": {
           "mean": 0.08972,
           "max": 0.44
-        }
+        },
+        "pool_reach": 0.82869
       }
     },
     "m": {
@@ -63,6 +138,10 @@
           "hits": 0
         },
         "s2": {
+          "rays": 38880,
+          "hits": 0
+        },
+        "s3": {
           "rays": 38880,
           "hits": 0
         }
@@ -101,6 +180,76 @@
               "max": 0
             }
           }
+        },
+        "s3": {
+          "points": 1008,
+          "lights": {
+            "Fill": {
+              "mean": 0,
+              "max": 0
+            },
+            "Key": {
+              "mean": 0,
+              "max": 0
+            },
+            "Rim": {
+              "mean": 0,
+              "max": 0
+            }
+          }
+        }
+      },
+      "reach": {
+        "s1": {
+          "points": 1008,
+          "lights": {
+            "PoolMachine": {
+              "mean": 0,
+              "max": 0
+            },
+            "PoolRim": {
+              "mean": 0,
+              "max": 0
+            },
+            "PoolSort": {
+              "mean": 0,
+              "max": 0
+            }
+          }
+        },
+        "s2": {
+          "points": 1008,
+          "lights": {
+            "PoolMachine": {
+              "mean": 0,
+              "max": 0
+            },
+            "PoolRim": {
+              "mean": 0,
+              "max": 0
+            },
+            "PoolSort": {
+              "mean": 0,
+              "max": 0
+            }
+          }
+        },
+        "s3": {
+          "points": 1008,
+          "lights": {
+            "PoolMachine": {
+              "mean": 0,
+              "max": 0
+            },
+            "PoolRim": {
+              "mean": 0,
+              "max": 0
+            },
+            "PoolSort": {
+              "mean": 0,
+              "max": 0
+            }
+          }
         }
       },
       "control": {
@@ -108,7 +257,8 @@
         "key_shadow": {
           "mean": 0.25833,
           "max": 1
-        }
+        },
+        "pool_reach": 0.84044
       }
     }
   },
@@ -119,5 +269,10 @@
     "crest_mm": 70.2,
     "cover": 0.8891,
     "control_groove": 0.2139
+  },
+  "belt": {
+    "pieces": 43,
+    "denim_share": 0.5258,
+    "silk": 2
   }
 }

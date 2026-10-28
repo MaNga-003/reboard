@@ -25,17 +25,25 @@ def at(right, depth):
 
 
 # Hat yereli: +X akış yönü (ayıklama → makine → lif); sağa giderken 35° kameraya döner, böylece çıkış oluğu ve
-# lif yığını öne gelir. −Y kameraya bakan yüz; z zeminden.
-LINE_AT = at(2600.0, 900.0)
+# lif yığını öne gelir. −Y kameraya bakan yüz; z zeminden. Hat çuvalın 1,5 m gerisinde: daha önde iken kasa
+# sehpası ve bant ayakları 3. bölümün son karelerine giriyordu (mobilde 134 kamera ışını).
+LINE_AT = at(2600.0, 1500.0)
 LINE_ROT = math.atan2(R[1], R[0]) - math.radians(35)
 BELT_W, BELT_Z, BELT_TOP = 700.0, 850.0, 1230.0  # bant eni; ayıklama yüksekliği; besleme ucundaki yükseklik
 BELT_X = (-3650.0, -2050.0, -900.0)  # bandın başı, eğimin başladığı yer, besleme ucu
 BODY = (1300.0, 1100.0, 150.0, 1300.0)  # gövde boyu (X), eni (Y), alt ve üst z
 CHUTE = ((650.0, 330.0, 450.0, 800.0), (1050.0, 360.0, 270.0, 600.0))  # oluk kesiti: x, yarı en, alt z, üst z
-CRATE_AT, CRATE, STAND_H = (-2850.0, -800.0), (600.0, 400.0, 320.0), 430.0
+# Kasa bant kenarına yakın (rayla arası ~70 mm) ve ayıklama kısmının gerisinde: önde iken sehpa ayağı 3. bölümün
+# mobil son karelerine giriyordu.
+CRATE_AT, CRATE, STAND_H = (-3150.0, -700.0), (600.0, 400.0, 320.0), 430.0
 PILE_AT, PILE_R, PILE_H = (1550.0, 30.0), 700.0, 520.0
-FIBRE = ["Salvia Blue", "Deep Lyons Blue", "Ecru", "Raw Sienna", "Yellow Ocher", "Ochre Red", "Light Brownish Olive",
-         "Dark Tyrian Blue", "Vinaceous Cinnamon", "Ivory Buff"]
+# Açılmış karışık lif: kumaştan açıktır (boyasız lif özü görünür). Topaklar mavi-gri melanj (çuvalın çoğu denim);
+# içinde çuvaldaki her kumaşın renginden lif benekleri (6. bölüm: levhanın her lekesi bir kaynaktan). İpek
+# ayrıldığı için ipek renkleri yok.
+FIBRE_TONES = ["Salvia Blue", "Deep Violet / Plumbeous", "Olympic Blue", "Salvia Blue", "Deep Violet / Plumbeous",
+               "Warm Gray"]
+FIBRE = sorted({spec[0] for spec in scraps.FABRICS.values()})
+FLECK, FLECK_SHARE = 25.0, 0.22  # benek hücresi (mm) ve benekli hücre payı
 
 
 def world(x, y):
@@ -153,9 +161,15 @@ def conveyor(mats):
 
 def _scrap_material(k, fab):
     warp, weft, twill, pitch, _ = scraps.spec(fab)
-    if fab in scraps.SILK:
-        return lib.satin(f"Silk_{fab}_{k}", warp)
-    return lib.fabric(f"Line_{fab}_{k}", warp, weft, pitch=pitch, twill=twill, fuzz=0.7, var=0.14, bump=0.5)
+    if fab in scraps.SILK:  # bant uzakta: masadaki parıltı burada plastik gibi okunuyordu
+        return lib.satin(f"Silk_{fab}_{k}", warp, rough=0.34)
+    # Hav kendi renginde: beyaz hav sıyırma açısında denimi leylak griye, keteni naylon torbaya çekiyordu.
+    # Uzakta dokuma seçilmez, ortalama renk kalır. Denimde kalın çözgü ince atkıyı neredeyse örter; desendeki
+    # %33 ekru doğrusal ışıkta laciverti leylak griye (#6a6b8a) çekiyordu. Bu uzaklıkta yüz rengi çözgüdür.
+    if fab.startswith("denim"):
+        weft = warp
+    return lib.fabric(f"Line_{fab}_{k}", warp, weft, pitch=pitch, twill=twill, fuzz=0.7, var=0.14, bump=0.5,
+                      sheen=warp)
 
 
 def _field_over(x0, y0, x1, y1, h):
@@ -166,26 +180,71 @@ def _field_over(x0, y0, x1, y1, h):
     return scraps.Field(*region, h=h), region
 
 
-def belt_scraps(seed=31):
-    """Ayıklama bandında kırpıntılar; aralarında henüz ayrılmamış iki ipek parçası."""
-    xa, xc = BELT_X[0] + 60, BELT_X[1] - 120
-    f, region = _field_over(xa, -BELT_W / 2, xc, BELT_W / 2, 2.0)
-    f.H[:] = FLOOR + BELT_Z
+BED_X = (BELT_X[0] + 60, -960.0)  # yükün başı ve sonu (sonu besleme davlumbazının içinde)
+
+
+def belt_bed(seed=29):
+    """Bandın yükü: tümsekli, kenarları dalgalı bir kumaş katmanı; besleme ucuna doğru incelir. Boş koyu bantta
+    seyrek kırpıntı konfeti gibi okunuyordu. Döner: üstüne kırpıntı serilecek yükseklik alanı ve bölgesi."""
+    xa, xe = BED_X
+    f, region = _field_over(xa, -BELT_W / 2, xe, BELT_W / 2, 4.0)
+    lx, ly = local(f.X, f.Y)
+    base = FLOOR + belt_z(np.clip(lx, BELT_X[0], BELT_X[2]))
+    rs = np.random.default_rng(seed)
+    edge = BELT_W / 2 - 55 + 25 * np.sin(lx / 170 + 0.7) + 15 * np.sin(lx / 61 + 2.1)
+    t = np.clip((lx - xa) / 120, 0, 1) * np.clip((xe - lx) / 60, 0, 1)
+    inside = (np.abs(ly) < edge) & (t > 0)
+    lump = np.zeros_like(lx)
+    for _ in range(70):
+        bx, by = rs.uniform(xa, xe), rs.uniform(-0.8, 0.8) * BELT_W / 2
+        s = rs.uniform(50, 150)
+        lump += rs.uniform(8, 30) * np.exp(-((lx - bx) ** 2 + (ly - by) ** 2) / (2 * s * s))
+    taper = np.clip(1 - (lx - BELT_X[1]) / 1600, 0.45, 1)  # eğimde yük seyrelir
+    fall = np.clip((edge - np.abs(ly)) / 60, 0, 1) ** 0.5
+    thick = (10 + lump) * taper * fall * t
+    f.H = np.where(inside, base + thick, base)
+    # Ağın sınırı kalınlığın sıfırlandığı yerin bir hücre dışında: sınır bandın altında kalır (eşikle kesilince
+    # kenar basamak basamak görünüyordu).
+    keep = (np.abs(ly) < edge + 2 * f.h) & (t > 0)
+    idx = -np.ones(keep.shape, int)
+    idx[keep] = np.arange(int(keep.sum()))
+    V = np.column_stack([f.X[keep], f.Y[keep], f.H[keep] - 1.0])
+    q = keep[:-1, :-1] & keep[:-1, 1:] & keep[1:, 1:] & keep[1:, :-1]
+    j, i = np.nonzero(q)
+    Fc = np.column_stack([idx[j, i], idx[j, i + 1], idx[j + 1, i + 1], idx[j + 1, i]])
+    # Kırpıntıların arasından görünen alt katlar: gölgede, koyu ve çoğu denim (açık ve alaca tonda taş döşeme gibi
+    # okunuyordu).
+    D = [scraps.FABRICS["denim"][0], scraps.FABRICS["denim_dark"][0]]
+    cols = D * 4 + [scraps.FABRICS["olive"][0]]
+    lib.mesh_from("BeltBed", [tuple(p) for p in V], [tuple(x) for x in Fc],
+                  lib.scrap_mass("BeltBed", cols, cell=180.0, dark=0.14, sheen=D[1]))
+    return f, region
+
+
+def belt_scraps(f, region, seed=31):
+    """Yükün üstünde kırpıntılar; aralarında henüz ayrılmamış iki ipek parçası. Parçalar üst üste biner."""
+    xa, xe = BED_X
     placed = []
 
     def inside(c, Wp):
         lx, ly = local(Wp[:, 0], Wp[:, 1])
-        if np.any(np.abs(ly) > BELT_W / 2 - 12) or np.any(lx < xa) or np.any(lx > xc):
+        if np.any(np.abs(ly) > BELT_W / 2 - 25) or np.any(lx < xa) or np.any(lx > xe - 150):
             return False
-        if placed and min(math.hypot(c[0] - p[0], c[1] - p[1]) for p in placed) < 150:
+        if placed and min(math.hypot(c[0] - p[0], c[1] - p[1]) for p in placed) < 55:
             return False
         placed.append(c)
         return True
 
-    order = ["denim", "canvas", "silk_teal", "sienna", "denim_dark", "ochre_red", "olive", "denim", "silk_red",
-             "ocher", "canvas", "cinnamon"]
-    return scraps.heap(seed, f, region, len(order), sizes=(90, 200), spread=(900, 900), mesh_step=2.0, crumple=1.3,
-                       accept=inside, order=order, material=_scrap_material)
+    # Yarısı denim (çuvalın çoğu gibi); toprak tonları seyrek, ipek iki parça, ayıklanmayı bekliyor. Her parçası
+    # başka renkte yük alaca bir mozaik gibi okunuyordu.
+    order = ["denim", "denim_dark", "canvas", "denim", "silk_teal", "sienna", "denim_dark", "denim", "olive",
+             "denim_dark", "ochre_red", "denim", "canvas", "denim_dark", "silk_red", "denim", "ocher", "denim_dark",
+             "sienna", "denim", "olive", "denim_dark", "cinnamon", "denim", "canvas", "denim_dark", "ochre_red",
+             "denim", "ivory", "denim_dark"]
+    order += [c for c in order[:14] if c not in scraps.SILK]
+    return scraps.heap(seed, f, region, len(order), sizes=(240, 400), spread=(1400, 1400), mesh_step=3.0,
+                       crumple=1.0, relief=4.0, accept=inside, order=order, material=_scrap_material,
+                       drape=(0.16, (10.0, 26.0), (3, 6)))
 
 
 # --- İpek kasası ---
@@ -293,7 +352,7 @@ def machine(mats):
         x = -L / 2 + 40 + k * (L - 80) / 8
         objs.append(lib.cylinder("Bolt", 9, 8, (x, fy - 4, z1 - 30), st, rot=(90, 0, 0), verts=12))
     # Kayış muhafazası (sarı): tambur ve motor kasnağını örter; motor dışarıda, ayaklı tabanında.
-    c1, r1, c2, r2 = (300.0, 820.0), 235.0, (470.0, 330.0), 150.0
+    c1, r1, c2, r2 = (300.0, 820.0), 170.0, (470.0, 330.0), 115.0
     ring = [(c[0] + r * math.cos(a), c[1] + r * math.sin(a)) for c, r in ((c1, r1), (c2, r2))
             for a in np.linspace(0, TAU, 48, endpoint=False)]
     guard = scraps._slab("Guard", _hull([(round(x, 3), round(y, 3)) for x, y in ring]), 150, mats["guard"], bevel=6.0)
@@ -305,7 +364,7 @@ def machine(mats):
         for a in np.linspace(0.3, TAU + 0.3, 6, endpoint=False):
             objs.append(lib.cylinder("GuardBolt", 8, 8, (c[0] + r * math.cos(a), gy - 3, c[1] + r * math.sin(a)), st,
                                      rot=(90, 0, 0), verts=12))
-    my, mz, mr = gy - 210, c2[1], 170.0
+    my, mz, mr = gy - 210, c2[1], 160.0
     objs.append(lib.cylinder("Motor", mr, 400, (c2[0], my, mz), mo, rot=(90, 0, 0), verts=64, bevel=4.0))
     for k in range(24):
         a = k * TAU / 24
@@ -315,7 +374,9 @@ def machine(mats):
                             mo, rot=(0, 90 - math.degrees(a), 0)))
     objs.append(lib.cylinder("FanCover", mr + 12, 130, (c2[0], my - 265, mz), mo, rot=(90, 0, 0), verts=64, bevel=5.0))
     objs.append(lib.cylinder("FanGrille", mr - 25, 4, (c2[0], my - 331, mz), mats["black"], rot=(90, 0, 0), verts=48))
-    objs.append(lib.box("MotorFeet", (300, 340, 100), (c2[0], my, mz - mr + 20), fr, bevel=4.0))
+    # Ayak tabandan gövdenin yarı yüksekliğine çıkar (eskiden tabanın 90 mm üstünde asılı kalıyordu).
+    foot_top = mz - mr * 0.5
+    objs.append(lib.box("MotorFeet", (300, 340, foot_top - 40), (c2[0], my, (foot_top + 40) / 2), fr, bevel=4.0))
     objs.append(lib.box("MotorBase", (520, 600, 40), (c2[0], my + 20, 20), fr, bevel=4.0))
     objs.append(lib.box("TerminalBox", (150, 150, 100), (c2[0], my + 40, mz + mr + 40), mo, bevel=5.0))
     # Besleme davlumbazı: bant buradan makineye girer; ağzı açık, içi karanlık.
@@ -330,7 +391,7 @@ def machine(mats):
     so.thickness = 3.0
     objs.append(_bevel(chute, 1.5))
     # Kumanda kutusu: direk üstünde; acil durdurma ve iki ışık, yazısız.
-    px, py = -1150.0, -850.0
+    px, py = -950.0, -800.0  # besleme ağzının önünde; daha solda iken direk 3. bölümün kadrajına giriyordu
     objs.append(lib.box("Post", (60, 60, 1250), (px, py, 625), fr, bevel=2.0))
     objs.append(lib.box("Plate", (180, 180, 10), (px, py, 5), fr, bevel=1.5))
     objs.append(lib.box("ControlBox", (360, 220, 460), (px, py - 20, 1400), mats["box"], bevel=8.0))
@@ -365,45 +426,120 @@ def _smooth_path(P, n):
 
 # --- Lif yığını ---
 
-def pile_field(seed=21):
-    """Oluğun önünde yığılan açılmış lif: oluk tarafında yüksek, karnabahar gibi tümsekli. Dünya koordinatı."""
-    cx, cy = world(*PILE_AT)
-    span = PILE_R * 1.45
-    f = scraps.Field(cx - span, cy - span, cx + span, cy + span, h=6.0)
-    lx, ly = local(f.X, f.Y)
-    dx, dy = lx - PILE_AT[0], ly - PILE_AT[1]
+SQUASH = 0.85  # topaklar kendi ağırlığıyla biraz basıktır
+
+
+def _footprint(dx, dy):
+    """Yığının taban sınırına göre uzaklık (1 kenar) ve gövde zarfının yüksekliği; hat yereli, yığın merkezli."""
     ang = np.arctan2(dy, dx)
     rad = PILE_R * (1 + 0.11 * np.sin(3 * ang + 1.3) + 0.07 * np.sin(5 * ang + 0.4))
     rho = np.hypot(dx / 1.2, dy) / rad
     dome = np.clip(1 - rho ** 2, 0, None) ** 0.7
-    tilt = np.clip(1 - (dx + 650) / 1700, 0.35, 1.0)
-    rs = np.random.default_rng(seed)
-    lumps = np.zeros_like(dome)
-    for _ in range(46):
-        a, r = rs.uniform(0, TAU), PILE_R * math.sqrt(rs.uniform(0, 0.8))
-        bx, by, s = 1.2 * r * math.cos(a), r * math.sin(a), rs.uniform(60, 210)
-        lumps += rs.uniform(15, 65) * np.exp(-((dx - bx) ** 2 + (dy - by) ** 2) / (2 * s * s))
-    fine = np.zeros_like(dome)
-    for _ in range(14):
-        k = rs.uniform(1 / 140, 1 / 35)
-        a = rs.uniform(0, TAU)
-        fine += rs.uniform(2, 6) * np.sin(k * (dx * math.cos(a) + dy * math.sin(a)) + rs.uniform(0, TAU))
-    H = PILE_H * dome * tilt + (lumps + fine) * np.sqrt(dome)
-    f.H = FLOOR + np.where(dome > 0, H, -4.0)
-    f.rho = rho
+    tilt = np.clip(1 - (dx + 650) / 1700, 0.35, 1.0)  # oluk tarafı yüksek
+    return rho, PILE_H * dome * tilt
+
+
+class Ball:
+    """Bir lif topağı: basık, yüzeyi birkaç dalgayla bozulmuş küre. tone: renk seçimi (0–1)."""
+
+    def __init__(self, rs, c, r, tone):
+        self.c, self.r, self.tone = np.asarray(c, float), r, tone
+        # Düzgün küre çakıl taşı gibi okunuyordu: altı dalga, daha derin ve sık.
+        self.n = rs.normal(0, 1, (6, 3))
+        self.n /= np.linalg.norm(self.n, axis=1, keepdims=True)
+        self.k = rs.uniform(2.5, 7.0, 6)
+        self.a = rs.uniform(0.04, 0.12, 6)
+        self.ph = rs.uniform(0, TAU, 6)
+
+    def surface(self, d):
+        """Birim yönlerden (m, 3) yüzey noktaları."""
+        s = 1 + (self.a * np.sin(d @ self.n.T * self.k + self.ph)).sum(1)
+        return self.c + d * (self.r * s)[:, None] * (1.0, 1.0, SQUASH)
+
+
+def pile_field():
+    """Zarfın yükseklik alanı (dünya koordinatı): topakların oturduğu yüzey ve yönü."""
+    cx, cy = world(*PILE_AT)
+    span = PILE_R * 1.3
+    f = scraps.Field(cx - span, cy - span, cx + span, cy + span, h=8.0)
+    lx, ly = local(f.X, f.Y)
+    f.rho, env = _footprint(lx - PILE_AT[0], ly - PILE_AT[1])
+    f.H = FLOOR + np.where(f.rho < 1, env, -4.0)
     return f
 
 
-def pile_mesh(f):
-    keep = f.rho < 1.03
+def pile_balls(f, seed=21, count=300):
+    """Açılmış lif kum gibi akıp düz yamaç yapmaz; pamuk gibi topak topak kabarır (düz zarfla yığın kum tepesine,
+    yükseklik alanındaki yarım kürelerle dik duvarlı bloklara benziyordu). Zarfın yüzeyine iri topaklar gömülür,
+    her irinin dış yüzüne küçükler: karnabahar gibi iki ölçek. Küçükler çoğunlukla irinin tonunu alır."""
+    rs = np.random.default_rng(seed)
+    gy, gx = np.gradient(f.H, f.h)
+    balls = []
+    placed = 0
+    while placed < count:
+        bx, by = rs.uniform(-1.25, 1.25) * PILE_R, rs.uniform(-1.05, 1.05) * PILE_R
+        rho, _ = _footprint(bx, by)
+        # Son çeyrek kenar halkası: zarf orada alçak, topaklar seyrek kalınca içteki zarf kum gibi görünüyordu.
+        if rho > 0.98 or (placed >= count * 3 // 4 and rho < 0.75):
+            continue
+        wx, wy = world(PILE_AT[0] + bx, PILE_AT[1] + by)
+        n = np.array([-f.sample(gx, wx, wy), -f.sample(gy, wx, wy), 1.0])
+        n /= np.linalg.norm(n)
+        p = np.array([wx, wy, f.sample(f.H, wx, wy)])
+        r = 40.0 * (140.0 / 40.0) ** rs.random()
+        big = Ball(rs, p + n * r * (rs.uniform(0.15, 0.45) - 1), r, rs.random())
+        balls.append(big)
+        placed += 1
+        for _ in range(int(rs.integers(1, 5))):
+            d = n + rs.normal(0, 0.9, 3)
+            d /= np.linalg.norm(d)
+            if d[2] < -0.15:
+                continue
+            s = r * rs.uniform(0.18, 0.45)
+            q = big.surface(d[None])[0]
+            tone = big.tone if rs.random() < 0.8 else rs.random()
+            balls.append(Ball(rs, q + d * s * (rs.uniform(0.25, 0.55) - 1), s, tone))
+    # Tamamen zeminin altında kalanlar atılır.
+    return [b for b in balls if b.c[2] + b.r * SQUASH > FLOOR + 2]
+
+
+def _ico(sub):
+    import bmesh
+
+    bm = bmesh.new()
+    bmesh.ops.create_icosphere(bm, subdivisions=sub, radius=1.0)
+    V = np.array([v.co[:] for v in bm.verts])
+    F = np.array([[v.index for v in fc.verts] for fc in bm.faces])
+    bm.free()
+    return V, F
+
+
+def pile_mesh(f, balls):
+    """Topaklar ve aralarından görünebilecek zarf (biraz içeride) tek nesnede; `clump` köşe niteliği tonu taşır."""
+    ico = {3: _ico(3), 2: _ico(2)}
+    Vs, Fs, Ts = [], [], []
+    off = 0
+    for b in balls:
+        U, Fi = ico[3 if b.r > 35 else 2]
+        Vs.append(b.surface(U))
+        Fs.append(Fi + off)
+        Ts.append(np.full(len(U), b.tone))
+        off += len(U)
+    keep = f.rho < 1.0
     idx = -np.ones(keep.shape, int)
-    idx[keep] = np.arange(int(keep.sum()))
-    V = np.column_stack([f.X[keep], f.Y[keep], np.maximum(f.H[keep], FLOOR - 4.0)])
+    idx[keep] = off + np.arange(int(keep.sum()))
+    # Kenarda zeminin altına iner: yoksa topakların dışında düz bir etek gibi görünüyordu.
+    Vs.append(np.column_stack([f.X[keep], f.Y[keep], FLOOR + (f.H[keep] - FLOOR) * 0.75 - 25.0]))
     q = keep[:-1, :-1] & keep[:-1, 1:] & keep[1:, 1:] & keep[1:, :-1]
     j, i = np.nonzero(q)
-    Fc = np.column_stack([idx[j, i], idx[j, i + 1], idx[j + 1, i + 1], idx[j + 1, i]])
-    mat = lib.felt("FibrePile", FIBRE[0], FIBRE[1:], density=0.7, rough=0.95, fuzz=1.0, bump=0.8, size=22.0)
-    return lib.mesh_from("FibrePile", [tuple(p) for p in V], [tuple(x) for x in Fc], mat)
+    core = np.column_stack([idx[j, i], idx[j, i + 1], idx[j + 1, i + 1], idx[j + 1, i]])
+    Ts.append(np.full(int(keep.sum()), 0.15))
+    V = np.concatenate(Vs)
+    faces = [tuple(x) for F in Fs for x in F] + [tuple(x) for x in core]
+    mat = lib.fibre_mass("FibrePile", FIBRE_TONES, FIBRE, size=30.0, density=0.35)
+    o = lib.mesh_from("FibrePile", [tuple(p) for p in V], faces, mat)
+    o.data.attributes.new("clump", "FLOAT", "POINT").data.foreach_set("value", np.concatenate(Ts).astype(np.float32))
+    return o
 
 
 def fibres(rs, roots, ups, per, length, radius, k=7, curl=0.55, spread=0.6, lift=0.35, jitter=2.5):
@@ -424,20 +560,39 @@ def fibres(rs, roots, ups, per, length, radius, k=7, curl=0.55, spread=0.6, lift
     return P, Rr, np.repeat(rs.random(T), per)
 
 
-def fluff(f, seed=23, tufts=12000, air=320, ground=240):
-    """Yığının yüzündeki tutamlar, oluk ağzından savrulan ve yere düşmüş lifler."""
+def fibre_colour(roots, tone):
+    """Tutam rengi (`yarn`, 0–1, FIBRE_TONES + FIBRE listesinde dilim ortası): FLECK mm'lik hücrelerin FLECK_SHARE
+    kadarı bir kaynak kumaşın renginde, kalanı topağın melanj tonunda. Tek tek lif piksel altında kalır; benek ancak
+    aynı renkte lifler kümelenince görünür (rastgele renkle yığın düz pembe-bej okunuyordu)."""
+    cell = np.floor(roots / FLECK).astype(np.int64)
+    h = ((cell[:, 0] * 73856093) ^ (cell[:, 1] * 19349663) ^ (cell[:, 2] * 83492791)) & 0x7FFFFFFF
+    fleck = (h % 10007) / 10007 < FLECK_SHARE
+    nt = len(FIBRE_TONES)
+    idx = np.where(fleck, nt + (h // 10007) % len(FIBRE), np.minimum((tone * nt).astype(int), nt - 1))
+    return (idx + 0.5) / (nt + len(FIBRE))
+
+
+def fluff(balls, seed=23, tufts=160000, air=320, ground=240):
+    """Topakların yüzündeki tutamlar, oluk ağzından savrulan ve yere düşmüş lifler."""
     rs = np.random.default_rng(seed)
-    Hz = f.H - FLOOR
-    gy, gx = np.gradient(f.H, f.h)
-    inside = np.flatnonzero((f.rho < 0.97).ravel() & (Hz.ravel() > 8))
-    w = np.sqrt(1 + gx.ravel()[inside] ** 2 + gy.ravel()[inside] ** 2)
-    pick = rs.choice(inside, tufts, p=w / w.sum())
-    x = f.X.ravel()[pick] + rs.uniform(-f.h / 2, f.h / 2, tufts)
-    y = f.Y.ravel()[pick] + rs.uniform(-f.h / 2, f.h / 2, tufts)
-    z = f.sample(f.H, x, y)
-    n = np.column_stack([-f.sample(gx, x, y), -f.sample(gy, x, y), np.ones(tufts)])
-    n /= np.linalg.norm(n, axis=1, keepdims=True)
-    parts = [fibres(rs, np.column_stack([x, y, z]), n, 8, (14, 45), 0.13)]
+    w = np.array([b.r ** 2 for b in balls])
+    pick = rs.choice(len(balls), tufts, p=w / w.sum())
+    roots, ups, tones = [], [], []
+    for bi in np.unique(pick):
+        # Alt yüzler gömülü; yan yüzler de kameraya döner (tüysüz kalınca taş gibi parlıyordu).
+        d = rs.normal(0, 1, (int((pick == bi).sum()), 3)) + (0.0, 0.0, 0.3)
+        d /= np.linalg.norm(d, axis=1, keepdims=True)
+        roots.append(balls[bi].surface(d))
+        n = d / (1.0, 1.0, SQUASH)
+        ups.append(n / np.linalg.norm(n, axis=1, keepdims=True))
+        tones.append(np.full(len(d), balls[bi].tone))
+    roots, ups, tones = np.concatenate(roots), np.concatenate(ups), np.concatenate(tones)
+    keep = roots[:, 2] > FLOOR + 2
+    roots, ups, tones = roots[keep], ups[keep], tones[keep]
+    # Sık ve yatık tüy: topak kenarlarını yumuşatır (seyrek dik tutamla topaklar sert hatlı taş gibi kalıyordu).
+    per = 6
+    P, Rr, _ = fibres(rs, roots, ups, per, (25, 75), 0.09, spread=0.8, lift=0.2)
+    parts = [(P, Rr, np.repeat(fibre_colour(roots, tones), per))]
     # Havada: oluk ağzından yığına doğru savrulan tutamlar; ağza yakın sık, uzaklaştıkça seyrek ve geniş.
     s = rs.random(air) ** 1.6
     (xa, _, ba, ta), (xb, _, bb, tb) = CHUTE
@@ -448,7 +603,8 @@ def fluff(f, seed=23, tufts=12000, air=320, ground=240):
     c = np.column_stack([wx, wy, FLOOR + np.maximum(lz, 30)])
     d = rs.normal(0, 1, (air, 3))
     d /= np.linalg.norm(d, axis=1, keepdims=True)
-    parts.append(fibres(rs, c, d, 14, (8, 34), 0.12, curl=0.8, spread=1.2, lift=0.0, jitter=6.0))
+    P, Rr, _ = fibres(rs, c, d, 14, (8, 34), 0.12, curl=0.8, spread=1.2, lift=0.0, jitter=6.0)
+    parts.append((P, Rr, np.repeat(fibre_colour(c, rs.random(air)), 14)))
     # Zeminde: yığının çevresine düşmüş seyrek tutamlar, yatık.
     a = rs.uniform(0, TAU, ground)
     r = PILE_R * rs.uniform(0.95, 1.9, ground)
@@ -456,27 +612,36 @@ def fluff(f, seed=23, tufts=12000, air=320, ground=240):
     c = np.column_stack([gx2, gy2, np.full(ground, FLOOR + 3.0)])
     flat = np.column_stack([rs.normal(0, 1, ground), rs.normal(0, 1, ground), np.full(ground, 0.12)])
     flat /= np.linalg.norm(flat, axis=1, keepdims=True)
-    P, Rr, yarn = fibres(rs, c, flat, 6, (10, 40), 0.12, curl=0.45, spread=0.5, lift=0.0)
+    P, Rr, _ = fibres(rs, c, flat, 6, (10, 40), 0.12, curl=0.45, spread=0.5, lift=0.0)
     P[..., 2] = np.maximum(P[..., 2], FLOOR + 0.4)
-    parts.append((P, Rr, yarn))
+    parts.append((P, Rr, np.repeat(fibre_colour(c, rs.random(ground)), 6)))
     P = np.concatenate([p[0] for p in parts])
     Rr = np.concatenate([p[1] for p in parts])
     yarn = np.concatenate([p[2] for p in parts])
-    mat = lib.fibre_hair("FibreFluff", FIBRE, rough=0.5, var=0.3, yarn_weight=0.8, streak=0.12)
+    # Renk tutam başına (yarn); lif başına sapma dilimi aşmasın diye küçük.
+    mat = lib.fibre_hair("FibreFluff", FIBRE_TONES + FIBRE, rough=0.5, var=0.3, yarn_weight=0.97, streak=0.12)
     return lib.curves_array("FibreFluff", P, Rr, yarn, mat)
 
 
 # --- Işık ---
 
+# Tavan ışıkları: ad, hat yerelinde konum, boy, güç (W), yayılım (tam açı, °).
+POOL_H = 3300.0
+POOLS = (("PoolMachine", (500.0, -150.0), (2200.0, 1500.0), 8.0e7, 60.0),
+         ("PoolSort", (-2850.0, -200.0), (1400.0, 900.0), 6.0e7, 50.0))
+
+
 def lights():
     """İstasyonun ışık havuzları: dar açılı tavan ışıkları. 1.–3. bölümün üç ışığı istasyonda zayıf kalıyor
-    (uzaklık ve açı); ölçeklerini büyütmek 3. bölümün son karesini düzleştiriyordu (SSIM 0,935)."""
-    hi = FLOOR + 3300
-    for name, (x, y), size, power in (("PoolMachine", (500, -150), (2400, 1600), 8.0e7),
-                                      ("PoolSort", (-2850, -150), (1800, 1100), 6.0e7)):
+    (uzaklık ve açı); ölçeklerini büyütmek 3. bölümün son karesini düzleştiriyordu (SSIM 0,935). Her ışık çuvalın
+    tersine yayılım açısının yarısı kadar eğilir: konisinin çuvala bakan kenarı dikey iner, ışık 3. bölümün
+    kadrajına taşmaz (pnpm story:check)."""
+    for name, (x, y), size, power, spread in POOLS:
         cx, cy = world(x, y)
-        lib.area_light((cx, cy, hi), (cx, cy, FLOOR), size=size[0], size_y=size[1], power=power,
-                       color="Sulpher Yellow", spread=60, name=name)
+        ax, ay = cx - ORIGIN[0], cy - ORIGIN[1]
+        k = POOL_H * math.tan(math.radians(spread / 2)) / math.hypot(ax, ay)
+        lib.area_light((cx, cy, FLOOR + POOL_H), (cx + ax * k, cy + ay * k, FLOOR), size=size[0], size_y=size[1],
+                       power=power, color="Sulpher Yellow", spread=spread, name=name)
     # Yığının arkasından: lif saçağı ışığı geçirir, kenarı yanar (1. bölümdeki tek lifin arka ışığı gibi).
     cx, cy = world(*PILE_AT)
     lib.area_light((cx + 1700 * F[0], cy + 1700 * F[1], FLOOR + 1100), (cx, cy, FLOOR + 250), size=900, power=1.9e7,
@@ -487,11 +652,12 @@ def station():
     """Ayıklama ve parçalama: bant, kasa, makine, lif yığını ve ışıklar."""
     mats = materials()
     _root("ConveyorRoot", conveyor(mats))
-    belt_scraps()
+    belt_scraps(*belt_bed())
     crate(mats)
     silk_heap()
     machine(mats)
     f = pile_field()
-    pile_mesh(f)
-    fluff(f)
+    balls = pile_balls(f)
+    pile_mesh(f, balls)
+    fluff(balls)
     lights()

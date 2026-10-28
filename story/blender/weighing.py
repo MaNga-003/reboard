@@ -69,7 +69,9 @@ def table():
 
 def floor():
     m = lib.concrete("Floor", "Warm Gray", "Light Grayish Olive", "Neutral Gray", unit=1.0)
-    lib.plane("Floor", (16000, 16000), (0, 0, FLOOR), m)
+    # 40 m: 4. bölümden sonra kamera metrelerce geri çekilir; dikey karenin üst köşesi 16 m'lik zeminin dışına
+    # düşüyordu (ufuk çizgisi görünür). Desen nesne koordinatında, boy değişince ölçeği değişmez.
+    lib.plane("Floor", (40000, 40000), (0, 0, FLOOR), m)
 
 
 # --- Masadaki atölye eşyaları ---

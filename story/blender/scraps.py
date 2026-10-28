@@ -152,10 +152,33 @@ def _densify(poly, step):
     return np.array(out)
 
 
+def soften(poly, rounds=3):
+    """Chaikin köşe kırpma: dışbükeylik korunur, köşeler yuvarlanır (uzaktan sivri köşe kırık fayans gibi okunur)."""
+    P = np.asarray(poly, float)
+    for _ in range(rounds):
+        Q = np.roll(P, -1, axis=0)
+        P = np.stack([0.75 * P + 0.25 * Q, 0.25 * P + 0.75 * Q], axis=1).reshape(-1, 2)
+    return [tuple(p) for p in P]
+
+
+def _edge_dist(poly, x, y):
+    """Dışbükey CCW çokgende kenara uzaklık (içeride +)."""
+    d = np.full(np.shape(x), np.inf)
+    n = len(poly)
+    for k in range(n):
+        ax, ay = poly[k]
+        bx, by = poly[(k + 1) % n]
+        L = math.hypot(bx - ax, by - ay)
+        if L > 1e-9:
+            d = np.minimum(d, ((bx - ax) * (y - ay) - (by - ay) * (x - ax)) / L)
+    return d
+
+
 class Scrap:
     def __init__(self, fabric, center, angle, shape, waves, fold=None):
         self.fabric, self.center, self.angle, self.shape = fabric, np.array(center), angle, shape
         self.waves, self.fold = waves, fold
+        self.creases, self.drape = [], None
 
     def world(self, P):
         c, s = math.cos(self.angle), math.sin(self.angle)
@@ -172,6 +195,14 @@ class Scrap:
             (px, py), (dx, dy), amp, w = self.fold
             d = (lx - px) * (-dy) + (ly - py) * dx
             z += amp * np.exp(-(d / w) ** 2)
+        for (px, py), (dx, dy), amp, w in self.creases:  # amp < 0: çukur kırışık
+            d = (lx - px) * (-dy) + (ly - py) * dx
+            z += amp * np.exp(-(d / w) ** 2)
+        if self.drape:
+            # Kumaş kenarı alttakine sarkar: kabarıklık ve kırışık kenara doğru söner, kesik kenar basamağı kalmaz.
+            dist, puff = self.drape
+            s = np.clip(_edge_dist(self.shape, lx, ly) / dist, 0, 1)
+            z = np.maximum(z + puff, 0) * s * s * (3 - 2 * s)
         return z
 
 
@@ -490,15 +521,23 @@ def build(seed=5, keep_out=(-33, -30, 33, 12), count=14):
 
 
 def heap(seed, field, region, count, sizes=(60, 150), spread=(80, 60), mesh_step=1.0, crumple=1.0, accept=None,
-         max_slope=0.25, order=None, material=None):
+         max_slope=0.25, order=None, material=None, relief=1.0, drape=None):
     """Hazır bir yükseklik alanına (ör. çuval ağzındaki tümsek) kırpıntı yığar. Uzak plan için: saçak lifi yok,
     ızgara daha seyrek. crumple dalga ve kırışık genliğini büyütür: yığındaki kumaş masadaki gibi düz yatmaz.
+    relief dalgayı ve kırışığı boyca ölçekler (eğim aynı): masa boyu kırpıntının dalgası büyük parçada düz kalır.
+    drape = (kenar payı / boy, kabarıklık aralığı mm, kırışık sayısı aralığı): köşeler yuvarlanır, parça ortası
+    kabarır ve kenarı alttakine sarkar (bant gibi uzak planda yassı kırpıntı kâğıt parçası gibi okunuyordu).
     Döner: nesneler."""
     rs = np.random.default_rng(seed)
     cx, cy = (region[0] + region[2]) / 2, (region[1] + region[3]) / 2
     far = (1e9, 1e9, 1e9 + 1, 1e9 + 1)
     objs = []
     for k, sc in enumerate(layout(rs, far, count, region, (cx, cy), sizes, spread, accept, order)):
+        if relief != 1.0:
+            sc.waves = [(a * relief, kx / relief, ky / relief, ph) for a, kx, ky, ph in sc.waves]
+            if sc.fold:
+                p, d, amp, w = sc.fold
+                sc.fold = (p, d, amp * relief, w * relief)
         if crumple != 1.0:
             # Dalganın eğimi (genlik × dalga sayısı) sınırlı: kısa dalga büyütülünce kırpıntı paralel oluklarla
             # parlayan folyo gibi okunuyordu. Uzun dalgalar tam büyür.
@@ -507,6 +546,19 @@ def heap(seed, field, region, count, sizes=(60, 150), spread=(80, 60), mesh_step
             if sc.fold:
                 p, d, amp, w = sc.fold
                 sc.fold = (p, d, amp * crumple * 0.8, w * crumple * 0.6)
+        if drape:
+            frac, puff, ncr = drape
+            P = np.asarray(sc.shape)
+            size = float(np.ptp(P[:, 0]) + np.ptp(P[:, 1])) / 2
+            sc.shape = soften(sc.shape)
+            sc.drape = (frac * size, rs.uniform(*puff))
+            sc.fold = None  # masa boyu dar kırışık büyük parçada çadır gibi sivri tepe yapıyordu
+            for _ in range(int(rs.integers(ncr[0], ncr[1] + 1))):
+                dirn = rs.normal(0, 1, 2)
+                dirn /= np.linalg.norm(dirn)
+                amp = rs.uniform(0.02, 0.05) * size * (1 if rs.random() < 0.7 else -0.6)
+                sc.creases.append(((rs.uniform(-0.3, 0.3) * size, rs.uniform(-0.25, 0.25) * size), tuple(dirn),
+                                   amp, rs.uniform(0.04, 0.08) * size))
         warp, weft, twill, pitch, _ = spec(sc.fabric)
         if material:  # ör. ipek: dokuma deseni yerine saten parıltısı
             mat = material(k, sc.fabric)
