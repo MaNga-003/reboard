@@ -16,6 +16,7 @@
     "test:watch": "vitest",
     "test:coverage": "vitest run --coverage",
     "test:e2e": "playwright test --project=chromium && playwright test --project=demo --project=perf --workers=1",
+    "perf:lh": "node scripts/lighthouse.mjs",
     "db:generate": "drizzle-kit generate",
     "db:migrate": "tsx scripts/db-migrate.ts",
     "db:migrate:live": "tsx --env-file=.env.neon scripts/db-migrate.ts",

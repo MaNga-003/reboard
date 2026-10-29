@@ -70,6 +70,7 @@ pnpm build && pnpm start
 pnpm lint && pnpm typecheck
 pnpm test             # Vitest (birim ve entegrasyon, PGlite)
 pnpm test:e2e         # Playwright (Chromium); demo akışı ve kare süresi ölçümü paketten sonra tek işçiyle koşar
+pnpm perf:lh          # Lighthouse 13.5.0 (M-11): yerel production 3300'de, /tr mobil ve masaüstü, pasaport mobil → .lighthouseci/
 pnpm db:generate      # Drizzle migrasyonu üret
 pnpm db:migrate       # migrasyonları uygula (yerel PGlite)
 pnpm db:migrate:live  # migrasyonları Neon'a uygula (.env.neon, git dışı)

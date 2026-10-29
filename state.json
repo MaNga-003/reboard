@@ -1,7 +1,7 @@
 {
   "$schema": "./docs/state.schema.json",
   "project": "ReBoard SaaS platformu",
-  "updated_at": "2026-10-29T13:55:00+03:00",
+  "updated_at": "2026-10-29T14:24:00+03:00",
   "current_phase": "F2",
   "deadlines": {
     "demo_freeze": "2026-10-29T18:00:00+03:00",
@@ -607,8 +607,13 @@
     },
     {
       "id": "R-6",
-      "risk": "CSP başlığı yok; XSS'e karşı ikinci savunma hattı eksik",
-      "mitigation": "T4.1 öncesi izin listesiyle CSP eklenir (harita için tiles.openfreemap.org); eklenince bütün e2e yeniden koşulur"
+      "risk": "CSP nonce'suz: Next'in satır içi önyükleme betikleri için script-src 'unsafe-inline' açık; bir HTML enjeksiyonu satır içi betik çalıştırabilir",
+      "mitigation": "CSP 2026-10-29'da eklendi (next.config.ts): dış betik, object, base, form hedefi, çerçeveleme kapalı; dışarı bağlantı yalnız harita altlığına. React çıktısı varsayılan olarak kaçışlı, dangerouslySetInnerHTML yok. Nonce'lu CSP bütün sayfaları dinamik çizime zorlar; yarışmadan sonra değerlendirilir (F5). Ölçü M-36"
+    },
+    {
+      "id": "R-7",
+      "risk": "Hikâye sayfası mobilde ana iş parçacığını tutuyor (TBT 346 ms, eşik 200) ve JS 204,9 KiB (eşik 200); düşük uçlu telefonda ilk dokunuş gecikebilir",
+      "mitigation": "Donmadan önce hidrasyon değiştirilmez (risk demo akışını bozmak). Yarışmadan sonra: gsap/ScrollTrigger'ı ilk boyamadan sonra yükle, istemci adalarını küçült, sonra pnpm perf:lh ile yeniden ölç (M-11). LCP uygulanan yavaşlatmada 1,9 s ve CLS 0, ilk görüntü hızlı"
     }
   ],
   "metrics": [
@@ -696,9 +701,9 @@
       "id": "M-11",
       "claim": "Hızlı açılır",
       "threshold": "LCP ≤ 2,5 s; CLS ≤ 0,1; TBT ≤ 200 ms; / JS ≤ 200 KB gz",
-      "last_value": null,
-      "measured_at": null,
-      "test": "lighthouserc.json"
+      "last_value": "Lighthouse 13.5.0, yerel production build (CSP'li), benzetim 3 koşu ortancası; mobil LCP uygulanan yavaşlatmayla. /tr mobil: FCP 904 ms, LCP 1916 ms (benzetim 7512: Lantern JS'i ilk boyamaya bağlı sayıyor), TBT 346 ms AŞTI, CLS 0, JS 204,9 KiB AŞTI. /tr masaüstü: LCP 814 ms, TBT 25 ms, CLS 0, JS 204,9 KiB AŞTI. Pasaport mobil: LCP 1894 ms, TBT 120 ms, CLS 0 (geçti). JS aktarımı başlıkları da sayar: CSP 10 betik yanıtına ~3,1 KiB ekledi (CSP'siz 201,8). Gövde: react-dom 70,3, Next çalışma zamanı 45,3, gsap+ScrollTrigger 46,5 KiB gz; kazara şişkinlik yok. Düzeltme yarışmadan sonra (R-7)",
+      "measured_at": "2026-10-29T14:24:00+03:00",
+      "test": "scripts/lighthouse.mjs (pnpm perf:lh)"
     },
     {
       "id": "M-12",
@@ -891,6 +896,14 @@
       "last_value": "181,9 s (DEMO.md 180 s, fark 1,9 s), 1920 × 1080, 40,1 MB, siyah kesit 0; harita 2. adımda çizili. Bilerek bozma: çevrimdışı tarayıcıda 2. adımda fallback ile düştü; sentetik klipte 1,5 s siyah yakalandı, 0,3 s geçti",
       "measured_at": "2026-10-29T13:44:00+03:00",
       "test": "scripts/demo-offline.mjs, tests/e2e/demo.spec.ts"
+    },
+    {
+      "id": "M-36",
+      "claim": "CSP ana akışı kesmez, dışarıyı kapalı tutar",
+      "threshold": "ihlal 0; WebGL2 varsa harita çizilir; kanıt ucu kendi sandbox CSP'sini korur; production'da unsafe-eval yok",
+      "last_value": "Yerel production: 1/1, 5,2 s, ihlal 0, WebGL2 var, harita çizildi; paket 76/76, demo ve perf 2/2, demo:offline --check geçti. Bozma: connect-src'den harita adresi çıkınca harita fallback ve 3 ihlal kaydı; genel CSP kanıt ucunun sandbox politikasını ezince trace.spec düştü (genel CSP /api/evidence/ dışına alındı)",
+      "measured_at": "2026-10-29T14:21:00+03:00",
+      "test": "tests/e2e/csp.spec.ts, tests/e2e/trace.spec.ts, scripts/live-smoke.mjs"
     }
   ]
 }

@@ -23,6 +23,10 @@ for (const lang of ["tr", "en"]) {
     check(h.get("x-content-type-options") === "nosniff", "X-Content-Type-Options", h.get("x-content-type-options"));
     check(h.get("x-frame-options") === "DENY", "X-Frame-Options", h.get("x-frame-options"));
     check(h.get("referrer-policy") === "strict-origin-when-cross-origin", "Referrer-Policy", h.get("referrer-policy"));
+    // R-6: ihlalsiz çalıştığı yerelde csp.spec ile ölçülür; burada yayının aynı politikayı taşıdığı denetlenir.
+    const csp = h.get("content-security-policy") ?? "";
+    const need = ["default-src 'self'", "object-src 'none'", "frame-ancestors 'none'", "connect-src 'self' https://tiles.openfreemap.org"];
+    check(need.every((d) => csp.includes(d)) && !csp.includes("unsafe-eval"), "Content-Security-Policy", csp.slice(0, 60) || "yok");
   }
 }
 

@@ -193,7 +193,11 @@ Alanların anlamları ve birimleri `docs/DATA_DICTIONARY.md` dosyasında.
 
 - Server Actions `src/lib/action.ts` kapısından geçer: oturum, rol, sonra Zod.
 - Kayıt ve kurum açma kapalıdır; oturumsuz kurum uç noktaları 401 döner (M-4).
-- `next.config.ts` üzerinden güvenlik başlıkları uygulanır: `X-Content-Type-Options`, `Referrer-Policy`, `X-Frame-Options`, `Permissions-Policy`. CSP henüz yok (R-6). Eklenince harita için `connect-src` ve `img-src` içine `https://tiles.openfreemap.org`, `worker-src` içine `'self'` girer.
+- `next.config.ts` üzerinden güvenlik başlıkları uygulanır: `X-Content-Type-Options`, `Referrer-Policy`, `X-Frame-Options`, `Permissions-Policy` ve CSP (R-6).
+  - CSP nonce'suzdur: nonce bütün sayfaları dinamik çizime zorlardı (Next CSP rehberi). Next'in satır içi önyükleme betikleri için `script-src 'self' 'unsafe-inline'` gerekir; `unsafe-eval` yalnız geliştirmede eklenir.
+  - Dış kaynak yalnız harita altlığıdır: `connect-src` içinde `https://tiles.openfreemap.org` (stil, karo, yazı tipi, sprite fetch ile iner). Harita işçisi aynı kökenden, `worker-src 'self' blob:`. `object-src 'none'`, `base-uri 'self'`, `form-action 'self'`, `frame-ancestors 'none'`.
+  - Yapılandırma başlığı rota başlığını ezer. Bu yüzden genel CSP `/api/evidence/` dışındaki yollara yazılır; kanıt ucu kendi daha sıkı politikasını taşır (`trace.spec` bunu denetler).
+  - `tests/e2e/csp.spec.ts` hikâye, pazar (harita çizilir), izlenebilirlik, panel, senaryo ve pasaportta ihlal sayısının 0 olduğunu ölçer; `live-smoke` yayındaki başlığı denetler.
 - Kanıt dosyalarında yalnızca PDF, PNG, JPEG ve WebP kabul edilir; tür dosyanın ilk baytlarından belirlenir, dosya en fazla 4 MiB olabilir (Vercel'in 4,5 MB gövde sınırı, D-018) ve SHA-256 özeti tutulur.
 - Kanıt indirme ucu `/api/evidence/[id]` yalnızca sahip kuruma açıktır (oturumsuz 401, başka kurum ya da yok 404). Yanıt `Content-Disposition: attachment`, `X-Content-Type-Options: nosniff`, `Content-Security-Policy: sandbox; default-src 'none'` ve `Cache-Control: private, no-store` taşır; yüklenen dosya uygulamanın kökeninde sayfa olarak açılmaz (D-018).
 - Gizli bilgiler yalnızca ortam değişkenlerinde durur; CI'da gitleaks çalışır. `.env.example` dosyası yalnızca anahtar adlarını içerir.
