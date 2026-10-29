@@ -27,6 +27,69 @@ function oklab(r, g, b) {
   ];
 }
 
+/** Bölgenin (satır payı y0–y1) ortalama OKLab rengi. */
+export function meanOklab(img, y0 = 0, y1 = 1) {
+  const acc = [0, 0, 0];
+  let n = 0;
+  for (let y = Math.floor(img.height * y0); y < Math.floor(img.height * y1); y++)
+    for (let x = 0; x < img.width; x++) {
+      const i = 3 * (y * img.width + x);
+      const p = oklab(img.data[i], img.data[i + 1], img.data[i + 2]);
+      acc[0] += p[0];
+      acc[1] += p[1];
+      acc[2] += p[2];
+      n++;
+    }
+  return acc.map((v) => v / n);
+}
+
+/** n satır ve n sütun bandında ortalama OKLab L: karenin parlaklık eğimi. */
+export function lightProfiles(img, n = 8) {
+  const rows = new Float64Array(n);
+  const cols = new Float64Array(n);
+  const rc = new Float64Array(n);
+  const cc = new Float64Array(n);
+  for (let y = 0; y < img.height; y++)
+    for (let x = 0; x < img.width; x++) {
+      const i = 3 * (y * img.width + x);
+      const l = oklab(img.data[i], img.data[i + 1], img.data[i + 2])[0];
+      const r = Math.floor((y * n) / img.height);
+      const c = Math.floor((x * n) / img.width);
+      rows[r] += l;
+      rc[r]++;
+      cols[c] += l;
+      cc[c]++;
+    }
+  return { rows: [...rows].map((v, k) => v / rc[k]), cols: [...cols].map((v, k) => v / cc[k]) };
+}
+
+/** İki profilin ortalamaları çıkarıldıktan sonraki RMS farkı: genel parlaklık değil, eğim karşılaştırılır. */
+export function slopeRms(a, b) {
+  const mean = (v) => v.reduce((s, x) => s + x, 0) / v.length;
+  const ma = mean(a);
+  const mb = mean(b);
+  return Math.sqrt(mean(a.map((x, k) => (x - ma - (b[k] - mb)) ** 2)));
+}
+
+/** Her kanalı kendi ortalaması ve sapmasıyla 128 ± 40'a çeker: ışık ve ton farkı yapı ölçüsünü (SSIM) bozmasın. */
+export function normalise(img) {
+  const out = Buffer.alloc(img.data.length);
+  for (let c = 0; c < 3; c++) {
+    let s = 0;
+    let s2 = 0;
+    let n = 0;
+    for (let i = c; i < img.data.length; i += 3) {
+      s += img.data[i];
+      s2 += img.data[i] ** 2;
+      n++;
+    }
+    const mu = s / n;
+    const sd = Math.sqrt(Math.max(0, s2 / n - mu * mu)) || 1;
+    for (let i = c; i < img.data.length; i += 3) out[i] = Math.max(0, Math.min(255, Math.round(128 + ((img.data[i] - mu) / sd) * 40)));
+  }
+  return { ...img, data: out };
+}
+
 /** Piksel başına OKLab ΔE dağılımı: ortalama, p95, p99, en büyük. */
 export function deltaE(a, b) {
   if (a.width !== b.width || a.height !== b.height) throw new Error("boyutlar farklı");

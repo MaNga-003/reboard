@@ -69,14 +69,17 @@ pnpm dev              # geliştirme (DATABASE_URL yoksa PGlite: .data/pglite)
 pnpm build && pnpm start
 pnpm lint && pnpm typecheck
 pnpm test             # Vitest (birim ve entegrasyon, PGlite)
-pnpm test:e2e         # Playwright (Chromium)
+pnpm test:e2e         # Playwright (Chromium); demo akışı (demo.spec.ts) paketten sonra tek başına koşar
 pnpm db:generate      # Drizzle migrasyonu üret
 pnpm db:migrate       # migrasyonları uygula (yerel PGlite)
 pnpm db:migrate:live  # migrasyonları Neon'a uygula (.env.neon, git dışı)
 pnpm deploy:prod      # Vercel'e yayın (yalnızca .vercelignore izin listesi yüklenir)
 pnpm live:check       # canlı denetim; TT Güvenli İnternet yüzünden: gh workflow run live-smoke.yml
-pnpm db:seed          # sentetik demo verisi (yerel PGlite; DEMO_MODE=true ister, tabloları boşaltır)
-pnpm db:seed:live     # aynı veriyi Neon'a yükler (.env.local + .env.neon)
+pnpm db:seed          # sentetik demo verisi (yerel PGlite; DEMO_MODE=true ister, tabloları boşaltır; DEMO_NOW=YYYY-MM-DD günü sabitler, D-030)
+pnpm db:seed:live     # aynı veriyi Neon'a yükler (.env.local + .env.neon); önce Neon yedek dalı, QR için aynı DEMO_NOW
+pnpm demo:qr          # sunum QR'ı: canlı çapayla pasaport adresi → .private/demo/qr-{tr,en}.{svg,png}, qr.json
+pnpm demo:offline     # yedek 1: PGlite + production build, http://localhost:3000; --check akış testini çevrimdışı koşar
+pnpm demo:video       # yedek 2: akış DEMO.md süreleriyle, 1920×1080 → .private/demo/reboard-demo.mp4
 pnpm db:prices        # yalnızca SaaS fiyat satırlarını yeniler (yerel; zincire dokunmaz)
 pnpm db:prices:live   # aynı satırları Neon'da yeniler (.env.neon)
 pnpm docs:check       # belge tutarlılığı
@@ -84,6 +87,7 @@ pnpm progress         # faz faz biten görevler ve ilerleme oranı (mesai sonu r
 pnpm story:render     # Blender ile kareleri render et (story/blender)
 pnpm story:encode     # PNG → AVIF/WebP ve manifest.json
 pnpm story:check      # render etmeden sahne denetimi → story/checks.json (story/blender değişince)
+pnpm story:pace       # 8. bölümün zaman eğrisi (s8_earth.PACE); --probe önce sondayı render eder (~20 dk GPU)
 ```
 
 Ortam (Windows): Bash'te önce `export PATH="/c/Program Files/nodejs:/c/Users/burak/AppData/Roaming/npm:$PATH"`. Blender yolu `C:\Program Files\Blender Foundation\Blender 4.5\blender.exe`; ffmpeg winget ile kurulu.

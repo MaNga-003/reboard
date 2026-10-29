@@ -140,7 +140,7 @@ if (process.env.DEMO_PASSWORD) {
   const refDates = (refHtml.match(/>Okunma: 2[78] Eki 2026</g) ?? []).length;
   const refClasses = new Set([...refHtml.matchAll(/data-result-class="([a-z_]+)"/g)].map((m) => m[1]));
   check(
-    [3, 5].includes(refRows) && refSources === refRows && refDates === refRows && refClasses.size === 1 && refClasses.has("sourced_estimate") && refHtml.includes(">700 TL/t<") && refHtml.includes(">785 TL/t<"),
+    refRows === 5 && refSources === refRows && refDates === refRows && refClasses.size === 1 && refClasses.has("sourced_estimate") && refHtml.includes(">700 TL/t<") && refHtml.includes(">785 TL/t<"),
     "girişli /tr/senaryo karşılaştırma değerleri: her satır kaynaklı ve tarihli; İBB 700 ve 785 TL/t",
     `${refRows} satır · ${refSources} kaynak · ${refDates} tarih · ${[...refClasses].join(",")}`,
   );

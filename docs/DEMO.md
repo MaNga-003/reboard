@@ -6,12 +6,13 @@
 
 | Ne | Nasıl |
 | --- | --- |
-| Canlı adres | T4.1'de yazılacak |
-| Demo verisini sıfırla | Uygulamada "Demo verisini sıfırla" (yönetici) ya da `pnpm db:seed` |
+| Canlı adres | `https://reboard-lovat.vercel.app` (D-003). Türk Telekom "Güvenli İnternet" bu adresi yönlendirebilir (R-5): salon ağında önceden denenir, sorun olursa yedek 1 |
+| QR | `pnpm demo:qr` satılan lotun (`PL-…-001`) pasaport adresini etiket çapasıyla (`?a=`) kurar: `.private/demo/qr-tr.png` ve `qr-en.png` (SVG'leri de var). Çapa canlı veritabanından, pasaportla aynı kod yoluyla okunur; çapayla doğrulama geçmezse dosya yazılmaz, PNG yazıldıktan sonra çözücüyle geri okunur. `qr.json` lotu, çapayı ve seed gününü tutar. Sunuma bu PNG konur (D-025, D-030) |
+| Demo verisini sıfırla | Uygulamada düğme yok (D-030). Kayıt eklemek demoyu bozmaz: olaylar yalnızca eklenir, QR geçerli kalır. Gerçekten gerekirse önce Neon'da yedek dal alınır, sonra `DEMO_NOW=<qr.json'daki seedDay> pnpm db:seed:live`. Aynı gün aynı çapayı verir, sunumdaki QR geçerli kalır; başka bir günle yüklenirse `pnpm demo:qr` yeniden çalıştırılır ve sunumdaki QR değiştirilir |
 | Demo parolası | Ortam değişkeni `DEMO_PASSWORD`. Depoda yazmaz; ekibe ayrı iletilir |
-| Yedek 1: internetsiz | `pnpm demo:offline` → `http://localhost:3000` (PGlite ve seed) |
-| Yedek 2: video | `.private/demo/reboard-demo.mp4` (T4.2) |
-| QR | Pasaport sayfasındaki QR, adresi etiket çapasıyla (`?a=`) taşır. Seed yeniden yüklenince çapa değişir; sunuma ve etikete konacak QR son yüklemeden sonra canlı sayfadan alınır (D-025, T4.3) |
+| Yedek 1: internetsiz | `pnpm demo:offline` → `http://localhost:3000`. Yerel PGlite'a demo verisini yükler, derleme eskiyse derler, sunucuyu açar. İnternet ve Neon gerekmez; harita yerine liste görünür. Telefonla QR bu yedekte çalışmaz: pasaport dizüstünde açılır |
+| Yedek 2: video | `.private/demo/reboard-demo.mp4`, `pnpm demo:video` üretir: aşağıdaki akış, tablodaki sürelerle, 1920 × 1080 |
+| Provadan önce | `pnpm demo:offline --check`: akış testi çevrimdışı sunucuda koşar, yerel dışı her bağlantı kesik olur |
 
 ## 2. Akış
 
@@ -44,5 +45,5 @@ Rol değiştirici başlığın altındaki "Demo: veriler sentetiktir. Rol deği�
 | --- | --- |
 | Canlı adres açılmıyor | Yedek 1'e geç (dizüstünde önceden açık tutulur) |
 | Dizüstü de sorunlu | Yedek 2: video |
-| Veri bozulmuş | "Demo verisini sıfırla" |
-| Hikâye takılıyor | Sayfanın altındaki "hikâyeyi atla" bağlantısı; ya da doğrudan `/panel` |
+| Veri karıştı | Akış kendi ilanını açar; eski kayıtlar akışı bozmaz. Sıfırlama gerekirse §1'deki komut (aynı seed günüyle) |
+| Hikâye takılıyor | Sayfa açılınca 1. Tab'da sol üstte "Hikâyeyi geç" bağlantısı belirir; Enter hikâyenin sonuna atlar. Ya da doğrudan `/panel` |

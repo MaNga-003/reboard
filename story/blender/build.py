@@ -18,6 +18,9 @@ MODULES = {
     3: "s3_weighing",
     4: "s4_shred",
     5: "s5_press",
+    6: "s6_panel",
+    7: "s7_house",
+    8: "s8_earth",
 }
 
 

@@ -94,8 +94,8 @@ Biçim: **Karar**, **Neden**, **Tarih**, kararı kim verdi (K: kullanıcı, C: C
 
 ### D-014 — Renkler yalnızca Sanzo Wada sözlüğünden
 - **Karar:** Arayüz ve hikâye renkleri `MaNga-003/dictionary-of-colour-combinations` deposundaki 159 renkten ve 348 kombinasyondan seçilir. Ana palet kullanıcı tarafından seçilecek (açık soru Q-1). Metin kontrastı ve OKLab ΔE eşikleri otomatik testle denetlenir.
-- **Hikâye render'ı:** Malzemelerin temel renkleri, ışıkların ve dünyanın rengi Wada'dan gelir (`lib.rgba(ad)`; ad sözlükte yoksa render durur). Doku içinde iki Wada rengi arasındaki geçiş ve parlaklık değişimi serbesttir; fotogerçekçi ışık zaten ara tonlar üretir. Dünya küresinde NASA Blue Marble fotoğrafı kullanılır; o, renk seçimi değil gerçek görüntüdür.
-- **Tarih:** 2026-10-27 · K (render notu 2026-10-28 · C)
+- **Hikâye render'ı:** Malzemelerin temel renkleri, ışıkların ve dünyanın rengi Wada'dan gelir (`lib.rgba(ad)`; ad sözlükte yoksa render durur). Doku içinde iki Wada rengi arasındaki geçiş ve parlaklık değişimi serbesttir; fotogerçekçi ışık zaten ara tonlar üretir. 8. bölümde yer ve Dünya küresi EOX Sentinel-2 cloudless uydu mozaiğidir; o, renk seçimi değil gerçek görüntüdür.
+- **Tarih:** 2026-10-27 · K (render notu 2026-10-29 · C)
 
 ### D-015 — MVP kapsamı dışında kalanlar
 - **Karar:** Canlı GPS, yapay zekâ ile rota optimizasyonu, ödeme ve emanet hesabı, karbon kredisi, blokzincir ve mobil uygulama MVP'ye girmez.
@@ -130,13 +130,25 @@ Biçim: **Karar**, **Neden**, **Tarih**, kararı kim verdi (K: kullanıcı, C: C
 - **Neden:**
   - Çevrimdışı demoda da çalışıyor ve ek bir hizmet gerektirmiyor.
   - Yüklenen dosya kullanıcı içeriğidir: tarayıcıda sayfa olarak açılırsa betik çalıştırabilir. Ek olarak indirmek ve kum havuzu bunu engeller.
-  - Vercel işlevleri en fazla 4,5 MB istek gövdesi kabul eder (413 `FUNCTION_PAYLOAD_TOO_LARGE`). Önceki 5 MB sınırı yayında hiç çalışamazdı; çok parçalı form başlıklarına da pay kalsın diye sınır 4 MiB oldu.
+  - Vercel işlevleri en fazla 4,5 MB istek gövdesi kabul eder (413 `FUNCTION_PAYLOAD_TOO_LARGE`; [Vercel Functions Limits](https://vercel.com/docs/functions/limitations), okunma 2026-10-29). Önceki 5 MB sınırı yayında hiç çalışamazdı; çok parçalı form başlıklarına da pay kalsın diye sınır 4 MiB oldu.
 - **Tarih:** 2026-10-27 · C
 
 ### D-019 — Lisans: tüm hakları saklı
 - **Karar:** Depo herkese açıktır ama kod açık kaynak lisansıyla yayımlanmaz. `LICENSE` dosyası "tüm hakları saklıdır" der. Üçüncü taraf bileşenler (Wada renk verisi, MIT) kendi lisanslarıyla kalır.
 - **Neden:** Yarışmadan sonra şirketleşme seçeneği açık kalır. Sonradan açık lisansa geçmek kolaydır; yayımlanmış bir sürümü geri kapatmak mümkün değildir.
 - **Tarih:** 2026-10-27 · K
+
+### D-030 — Demo verisi yalnızca komutla ve sabit seed günüyle sıfırlanır
+- **Karar:**
+  - Uygulamada "Demo verisini sıfırla" düğmesi ve günlük yeniden yükleme cron'u yoktur. Plan ikisini de öngörüyordu; yapılmadı ve belgelerden çıkarıldı (`/api/cron`, `CRON_SECRET`).
+  - Sıfırlama yalnızca komutla yapılır. Yerelde `pnpm db:seed` çalışır. Canlıda önce Neon'da yedek dal alınır, sonra `DEMO_NOW=<gün> pnpm db:seed:live` çalışır.
+  - `DEMO_NOW` seed'in "bugün"ünü sabitler (`YYYY-MM-DD` ya da ISO zaman). Olay özetleri yalnızca seed'in UTC gününe bağlıdır. Aynı günle yeniden yükleme aynı etiket çapalarını verir. Gün sınırı TSİ 03:00'tür.
+  - Sunumdaki QR `pnpm demo:qr` ile canlı veritabanından üretilir; `qr.json` seed gününü tutar (DEMO.md §1).
+- **Neden:**
+  - Etiket çapası (D-025) lotu ilk çıkaran olayın hash'idir. Başka bir günle yeniden yüklenen veri yeni hash'ler üretir ve basılı QR "çapa uyuşmuyor" der. Kendiliğinden çalışan bir cron ya da sahnede yanlışlıkla basılan bir düğme sunumdaki QR'ı bozardı.
+  - Olaylar yalnızca eklenir (D-012). Demoda eklenen kayıt çapayı bozmaz, bu yüzden sıfırlamaya gerek kalmaz.
+  - Ölçüm: 2026-10-29 günü 06:00Z, 15:00Z, 20:59Z ve 21:01Z anları aynı baş özeti verdi; 2026-10-30 farklı bir özet verdi. `tests/integration/seed.test.ts` aynı günle yeniden yüklemede çapanın tuttuğunu, ertesi günle `anchor_mismatch` verdiğini denetler.
+- **Tarih:** 2026-10-29 · C
 
 ### D-029 — Senaryonun varsayılan girdileri yalnızca dayanağı olan değerlerdir
 - **Karar:**

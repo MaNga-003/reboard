@@ -9,3 +9,5 @@
 !/next.config.ts
 !/tsconfig.json
 !/vercel.json
+# Hikâye kareleri (AVIF, WebP, manifest); ham PNG'ler story/out altında kalır.
+!/public

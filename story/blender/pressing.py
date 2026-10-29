@@ -306,16 +306,21 @@ def mat_fluff(field, seed=47, tufts=150000):
     return lib.curves_array("MatFluff", P, Rr, yarn, mat)
 
 
+def board_material():
+    """Levhanın malzemesi. 7. bölümdeki dolabın üstü de bunu kullanır: doku nesne koordinatından gelir, aynı ağ
+    koordinatı iki sahnede aynı beneği verir."""
+    # Zemin sıkışmış denimin koyu mavisi (gevşek lifte ışık saçılır, açık görünür; preste saçılma azalır). felt'in
+    # Voronoi ölçeği 5: size=45 → ~9 mm benek. 9 ile 1,8 mm'lik benekler bej bir ortalamaya karışıyordu.
+    return lib.felt("Board", "Violet Blue", SH.FIBRE + ["Salvia Blue", "Olympic Blue"], scale=1.0, density=0.4,
+                    rough=0.8, fuzz=0.12, bump=0.25, size=45.0)
+
+
 def board(mats, xc):
     """Preslenmiş levha: lif sıkışınca renk koyulaşır, her kaynağın lifi benek olarak kalır (6. bölüm bunu yakından
     gösterir). Yüzey düz ama mat; kenarda katmanlar seçilmez."""
     L, W, T = BOARD
     z0 = ROLL_Z + SHEET[2]
-    # Zemin sıkışmış denimin koyu mavisi (gevşek lifte ışık saçılır, açık görünür; preste saçılma azalır). felt'in
-    # Voronoi ölçeği 5: size=45 → ~9 mm benek. 9 ile 1,8 mm'lik benekler bej bir ortalamaya karışıyordu.
-    m = lib.felt("Board", "Violet Blue", SH.FIBRE + ["Salvia Blue", "Olympic Blue"], scale=1.0, density=0.4,
-                 rough=0.8, fuzz=0.12, bump=0.25, size=45.0)
-    return [lib.box("Board", (L, W, T), (xc, 0, z0 + T / 2), m, bevel=1.5)]
+    return [lib.box("Board", (L, W, T), (xc, 0, z0 + T / 2), board_material(), bevel=1.5)]
 
 
 def sheets(mats, xs):

@@ -3,8 +3,9 @@
 // Her kare, kendi PNG'sine karşı SSIM hedefine ulaşan en düşük AVIF kalitesiyle kodlanır: sade kare küçük kalır,
 // lif dolu kare inceliğini korur. Tavan aşılırsa hedef bütün kareler için birlikte düşürülür, tabanın altına inilmez.
 // WebP yalnızca posterde ve bölüm başına bir durağan karede: AVIF çözemeyen tarayıcı statik hikâyeyi görür.
-// Kullanım: node scripts/story-encode.mjs [--in story/out] [--out public/story] [--aspect d,m]
-import { mkdir, readdir, rm, stat, writeFile } from "node:fs/promises";
+// Kullanım: node scripts/story-encode.mjs [--in story/out] [--out public/story] [--aspect d,m] [--cache story/cache/encode]
+import { createHash } from "node:crypto";
+import { mkdir, readdir, readFile, rm, stat, writeFile } from "node:fs/promises";
 import { join, resolve } from "node:path";
 import sharp from "sharp";
 import { readRgb, ssim } from "./image-metrics.mjs";
@@ -16,6 +17,9 @@ const args = Object.fromEntries(
 const IN = resolve(ROOT, args.in ?? "story/out");
 const OUT = resolve(ROOT, args.out ?? "public/story");
 const ASPECTS = (args.aspect ?? "d,m").split(",");
+// Önbellek PNG'nin içeriğine bağlı: değişmeyen karenin denemeleri ve kodlaması yeniden yapılmaz (bölümler ayrı
+// render edilir; kodlama her seferinde bütün diziyi arar).
+const CACHE = resolve(ROOT, args.cache ?? "story/cache/encode");
 
 export const FRAMES_PER_SECTION = 30;
 export const SECTIONS = 8;
@@ -57,21 +61,46 @@ export function stills(indices, perSection = FRAMES_PER_SECTION) {
   });
 }
 
+const digests = new Map();
+function digest(src) {
+  if (!digests.has(src)) digests.set(src, readFile(src).then((b) => createHash("sha256").update(b).digest("hex").slice(0, 32)));
+  return digests.get(src);
+}
+
+/** Kodlanmış kare; aynı PNG ve kalite için önbellekten. */
+async function encoded(src, kind, q) {
+  const file = join(CACHE, `${await digest(src)}.q${q}.${kind}`);
+  const hit = await readFile(file).catch(() => null);
+  if (hit) return hit;
+  const buf = await encoders[kind](src, q);
+  await writeFile(file, buf);
+  return buf;
+}
+
 /** Bir karenin kodlayıcı belleği: denenen her kalitenin bayt ve SSIM'i. Hedef düşünce yeniden kodlamaya gerek kalmaz. */
 function frameProbe(src, kind) {
-  const memo = new Map();
+  let memo = null;
   let ref = null;
+  let dirty = false;
+  const file = async () => join(CACHE, `${await digest(src)}.${kind}.json`);
   const probe = async (q) => {
+    if (!memo) {
+      const saved = JSON.parse(await readFile(await file(), "utf8").catch(() => "{}"));
+      memo = new Map(Object.values(saved).map((m) => [m.q, m]));
+    }
     if (!memo.has(q)) {
       ref ??= await readRgb(src);
-      const buf = await encoders[kind](src, q);
+      const buf = await encoded(src, kind, q);
       memo.set(q, { q, bytes: buf.length, ssim: ssim(ref, await readRgb(buf)) });
+      dirty = true;
     }
     return memo.get(q);
   };
   // Çözülmüş PNG ~6 MB; 240 karede bellekte tutulmaz, arama bitince bırakılır.
-  probe.release = () => {
+  probe.release = async () => {
     ref = null;
+    if (dirty) await writeFile(await file(), JSON.stringify(Object.fromEntries(memo)));
+    dirty = false;
   };
   return probe;
 }
@@ -80,7 +109,7 @@ async function search(probe, range, target) {
   try {
     return await lowestPassing(probe, range, target);
   } finally {
-    probe.release();
+    await probe.release();
   }
 }
 
@@ -144,12 +173,12 @@ async function encodeAspect(aspect) {
   await mkdir(outDir, { recursive: true });
   const out = await pool(list, async (f, i) => {
     const name = `f_${String(f.index).padStart(4, "0")}`;
-    const a = await encoders.avif(f.src, picks[i].q);
+    const a = await encoded(f.src, "avif", picks[i].q);
     await writeFile(join(outDir, `${name}.avif`), a);
     let webp = null;
     if (still.has(f.index)) {
       const w = await search(frameProbe(f.src, "webp"), WEBP_Q, target);
-      const buf = await encoders.webp(f.src, w.q);
+      const buf = await encoded(f.src, "webp", w.q);
       await writeFile(join(outDir, `${name}.webp`), buf);
       webp = { path: `${aspect}/${name}.webp`, bytes: buf.length };
     }
@@ -180,6 +209,7 @@ async function encodeAspect(aspect) {
 }
 
 async function main() {
+  await mkdir(CACHE, { recursive: true });
   const variants = {};
   for (const aspect of ASPECTS) {
     const t0 = performance.now();

@@ -46,7 +46,7 @@ Bir hesabın sınıfı, girdilerinin **en zayıf** sınıfıdır. Sıralama en z
 | Alan | TR | Birim / tür | Not |
 | --- | --- | --- | --- |
 | `listing.kind` | İlan türü | enum | `waste_offer`, `waste_request`, `panel_offer`, `panel_request` |
-| `listing.composition` | Lif bileşimi | `{fiber: yüzde}` | Toplam 100 olmalı. Lifler (`src/domain/fibre.ts`): `cotton`, `polyester`, `polycotton`, `viscose`, `wool`, `acrylic`, `elastane`, `other`, `unknown`. 100'e tamamlanmayan kısım `unknown` sayılır |
+| `listing.composition` | Lif bileşimi | `{fiber: yüzde}` | Toplam en fazla 100. Lifler (`src/domain/fibre.ts`): `cotton`, `polyester`, `polycotton`, `viscose`, `wool`, `acrylic`, `elastane`, `other`, `unknown`. 100'e tamamlanmayan kısım `unknown` sayılır |
 | `listing.contains_silk` | İpek içerir | bool | `true` ise üretici talebiyle eşleşmez (ipek kapsam dışı) |
 | `listing.quantity` | Miktar | `kg`, `t` ya da `m2` | Atıkta kg ya da t, panelde m². Tekrarlı ilanda miktar her teslim içindir (D-021) |
 | `listing.recurrence` | Tekrar | enum | `once`, `weekly`, `monthly` |
