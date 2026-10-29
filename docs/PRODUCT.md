@@ -129,7 +129,8 @@ Ekranın parçaları:
 | Etki ve tedarik paneli, uyarılar | Karbon kredisi |
 | Açık pasaport, QR, hash doğrulama | Blokzincir |
 | Senaryo ekranı, SaaS gider hesabı | Mobil uygulama |
-| TR ve EN, demo rolleri, sıfırlama | E-posta bildirimleri (F5) |
+| TR ve EN, demo rolleri, komutla sıfırlama (D-030) | E-posta bildirimleri (F5) |
+| Çevrimdışı yedek, demo videosu, sunum QR'ı | Uygulama içi sıfırlama düğmesi, günlük yeniden yükleme cron'u (D-030) |
 
 ## 5. Ürün kuralları
 

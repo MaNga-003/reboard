@@ -50,7 +50,7 @@ Testler: `pnpm test` (birim ve entegrasyon), `pnpm test:e2e` (Playwright).
 
 ## Teşekkür
 
-Renkler Sanzo Wada'nın *A Dictionary of Color Combinations* sözlüğünden, [MaNga-003/dictionary-of-colour-combinations](https://github.com/MaNga-003/dictionary-of-colour-combinations) üzerinden. Dünya dokusu NASA Blue Marble (kamu malı).
+Renkler Sanzo Wada'nın *A Dictionary of Color Combinations* sözlüğünden, [MaNga-003/dictionary-of-colour-combinations](https://github.com/MaNga-003/dictionary-of-colour-combinations) üzerinden. Hikâyenin son bölümündeki uydu görüntüsü: EOxCloudless https://cloudless.eox.at by EOX IT Services GmbH (Contains modified Copernicus Sentinel data 2016), [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/); üç boyutlu sahne için değiştirildi (renkler sahnenin ışığına göre düzeltildi, açık deniz tek tona çekildi).
 
 ## Lisans
 

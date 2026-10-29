@@ -31,19 +31,36 @@ for (const locale of ["tr", "en"] as const) {
 }
 
 test("kare dizisi scroll'la ilerler; ileri ve geri aynı kareye döner", async ({ page }) => {
-  test.skip(!(await hasStory(page)), "kareler henüz kodlanmadı (public/story/manifest.json yok)");
+  const res = await page.request.get("/story/manifest.json");
+  test.skip(!res.ok(), "kareler henüz kodlanmadı (public/story/manifest.json yok)");
+  const count = (await res.json()).variants.d.frames.length as number;
   await page.setViewportSize({ width: 1440, height: 900 });
   await page.goto("/tr");
   const canvas = page.locator("section canvas");
   await expect(canvas).toHaveAttribute("data-frame", "0");
+  // Hedef kare inmemişse oynatıcı en yakın yüklü kareyi gösterir. Tam pakette yük altında ilk okuma kareler
+  // inmeden yapılıyor, dönüşte 120 geliyordu. Ölçülen indirme değil scroll → kare eşlemesi; önce hepsi iner.
+  await expect(canvas).toHaveAttribute("data-loaded", String(count), { timeout: 60_000 });
   const story = page.locator("section[aria-label]").first();
   const box = (await story.boundingBox())!;
   const scrollTo = async (f: number) => {
     await page.evaluate((y) => window.scrollTo(0, y), (box.height - 900) * f);
     await page.waitForTimeout(800);
   };
+  // Scrub yumuşatması yük altında geç oturur: kare iki ardışık okumada (300 ms arayla) aynı kalınca okunur.
+  const settled = async () => {
+    let last = -1;
+    const read = async () => {
+      const f = Number(await canvas.getAttribute("data-frame"));
+      const same = f === last;
+      last = f;
+      return same;
+    };
+    await expect.poll(read, { intervals: [300], timeout: 10_000 }).toBe(true);
+    return last;
+  };
   await scrollTo(0.5);
-  const mid = Number(await canvas.getAttribute("data-frame"));
+  const mid = await settled();
   expect(mid).toBeGreaterThan(0);
   await scrollTo(1);
   expect(Number(await canvas.getAttribute("data-frame"))).toBeGreaterThan(mid);

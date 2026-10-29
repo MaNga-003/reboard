@@ -30,7 +30,8 @@
     "lead": "ReBoard, tekstil atığını sağlayan fabrikaları, panel üreticisini ve alıcıları tek bir izlenebilir zincirde buluşturur.",
     "cta": "Pazar yerine git",
     "demoNotice": "Bu demodaki verilerin tamamı sentetiktir. Panel reçetesi henüz seçilmedi ve test edilmedi.",
-    "signIn": "Demoya gir"
+    "signIn": "Demoya gir",
+    "imageryCredit": "Hikâyenin son bölümündeki uydu görüntüsü: <eox>EOxCloudless https://cloudless.eox.at</eox> by EOX IT Services GmbH (Contains modified Copernicus Sentinel data 2016), <cc>CC BY 4.0</cc>. Görüntü üç boyutlu sahne için değiştirildi: renkleri sahnenin ışığına göre düzeltildi, açık deniz tek tona çekildi."
   },
   "auth": {
     "title": "Giriş",

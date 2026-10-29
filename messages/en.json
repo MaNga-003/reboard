@@ -30,7 +30,8 @@
     "lead": "ReBoard connects the factories that supply textile waste, the panel producer and buyers in one traceable chain.",
     "cta": "Go to the marketplace",
     "demoNotice": "All data in this demo is synthetic. The panel recipe has not been selected or tested yet.",
-    "signIn": "Enter the demo"
+    "signIn": "Enter the demo",
+    "imageryCredit": "Satellite imagery in the last part of the story: <eox>EOxCloudless https://cloudless.eox.at</eox> by EOX IT Services GmbH (Contains modified Copernicus Sentinel data 2016), <cc>CC BY 4.0</cc>. The imagery was modified for the 3D scene: its colours were corrected for the scene's lighting and the open sea was evened out to a single tone."
   },
   "auth": {
     "title": "Sign in",

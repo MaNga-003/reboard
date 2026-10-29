@@ -15,7 +15,7 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "test:coverage": "vitest run --coverage",
-    "test:e2e": "playwright test",
+    "test:e2e": "playwright test --project=chromium && playwright test --project=demo",
     "db:generate": "drizzle-kit generate",
     "db:migrate": "tsx scripts/db-migrate.ts",
     "db:migrate:live": "tsx --env-file=.env.neon scripts/db-migrate.ts",
@@ -23,11 +23,15 @@
     "db:seed:live": "tsx --env-file=.env.local --env-file=.env.neon scripts/db-seed.ts",
     "db:prices": "tsx --env-file-if-exists=.env.local scripts/db-prices.ts",
     "db:prices:live": "tsx --env-file=.env.neon scripts/db-prices.ts",
+    "demo:offline": "node scripts/demo-offline.mjs",
+    "demo:video": "node scripts/demo-offline.mjs --video",
+    "demo:qr": "tsx --env-file=.env.neon scripts/demo-qr.ts",
     "deploy:prod": "vercel deploy --prod",
     "live:check": "node scripts/live-smoke.mjs",
     "story:render": "node scripts/story-render.mjs",
     "story:encode": "node scripts/story-encode.mjs",
-    "story:check": "node scripts/story-check.mjs"
+    "story:check": "node scripts/story-check.mjs",
+    "story:pace": "node scripts/story-pace.mjs"
   },
   "dependencies": {
     "@electric-sql/pglite": "^0.5.12",

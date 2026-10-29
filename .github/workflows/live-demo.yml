@@ -1,0 +1,53 @@
+name: Canlı demo akışı
+
+# DEMO.md §2 akışını canlı adreste koşar (M-17, T4.1). Türk Telekom filtresi yüzünden burada çalışır (R-5).
+# Canlı veritabanına yazar (ilan, teklif, parti, üretim, lot). Olaylar yalnızca eklenir; etiket çapası ve sunum QR'ı
+# bozulmaz. Temizlik gerekirse aynı seed günüyle yeniden yüklenir (D-030, DEMO.md §1). Elle tetiklenir:
+#   gh workflow run live-demo.yml
+on:
+  workflow_dispatch:
+    inputs:
+      url:
+        description: Denetlenecek adres
+        required: false
+        default: https://reboard-lovat.vercel.app
+
+permissions:
+  contents: read
+
+concurrency:
+  group: live-demo
+  cancel-in-progress: false
+
+jobs:
+  demo:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v7
+      - uses: pnpm/action-setup@v6
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 24
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - uses: actions/cache@v6
+        with:
+          path: ~/.cache/ms-playwright
+          key: playwright-${{ runner.os }}-${{ hashFiles('pnpm-lock.yaml') }}
+      - name: Playwright tarayıcısı ve sistem paketleri
+        timeout-minutes: 6
+        run: pnpm exec playwright install --with-deps chromium
+      # Girdi kabuk metnine gömülmez; ortam değişkeninden okunur. E2E_BASE_URL varken yerel sunucu açılmaz.
+      # Yeniden deneme yok: sahnede ikinci şans olmaz, takılan akış gizlenmesin.
+      - run: pnpm exec playwright test tests/e2e/demo.spec.ts --reporter=list --retries=0
+        env:
+          E2E_BASE_URL: ${{ inputs.url }}
+      - if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: live-demo
+          path: |
+            playwright-report
+            test-results
+          retention-days: 7

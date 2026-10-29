@@ -28,6 +28,23 @@ export default async function Home({ params }: PageProps<"/[locale]">) {
         <p role="note" className="rounded border border-fg/30 px-3 py-2 text-sm">
           {t("demoNotice")}
         </p>
+        {/* Son bölümün uydu görüntüsü CC BY 4.0: künye görüntünün gösterildiği sayfada durur (RESEARCH.md §4). */}
+        {finaleInStory && (
+          <p className="text-xs break-words">
+            {t.rich("imageryCredit", {
+              eox: (c) => (
+                <a href="https://cloudless.eox.at" className="underline">
+                  {c}
+                </a>
+              ),
+              cc: (c) => (
+                <a href="https://creativecommons.org/licenses/by/4.0/" className="underline">
+                  {c}
+                </a>
+              ),
+            })}
+          </p>
+        )}
         <Link href="/giris" className="inline-flex min-h-11 items-center self-start rounded bg-accent px-5 font-semibold text-on-accent">
           {t("signIn")}
         </Link>

@@ -1,7 +1,7 @@
 {
   "$schema": "./docs/state.schema.json",
   "project": "ReBoard SaaS platformu",
-  "updated_at": "2026-10-29T00:35:00+03:00",
+  "updated_at": "2026-10-29T13:30:00+03:00",
   "current_phase": "F2",
   "deadlines": {
     "demo_freeze": "2026-10-29T18:00:00+03:00",
@@ -327,39 +327,40 @@
       "id": "T3.2",
       "phase": "F3",
       "mode": "otonom",
-      "status": "sürüyor",
+      "status": "tamam",
       "title": "Storyboard ve STORY.md",
       "acceptance": "8 bölüm, ölçek, süre, metin ve palet tanımlı",
-      "evidence": null,
+      "evidence": "docs/STORY.md §2: 8 bölüm; ölçek, kare aralığı (masaüstü 30'ar, mobil yarısı), TR ve EN metin (kaynağı messages/*.json story.sections) ve bölüm başına baskın Wada renkleri (2026-10-29, story/blender/*.py içindeki malzeme tanımlarından okundu; D-014).",
       "depends_on": [],
       "decisions": [
         "D-004"
-      ]
+      ],
+      "note": "İlk plan bölüm başına tek bir Wada kombinasyonuydu; kareler fotogerçekçi (D-004) olunca renk malzeme düzeyine indi: her malzemenin taban rengi Wada'dan, piksel rengi ışıktan. 8. bölümde yer uydu görüntüsünün tonundadır (M-31)."
     },
     {
       "id": "T3.3",
       "phase": "F3",
       "mode": "otonom",
-      "status": "sürüyor",
+      "status": "tamam",
       "title": "Blender sahne kodu ve animatik render",
       "acceptance": "Tek komutla 16:9 ve 9:16 animatik kareler üretilir; oynatıcıda baştan sona oynar",
-      "evidence": null,
+      "evidence": "pnpm story:render ile 1.–8. bölüm, 16:9 (240 kare) ve 9:16 (120 kare); pnpm story:encode → public/story. Oynatıcıda tam dizi: tests/e2e/story.spec.ts 7/7 (kare ileri ve geri aynı kareye döner, hareket azaltma, AVIF'siz statik yedek, 9:16), story-perf p99 16,8 ms (M-3). Süreklilik sıçrama 0 (M-10); sahne denetimi 32/32 (M-30).",
       "depends_on": [
         "T3.2"
       ],
       "decisions": [
         "D-004"
       ],
-      "note": "Fotogerçekçi yön (D-004, Cycles). Yazıldı: story/blender/lib.py (Cycles kurulumu, ışık, kamera, malzeme kitaplığı), textile.py (lif düzeyinde 2/1 dimi denim: 16.676 eğri, 4,96 M nokta), scraps.py (kesim masası: yığılan dışbükey kırpıntılar, saçak lifleri, makas, tebeşir, toplu iğne; Wada 126/199/279), s1_fibre.py (1. bölüm, arka planda kesim masası), s2_scraps.py (2. bölüm: kamera şeritten 210 mm genişliğe geri çekilir), build.py; scripts/story-render.mjs (pnpm story:render) ve scripts/story-encode.mjs (pnpm story:encode, AVIF kalitesi bütçeye göre ikili aramayla). 1. bölüm önizlemede tamam. 2. bölümün odağı masanın ortasına alındı (şerit son karede kadrajda). 3. bölüm yazılıyor: weighing.py (kraft kâğıtlı kontrplak masa, beton zemin, yer kantarı, kırpıntı dolu PP çuval, rakamsız kraft etiket ve sicim) ve s3_weighing.py (kamera geri çekilip az 222° → 200°; bu açıda 1. bölümün ışıkları üçlü düzen kurar). Blue Marble kaynağı RESEARCH.md'ye işlendi. 3. bölüm önizlemede tamam (masaüstü ve mobil): masada yıkanmış denim topu ve katlanmış kumaşlar; yığın oluğu 0,214 → 0,124 (kısa dalga eğimi sınırlı), dik 0,0096, tepe 70 mm. Top anahtar ışığın %9'unu kesip 2. bölümün son karesini karartıyordu; yeri değişti, gölge payı 0. Kalıcı denetim: pnpm story:check (story/blender/check.py → story/checks.json, tests/unit/story-scene.test.ts, M-30; bozmada 7/7). 1. ve 2. bölüm eski temel kareyle karşılaştırıldı: tek fark bilinçli ışık ölçeği değişikliği (eski sahneyle SSIM 0,9999). 4. bölüm yazılıyor: shredding.py (ayıklama bandı ve üstünde kırpıntılar, ayrılan ipeğin kasası, yazısız yırtma makinesi, çıkış oluğu, lif yığını, 101.921 lif eğrisiyle yüzey tutamları, havada ve yerde lif; istasyonun havuz ışıkları); scraps.py ipek sateni taşır (SILK, spec, order ve material parametreleri; varsayılanlar aynı), lib.py'ye satin() ve curves_array() eklendi. İstasyon boş sahnede hatasız kuruluyor (5,0 s, 148 nesne), henüz sahneye bağlı değil. pnpm story:check yeniden: 1.–3. bölüm ölçümleri birebir aynı, yalnızca sahne özeti değişti; story-scene testi 13/13. 4. bölüm sahneye bağlandı: s4_shred.py (kamera 3. bölümün son karesinden geri çekilip sağa kayar; masaüstü son karede çuval tabanı v 0,79, metin kartı 0,81'de başlar), build.py'ye 4. bölüm, s1.scene()'e istasyon; zemin 40 m (dikey karede ufuk görünüyordu). Lif yığını: 300 büyük ve her birine 1–4 küçük 3B topak, lib.fibre_mass, 160.000 tutam; ana ton mavi-gri, benekler çuvaldaki kumaş renklerinden. Bant yükü yeniden yazıldı: ilk render'da yassı, sivri köşeli ve her biri başka renkte kırpıntılar kırık fayans mozaiği gibi okunuyordu. Şimdi scraps.heap(drape=…): köşeler Chaikin ile yuvarlanır, ortası kabarır, kenarı alttakine sarkar, 3–6 kırışık; 43 kırpıntının alanca %53'ü denim, 2 ipek. Denimin yüz rengi çözgü: %33 ekru doğrusal ışıkta laciverti #6a6b8a leylak griye çekiyordu. Hav kendi renginde. Önizleme d/m kare 90/105/119 tamam. Ölçümler: 3→4 dikişi SSIM 0,9995; 3. bölüm son karesi eski kareyle SSIM 0,995 (fark kenarlarda gürültü düzeni; bulanık PSNR 51–53 dB, parlaklık +%0,12). Havuz ışığı aydınlık bölge P90 170/158, 3. bölüm 169/163: güç değişmedi. check.py 3. bölümü ve 4. bölüm ışıklarının erişimini (koni, yön, engel) ve bandı ölçüyor; pnpm story:check 13,9 dk, story-scene testi 26/26, bozma 3/3 (M-30). 5. bölüm yazılıyor (wip/s5-pres dalında; sahne denetimi yapılmadığı için main'e alınmadı): pressing.py (çok açıklıklı sıcak pres, 6 silindir, hidrolik ünite, ışık perdesi, kumanda, giriş ve çıkış makaralı masaları, tarak keçesi ve tutamları, 18 mm hedef levha, etiketsiz iki bağlayıcı adayı: lif balyası ve kapalı varil; havuz ışıkları) ve s5_press.py (kamera 4. bölümün son karesinden hat boyunca sağa kayıp geri çekilir; geçici son kare d 205°/30°/13 m, m 234°/44°/12,5 m). İstasyon hattın x ≥ 7000 mm bölgesinde: 3. ve 4. bölümün hiçbir karesine girmez (kadraj haritası). Görüntü düzeltmeleri: keçe kamuflaj gibi lekeliydi (köşe başına ton eşiklenince 2–3 hücrelik lekeler), zemin tek tona alındı; levhada benek görünmüyordu (felt Voronoi ölçeği 5, size=9 → 1,8 mm), size=45 ve koyu mavi zemin. Keçe yakında yumurta kolisi gibi düzenliydi (kısa dalgalı sinüs toplamı); bulanıklaştırılmış beyaz gürültüye geçti. Mobil son karede zemin kenarı görünüyordu: zemin 40 → 100 m. Önizleme d/m kare 120/135/149: kadraj kırpılmıyor, ufuk yok. check.py 4. bölümü ve 5. bölüm ışıklarını ölçüyor, kontrol: havuzlar her yöne yayılınca 4. bölüme ulaşmalı; story-scene testi buna göre. pnpm story:check (19,9 dk, 29.10): 1.–4. bölümde 311.040 ışında eşya 0, gölge 0, 5. bölüm ışıklarının ulaşan payı 0; kontrol 4. bölüme 0,54/0,65; story-scene 32/32, bilerek bozmada 9 test düştü. 4. bölümün son karesi eski kareyle SSIM 0,997/0,998 (bulanık PSNR 54,5/55,6 dB); 4→5 dikişi SSIM 0,9999. Açık işler: 6. bölüm (levhaya yakın çekim, 18 mm kenar), 7. bölüm (levhadan kesilmiş masa üstüyle eşleşen kesme, ev), 8. bölüm, animatik ve kodlama."
+      "note": "Fotogerçekçi yön (D-004, Cycles). Yazıldı: story/blender/lib.py (Cycles kurulumu, ışık, kamera, malzeme kitaplığı), textile.py (lif düzeyinde 2/1 dimi denim: 16.676 eğri, 4,96 M nokta), scraps.py (kesim masası: yığılan dışbükey kırpıntılar, saçak lifleri, makas, tebeşir, toplu iğne; Wada 126/199/279), s1_fibre.py (1. bölüm, arka planda kesim masası), s2_scraps.py (2. bölüm: kamera şeritten 210 mm genişliğe geri çekilir), build.py; scripts/story-render.mjs (pnpm story:render) ve scripts/story-encode.mjs (pnpm story:encode, AVIF kalitesi bütçeye göre ikili aramayla). 1. bölüm önizlemede tamam. 2. bölümün odağı masanın ortasına alındı (şerit son karede kadrajda). 3. bölüm yazılıyor: weighing.py (kraft kâğıtlı kontrplak masa, beton zemin, yer kantarı, kırpıntı dolu PP çuval, rakamsız kraft etiket ve sicim) ve s3_weighing.py (kamera geri çekilip az 222° → 200°; bu açıda 1. bölümün ışıkları üçlü düzen kurar). Uydu görüntüsünün kaynağı (EOX Sentinel-2 cloudless 2016, CC BY 4.0) RESEARCH.md'ye işlendi. 3. bölüm önizlemede tamam (masaüstü ve mobil): masada yıkanmış denim topu ve katlanmış kumaşlar; yığın oluğu 0,214 → 0,124 (kısa dalga eğimi sınırlı), dik 0,0096, tepe 70 mm. Top anahtar ışığın %9'unu kesip 2. bölümün son karesini karartıyordu; yeri değişti, gölge payı 0. Kalıcı denetim: pnpm story:check (story/blender/check.py → story/checks.json, tests/unit/story-scene.test.ts, M-30; bozmada 7/7). 1. ve 2. bölüm eski temel kareyle karşılaştırıldı: tek fark bilinçli ışık ölçeği değişikliği (eski sahneyle SSIM 0,9999). 4. bölüm yazılıyor: shredding.py (ayıklama bandı ve üstünde kırpıntılar, ayrılan ipeğin kasası, yazısız yırtma makinesi, çıkış oluğu, lif yığını, 101.921 lif eğrisiyle yüzey tutamları, havada ve yerde lif; istasyonun havuz ışıkları); scraps.py ipek sateni taşır (SILK, spec, order ve material parametreleri; varsayılanlar aynı), lib.py'ye satin() ve curves_array() eklendi. İstasyon boş sahnede hatasız kuruluyor (5,0 s, 148 nesne), henüz sahneye bağlı değil. pnpm story:check yeniden: 1.–3. bölüm ölçümleri birebir aynı, yalnızca sahne özeti değişti; story-scene testi 13/13. 4. bölüm sahneye bağlandı: s4_shred.py (kamera 3. bölümün son karesinden geri çekilip sağa kayar; masaüstü son karede çuval tabanı v 0,79, metin kartı 0,81'de başlar), build.py'ye 4. bölüm, s1.scene()'e istasyon; zemin 40 m (dikey karede ufuk görünüyordu). Lif yığını: 300 büyük ve her birine 1–4 küçük 3B topak, lib.fibre_mass, 160.000 tutam; ana ton mavi-gri, benekler çuvaldaki kumaş renklerinden. Bant yükü yeniden yazıldı: ilk render'da yassı, sivri köşeli ve her biri başka renkte kırpıntılar kırık fayans mozaiği gibi okunuyordu. Şimdi scraps.heap(drape=…): köşeler Chaikin ile yuvarlanır, ortası kabarır, kenarı alttakine sarkar, 3–6 kırışık; 43 kırpıntının alanca %53'ü denim, 2 ipek. Denimin yüz rengi çözgü: %33 ekru doğrusal ışıkta laciverti #6a6b8a leylak griye çekiyordu. Hav kendi renginde. Önizleme d/m kare 90/105/119 tamam. Ölçümler: 3→4 dikişi SSIM 0,9995; 3. bölüm son karesi eski kareyle SSIM 0,995 (fark kenarlarda gürültü düzeni; bulanık PSNR 51–53 dB, parlaklık +%0,12). Havuz ışığı aydınlık bölge P90 170/158, 3. bölüm 169/163: güç değişmedi. check.py 3. bölümü ve 4. bölüm ışıklarının erişimini (koni, yön, engel) ve bandı ölçüyor; pnpm story:check 13,9 dk, story-scene testi 26/26, bozma 3/3 (M-30). 5. bölüm yazılıyor (wip/s5-pres dalında; sahne denetimi yapılmadığı için main'e alınmadı): pressing.py (çok açıklıklı sıcak pres, 6 silindir, hidrolik ünite, ışık perdesi, kumanda, giriş ve çıkış makaralı masaları, tarak keçesi ve tutamları, 18 mm hedef levha, etiketsiz iki bağlayıcı adayı: lif balyası ve kapalı varil; havuz ışıkları) ve s5_press.py (kamera 4. bölümün son karesinden hat boyunca sağa kayıp geri çekilir; geçici son kare d 205°/30°/13 m, m 234°/44°/12,5 m). İstasyon hattın x ≥ 7000 mm bölgesinde: 3. ve 4. bölümün hiçbir karesine girmez (kadraj haritası). Görüntü düzeltmeleri: keçe kamuflaj gibi lekeliydi (köşe başına ton eşiklenince 2–3 hücrelik lekeler), zemin tek tona alındı; levhada benek görünmüyordu (felt Voronoi ölçeği 5, size=9 → 1,8 mm), size=45 ve koyu mavi zemin. Keçe yakında yumurta kolisi gibi düzenliydi (kısa dalgalı sinüs toplamı); bulanıklaştırılmış beyaz gürültüye geçti. Mobil son karede zemin kenarı görünüyordu: zemin 40 → 100 m. Önizleme d/m kare 120/135/149: kadraj kırpılmıyor, ufuk yok. check.py 4. bölümü ve 5. bölüm ışıklarını ölçüyor, kontrol: havuzlar her yöne yayılınca 4. bölüme ulaşmalı; story-scene testi buna göre. pnpm story:check (19,9 dk, 29.10): 1.–4. bölümde 311.040 ışında eşya 0, gölge 0, 5. bölüm ışıklarının ulaşan payı 0; kontrol 4. bölüme 0,54/0,65; story-scene 32/32, bilerek bozmada 9 test düştü. 4. bölümün son karesi eski kareyle SSIM 0,997/0,998 (bulanık PSNR 54,5/55,6 dB); 4→5 dikişi SSIM 0,9999. 6.–8. bölüm yazıldı (wip/s6-panel dalı, commit bekliyor): s6_panel.py (kamera çıkış masasındaki levhaya iner, ön kenarda 18 mm hedef kalınlık), house.py (levhadan dolap, levha kaplı duvar, oda, kesitli iki katlı ev, çatı terası, havuzlu bahçe; dolabın üstü levhanın yerelinden kesilir), town.py (Antalya'da bahçeli mahalle: bitki örtüsü, sokak, 8 parsel çeşidi koleksiyon örneği), s7_house.py (kamera dolaptan mahalleye yükselir; kesmede presin tavan ışıkları eve taşınıp pozlama −3,16 → 0 dönerken kısılır), s8_earth.py (kamera 36 m'den 34.315 km'ye; ~10.000 örnekli 1,6 km'lik yerleşim, kutbu evde olan tek ağlı Dünya küresi 290.818 köşe, EOX z4 küresel + z5–z13 iç içe yamalar, atmosfer kabuğu, Wada uzay geçişi; gökyüzü 30–1500 km'de söner, güneş beyaza döner; evdeki düz zemin aydınlığı 1000 km'ye kadar 1,232'de sabit, 1000–10.000 km'de pozlama güneşin dik geldiği noktaya geçer) ve scripts/story-imagery.mjs. earth_tex.py: doku AgX'in 65³ ızgarada ölçülen tablosu üzerinde ters çözülür (1B eğri doygun renkte tonu çölde −23°, denizde −9° kaydırıyordu); açık deniz kıyıdan ~4 km ötesinde tek tona çekilir (Sentinel-2 şeridi ile dolgu arasındaki sınır yama gibi görünüyordu). Yerleşim kadraj 2–15 km'de VillageFade düğüm grubuyla kenarından saydamlaşır (önizlemede 3 km'lik gri leke). Künye ana sayfada (home.imageryCredit) ve README'de. 6→7 kesmesi önizlemede: yapı SSIM'i 0,9913/0,9903, levha yüzünde ΔE 0,0011/0,0042, satır ve sütun L eğim farkı ≤ 0,0051 (M-10). Cycles birimleri ölçüldü: dik güneş 1/π, dünya 1,0 (M-31). Açık işler: 8. bölüm önizlemesi ve kalibrasyonu (görüntü kazancı, uzay ΔE, atmosfer, 7→8 kesmesi), story:check yeniden, final render 6.–8. bölüm ve kodlama (T3.5). 2026-10-29: 6.–8. bölüm final render'ı alındı. 8. bölüm kamera hızı PACE tablosuyla ayarlandı (story-pace.mjs, pace_probe.py); sahne denetimi yeniden koşuldu, ölçümler aynı."
     },
     {
       "id": "T3.4",
       "phase": "F3",
       "mode": "otonom",
-      "status": "sürüyor",
+      "status": "tamam",
       "title": "Kare dizisi oynatıcı ve yedek modlar (hareket azaltma, veri tasarrufu)",
       "acceptance": "Scroll'da kare süresi p99 en fazla 25 ms; hareket azaltma tercihinde statik kareler; mobilde 9:16 dizisi",
-      "evidence": null,
+      "evidence": "Final diziyle (2026-10-29, production build): story-perf p99 16,8 ms ≤ 25 (591 aralık, 239/240 kare çizildi; M-3); story.spec.ts 7/7: hareket azaltmada canvas yok, her bölüm tek statik kare; dikey ekranda 9:16 dizisi; AVIF çözülemezse statik hikâye, durağan kareler WebP.",
       "depends_on": [
         "T3.3"
       ],
@@ -372,10 +373,10 @@
       "id": "T3.5",
       "phase": "F3",
       "mode": "otonom",
-      "status": "yapılacak",
+      "status": "engelli",
       "title": "Final render, AVIF/WebP kodlama ve bütçe testleri",
-      "acceptance": "Masaüstü en fazla 14 MB, mobil en fazla 6 MB, ilk bölüm en fazla 1,5 MB; metin altı kontrastı en az 4,5",
-      "evidence": null,
+      "acceptance": "Kare SSIM ≥ 0,95 (hedef 0,97); masaüstü en fazla 25 MB, mobil en fazla 12 MB, ilk bölüm en fazla 3 MB (karar C, D-004); yayın paketi ≤ 90 MB; metin altı kontrastı en az 4,5",
+      "evidence": "pnpm story:encode (2026-10-29): masaüstü 240 kare 19,01 MB, mobil 120 kare 7,20 MB, ilk bölüm 1,82 / 0,59 MB, en düşük kare SSIM 0,970 / 0,9701 (M-2); yayın paketi 29,21 MB (deploy-config). Süreklilik final AVIF'te sıçrama 0, bozmada yakalama 89/92 ve 74/84 (M-10). Metin altı kontrastı en kötü kare durumunda üç palette de ≥ 4,91 (M-9). story-budget, story-continuity, story-contrast yeşil.",
       "depends_on": [
         "T3.3",
         "T3.1"
@@ -384,7 +385,7 @@
         "D-004",
         "D-014"
       ],
-      "note": "Süre ölçümü (2026-10-28, kırpıntılı 1. bölüm, 1920×1080, RTX 3050, OptiX + OIDN; kare 0 ve 29, 360 kareye oranlı): 1024 örnek 264/338 s → ≈ 30,1 sa; 512: 145/171 s → ≈ 15,8 sa; 256: 66/80 s → ≈ 7,3 sa; 128: 32/40 s → ≈ 3,6 sa; 64: 17/20 s → ≈ 1,8 sa. Kazandırmayanlar: eşik 0,01 (%3), sekme sayısını azaltmak (%3), eğri alt bölümü 2 (%2), ribbon eğri (daha yavaş ve kare 29 SSIM 0,935), küçük render (aynı bütçede kare 29 SSIM 0,869 → 0,82–0,86). Ham kare 1024'e karşı (kare 29): 512 SSIM 0,990, 256 0,987, 128 0,983, 64 0,976. Kodlama kaybı baskın: 14 MB bütçesi (kare başı ≈ 47 kB, AVIF q18) kare 29'da 1024/512/256/128/64 için SSIM 0,869/0,869/0,867/0,866/0,863 verir; %100 kırpıntıda 1024, 256, 128 ve 64 ayırt edilmiyor, bütçeli AVIF lifleri siliyor. Kare başı ≈ 200 kB (q60) ile 0,978/0,974/0,971/0,968/0,962. Karar: 128 örnek (kullanıcı, 2026-10-28; D-004). Kalite hedefi → bayt (128 örnek, kendi PNG'sine karşı): kare 0 SSIM ≥ 0,98 için 4 kB; kare 29 0,95 için 108 kB, 0,97 için 165 kB, 0,98 için 221 kB. Vercel Hobby (okunma 2026-10-28): CLI yüklemesi ≤ 100 MB (vercel.com/docs/limits), aylık 100 GB aktarım, aşılınca 30 gün durur (vercel.com/docs/plans/hobby). Bütçe kararı C (kullanıcı, 2026-10-28; D-004): kare başı SSIM 0,97 hedefi (taban 0,95), tavan masaüstü 25 / mobil 12 / ilk bölüm 3 MB. story-encode kare başı ikili arama yapar (AVIF q20–90; örnek: kare 0 q20 5 kB, kare 29 q55 165 kB). WebP aynı SSIM'de AVIF'in 1,7–2,4 katı (kare 29: 282 kB, kare 52: 79 kB'a karşı 33 kB); bu yüzden WebP yalnızca poster ve bölüm durağan karelerinde, AVIF'siz tarayıcı statik hikâyeye geçer. Yayın paketi testi ≤ 90 MB (deploy-config). story-budget belge ile kodlayıcı 4/4. Testler yazıldı: story-contrast (kare bağımsız en kötü durum, 4/4) ve story-budget (belge ile kodlayıcı aynı 3/3; kare ölçümü manifest gelince)."
+      "note": "Süre ölçümü (2026-10-28, kırpıntılı 1. bölüm, 1920×1080, RTX 3050, OptiX + OIDN; kare 0 ve 29, 360 kareye oranlı): 1024 örnek 264/338 s → ≈ 30,1 sa; 512: 145/171 s → ≈ 15,8 sa; 256: 66/80 s → ≈ 7,3 sa; 128: 32/40 s → ≈ 3,6 sa; 64: 17/20 s → ≈ 1,8 sa. Kazandırmayanlar: eşik 0,01 (%3), sekme sayısını azaltmak (%3), eğri alt bölümü 2 (%2), ribbon eğri (daha yavaş ve kare 29 SSIM 0,935), küçük render (aynı bütçede kare 29 SSIM 0,869 → 0,82–0,86). Ham kare 1024'e karşı (kare 29): 512 SSIM 0,990, 256 0,987, 128 0,983, 64 0,976. Kodlama kaybı baskın: 14 MB bütçesi (kare başı ≈ 47 kB, AVIF q18) kare 29'da 1024/512/256/128/64 için SSIM 0,869/0,869/0,867/0,866/0,863 verir; %100 kırpıntıda 1024, 256, 128 ve 64 ayırt edilmiyor, bütçeli AVIF lifleri siliyor. Kare başı ≈ 200 kB (q60) ile 0,978/0,974/0,971/0,968/0,962. Karar: 128 örnek (kullanıcı, 2026-10-28; D-004). Kalite hedefi → bayt (128 örnek, kendi PNG'sine karşı): kare 0 SSIM ≥ 0,98 için 4 kB; kare 29 0,95 için 108 kB, 0,97 için 165 kB, 0,98 için 221 kB. Vercel Hobby (okunma 2026-10-28): CLI yüklemesi ≤ 100 MB (vercel.com/docs/limits), aylık 100 GB aktarım, aşılınca 30 gün durur (vercel.com/docs/plans/hobby). Bütçe kararı C (kullanıcı, 2026-10-28; D-004): kare başı SSIM 0,97 hedefi (taban 0,95), tavan masaüstü 25 / mobil 12 / ilk bölüm 3 MB. story-encode kare başı ikili arama yapar (AVIF q20–90; örnek: kare 0 q20 5 kB, kare 29 q55 165 kB). WebP aynı SSIM'de AVIF'in 1,7–2,4 katı (kare 29: 282 kB, kare 52: 79 kB'a karşı 33 kB); bu yüzden WebP yalnızca poster ve bölüm durağan karelerinde, AVIF'siz tarayıcı statik hikâyeye geçer. Yayın paketi testi ≤ 90 MB (deploy-config). story-budget belge ile kodlayıcı 4/4. Testler yazıldı: story-contrast (kare bağımsız en kötü durum, 4/4) ve story-budget (belge ile kodlayıcı aynı 3/3; kare ölçümü manifest gelince). Final render 128 örnek. 8. bölüm eşit log zoom ile sıçradı (masaüstü ×1,39 Sahra girişi, mobil ×1,77 yerleşimin saydamlaşması); kamera hızı sondadan üretilen PACE tablosuyla ayarlanıp yeniden render edildi (26,1 dk): ×1,12 / ×1,13 (M-10). Engel: T3.1 (palet seçimi, Q-1). Kareler paletten bağımsız (her bölüm kendi Wada rengini taşır); metin kartının kontrastı üç palette de ölçüldü. Palet seçilince T3.5 tamam olur, yeniden render gerekmez."
     },
     {
       "id": "T3.6",
@@ -397,7 +398,8 @@
       "depends_on": [
         "T3.5"
       ],
-      "decisions": []
+      "decisions": [],
+      "note": "Kontrol listesi (yalnız ölçülemeyenler): (1) Akış ve hız: 8 bölüm tek nefeste mi akıyor; 8. bölümün hızı rahat mı (kamera Sahra'da ve yerleşimin saydamlaştığı yerde yavaşlar)? (2) 8. bölümde kadraj 1–4 km iken yerleşim düzgün bir sokak ızgarası olarak görünür (masaüstü 218–221, mobil 218–220. kare). Sentinel-2 10 m çözünürlükte olduğu için bu aralığı üretilmiş yerleşim doldurmak zorunda; kabul mü, yoksa daha düzensiz bir yerleşim mi (town.py, sahne denetimi ve 8. bölüm render'ı, ~1,5 sa)? (3) Renk ve ışık: atölyenin sıcak ışığı (1.–5.), evin gün ışığı (7.), uzayın Wada moru (8.). (4) Metin kartları kaydırma hızında okunacak kadar kalıyor mu?"
     },
     {
       "id": "T4.1",
@@ -424,7 +426,7 @@
       "id": "T4.2",
       "phase": "F4",
       "mode": "otonom",
-      "status": "yapılacak",
+      "status": "sürüyor",
       "title": "Çevrimdışı demo paketi ve Playwright ile kaydedilmiş demo videosu",
       "acceptance": "İnternet kapalıyken pnpm demo:offline ile demo akışı çalışır; video dosyası üretilir",
       "evidence": null,
@@ -432,14 +434,16 @@
         "T4.1"
       ],
       "decisions": [
-        "D-003"
-      ]
+        "D-003",
+        "D-030"
+      ],
+      "note": "pnpm demo:offline: PGlite + production build, sunucuya --import ile çevrimdışı koruma (scripts/offline-guard.mjs; yerel dışı DNS ve çıplak IP reddedilir, sayılır). --check akışı tarayıcıda yerel dışı istekler kesikken koşar: 2026-10-29 7,5 s yeşil, sunucuda engellenen 0, tarayıcıda kesilen 3 (tiles.openfreemap.org) (M-33). Bekleyen: final kareler gelince pnpm demo:video; T4.1 bitince tamam."
     },
     {
       "id": "T4.3",
       "phase": "F4",
       "mode": "otonom",
-      "status": "yapılacak",
+      "status": "sürüyor",
       "title": "DEMO.md, QR kodu ve demo akışı testi",
       "acceptance": "DEMO.md'deki her adım bir Playwright adımına karşılık gelir ve test yeşil",
       "evidence": null,
@@ -447,8 +451,11 @@
         "T4.1"
       ],
       "decisions": [
-        "D-003"
-      ]
+        "D-003",
+        "D-025",
+        "D-030"
+      ],
+      "note": "DEMO.md §2 tablosu tests/e2e/demo-doc.ts ile okunur, demo.spec.ts aynı adımları koşar (roller başlıktaki menüyle, QR piksellerden). Yerel production build 7/7, 7,9 s (M-17). DEMO.md §4: 'Hikâyeyi geç' 1. Tab'da (ölçüldü). QR: scripts/demo-qr.ts canlı çapayla (M-32); yerel deneme geçti. Bekleyen: T4.1 (canlı seed, live-demo.yml, canlı QR). Tam yerel pakette (2026-10-29) demo testi paralel pazar testiyle aynı veritabanında yarıştı (harita noktası +2); demo ayrı Playwright projesi oldu, test:e2e onu paketten sonra koşar: 76/76 + 1/1, art arda 2 koşu."
     },
     {
       "id": "T4.4",
@@ -498,17 +505,17 @@
       "id": "T4.7",
       "phase": "F4",
       "mode": "otonom",
-      "status": "sürüyor",
+      "status": "tamam",
       "title": "Platformdaki olgusal bilgilerin birincil kaynak denetimi (D-028)",
       "acceptance": "Arayüz metinleri, seed, referans değerler ve belgelerdeki her olgu listelenir; her biri birincil kaynak bağlantısı ve okunma tarihiyle doğrulanır ya da arayüzden kalkar; doğrulanamayanlar açık soru olur; kaynaksız olgu sayısı 0",
-      "evidence": null,
+      "evidence": "docs/RESEARCH.md §8: arayüz metinlerindeki 41 olgu adayı dayanağıyla listelendi; tests/unit/facts.test.ts 7/7 (M-34), bozmada 4/4 yakalandı. Kaynaklar 2026-10-29'da yeniden okundu: Eurostat API nrg_pc_205 3,975 ve env_wasgen 361.500, TCMB 49,5523, İBB 700,00/785,00, Vercel ve Neon fiyatları, DOJ/FTC HHI 1.800 (s. 6), Sandin ve Peters, resmî yarışma sitesi (COP31), Vercel 4,5 MB sınırı. Kaynaksız olgu 0.",
       "depends_on": [],
       "decisions": [
         "D-011",
         "D-028",
         "D-029"
       ],
-      "note": "İlk bulgu düzeltildi: İBB tarifesi KDV dahil ve 2026 için geçerli; tesis adları tarifede (2026-10-27). Senaryo: kaynaksız 22 varsayılan girdi arayüzden kalktı, yerine dayanak metni geldi; 4 yeni kaynaklı karşılaştırma satırı (Arcline sunta, Arkutorman MDF, 2026-10-28) (D-029)."
+      "note": "İlk bulgu düzeltildi: İBB tarifesi KDV dahil ve 2026 için geçerli; tesis adları tarifede (2026-10-27). Senaryo: kaynaksız 22 varsayılan girdi arayüzden kalktı, yerine dayanak metni geldi; 4 yeni kaynaklı karşılaştırma satırı (Arcline sunta, Arkutorman MDF, 2026-10-28) (D-029). 2026-10-29: veri sözlüğündeki 'Toplam 100 olmalı' kodla çelişiyordu ('en fazla 100'), düzeltildi; %2 kütle dengesi toleransının ISO 22095'ten değil platform kuralından geldiği yazıldı; D-018'deki Vercel 4,5 MB sınırına kaynak eklendi. Seed'deki kaynaklı değerlerin bağlantı ve tarihini seed.test.ts denetler."
     },
     {
       "id": "T5.1",
@@ -591,7 +598,7 @@
     {
       "id": "R-4",
       "risk": "Herkese açık demoda ziyaretçiler veriyi bozabilir",
-      "mitigation": "Demo verisini sıfırlama ve günlük cron ile yeniden yükleme"
+      "mitigation": "Olaylar yalnızca eklenir; eklenen kayıt etiket çapasını ve QR'ı bozmaz, demo akışı her seferinde kendi ilanını açar. Gerekirse Neon yedek dalı alınır ve aynı seed günüyle yeniden yüklenir: DEMO_NOW=<qr.json seedDay> pnpm db:seed:live (D-030). Uygulamada sıfırlama düğmesi ve cron yok"
     },
     {
       "id": "R-5",
@@ -615,18 +622,18 @@
     },
     {
       "id": "M-2",
-      "claim": "Hikâye kare bütçesi",
-      "threshold": "masaüstü ≤ 14 MB, mobil ≤ 6 MB, ilk bölüm ≤ 1,5 MB",
-      "last_value": null,
-      "measured_at": null,
-      "test": "tests/unit/story-budget.test.ts"
+      "claim": "Hikâye kare bütçesi ve kalitesi",
+      "threshold": "Kare SSIM ≥ 0,95 (hedef 0,97); masaüstü ≤ 25 MB, mobil ≤ 12 MB, ilk bölüm ≤ 3 MB; yayın paketi ≤ 90 MB",
+      "last_value": "Final dizi (1.–8. bölüm): masaüstü 240 kare 19,01 MB, mobil 120 kare 7,20 MB; ilk bölüm 1,82 / 0,59 MB; durağan WebP 1,14 / 0,94 MB; en düşük kare SSIM 0,970 / 0,9701; yayın paketi 29,21 MB",
+      "measured_at": "2026-10-29T13:05:00+03:00",
+      "test": "tests/unit/story-budget.test.ts, tests/unit/deploy-config.test.ts, tests/e2e/story.spec.ts"
     },
     {
       "id": "M-3",
       "claim": "Scroll akıcılığı",
       "threshold": "kare süresi p99 ≤ 25 ms",
-      "last_value": null,
-      "measured_at": null,
+      "last_value": "Final dizi, masaüstü, production build: 591 aralık, ortalama 16,7 ms, p95 16,7, p99 16,8, en uzun 16,8 ms; 240 karenin 239'u çizildi (8 işçili paralel koşuda)",
+      "measured_at": "2026-10-29T13:15:00+03:00",
       "test": "tests/e2e/story-perf.spec.ts"
     },
     {
@@ -681,8 +688,8 @@
       "id": "M-10",
       "claim": "Kare dizisi kesintisiz",
       "threshold": "SSIM eşiği ilk renderdan sonra kalibre edilir",
-      "last_value": null,
-      "measured_at": null,
+      "last_value": "Final AVIF dizisi (240 + 120 kare): sıçrama 0; kesmeler ham SSIM 0,9930–0,9965, yapı ≥ 0,9912, ΔE ≤ 0,0032, eğim ≤ 0,0049; mobil dikiş 0,10–0,53. 8. bölüm PACE ile: basamak ×1,12 / ×1,13 (önce ×1,39 / ×1,77), k–k+2 ×0,87 / ×0,76, tümsek ×1,10 / ×1,32. Eşikler aynı kaldı (gevşetilince yakalama %93,5 / %77,4); bozmada yakalama 89/92 / 74/84",
+      "measured_at": "2026-10-29T13:05:00+03:00",
       "test": "tests/unit/story-continuity.test.ts"
     },
     {
@@ -736,10 +743,10 @@
     {
       "id": "M-17",
       "claim": "Demo çalışır",
-      "threshold": "DEMO.md akışı canlı URL'de yeşil",
-      "last_value": null,
-      "measured_at": null,
-      "test": "tests/e2e/demo.spec.ts"
+      "threshold": "DEMO.md akışı 7/7 adım yeşil, yeniden deneme yok; belge ile test aynı adımları koşar",
+      "last_value": "Yerel production build: 7/7, 7,9 s; çevrimdışı 7,5 s. 'Hikâyeyi geç' 1. Tab'da (belge 2 derken test düştü, düzeltildi). Canlı adres: T4.1",
+      "measured_at": "2026-10-29T12:05:00+03:00",
+      "test": "tests/e2e/demo.spec.ts, tests/unit/demo-doc.test.ts, .github/workflows/live-demo.yml"
     },
     {
       "id": "M-18",
@@ -841,9 +848,41 @@
       "id": "M-30",
       "claim": "Sonraki bölümün eşyaları ve ışıkları önceki bölümü bozmaz; çuvaldaki yığın folyo gibi parlamaz; banttaki yük alaca mozaik değildir",
       "threshold": "görünen eşya ışını 0; her ışıkta kesilen pay ≤ 0,02; sonraki bölüm ışığının ulaşan payı ≤ 0,02; bantta denim alan payı ≥ 0,5, ipek 2; yığın dik ≤ 0,02, oluk ≤ 0,15, tepe ≤ 90 mm, örtü ≥ 0,85; kontroller eşiği aşar",
-      "last_value": "1.–4. bölüm, 311.040 kamera ışınında eşya 0; gölge payı 0 (3 ışık, 2 en-boy); 4. ve 5. bölüm ışıklarının ulaşan payı 0 (kontrol spread π: 3. bölüme 0,83/0,84, 4. bölüme 0,54/0,65); kontrol: top eski yerinde anahtar ışığın %9'u (mobil %26); yığın dik 0,0096, oluk 0,124 (kontrol 0,214), tepe 70,2 mm, örtü 0,889; bant 43 kırpıntı, denim payı 0,53 (önceki 0,41), ipek 2; 4→5 dikişi SSIM 0,9999; bozma 7/7, 3/3 ve 9 test",
-      "measured_at": "2026-10-29T00:20:00+03:00",
+      "last_value": "1.–4. bölüm, 311.040 kamera ışınında eşya 0; gölge payı 0 (3 ışık, 2 en-boy); 4. ve 5. bölüm ışıklarının ulaşan payı 0 (kontrol spread π: 3. bölüme 0,83/0,84, 4. bölüme 0,54/0,65); kontrol: top eski yerinde anahtar ışığın %9'u (mobil %26); yığın dik 0,0096, oluk 0,124 (kontrol 0,214), tepe 70,2 mm, örtü 0,889; bant 43 kırpıntı, denim payı 0,53 (önceki 0,41), ipek 2; 4→5 dikişi SSIM 0,9999; bozma 7/7, 3/3 ve 9 test; 8. bölümün PACE değişikliğinden sonra yeniden koşuldu (2026-10-29, 20,5 dk): bütün ölçümler aynı",
+      "measured_at": "2026-10-29T13:15:00+03:00",
       "test": "tests/unit/story-scene.test.ts, story/blender/check.py"
+    },
+    {
+      "id": "M-31",
+      "claim": "8. bölümde yer uydu görüntüsünün tonunda görünür; ışık kesmede sıçramaz; uzay Wada renginde",
+      "threshold": "Cycles birim ölçümü ± %0,5; düz zemin aydınlığı her karede 1,232 ± %0,5; görüntü L'si ve uzay ΔE eşiği önizlemede kalibre edilir",
+      "last_value": "Birimler: güneş 0,3183 = 1/π, dünya 1,000; uzay Deep Indigo'ya ΔE 0,0005, Dull Violet Black'e 0,0003; Sahra L p50 0,893 (kaynak 0,949), %2 kırpık; 7→8 kesmesi final AVIF ham SSIM 0,9942, ΔE 0,0001, eğim 0,0005; mobil dikiş 0,45",
+      "measured_at": "2026-10-29T13:05:00+03:00",
+      "test": "story/blender/s8_earth.py (kurulum özeti), önizleme ölçümü"
+    },
+    {
+      "id": "M-32",
+      "claim": "Sunum QR'ı canlı lotun pasaportunu çapasıyla açar; yeniden yükleme QR'ı bozmaz",
+      "threshold": "Doğrulama geçmezse ya da PNG geri okunamazsa dosya yazılmaz; aynı seed günü → aynı çapa",
+      "last_value": "Seed: 2026-10-29 06:00Z, 15:00Z, 20:59Z, 21:01Z aynı zincir başı, 10-30 farklı. Yerel deneme: 4 zincir doğrulandı, PNG geri okundu. Canlı QR: T4.1",
+      "measured_at": "2026-10-29T09:34:00+03:00",
+      "test": "scripts/demo-qr.ts, tests/integration/seed.test.ts"
+    },
+    {
+      "id": "M-33",
+      "claim": "Çevrimdışı demo internetsiz çalışır",
+      "threshold": "Akış yeşil; sunucunun yerel dışı bağlantısı 0; tarayıcıda kesilen istekler yalnız bilinen ve akışı bozmayan ana makineler",
+      "last_value": "Akış 7,5 s yeşil; sunucuda engellenen 0; tarayıcıda kesilen 3 istek, hepsi tiles.openfreemap.org. Bozma: syncBuiltinESMExports kaldırılınca birim testi düştü",
+      "measured_at": "2026-10-29T12:10:00+03:00",
+      "test": "scripts/demo-offline.mjs, tests/unit/offline-guard.test.ts"
+    },
+    {
+      "id": "M-34",
+      "claim": "Arayüzde kaynaksız olgu yok",
+      "threshold": "Listede olmayan aday 0; bağlantısız ya da tarihsiz kaynak satırı 0; dayanağı olmayan kural ve ekip satırı 0",
+      "last_value": "41 anahtar (14 kaynak, 5 ekip, 22 kural); kaynakların hepsi 2026-10-29'da yeniden okundu, değerler aynı; bilerek bozma 4/4",
+      "measured_at": "2026-10-29T12:40:00+03:00",
+      "test": "tests/unit/facts.test.ts"
     }
   ]
 }

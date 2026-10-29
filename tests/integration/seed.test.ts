@@ -5,6 +5,7 @@ import { migrate } from "drizzle-orm/pglite/migrator";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
 import { createPgliteDb } from "@/db/client";
 import * as schema from "@/db/schema";
+import { publicPassport } from "@/db/repo/passport";
 import { saasCostData } from "@/db/repo/saas";
 import { withTenant } from "@/db/repo/tenant";
 import { appTables, buildDemo, seedDemo, seedPrices } from "@/db/seed";
@@ -221,5 +222,25 @@ describe("demo seed", () => {
 
   it("sıfırlama dışında TRUNCATE hâlâ reddedilir", async () => {
     await expect(client.query("truncate custody_events")).rejects.toThrow(/yalnızca eklenir/);
+  });
+
+  // D-030: basılı QR'daki çapa, aynı UTC günüyle yapılan yeniden yüklemeden sonra da tutar; başka gün tutmaz.
+  // Sonda NOW ile yeniden yüklenir: dosyadaki öbür testlerin verisi değişmez.
+  it("aynı seed günüyle sıfırlama etiket çapasını korur, ertesi gün korumaz", async () => {
+    const code = buildDemo(NOW).panelLots[0].code;
+    const before = (await publicPassport(db, code))!;
+    expect(before.ok).toBe(true);
+    const label = before.anchor!;
+    const sameDay = new Date(NOW.getTime() + 5 * 3600_000);
+    expect(sameDay.toISOString().slice(0, 10)).toBe(NOW.toISOString().slice(0, 10));
+    await seedDemo(db, { now: sameDay, env: ENV });
+    const kept = (await publicPassport(db, code, label))!;
+    expect(kept).toMatchObject({ ok: true, anchorChecked: true });
+    await seedDemo(db, { now: new Date(NOW.getTime() + 24 * 3600_000), env: ENV });
+    const next = (await publicPassport(db, code, label))!;
+    expect(next.ok).toBe(false);
+    expect(next.chains.find((c) => c.role === "producer")!.verdict).toMatchObject({ ok: false, reason: "anchor_mismatch" });
+    await seedDemo(db, { now: NOW, password: "seed-test-parolasi", env: ENV });
+    expect((await publicPassport(db, code, label))!.ok).toBe(true);
   });
 });

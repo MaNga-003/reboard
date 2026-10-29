@@ -24,7 +24,7 @@ flowchart LR
   subgraph Next.js 16 sunucusu, Vercel fra1
     RSC[Server Components<br/>okuma]
     SA[Server Actions<br/>Zod ile doğrulama ve yetki]
-    API[Route Handlers<br/>/api/auth · /api/evidence · /api/verify · /api/cron]
+    API[Route Handlers<br/>/api/auth · /api/evidence · /api/verify · /api/counter]
     D[Alan katmanı src/domain<br/>calc · traceability · impact · supply]
     R[Repository katmanı src/db/repo<br/>withTenant]
   end
@@ -187,7 +187,7 @@ Alanların anlamları ve birimleri `docs/DATA_DICTIONARY.md` dosyasında.
 
 ## 7. Hikâye sayfası (D-004)
 
-`story/blender/*.py` dosyaları Blender 4.5'te render edilir ve ham PNG kareler `story/out/` klasörüne yazılır. `scripts/story-encode.mjs` her kareyi sharp ile, kendi PNG'sine karşı SSIM hedefine ulaşan en düşük AVIF kalitesiyle kodlayıp `public/story/{d,m}/` altına koyar ve `manifest.json` üretir; WebP yalnızca poster ve bölümlerin durağan karesi içindir (D-004). Sayfada `StoryPlayer` bu kareleri oynatır. `scripts/story-check.mjs` sahneyi render etmeden denetler (`story/blender/check.py`) ve ölçümü sahne kodunun özetiyle `story/checks.json`'a yazar; CI'da Blender olmadığından `tests/unit/story-scene.test.ts` bu dosyanın güncelliğini ve eşikleri denetler (M-30). Ayrıntılar `docs/STORY.md` dosyasında.
+`story/blender/*.py` dosyaları Blender 4.5'te render edilir ve ham PNG kareler `story/out/` klasörüne yazılır. `scripts/story-encode.mjs` her kareyi sharp ile, kendi PNG'sine karşı SSIM hedefine ulaşan en düşük AVIF kalitesiyle kodlayıp `public/story/{d,m}/` altına koyar ve `manifest.json` üretir; WebP yalnızca poster ve bölümlerin durağan karesi içindir (D-004). Sayfada `StoryPlayer` bu kareleri oynatır. `scripts/story-check.mjs` sahneyi render etmeden denetler (`story/blender/check.py`) ve ölçümü sahne kodunun özetiyle `story/checks.json`'a yazar; CI'da Blender olmadığından `tests/unit/story-scene.test.ts` bu dosyanın güncelliğini ve eşikleri denetler (M-30). 8. bölümün kamera hızı sahne koduna gömülü bir tablodur (`s8_earth.PACE`); `scripts/story-pace.mjs` onu düşük çözünürlüklü bir sondadan (`story/blender/pace_probe.py`) yeniden üretir. Ayrıntılar `docs/STORY.md` dosyasında.
 
 ## 8. Güvenlik
 
@@ -212,15 +212,19 @@ Alanların anlamları ve birimleri `docs/DATA_DICTIONARY.md` dosyasında.
   - `DATABASE_URL`: boşsa PGlite kullanılır.
   - `BETTER_AUTH_SECRET`, `BETTER_AUTH_URL`
   - `DEMO_MODE`, `DEMO_PASSWORD`. Canlıda Vercel'de (`DEMO_PASSWORD` gizli); CI her çalıştırmada rastgele bir parola üretir; canlı denetim için GitHub sırrı `DEMO_PASSWORD` Vercel'dekiyle aynıdır.
-  - `CRON_SECRET`
+  - `DEMO_NOW` (yalnızca seed komutlarında): seed'in "bugün"ünü sabitler, `YYYY-MM-DD` ya da ISO zaman (D-030).
 - Yayın:
   - Vercel CLI ile yapılır (`pnpm deploy:prod`). `.vercelignore` bir izin listesidir: her şey dışarıda kalır, yalnızca derleme için gereken yollar yüklenir. `tests/unit/deploy-config.test.ts` bunu denetler.
   - `vercel.json` çatıyı (`nextjs`) ve fonksiyon bölgesini (`fra1`) sabitler.
   - Vercel'de `DATABASE_URL` (Neon havuzlu bağlantı) ve `BETTER_AUTH_SECRET` gizli değişkendir; `BETTER_AUTH_URL` canlı adrestir.
 - Demo verisi (T1.4):
-  - `src/db/seed/demo.ts` saf bir fonksiyondur: `buildDemo(now)`. Tarihler `now`'a göre görelidir; kimlikler addan türetilen sabit UUID'lerdir (sürüm 8), sözde rastgele sayılar tohumludur. Aynı `now` aynı satırları ve aynı hash zincirini verir; pasaport bağlantıları günden güne değişmez.
+  - `src/db/seed/demo.ts` saf bir fonksiyondur: `buildDemo(now)`. Tarihler `now`'a göre görelidir; kimlikler addan türetilen sabit UUID'lerdir (sürüm 8), sözde rastgele sayılar tohumludur. Aynı `now` aynı satırları ve aynı hash zincirini verir. Olay özetleri yalnızca `now`'ın UTC gününe bağlıdır: aynı günle yeniden yükleme etiket çapalarını (D-025) korur, başka bir gün değiştirir (D-030).
   - `src/db/seed/index.ts`, `seedDemo(db)`: yalnızca `DEMO_MODE=true` iken çalışır. Tek işlemde `SET LOCAL reboard.allow_reset = 'on'` ile şemadaki bütün tabloları boşaltır ve yeniden ekler; bir ekleme düşerse eski veri yerinde kalır. `DEMO_PASSWORD` verilirse demo hesaplarına Better Auth parola özeti yazılır.
-  - Komutlar: `pnpm db:seed` (yerel PGlite) ve `pnpm db:seed:live` (Neon; `.env.local` ardından `.env.neon` okunur, sonraki dosya `DATABASE_URL`'i ezer).
+  - Komutlar: `pnpm db:seed` (yerel PGlite) ve `pnpm db:seed:live` (Neon; `.env.local` ardından `.env.neon` okunur, sonraki dosya `DATABASE_URL`'i ezer). Uygulamada sıfırlama düğmesi ve cron yoktur; veri yalnızca bu komutlarla sıfırlanır (D-030).
+- Demo araçları (T4.2, T4.3; DEMO.md):
+  - `pnpm demo:qr` (`scripts/demo-qr.ts`): satılan lotun pasaport adresini canlı veritabanındaki etiket çapasıyla kurar. Çapayla doğrulama geçmezse yazmaz. `.private/demo/` altına TR ve EN QR'ı (SVG, PNG) ve `qr.json` (lot, çapa, seed günü) yazar; PNG'yi çözücüyle geri okur.
+  - `pnpm demo:offline` (`scripts/demo-offline.mjs`): yerel PGlite'a migrasyon ve seed uygular, derleme eskiyse derler, `localhost:3000`'de production sunucusunu açar. `.env.local`'de `DATABASE_URL` doluysa başlamaz. Sunucu `scripts/offline-guard.cjs` ile yüklenir: yerel olmayan her DNS çözümlemesi ve bağlantı reddedilir ve sayılır.
+  - `pnpm demo:offline --check`: demo akış testini (`tests/e2e/demo.spec.ts`) bu sunucuda koşar; tarayıcıda da yerel dışı istekler kesiktir. `pnpm demo:video`: aynı akışı DEMO.md sürelerine göre 1920 × 1080 kaydeder ve ffmpeg ile MP4'e çevirir.
   - `seedPrices(db)` yalnızca `saas_costs` satırlarını tek işlemde siler ve `buildDemo` çıktısından yeniden yazar; zincire, kurum verisine ve kura dokunmaz (D-027). Komutlar: `pnpm db:prices` ve `pnpm db:prices:live` (`scripts/db-prices.ts`).
   - Neon'a migrasyon `pnpm db:migrate:live` ile uygulanır; doğrudan bağlantı git dışındaki `.env.neon` dosyasında durur. Next bu dosyayı otomatik yüklemez, böylece yerel geliştirme PGlite'ta kalır. Bağlantılar `sslmode=verify-full` kullanır.
   - Neon Postgres 18, PGlite Postgres 17 tabanlıdır; migrasyonlar ikisinde de denendi.
