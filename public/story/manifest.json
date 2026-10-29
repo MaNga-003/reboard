@@ -1,0 +1,4021 @@
+{
+  "framesPerSection": 30,
+  "sections": 8,
+  "budget": {
+    "d": 25000000,
+    "m": 12000000,
+    "firstSection": 3000000,
+    "ssimTarget": 0.97,
+    "ssimFloor": 0.95
+  },
+  "variants": {
+    "d": {
+      "width": 1920,
+      "height": 1080,
+      "step": 1,
+      "ssimTarget": 0.97,
+      "stills": [
+        15,
+        45,
+        75,
+        105,
+        135,
+        165,
+        195,
+        225
+      ],
+      "bytes": {
+        "avif": 19006879,
+        "webp": 1140682,
+        "firstSectionAvif": 1821979,
+        "projectedAvif": 19006879
+      },
+      "frames": [
+        {
+          "index": 0,
+          "avif": "d/f_0000.avif",
+          "webp": "d/f_0000.webp",
+          "quality": 20,
+          "ssim": 0.9911,
+          "bytes": {
+            "avif": 4874,
+            "webp": 15834
+          }
+        },
+        {
+          "index": 1,
+          "avif": "d/f_0001.avif",
+          "webp": null,
+          "quality": 20,
+          "ssim": 0.9901,
+          "bytes": {
+            "avif": 5298,
+            "webp": null
+          }
+        },
+        {
+          "index": 2,
+          "avif": "d/f_0002.avif",
+          "webp": null,
+          "quality": 20,
+          "ssim": 0.9886,
+          "bytes": {
+            "avif": 5754,
+            "webp": null
+          }
+        },
+        {
+          "index": 3,
+          "avif": "d/f_0003.avif",
+          "webp": null,
+          "quality": 20,
+          "ssim": 0.9871,
+          "bytes": {
+            "avif": 6293,
+            "webp": null
+          }
+        },
+        {
+          "index": 4,
+          "avif": "d/f_0004.avif",
+          "webp": null,
+          "quality": 20,
+          "ssim": 0.9843,
+          "bytes": {
+            "avif": 6837,
+            "webp": null
+          }
+        },
+        {
+          "index": 5,
+          "avif": "d/f_0005.avif",
+          "webp": null,
+          "quality": 20,
+          "ssim": 0.9815,
+          "bytes": {
+            "avif": 7113,
+            "webp": null
+          }
+        },
+        {
+          "index": 6,
+          "avif": "d/f_0006.avif",
+          "webp": null,
+          "quality": 20,
+          "ssim": 0.9796,
+          "bytes": {
+            "avif": 7090,
+            "webp": null
+          }
+        },
+        {
+          "index": 7,
+          "avif": "d/f_0007.avif",
+          "webp": null,
+          "quality": 20,
+          "ssim": 0.9778,
+          "bytes": {
+            "avif": 7420,
+            "webp": null
+          }
+        },
+        {
+          "index": 8,
+          "avif": "d/f_0008.avif",
+          "webp": null,
+          "quality": 20,
+          "ssim": 0.9748,
+          "bytes": {
+            "avif": 7973,
+            "webp": null
+          }
+        },
+        {
+          "index": 9,
+          "avif": "d/f_0009.avif",
+          "webp": null,
+          "quality": 20,
+          "ssim": 0.973,
+          "bytes": {
+            "avif": 9178,
+            "webp": null
+          }
+        },
+        {
+          "index": 10,
+          "avif": "d/f_0010.avif",
+          "webp": null,
+          "quality": 20,
+          "ssim": 0.9709,
+          "bytes": {
+            "avif": 11797,
+            "webp": null
+          }
+        },
+        {
+          "index": 11,
+          "avif": "d/f_0011.avif",
+          "webp": null,
+          "quality": 28,
+          "ssim": 0.9709,
+          "bytes": {
+            "avif": 22091,
+            "webp": null
+          }
+        },
+        {
+          "index": 12,
+          "avif": "d/f_0012.avif",
+          "webp": null,
+          "quality": 34,
+          "ssim": 0.9709,
+          "bytes": {
+            "avif": 35061,
+            "webp": null
+          }
+        },
+        {
+          "index": 13,
+          "avif": "d/f_0013.avif",
+          "webp": null,
+          "quality": 37,
+          "ssim": 0.9714,
+          "bytes": {
+            "avif": 47549,
+            "webp": null
+          }
+        },
+        {
+          "index": 14,
+          "avif": "d/f_0014.avif",
+          "webp": null,
+          "quality": 39,
+          "ssim": 0.9707,
+          "bytes": {
+            "avif": 56633,
+            "webp": null
+          }
+        },
+        {
+          "index": 15,
+          "avif": "d/f_0015.avif",
+          "webp": "d/f_0015.webp",
+          "quality": 40,
+          "ssim": 0.9716,
+          "bytes": {
+            "avif": 61925,
+            "webp": 137418
+          }
+        },
+        {
+          "index": 16,
+          "avif": "d/f_0016.avif",
+          "webp": null,
+          "quality": 40,
+          "ssim": 0.9709,
+          "bytes": {
+            "avif": 64618,
+            "webp": null
+          }
+        },
+        {
+          "index": 17,
+          "avif": "d/f_0017.avif",
+          "webp": null,
+          "quality": 40,
+          "ssim": 0.9706,
+          "bytes": {
+            "avif": 67131,
+            "webp": null
+          }
+        },
+        {
+          "index": 18,
+          "avif": "d/f_0018.avif",
+          "webp": null,
+          "quality": 42,
+          "ssim": 0.9713,
+          "bytes": {
+            "avif": 73734,
+            "webp": null
+          }
+        },
+        {
+          "index": 19,
+          "avif": "d/f_0019.avif",
+          "webp": null,
+          "quality": 44,
+          "ssim": 0.9718,
+          "bytes": {
+            "avif": 81663,
+            "webp": null
+          }
+        },
+        {
+          "index": 20,
+          "avif": "d/f_0020.avif",
+          "webp": null,
+          "quality": 44,
+          "ssim": 0.971,
+          "bytes": {
+            "avif": 85747,
+            "webp": null
+          }
+        },
+        {
+          "index": 21,
+          "avif": "d/f_0021.avif",
+          "webp": null,
+          "quality": 45,
+          "ssim": 0.972,
+          "bytes": {
+            "avif": 96006,
+            "webp": null
+          }
+        },
+        {
+          "index": 22,
+          "avif": "d/f_0022.avif",
+          "webp": null,
+          "quality": 45,
+          "ssim": 0.9708,
+          "bytes": {
+            "avif": 99760,
+            "webp": null
+          }
+        },
+        {
+          "index": 23,
+          "avif": "d/f_0023.avif",
+          "webp": null,
+          "quality": 47,
+          "ssim": 0.9713,
+          "bytes": {
+            "avif": 109069,
+            "webp": null
+          }
+        },
+        {
+          "index": 24,
+          "avif": "d/f_0024.avif",
+          "webp": null,
+          "quality": 49,
+          "ssim": 0.9723,
+          "bytes": {
+            "avif": 119959,
+            "webp": null
+          }
+        },
+        {
+          "index": 25,
+          "avif": "d/f_0025.avif",
+          "webp": null,
+          "quality": 49,
+          "ssim": 0.9705,
+          "bytes": {
+            "avif": 124472,
+            "webp": null
+          }
+        },
+        {
+          "index": 26,
+          "avif": "d/f_0026.avif",
+          "webp": null,
+          "quality": 50,
+          "ssim": 0.9709,
+          "bytes": {
+            "avif": 134536,
+            "webp": null
+          }
+        },
+        {
+          "index": 27,
+          "avif": "d/f_0027.avif",
+          "webp": null,
+          "quality": 52,
+          "ssim": 0.9709,
+          "bytes": {
+            "avif": 143979,
+            "webp": null
+          }
+        },
+        {
+          "index": 28,
+          "avif": "d/f_0028.avif",
+          "webp": null,
+          "quality": 54,
+          "ssim": 0.9705,
+          "bytes": {
+            "avif": 153840,
+            "webp": null
+          }
+        },
+        {
+          "index": 29,
+          "avif": "d/f_0029.avif",
+          "webp": null,
+          "quality": 55,
+          "ssim": 0.9713,
+          "bytes": {
+            "avif": 164579,
+            "webp": null
+          }
+        },
+        {
+          "index": 30,
+          "avif": "d/f_0030.avif",
+          "webp": null,
+          "quality": 55,
+          "ssim": 0.9713,
+          "bytes": {
+            "avif": 164723,
+            "webp": null
+          }
+        },
+        {
+          "index": 31,
+          "avif": "d/f_0031.avif",
+          "webp": null,
+          "quality": 55,
+          "ssim": 0.9704,
+          "bytes": {
+            "avif": 164992,
+            "webp": null
+          }
+        },
+        {
+          "index": 32,
+          "avif": "d/f_0032.avif",
+          "webp": null,
+          "quality": 56,
+          "ssim": 0.9711,
+          "bytes": {
+            "avif": 171887,
+            "webp": null
+          }
+        },
+        {
+          "index": 33,
+          "avif": "d/f_0033.avif",
+          "webp": null,
+          "quality": 56,
+          "ssim": 0.9702,
+          "bytes": {
+            "avif": 170324,
+            "webp": null
+          }
+        },
+        {
+          "index": 34,
+          "avif": "d/f_0034.avif",
+          "webp": null,
+          "quality": 58,
+          "ssim": 0.9712,
+          "bytes": {
+            "avif": 177836,
+            "webp": null
+          }
+        },
+        {
+          "index": 35,
+          "avif": "d/f_0035.avif",
+          "webp": null,
+          "quality": 58,
+          "ssim": 0.9701,
+          "bytes": {
+            "avif": 175466,
+            "webp": null
+          }
+        },
+        {
+          "index": 36,
+          "avif": "d/f_0036.avif",
+          "webp": null,
+          "quality": 59,
+          "ssim": 0.9711,
+          "bytes": {
+            "avif": 182155,
+            "webp": null
+          }
+        },
+        {
+          "index": 37,
+          "avif": "d/f_0037.avif",
+          "webp": null,
+          "quality": 60,
+          "ssim": 0.9716,
+          "bytes": {
+            "avif": 188492,
+            "webp": null
+          }
+        },
+        {
+          "index": 38,
+          "avif": "d/f_0038.avif",
+          "webp": null,
+          "quality": 60,
+          "ssim": 0.9706,
+          "bytes": {
+            "avif": 185641,
+            "webp": null
+          }
+        },
+        {
+          "index": 39,
+          "avif": "d/f_0039.avif",
+          "webp": null,
+          "quality": 62,
+          "ssim": 0.9707,
+          "bytes": {
+            "avif": 190181,
+            "webp": null
+          }
+        },
+        {
+          "index": 40,
+          "avif": "d/f_0040.avif",
+          "webp": null,
+          "quality": 62,
+          "ssim": 0.9701,
+          "bytes": {
+            "avif": 186327,
+            "webp": null
+          }
+        },
+        {
+          "index": 41,
+          "avif": "d/f_0041.avif",
+          "webp": null,
+          "quality": 62,
+          "ssim": 0.9704,
+          "bytes": {
+            "avif": 181111,
+            "webp": null
+          }
+        },
+        {
+          "index": 42,
+          "avif": "d/f_0042.avif",
+          "webp": null,
+          "quality": 62,
+          "ssim": 0.9709,
+          "bytes": {
+            "avif": 175514,
+            "webp": null
+          }
+        },
+        {
+          "index": 43,
+          "avif": "d/f_0043.avif",
+          "webp": null,
+          "quality": 60,
+          "ssim": 0.9707,
+          "bytes": {
+            "avif": 158529,
+            "webp": null
+          }
+        },
+        {
+          "index": 44,
+          "avif": "d/f_0044.avif",
+          "webp": null,
+          "quality": 59,
+          "ssim": 0.9702,
+          "bytes": {
+            "avif": 139084,
+            "webp": null
+          }
+        },
+        {
+          "index": 45,
+          "avif": "d/f_0045.avif",
+          "webp": "d/f_0045.webp",
+          "quality": 58,
+          "ssim": 0.97,
+          "bytes": {
+            "avif": 123662,
+            "webp": 192200
+          }
+        },
+        {
+          "index": 46,
+          "avif": "d/f_0046.avif",
+          "webp": null,
+          "quality": 56,
+          "ssim": 0.9702,
+          "bytes": {
+            "avif": 113279,
+            "webp": null
+          }
+        },
+        {
+          "index": 47,
+          "avif": "d/f_0047.avif",
+          "webp": null,
+          "quality": 56,
+          "ssim": 0.9712,
+          "bytes": {
+            "avif": 109190,
+            "webp": null
+          }
+        },
+        {
+          "index": 48,
+          "avif": "d/f_0048.avif",
+          "webp": null,
+          "quality": 55,
+          "ssim": 0.9704,
+          "bytes": {
+            "avif": 101417,
+            "webp": null
+          }
+        },
+        {
+          "index": 49,
+          "avif": "d/f_0049.avif",
+          "webp": null,
+          "quality": 55,
+          "ssim": 0.9707,
+          "bytes": {
+            "avif": 100280,
+            "webp": null
+          }
+        },
+        {
+          "index": 50,
+          "avif": "d/f_0050.avif",
+          "webp": null,
+          "quality": 55,
+          "ssim": 0.9703,
+          "bytes": {
+            "avif": 101296,
+            "webp": null
+          }
+        },
+        {
+          "index": 51,
+          "avif": "d/f_0051.avif",
+          "webp": null,
+          "quality": 56,
+          "ssim": 0.9707,
+          "bytes": {
+            "avif": 108567,
+            "webp": null
+          }
+        },
+        {
+          "index": 52,
+          "avif": "d/f_0052.avif",
+          "webp": null,
+          "quality": 56,
+          "ssim": 0.9702,
+          "bytes": {
+            "avif": 109014,
+            "webp": null
+          }
+        },
+        {
+          "index": 53,
+          "avif": "d/f_0053.avif",
+          "webp": null,
+          "quality": 56,
+          "ssim": 0.9704,
+          "bytes": {
+            "avif": 108628,
+            "webp": null
+          }
+        },
+        {
+          "index": 54,
+          "avif": "d/f_0054.avif",
+          "webp": null,
+          "quality": 56,
+          "ssim": 0.9705,
+          "bytes": {
+            "avif": 105022,
+            "webp": null
+          }
+        },
+        {
+          "index": 55,
+          "avif": "d/f_0055.avif",
+          "webp": null,
+          "quality": 55,
+          "ssim": 0.9701,
+          "bytes": {
+            "avif": 94938,
+            "webp": null
+          }
+        },
+        {
+          "index": 56,
+          "avif": "d/f_0056.avif",
+          "webp": null,
+          "quality": 55,
+          "ssim": 0.9705,
+          "bytes": {
+            "avif": 89277,
+            "webp": null
+          }
+        },
+        {
+          "index": 57,
+          "avif": "d/f_0057.avif",
+          "webp": null,
+          "quality": 55,
+          "ssim": 0.9711,
+          "bytes": {
+            "avif": 85316,
+            "webp": null
+          }
+        },
+        {
+          "index": 58,
+          "avif": "d/f_0058.avif",
+          "webp": null,
+          "quality": 54,
+          "ssim": 0.9701,
+          "bytes": {
+            "avif": 76712,
+            "webp": null
+          }
+        },
+        {
+          "index": 59,
+          "avif": "d/f_0059.avif",
+          "webp": null,
+          "quality": 54,
+          "ssim": 0.9703,
+          "bytes": {
+            "avif": 74989,
+            "webp": null
+          }
+        },
+        {
+          "index": 60,
+          "avif": "d/f_0060.avif",
+          "webp": null,
+          "quality": 54,
+          "ssim": 0.9702,
+          "bytes": {
+            "avif": 75081,
+            "webp": null
+          }
+        },
+        {
+          "index": 61,
+          "avif": "d/f_0061.avif",
+          "webp": null,
+          "quality": 55,
+          "ssim": 0.9711,
+          "bytes": {
+            "avif": 79758,
+            "webp": null
+          }
+        },
+        {
+          "index": 62,
+          "avif": "d/f_0062.avif",
+          "webp": null,
+          "quality": 55,
+          "ssim": 0.9708,
+          "bytes": {
+            "avif": 76881,
+            "webp": null
+          }
+        },
+        {
+          "index": 63,
+          "avif": "d/f_0063.avif",
+          "webp": null,
+          "quality": 55,
+          "ssim": 0.9711,
+          "bytes": {
+            "avif": 70863,
+            "webp": null
+          }
+        },
+        {
+          "index": 64,
+          "avif": "d/f_0064.avif",
+          "webp": null,
+          "quality": 52,
+          "ssim": 0.9701,
+          "bytes": {
+            "avif": 55059,
+            "webp": null
+          }
+        },
+        {
+          "index": 65,
+          "avif": "d/f_0065.avif",
+          "webp": null,
+          "quality": 49,
+          "ssim": 0.9701,
+          "bytes": {
+            "avif": 42940,
+            "webp": null
+          }
+        },
+        {
+          "index": 66,
+          "avif": "d/f_0066.avif",
+          "webp": null,
+          "quality": 47,
+          "ssim": 0.9704,
+          "bytes": {
+            "avif": 35283,
+            "webp": null
+          }
+        },
+        {
+          "index": 67,
+          "avif": "d/f_0067.avif",
+          "webp": null,
+          "quality": 45,
+          "ssim": 0.9718,
+          "bytes": {
+            "avif": 28247,
+            "webp": null
+          }
+        },
+        {
+          "index": 68,
+          "avif": "d/f_0068.avif",
+          "webp": null,
+          "quality": 39,
+          "ssim": 0.9707,
+          "bytes": {
+            "avif": 18788,
+            "webp": null
+          }
+        },
+        {
+          "index": 69,
+          "avif": "d/f_0069.avif",
+          "webp": null,
+          "quality": 30,
+          "ssim": 0.9707,
+          "bytes": {
+            "avif": 12470,
+            "webp": null
+          }
+        },
+        {
+          "index": 70,
+          "avif": "d/f_0070.avif",
+          "webp": null,
+          "quality": 22,
+          "ssim": 0.9709,
+          "bytes": {
+            "avif": 9095,
+            "webp": null
+          }
+        },
+        {
+          "index": 71,
+          "avif": "d/f_0071.avif",
+          "webp": null,
+          "quality": 22,
+          "ssim": 0.971,
+          "bytes": {
+            "avif": 8919,
+            "webp": null
+          }
+        },
+        {
+          "index": 72,
+          "avif": "d/f_0072.avif",
+          "webp": null,
+          "quality": 20,
+          "ssim": 0.9708,
+          "bytes": {
+            "avif": 8076,
+            "webp": null
+          }
+        },
+        {
+          "index": 73,
+          "avif": "d/f_0073.avif",
+          "webp": null,
+          "quality": 20,
+          "ssim": 0.9713,
+          "bytes": {
+            "avif": 8235,
+            "webp": null
+          }
+        },
+        {
+          "index": 74,
+          "avif": "d/f_0074.avif",
+          "webp": null,
+          "quality": 20,
+          "ssim": 0.9713,
+          "bytes": {
+            "avif": 7793,
+            "webp": null
+          }
+        },
+        {
+          "index": 75,
+          "avif": "d/f_0075.avif",
+          "webp": "d/f_0075.webp",
+          "quality": 20,
+          "ssim": 0.9706,
+          "bytes": {
+            "avif": 7905,
+            "webp": 29040
+          }
+        },
+        {
+          "index": 76,
+          "avif": "d/f_0076.avif",
+          "webp": null,
+          "quality": 20,
+          "ssim": 0.9707,
+          "bytes": {
+            "avif": 7743,
+            "webp": null
+          }
+        },
+        {
+          "index": 77,
+          "avif": "d/f_0077.avif",
+          "webp": null,
+          "quality": 20,
+          "ssim": 0.9719,
+          "bytes": {
+            "avif": 7190,
+            "webp": null
+          }
+        },
+        {
+          "index": 78,
+          "avif": "d/f_0078.avif",
+          "webp": null,
+          "quality": 20,
+          "ssim": 0.9739,
+          "bytes": {
+            "avif": 7145,
+            "webp": null
+          }
+        },
+        {
+          "index": 79,
+          "avif": "d/f_0079.avif",
+          "webp": null,
+          "quality": 20,
+          "ssim": 0.9731,
+          "bytes": {
+            "avif": 8150,
+            "webp": null
+          }
+        },
+        {
+          "index": 80,
+          "avif": "d/f_0080.avif",
+          "webp": null,
+          "quality": 26,
+          "ssim": 0.971,
+          "bytes": {
+            "avif": 11740,
+            "webp": null
+          }
+        },
+        {
+          "index": 81,
+          "avif": "d/f_0081.avif",
+          "webp": null,
+          "quality": 30,
+          "ssim": 0.9716,
+          "bytes": {
+            "avif": 14967,
+            "webp": null
+          }
+        },
+        {
+          "index": 82,
+          "avif": "d/f_0082.avif",
+          "webp": null,
+          "quality": 35,
+          "ssim": 0.972,
+          "bytes": {
+            "avif": 19533,
+            "webp": null
+          }
+        },
+        {
+          "index": 83,
+          "avif": "d/f_0083.avif",
+          "webp": null,
+          "quality": 39,
+          "ssim": 0.9703,
+          "bytes": {
+            "avif": 24145,
+            "webp": null
+          }
+        },
+        {
+          "index": 84,
+          "avif": "d/f_0084.avif",
+          "webp": null,
+          "quality": 40,
+          "ssim": 0.9705,
+          "bytes": {
+            "avif": 27215,
+            "webp": null
+          }
+        },
+        {
+          "index": 85,
+          "avif": "d/f_0085.avif",
+          "webp": null,
+          "quality": 40,
+          "ssim": 0.9715,
+          "bytes": {
+            "avif": 26497,
+            "webp": null
+          }
+        },
+        {
+          "index": 86,
+          "avif": "d/f_0086.avif",
+          "webp": null,
+          "quality": 39,
+          "ssim": 0.9714,
+          "bytes": {
+            "avif": 24215,
+            "webp": null
+          }
+        },
+        {
+          "index": 87,
+          "avif": "d/f_0087.avif",
+          "webp": null,
+          "quality": 37,
+          "ssim": 0.9703,
+          "bytes": {
+            "avif": 20779,
+            "webp": null
+          }
+        },
+        {
+          "index": 88,
+          "avif": "d/f_0088.avif",
+          "webp": null,
+          "quality": 35,
+          "ssim": 0.9706,
+          "bytes": {
+            "avif": 18254,
+            "webp": null
+          }
+        },
+        {
+          "index": 89,
+          "avif": "d/f_0089.avif",
+          "webp": null,
+          "quality": 32,
+          "ssim": 0.9708,
+          "bytes": {
+            "avif": 15028,
+            "webp": null
+          }
+        },
+        {
+          "index": 90,
+          "avif": "d/f_0090.avif",
+          "webp": null,
+          "quality": 32,
+          "ssim": 0.9707,
+          "bytes": {
+            "avif": 15147,
+            "webp": null
+          }
+        },
+        {
+          "index": 91,
+          "avif": "d/f_0091.avif",
+          "webp": null,
+          "quality": 30,
+          "ssim": 0.971,
+          "bytes": {
+            "avif": 13814,
+            "webp": null
+          }
+        },
+        {
+          "index": 92,
+          "avif": "d/f_0092.avif",
+          "webp": null,
+          "quality": 30,
+          "ssim": 0.9711,
+          "bytes": {
+            "avif": 13512,
+            "webp": null
+          }
+        },
+        {
+          "index": 93,
+          "avif": "d/f_0093.avif",
+          "webp": null,
+          "quality": 26,
+          "ssim": 0.97,
+          "bytes": {
+            "avif": 11593,
+            "webp": null
+          }
+        },
+        {
+          "index": 94,
+          "avif": "d/f_0094.avif",
+          "webp": null,
+          "quality": 24,
+          "ssim": 0.9701,
+          "bytes": {
+            "avif": 10584,
+            "webp": null
+          }
+        },
+        {
+          "index": 95,
+          "avif": "d/f_0095.avif",
+          "webp": null,
+          "quality": 22,
+          "ssim": 0.9708,
+          "bytes": {
+            "avif": 9928,
+            "webp": null
+          }
+        },
+        {
+          "index": 96,
+          "avif": "d/f_0096.avif",
+          "webp": null,
+          "quality": 20,
+          "ssim": 0.9703,
+          "bytes": {
+            "avif": 9081,
+            "webp": null
+          }
+        },
+        {
+          "index": 97,
+          "avif": "d/f_0097.avif",
+          "webp": null,
+          "quality": 20,
+          "ssim": 0.9715,
+          "bytes": {
+            "avif": 9053,
+            "webp": null
+          }
+        },
+        {
+          "index": 98,
+          "avif": "d/f_0098.avif",
+          "webp": null,
+          "quality": 20,
+          "ssim": 0.973,
+          "bytes": {
+            "avif": 8710,
+            "webp": null
+          }
+        },
+        {
+          "index": 99,
+          "avif": "d/f_0099.avif",
+          "webp": null,
+          "quality": 20,
+          "ssim": 0.9752,
+          "bytes": {
+            "avif": 8692,
+            "webp": null
+          }
+        },
+        {
+          "index": 100,
+          "avif": "d/f_0100.avif",
+          "webp": null,
+          "quality": 20,
+          "ssim": 0.9765,
+          "bytes": {
+            "avif": 8344,
+            "webp": null
+          }
+        },
+        {
+          "index": 101,
+          "avif": "d/f_0101.avif",
+          "webp": null,
+          "quality": 20,
+          "ssim": 0.9783,
+          "bytes": {
+            "avif": 8426,
+            "webp": null
+          }
+        },
+        {
+          "index": 102,
+          "avif": "d/f_0102.avif",
+          "webp": null,
+          "quality": 20,
+          "ssim": 0.9783,
+          "bytes": {
+            "avif": 8328,
+            "webp": null
+          }
+        },
+        {
+          "index": 103,
+          "avif": "d/f_0103.avif",
+          "webp": null,
+          "quality": 20,
+          "ssim": 0.9794,
+          "bytes": {
+            "avif": 8936,
+            "webp": null
+          }
+        },
+        {
+          "index": 104,
+          "avif": "d/f_0104.avif",
+          "webp": null,
+          "quality": 20,
+          "ssim": 0.9792,
+          "bytes": {
+            "avif": 9400,
+            "webp": null
+          }
+        },
+        {
+          "index": 105,
+          "avif": "d/f_0105.avif",
+          "webp": "d/f_0105.webp",
+          "quality": 20,
+          "ssim": 0.9795,
+          "bytes": {
+            "avif": 9771,
+            "webp": 24446
+          }
+        },
+        {
+          "index": 106,
+          "avif": "d/f_0106.avif",
+          "webp": null,
+          "quality": 20,
+          "ssim": 0.9799,
+          "bytes": {
+            "avif": 9858,
+            "webp": null
+          }
+        },
+        {
+          "index": 107,
+          "avif": "d/f_0107.avif",
+          "webp": null,
+          "quality": 20,
+          "ssim": 0.9797,
+          "bytes": {
+            "avif": 10171,
+            "webp": null
+          }
+        },
+        {
+          "index": 108,
+          "avif": "d/f_0108.avif",
+          "webp": null,
+          "quality": 20,
+          "ssim": 0.9786,
+          "bytes": {
+            "avif": 10598,
+            "webp": null
+          }
+        },
+        {
+          "index": 109,
+          "avif": "d/f_0109.avif",
+          "webp": null,
+          "quality": 20,
+          "ssim": 0.9767,
+          "bytes": {
+            "avif": 11125,
+            "webp": null
+          }
+        },
+        {
+          "index": 110,
+          "avif": "d/f_0110.avif",
+          "webp": null,
+          "quality": 20,
+          "ssim": 0.9739,
+          "bytes": {
+            "avif": 11649,
+            "webp": null
+          }
+        },
+        {
+          "index": 111,
+          "avif": "d/f_0111.avif",
+          "webp": null,
+          "quality": 20,
+          "ssim": 0.9713,
+          "bytes": {
+            "avif": 11756,
+            "webp": null
+          }
+        },
+        {
+          "index": 112,
+          "avif": "d/f_0112.avif",
+          "webp": null,
+          "quality": 22,
+          "ssim": 0.9711,
+          "bytes": {
+            "avif": 12914,
+            "webp": null
+          }
+        },
+        {
+          "index": 113,
+          "avif": "d/f_0113.avif",
+          "webp": null,
+          "quality": 24,
+          "ssim": 0.9711,
+          "bytes": {
+            "avif": 13904,
+            "webp": null
+          }
+        },
+        {
+          "index": 114,
+          "avif": "d/f_0114.avif",
+          "webp": null,
+          "quality": 24,
+          "ssim": 0.9708,
+          "bytes": {
+            "avif": 13884,
+            "webp": null
+          }
+        },
+        {
+          "index": 115,
+          "avif": "d/f_0115.avif",
+          "webp": null,
+          "quality": 24,
+          "ssim": 0.9711,
+          "bytes": {
+            "avif": 13825,
+            "webp": null
+          }
+        },
+        {
+          "index": 116,
+          "avif": "d/f_0116.avif",
+          "webp": null,
+          "quality": 22,
+          "ssim": 0.9702,
+          "bytes": {
+            "avif": 12806,
+            "webp": null
+          }
+        },
+        {
+          "index": 117,
+          "avif": "d/f_0117.avif",
+          "webp": null,
+          "quality": 22,
+          "ssim": 0.9709,
+          "bytes": {
+            "avif": 12446,
+            "webp": null
+          }
+        },
+        {
+          "index": 118,
+          "avif": "d/f_0118.avif",
+          "webp": null,
+          "quality": 20,
+          "ssim": 0.9705,
+          "bytes": {
+            "avif": 11721,
+            "webp": null
+          }
+        },
+        {
+          "index": 119,
+          "avif": "d/f_0119.avif",
+          "webp": null,
+          "quality": 20,
+          "ssim": 0.9714,
+          "bytes": {
+            "avif": 11417,
+            "webp": null
+          }
+        },
+        {
+          "index": 120,
+          "avif": "d/f_0120.avif",
+          "webp": null,
+          "quality": 20,
+          "ssim": 0.9713,
+          "bytes": {
+            "avif": 11410,
+            "webp": null
+          }
+        },
+        {
+          "index": 121,
+          "avif": "d/f_0121.avif",
+          "webp": null,
+          "quality": 20,
+          "ssim": 0.9718,
+          "bytes": {
+            "avif": 11416,
+            "webp": null
+          }
+        },
+        {
+          "index": 122,
+          "avif": "d/f_0122.avif",
+          "webp": null,
+          "quality": 20,
+          "ssim": 0.9727,
+          "bytes": {
+            "avif": 11189,
+            "webp": null
+          }
+        },
+        {
+          "index": 123,
+          "avif": "d/f_0123.avif",
+          "webp": null,
+          "quality": 20,
+          "ssim": 0.9735,
+          "bytes": {
+            "avif": 10839,
+            "webp": null
+          }
+        },
+        {
+          "index": 124,
+          "avif": "d/f_0124.avif",
+          "webp": null,
+          "quality": 20,
+          "ssim": 0.9743,
+          "bytes": {
+            "avif": 10697,
+            "webp": null
+          }
+        },
+        {
+          "index": 125,
+          "avif": "d/f_0125.avif",
+          "webp": null,
+          "quality": 20,
+          "ssim": 0.975,
+          "bytes": {
+            "avif": 10249,
+            "webp": null
+          }
+        },
+        {
+          "index": 126,
+          "avif": "d/f_0126.avif",
+          "webp": null,
+          "quality": 20,
+          "ssim": 0.976,
+          "bytes": {
+            "avif": 9911,
+            "webp": null
+          }
+        },
+        {
+          "index": 127,
+          "avif": "d/f_0127.avif",
+          "webp": null,
+          "quality": 20,
+          "ssim": 0.9772,
+          "bytes": {
+            "avif": 9517,
+            "webp": null
+          }
+        },
+        {
+          "index": 128,
+          "avif": "d/f_0128.avif",
+          "webp": null,
+          "quality": 20,
+          "ssim": 0.9788,
+          "bytes": {
+            "avif": 9234,
+            "webp": null
+          }
+        },
+        {
+          "index": 129,
+          "avif": "d/f_0129.avif",
+          "webp": null,
+          "quality": 20,
+          "ssim": 0.9793,
+          "bytes": {
+            "avif": 8558,
+            "webp": null
+          }
+        },
+        {
+          "index": 130,
+          "avif": "d/f_0130.avif",
+          "webp": null,
+          "quality": 20,
+          "ssim": 0.9805,
+          "bytes": {
+            "avif": 7689,
+            "webp": null
+          }
+        },
+        {
+          "index": 131,
+          "avif": "d/f_0131.avif",
+          "webp": null,
+          "quality": 20,
+          "ssim": 0.9814,
+          "bytes": {
+            "avif": 7268,
+            "webp": null
+          }
+        },
+        {
+          "index": 132,
+          "avif": "d/f_0132.avif",
+          "webp": null,
+          "quality": 20,
+          "ssim": 0.9801,
+          "bytes": {
+            "avif": 7315,
+            "webp": null
+          }
+        },
+        {
+          "index": 133,
+          "avif": "d/f_0133.avif",
+          "webp": null,
+          "quality": 20,
+          "ssim": 0.9789,
+          "bytes": {
+            "avif": 7615,
+            "webp": null
+          }
+        },
+        {
+          "index": 134,
+          "avif": "d/f_0134.avif",
+          "webp": null,
+          "quality": 20,
+          "ssim": 0.9766,
+          "bytes": {
+            "avif": 8043,
+            "webp": null
+          }
+        },
+        {
+          "index": 135,
+          "avif": "d/f_0135.avif",
+          "webp": "d/f_0135.webp",
+          "quality": 20,
+          "ssim": 0.9773,
+          "bytes": {
+            "avif": 8766,
+            "webp": 23102
+          }
+        },
+        {
+          "index": 136,
+          "avif": "d/f_0136.avif",
+          "webp": null,
+          "quality": 20,
+          "ssim": 0.9766,
+          "bytes": {
+            "avif": 9275,
+            "webp": null
+          }
+        },
+        {
+          "index": 137,
+          "avif": "d/f_0137.avif",
+          "webp": null,
+          "quality": 20,
+          "ssim": 0.9761,
+          "bytes": {
+            "avif": 10031,
+            "webp": null
+          }
+        },
+        {
+          "index": 138,
+          "avif": "d/f_0138.avif",
+          "webp": null,
+          "quality": 20,
+          "ssim": 0.975,
+          "bytes": {
+            "avif": 11002,
+            "webp": null
+          }
+        },
+        {
+          "index": 139,
+          "avif": "d/f_0139.avif",
+          "webp": null,
+          "quality": 20,
+          "ssim": 0.9733,
+          "bytes": {
+            "avif": 11933,
+            "webp": null
+          }
+        },
+        {
+          "index": 140,
+          "avif": "d/f_0140.avif",
+          "webp": null,
+          "quality": 22,
+          "ssim": 0.9705,
+          "bytes": {
+            "avif": 12949,
+            "webp": null
+          }
+        },
+        {
+          "index": 141,
+          "avif": "d/f_0141.avif",
+          "webp": null,
+          "quality": 30,
+          "ssim": 0.9704,
+          "bytes": {
+            "avif": 16438,
+            "webp": null
+          }
+        },
+        {
+          "index": 142,
+          "avif": "d/f_0142.avif",
+          "webp": null,
+          "quality": 35,
+          "ssim": 0.9704,
+          "bytes": {
+            "avif": 19267,
+            "webp": null
+          }
+        },
+        {
+          "index": 143,
+          "avif": "d/f_0143.avif",
+          "webp": null,
+          "quality": 39,
+          "ssim": 0.971,
+          "bytes": {
+            "avif": 21710,
+            "webp": null
+          }
+        },
+        {
+          "index": 144,
+          "avif": "d/f_0144.avif",
+          "webp": null,
+          "quality": 37,
+          "ssim": 0.9701,
+          "bytes": {
+            "avif": 20980,
+            "webp": null
+          }
+        },
+        {
+          "index": 145,
+          "avif": "d/f_0145.avif",
+          "webp": null,
+          "quality": 37,
+          "ssim": 0.9711,
+          "bytes": {
+            "avif": 20515,
+            "webp": null
+          }
+        },
+        {
+          "index": 146,
+          "avif": "d/f_0146.avif",
+          "webp": null,
+          "quality": 35,
+          "ssim": 0.9706,
+          "bytes": {
+            "avif": 19148,
+            "webp": null
+          }
+        },
+        {
+          "index": 147,
+          "avif": "d/f_0147.avif",
+          "webp": null,
+          "quality": 34,
+          "ssim": 0.9707,
+          "bytes": {
+            "avif": 17794,
+            "webp": null
+          }
+        },
+        {
+          "index": 148,
+          "avif": "d/f_0148.avif",
+          "webp": null,
+          "quality": 34,
+          "ssim": 0.9713,
+          "bytes": {
+            "avif": 17487,
+            "webp": null
+          }
+        },
+        {
+          "index": 149,
+          "avif": "d/f_0149.avif",
+          "webp": null,
+          "quality": 32,
+          "ssim": 0.971,
+          "bytes": {
+            "avif": 16450,
+            "webp": null
+          }
+        },
+        {
+          "index": 150,
+          "avif": "d/f_0150.avif",
+          "webp": null,
+          "quality": 32,
+          "ssim": 0.9708,
+          "bytes": {
+            "avif": 16422,
+            "webp": null
+          }
+        },
+        {
+          "index": 151,
+          "avif": "d/f_0151.avif",
+          "webp": null,
+          "quality": 37,
+          "ssim": 0.9707,
+          "bytes": {
+            "avif": 20121,
+            "webp": null
+          }
+        },
+        {
+          "index": 152,
+          "avif": "d/f_0152.avif",
+          "webp": null,
+          "quality": 40,
+          "ssim": 0.9702,
+          "bytes": {
+            "avif": 23278,
+            "webp": null
+          }
+        },
+        {
+          "index": 153,
+          "avif": "d/f_0153.avif",
+          "webp": null,
+          "quality": 45,
+          "ssim": 0.9702,
+          "bytes": {
+            "avif": 28739,
+            "webp": null
+          }
+        },
+        {
+          "index": 154,
+          "avif": "d/f_0154.avif",
+          "webp": null,
+          "quality": 49,
+          "ssim": 0.9727,
+          "bytes": {
+            "avif": 37301,
+            "webp": null
+          }
+        },
+        {
+          "index": 155,
+          "avif": "d/f_0155.avif",
+          "webp": null,
+          "quality": 49,
+          "ssim": 0.9702,
+          "bytes": {
+            "avif": 40901,
+            "webp": null
+          }
+        },
+        {
+          "index": 156,
+          "avif": "d/f_0156.avif",
+          "webp": null,
+          "quality": 52,
+          "ssim": 0.97,
+          "bytes": {
+            "avif": 50465,
+            "webp": null
+          }
+        },
+        {
+          "index": 157,
+          "avif": "d/f_0157.avif",
+          "webp": null,
+          "quality": 55,
+          "ssim": 0.9722,
+          "bytes": {
+            "avif": 62604,
+            "webp": null
+          }
+        },
+        {
+          "index": 158,
+          "avif": "d/f_0158.avif",
+          "webp": null,
+          "quality": 55,
+          "ssim": 0.9706,
+          "bytes": {
+            "avif": 70065,
+            "webp": null
+          }
+        },
+        {
+          "index": 159,
+          "avif": "d/f_0159.avif",
+          "webp": null,
+          "quality": 56,
+          "ssim": 0.9722,
+          "bytes": {
+            "avif": 82917,
+            "webp": null
+          }
+        },
+        {
+          "index": 160,
+          "avif": "d/f_0160.avif",
+          "webp": null,
+          "quality": 56,
+          "ssim": 0.9734,
+          "bytes": {
+            "avif": 91267,
+            "webp": null
+          }
+        },
+        {
+          "index": 161,
+          "avif": "d/f_0161.avif",
+          "webp": null,
+          "quality": 55,
+          "ssim": 0.9712,
+          "bytes": {
+            "avif": 94352,
+            "webp": null
+          }
+        },
+        {
+          "index": 162,
+          "avif": "d/f_0162.avif",
+          "webp": null,
+          "quality": 54,
+          "ssim": 0.9705,
+          "bytes": {
+            "avif": 100692,
+            "webp": null
+          }
+        },
+        {
+          "index": 163,
+          "avif": "d/f_0163.avif",
+          "webp": null,
+          "quality": 54,
+          "ssim": 0.9703,
+          "bytes": {
+            "avif": 110400,
+            "webp": null
+          }
+        },
+        {
+          "index": 164,
+          "avif": "d/f_0164.avif",
+          "webp": null,
+          "quality": 55,
+          "ssim": 0.9706,
+          "bytes": {
+            "avif": 124967,
+            "webp": null
+          }
+        },
+        {
+          "index": 165,
+          "avif": "d/f_0165.avif",
+          "webp": "d/f_0165.webp",
+          "quality": 55,
+          "ssim": 0.9705,
+          "bytes": {
+            "avif": 139099,
+            "webp": 249704
+          }
+        },
+        {
+          "index": 166,
+          "avif": "d/f_0166.avif",
+          "webp": null,
+          "quality": 55,
+          "ssim": 0.9702,
+          "bytes": {
+            "avif": 153675,
+            "webp": null
+          }
+        },
+        {
+          "index": 167,
+          "avif": "d/f_0167.avif",
+          "webp": null,
+          "quality": 56,
+          "ssim": 0.9718,
+          "bytes": {
+            "avif": 177314,
+            "webp": null
+          }
+        },
+        {
+          "index": 168,
+          "avif": "d/f_0168.avif",
+          "webp": null,
+          "quality": 56,
+          "ssim": 0.9721,
+          "bytes": {
+            "avif": 195178,
+            "webp": null
+          }
+        },
+        {
+          "index": 169,
+          "avif": "d/f_0169.avif",
+          "webp": null,
+          "quality": 60,
+          "ssim": 0.9721,
+          "bytes": {
+            "avif": 249726,
+            "webp": null
+          }
+        },
+        {
+          "index": 170,
+          "avif": "d/f_0170.avif",
+          "webp": null,
+          "quality": 60,
+          "ssim": 0.9714,
+          "bytes": {
+            "avif": 269696,
+            "webp": null
+          }
+        },
+        {
+          "index": 171,
+          "avif": "d/f_0171.avif",
+          "webp": null,
+          "quality": 60,
+          "ssim": 0.9716,
+          "bytes": {
+            "avif": 287924,
+            "webp": null
+          }
+        },
+        {
+          "index": 172,
+          "avif": "d/f_0172.avif",
+          "webp": null,
+          "quality": 58,
+          "ssim": 0.97,
+          "bytes": {
+            "avif": 270207,
+            "webp": null
+          }
+        },
+        {
+          "index": 173,
+          "avif": "d/f_0173.avif",
+          "webp": null,
+          "quality": 55,
+          "ssim": 0.972,
+          "bytes": {
+            "avif": 242649,
+            "webp": null
+          }
+        },
+        {
+          "index": 174,
+          "avif": "d/f_0174.avif",
+          "webp": null,
+          "quality": 52,
+          "ssim": 0.972,
+          "bytes": {
+            "avif": 209861,
+            "webp": null
+          }
+        },
+        {
+          "index": 175,
+          "avif": "d/f_0175.avif",
+          "webp": null,
+          "quality": 49,
+          "ssim": 0.9703,
+          "bytes": {
+            "avif": 181872,
+            "webp": null
+          }
+        },
+        {
+          "index": 176,
+          "avif": "d/f_0176.avif",
+          "webp": null,
+          "quality": 49,
+          "ssim": 0.9724,
+          "bytes": {
+            "avif": 170876,
+            "webp": null
+          }
+        },
+        {
+          "index": 177,
+          "avif": "d/f_0177.avif",
+          "webp": null,
+          "quality": 47,
+          "ssim": 0.9724,
+          "bytes": {
+            "avif": 153312,
+            "webp": null
+          }
+        },
+        {
+          "index": 178,
+          "avif": "d/f_0178.avif",
+          "webp": null,
+          "quality": 45,
+          "ssim": 0.9719,
+          "bytes": {
+            "avif": 138057,
+            "webp": null
+          }
+        },
+        {
+          "index": 179,
+          "avif": "d/f_0179.avif",
+          "webp": null,
+          "quality": 44,
+          "ssim": 0.9717,
+          "bytes": {
+            "avif": 123648,
+            "webp": null
+          }
+        },
+        {
+          "index": 180,
+          "avif": "d/f_0180.avif",
+          "webp": null,
+          "quality": 42,
+          "ssim": 0.9718,
+          "bytes": {
+            "avif": 117217,
+            "webp": null
+          }
+        },
+        {
+          "index": 181,
+          "avif": "d/f_0181.avif",
+          "webp": null,
+          "quality": 45,
+          "ssim": 0.9737,
+          "bytes": {
+            "avif": 139557,
+            "webp": null
+          }
+        },
+        {
+          "index": 182,
+          "avif": "d/f_0182.avif",
+          "webp": null,
+          "quality": 45,
+          "ssim": 0.9707,
+          "bytes": {
+            "avif": 150154,
+            "webp": null
+          }
+        },
+        {
+          "index": 183,
+          "avif": "d/f_0183.avif",
+          "webp": null,
+          "quality": 49,
+          "ssim": 0.9721,
+          "bytes": {
+            "avif": 178822,
+            "webp": null
+          }
+        },
+        {
+          "index": 184,
+          "avif": "d/f_0184.avif",
+          "webp": null,
+          "quality": 50,
+          "ssim": 0.9704,
+          "bytes": {
+            "avif": 194880,
+            "webp": null
+          }
+        },
+        {
+          "index": 185,
+          "avif": "d/f_0185.avif",
+          "webp": null,
+          "quality": 54,
+          "ssim": 0.9721,
+          "bytes": {
+            "avif": 219569,
+            "webp": null
+          }
+        },
+        {
+          "index": 186,
+          "avif": "d/f_0186.avif",
+          "webp": null,
+          "quality": 55,
+          "ssim": 0.9719,
+          "bytes": {
+            "avif": 236664,
+            "webp": null
+          }
+        },
+        {
+          "index": 187,
+          "avif": "d/f_0187.avif",
+          "webp": null,
+          "quality": 56,
+          "ssim": 0.9717,
+          "bytes": {
+            "avif": 255716,
+            "webp": null
+          }
+        },
+        {
+          "index": 188,
+          "avif": "d/f_0188.avif",
+          "webp": null,
+          "quality": 58,
+          "ssim": 0.9725,
+          "bytes": {
+            "avif": 264069,
+            "webp": null
+          }
+        },
+        {
+          "index": 189,
+          "avif": "d/f_0189.avif",
+          "webp": null,
+          "quality": 58,
+          "ssim": 0.9721,
+          "bytes": {
+            "avif": 252423,
+            "webp": null
+          }
+        },
+        {
+          "index": 190,
+          "avif": "d/f_0190.avif",
+          "webp": null,
+          "quality": 58,
+          "ssim": 0.9714,
+          "bytes": {
+            "avif": 222356,
+            "webp": null
+          }
+        },
+        {
+          "index": 191,
+          "avif": "d/f_0191.avif",
+          "webp": null,
+          "quality": 58,
+          "ssim": 0.9707,
+          "bytes": {
+            "avif": 192478,
+            "webp": null
+          }
+        },
+        {
+          "index": 192,
+          "avif": "d/f_0192.avif",
+          "webp": null,
+          "quality": 59,
+          "ssim": 0.9711,
+          "bytes": {
+            "avif": 169443,
+            "webp": null
+          }
+        },
+        {
+          "index": 193,
+          "avif": "d/f_0193.avif",
+          "webp": null,
+          "quality": 60,
+          "ssim": 0.9713,
+          "bytes": {
+            "avif": 155627,
+            "webp": null
+          }
+        },
+        {
+          "index": 194,
+          "avif": "d/f_0194.avif",
+          "webp": null,
+          "quality": 60,
+          "ssim": 0.9703,
+          "bytes": {
+            "avif": 130967,
+            "webp": null
+          }
+        },
+        {
+          "index": 195,
+          "avif": "d/f_0195.avif",
+          "webp": "d/f_0195.webp",
+          "quality": 59,
+          "ssim": 0.9701,
+          "bytes": {
+            "avif": 98582,
+            "webp": 203730
+          }
+        },
+        {
+          "index": 196,
+          "avif": "d/f_0196.avif",
+          "webp": null,
+          "quality": 56,
+          "ssim": 0.9704,
+          "bytes": {
+            "avif": 67355,
+            "webp": null
+          }
+        },
+        {
+          "index": 197,
+          "avif": "d/f_0197.avif",
+          "webp": null,
+          "quality": 50,
+          "ssim": 0.9708,
+          "bytes": {
+            "avif": 42840,
+            "webp": null
+          }
+        },
+        {
+          "index": 198,
+          "avif": "d/f_0198.avif",
+          "webp": null,
+          "quality": 47,
+          "ssim": 0.9721,
+          "bytes": {
+            "avif": 31637,
+            "webp": null
+          }
+        },
+        {
+          "index": 199,
+          "avif": "d/f_0199.avif",
+          "webp": null,
+          "quality": 44,
+          "ssim": 0.9711,
+          "bytes": {
+            "avif": 23407,
+            "webp": null
+          }
+        },
+        {
+          "index": 200,
+          "avif": "d/f_0200.avif",
+          "webp": null,
+          "quality": 40,
+          "ssim": 0.9701,
+          "bytes": {
+            "avif": 22223,
+            "webp": null
+          }
+        },
+        {
+          "index": 201,
+          "avif": "d/f_0201.avif",
+          "webp": null,
+          "quality": 44,
+          "ssim": 0.97,
+          "bytes": {
+            "avif": 30224,
+            "webp": null
+          }
+        },
+        {
+          "index": 202,
+          "avif": "d/f_0202.avif",
+          "webp": null,
+          "quality": 49,
+          "ssim": 0.9718,
+          "bytes": {
+            "avif": 46213,
+            "webp": null
+          }
+        },
+        {
+          "index": 203,
+          "avif": "d/f_0203.avif",
+          "webp": null,
+          "quality": 47,
+          "ssim": 0.9709,
+          "bytes": {
+            "avif": 49783,
+            "webp": null
+          }
+        },
+        {
+          "index": 204,
+          "avif": "d/f_0204.avif",
+          "webp": null,
+          "quality": 47,
+          "ssim": 0.9719,
+          "bytes": {
+            "avif": 49630,
+            "webp": null
+          }
+        },
+        {
+          "index": 205,
+          "avif": "d/f_0205.avif",
+          "webp": null,
+          "quality": 45,
+          "ssim": 0.9708,
+          "bytes": {
+            "avif": 47028,
+            "webp": null
+          }
+        },
+        {
+          "index": 206,
+          "avif": "d/f_0206.avif",
+          "webp": null,
+          "quality": 47,
+          "ssim": 0.9729,
+          "bytes": {
+            "avif": 51820,
+            "webp": null
+          }
+        },
+        {
+          "index": 207,
+          "avif": "d/f_0207.avif",
+          "webp": null,
+          "quality": 47,
+          "ssim": 0.9717,
+          "bytes": {
+            "avif": 55604,
+            "webp": null
+          }
+        },
+        {
+          "index": 208,
+          "avif": "d/f_0208.avif",
+          "webp": null,
+          "quality": 49,
+          "ssim": 0.9712,
+          "bytes": {
+            "avif": 63951,
+            "webp": null
+          }
+        },
+        {
+          "index": 209,
+          "avif": "d/f_0209.avif",
+          "webp": null,
+          "quality": 50,
+          "ssim": 0.9703,
+          "bytes": {
+            "avif": 70342,
+            "webp": null
+          }
+        },
+        {
+          "index": 210,
+          "avif": "d/f_0210.avif",
+          "webp": null,
+          "quality": 50,
+          "ssim": 0.9701,
+          "bytes": {
+            "avif": 70314,
+            "webp": null
+          }
+        },
+        {
+          "index": 211,
+          "avif": "d/f_0211.avif",
+          "webp": null,
+          "quality": 54,
+          "ssim": 0.9713,
+          "bytes": {
+            "avif": 79104,
+            "webp": null
+          }
+        },
+        {
+          "index": 212,
+          "avif": "d/f_0212.avif",
+          "webp": null,
+          "quality": 54,
+          "ssim": 0.9704,
+          "bytes": {
+            "avif": 78511,
+            "webp": null
+          }
+        },
+        {
+          "index": 213,
+          "avif": "d/f_0213.avif",
+          "webp": null,
+          "quality": 50,
+          "ssim": 0.9717,
+          "bytes": {
+            "avif": 64171,
+            "webp": null
+          }
+        },
+        {
+          "index": 214,
+          "avif": "d/f_0214.avif",
+          "webp": null,
+          "quality": 52,
+          "ssim": 0.9702,
+          "bytes": {
+            "avif": 88302,
+            "webp": null
+          }
+        },
+        {
+          "index": 215,
+          "avif": "d/f_0215.avif",
+          "webp": null,
+          "quality": 56,
+          "ssim": 0.9718,
+          "bytes": {
+            "avif": 129455,
+            "webp": null
+          }
+        },
+        {
+          "index": 216,
+          "avif": "d/f_0216.avif",
+          "webp": null,
+          "quality": 58,
+          "ssim": 0.9716,
+          "bytes": {
+            "avif": 147557,
+            "webp": null
+          }
+        },
+        {
+          "index": 217,
+          "avif": "d/f_0217.avif",
+          "webp": null,
+          "quality": 60,
+          "ssim": 0.9714,
+          "bytes": {
+            "avif": 188784,
+            "webp": null
+          }
+        },
+        {
+          "index": 218,
+          "avif": "d/f_0218.avif",
+          "webp": null,
+          "quality": 60,
+          "ssim": 0.9709,
+          "bytes": {
+            "avif": 231849,
+            "webp": null
+          }
+        },
+        {
+          "index": 219,
+          "avif": "d/f_0219.avif",
+          "webp": null,
+          "quality": 58,
+          "ssim": 0.9711,
+          "bytes": {
+            "avif": 271886,
+            "webp": null
+          }
+        },
+        {
+          "index": 220,
+          "avif": "d/f_0220.avif",
+          "webp": null,
+          "quality": 59,
+          "ssim": 0.9705,
+          "bytes": {
+            "avif": 364221,
+            "webp": null
+          }
+        },
+        {
+          "index": 221,
+          "avif": "d/f_0221.avif",
+          "webp": null,
+          "quality": 59,
+          "ssim": 0.9707,
+          "bytes": {
+            "avif": 292255,
+            "webp": null
+          }
+        },
+        {
+          "index": 222,
+          "avif": "d/f_0222.avif",
+          "webp": null,
+          "quality": 40,
+          "ssim": 0.9714,
+          "bytes": {
+            "avif": 57925,
+            "webp": null
+          }
+        },
+        {
+          "index": 223,
+          "avif": "d/f_0223.avif",
+          "webp": null,
+          "quality": 50,
+          "ssim": 0.9723,
+          "bytes": {
+            "avif": 131991,
+            "webp": null
+          }
+        },
+        {
+          "index": 224,
+          "avif": "d/f_0224.avif",
+          "webp": null,
+          "quality": 55,
+          "ssim": 0.9711,
+          "bytes": {
+            "avif": 172275,
+            "webp": null
+          }
+        },
+        {
+          "index": 225,
+          "avif": "d/f_0225.avif",
+          "webp": "d/f_0225.webp",
+          "quality": 58,
+          "ssim": 0.972,
+          "bytes": {
+            "avif": 181778,
+            "webp": 265208
+          }
+        },
+        {
+          "index": 226,
+          "avif": "d/f_0226.avif",
+          "webp": null,
+          "quality": 59,
+          "ssim": 0.9705,
+          "bytes": {
+            "avif": 196711,
+            "webp": null
+          }
+        },
+        {
+          "index": 227,
+          "avif": "d/f_0227.avif",
+          "webp": null,
+          "quality": 62,
+          "ssim": 0.9716,
+          "bytes": {
+            "avif": 225107,
+            "webp": null
+          }
+        },
+        {
+          "index": 228,
+          "avif": "d/f_0228.avif",
+          "webp": null,
+          "quality": 59,
+          "ssim": 0.9704,
+          "bytes": {
+            "avif": 173401,
+            "webp": null
+          }
+        },
+        {
+          "index": 229,
+          "avif": "d/f_0229.avif",
+          "webp": null,
+          "quality": 58,
+          "ssim": 0.9722,
+          "bytes": {
+            "avif": 140726,
+            "webp": null
+          }
+        },
+        {
+          "index": 230,
+          "avif": "d/f_0230.avif",
+          "webp": null,
+          "quality": 55,
+          "ssim": 0.9707,
+          "bytes": {
+            "avif": 113225,
+            "webp": null
+          }
+        },
+        {
+          "index": 231,
+          "avif": "d/f_0231.avif",
+          "webp": null,
+          "quality": 54,
+          "ssim": 0.9706,
+          "bytes": {
+            "avif": 93429,
+            "webp": null
+          }
+        },
+        {
+          "index": 232,
+          "avif": "d/f_0232.avif",
+          "webp": null,
+          "quality": 55,
+          "ssim": 0.9717,
+          "bytes": {
+            "avif": 101226,
+            "webp": null
+          }
+        },
+        {
+          "index": 233,
+          "avif": "d/f_0233.avif",
+          "webp": null,
+          "quality": 59,
+          "ssim": 0.9704,
+          "bytes": {
+            "avif": 141166,
+            "webp": null
+          }
+        },
+        {
+          "index": 234,
+          "avif": "d/f_0234.avif",
+          "webp": null,
+          "quality": 59,
+          "ssim": 0.9712,
+          "bytes": {
+            "avif": 135316,
+            "webp": null
+          }
+        },
+        {
+          "index": 235,
+          "avif": "d/f_0235.avif",
+          "webp": null,
+          "quality": 55,
+          "ssim": 0.9708,
+          "bytes": {
+            "avif": 92812,
+            "webp": null
+          }
+        },
+        {
+          "index": 236,
+          "avif": "d/f_0236.avif",
+          "webp": null,
+          "quality": 45,
+          "ssim": 0.9723,
+          "bytes": {
+            "avif": 43879,
+            "webp": null
+          }
+        },
+        {
+          "index": 237,
+          "avif": "d/f_0237.avif",
+          "webp": null,
+          "quality": 30,
+          "ssim": 0.9701,
+          "bytes": {
+            "avif": 15852,
+            "webp": null
+          }
+        },
+        {
+          "index": 238,
+          "avif": "d/f_0238.avif",
+          "webp": null,
+          "quality": 20,
+          "ssim": 0.9729,
+          "bytes": {
+            "avif": 8508,
+            "webp": null
+          }
+        },
+        {
+          "index": 239,
+          "avif": "d/f_0239.avif",
+          "webp": null,
+          "quality": 20,
+          "ssim": 0.9772,
+          "bytes": {
+            "avif": 7067,
+            "webp": null
+          }
+        }
+      ]
+    },
+    "m": {
+      "width": 1080,
+      "height": 1920,
+      "step": 2,
+      "ssimTarget": 0.97,
+      "stills": [
+        14,
+        44,
+        74,
+        104,
+        134,
+        164,
+        194,
+        224
+      ],
+      "bytes": {
+        "avif": 7200979,
+        "webp": 937336,
+        "firstSectionAvif": 591041,
+        "projectedAvif": 7200979
+      },
+      "frames": [
+        {
+          "index": 0,
+          "avif": "m/f_0000.avif",
+          "webp": "m/f_0000.webp",
+          "quality": 20,
+          "ssim": 0.9914,
+          "bytes": {
+            "avif": 5412,
+            "webp": 17088
+          }
+        },
+        {
+          "index": 2,
+          "avif": "m/f_0002.avif",
+          "webp": null,
+          "quality": 20,
+          "ssim": 0.9905,
+          "bytes": {
+            "avif": 5640,
+            "webp": null
+          }
+        },
+        {
+          "index": 4,
+          "avif": "m/f_0004.avif",
+          "webp": null,
+          "quality": 20,
+          "ssim": 0.9878,
+          "bytes": {
+            "avif": 6346,
+            "webp": null
+          }
+        },
+        {
+          "index": 6,
+          "avif": "m/f_0006.avif",
+          "webp": null,
+          "quality": 20,
+          "ssim": 0.9855,
+          "bytes": {
+            "avif": 6394,
+            "webp": null
+          }
+        },
+        {
+          "index": 8,
+          "avif": "m/f_0008.avif",
+          "webp": null,
+          "quality": 20,
+          "ssim": 0.9837,
+          "bytes": {
+            "avif": 6374,
+            "webp": null
+          }
+        },
+        {
+          "index": 10,
+          "avif": "m/f_0010.avif",
+          "webp": null,
+          "quality": 20,
+          "ssim": 0.9805,
+          "bytes": {
+            "avif": 9310,
+            "webp": null
+          }
+        },
+        {
+          "index": 12,
+          "avif": "m/f_0012.avif",
+          "webp": null,
+          "quality": 28,
+          "ssim": 0.9719,
+          "bytes": {
+            "avif": 26766,
+            "webp": null
+          }
+        },
+        {
+          "index": 14,
+          "avif": "m/f_0014.avif",
+          "webp": "m/f_0014.webp",
+          "quality": 32,
+          "ssim": 0.9713,
+          "bytes": {
+            "avif": 36758,
+            "webp": 92506
+          }
+        },
+        {
+          "index": 16,
+          "avif": "m/f_0016.avif",
+          "webp": null,
+          "quality": 32,
+          "ssim": 0.9704,
+          "bytes": {
+            "avif": 37331,
+            "webp": null
+          }
+        },
+        {
+          "index": 18,
+          "avif": "m/f_0018.avif",
+          "webp": null,
+          "quality": 34,
+          "ssim": 0.9708,
+          "bytes": {
+            "avif": 42660,
+            "webp": null
+          }
+        },
+        {
+          "index": 20,
+          "avif": "m/f_0020.avif",
+          "webp": null,
+          "quality": 37,
+          "ssim": 0.9708,
+          "bytes": {
+            "avif": 54453,
+            "webp": null
+          }
+        },
+        {
+          "index": 22,
+          "avif": "m/f_0022.avif",
+          "webp": null,
+          "quality": 40,
+          "ssim": 0.9713,
+          "bytes": {
+            "avif": 67438,
+            "webp": null
+          }
+        },
+        {
+          "index": 24,
+          "avif": "m/f_0024.avif",
+          "webp": null,
+          "quality": 44,
+          "ssim": 0.972,
+          "bytes": {
+            "avif": 82393,
+            "webp": null
+          }
+        },
+        {
+          "index": 26,
+          "avif": "m/f_0026.avif",
+          "webp": null,
+          "quality": 45,
+          "ssim": 0.972,
+          "bytes": {
+            "avif": 95457,
+            "webp": null
+          }
+        },
+        {
+          "index": 28,
+          "avif": "m/f_0028.avif",
+          "webp": null,
+          "quality": 47,
+          "ssim": 0.9722,
+          "bytes": {
+            "avif": 108309,
+            "webp": null
+          }
+        },
+        {
+          "index": 30,
+          "avif": "m/f_0030.avif",
+          "webp": null,
+          "quality": 47,
+          "ssim": 0.9712,
+          "bytes": {
+            "avif": 111146,
+            "webp": null
+          }
+        },
+        {
+          "index": 32,
+          "avif": "m/f_0032.avif",
+          "webp": null,
+          "quality": 49,
+          "ssim": 0.9721,
+          "bytes": {
+            "avif": 120240,
+            "webp": null
+          }
+        },
+        {
+          "index": 34,
+          "avif": "m/f_0034.avif",
+          "webp": null,
+          "quality": 49,
+          "ssim": 0.9708,
+          "bytes": {
+            "avif": 124043,
+            "webp": null
+          }
+        },
+        {
+          "index": 36,
+          "avif": "m/f_0036.avif",
+          "webp": null,
+          "quality": 50,
+          "ssim": 0.9711,
+          "bytes": {
+            "avif": 133105,
+            "webp": null
+          }
+        },
+        {
+          "index": 38,
+          "avif": "m/f_0038.avif",
+          "webp": null,
+          "quality": 52,
+          "ssim": 0.9714,
+          "bytes": {
+            "avif": 140981,
+            "webp": null
+          }
+        },
+        {
+          "index": 40,
+          "avif": "m/f_0040.avif",
+          "webp": null,
+          "quality": 54,
+          "ssim": 0.9713,
+          "bytes": {
+            "avif": 147537,
+            "webp": null
+          }
+        },
+        {
+          "index": 42,
+          "avif": "m/f_0042.avif",
+          "webp": null,
+          "quality": 54,
+          "ssim": 0.9707,
+          "bytes": {
+            "avif": 142526,
+            "webp": null
+          }
+        },
+        {
+          "index": 44,
+          "avif": "m/f_0044.avif",
+          "webp": "m/f_0044.webp",
+          "quality": 54,
+          "ssim": 0.9716,
+          "bytes": {
+            "avif": 130278,
+            "webp": 200340
+          }
+        },
+        {
+          "index": 46,
+          "avif": "m/f_0046.avif",
+          "webp": null,
+          "quality": 52,
+          "ssim": 0.9713,
+          "bytes": {
+            "avif": 108688,
+            "webp": null
+          }
+        },
+        {
+          "index": 48,
+          "avif": "m/f_0048.avif",
+          "webp": null,
+          "quality": 50,
+          "ssim": 0.9713,
+          "bytes": {
+            "avif": 88022,
+            "webp": null
+          }
+        },
+        {
+          "index": 50,
+          "avif": "m/f_0050.avif",
+          "webp": null,
+          "quality": 49,
+          "ssim": 0.9713,
+          "bytes": {
+            "avif": 68253,
+            "webp": null
+          }
+        },
+        {
+          "index": 52,
+          "avif": "m/f_0052.avif",
+          "webp": null,
+          "quality": 47,
+          "ssim": 0.9705,
+          "bytes": {
+            "avif": 51805,
+            "webp": null
+          }
+        },
+        {
+          "index": 54,
+          "avif": "m/f_0054.avif",
+          "webp": null,
+          "quality": 47,
+          "ssim": 0.9703,
+          "bytes": {
+            "avif": 46569,
+            "webp": null
+          }
+        },
+        {
+          "index": 56,
+          "avif": "m/f_0056.avif",
+          "webp": null,
+          "quality": 49,
+          "ssim": 0.9708,
+          "bytes": {
+            "avif": 47957,
+            "webp": null
+          }
+        },
+        {
+          "index": 58,
+          "avif": "m/f_0058.avif",
+          "webp": null,
+          "quality": 49,
+          "ssim": 0.9707,
+          "bytes": {
+            "avif": 47949,
+            "webp": null
+          }
+        },
+        {
+          "index": 60,
+          "avif": "m/f_0060.avif",
+          "webp": null,
+          "quality": 49,
+          "ssim": 0.9708,
+          "bytes": {
+            "avif": 49518,
+            "webp": null
+          }
+        },
+        {
+          "index": 62,
+          "avif": "m/f_0062.avif",
+          "webp": null,
+          "quality": 49,
+          "ssim": 0.9709,
+          "bytes": {
+            "avif": 41364,
+            "webp": null
+          }
+        },
+        {
+          "index": 64,
+          "avif": "m/f_0064.avif",
+          "webp": null,
+          "quality": 49,
+          "ssim": 0.9711,
+          "bytes": {
+            "avif": 33418,
+            "webp": null
+          }
+        },
+        {
+          "index": 66,
+          "avif": "m/f_0066.avif",
+          "webp": null,
+          "quality": 44,
+          "ssim": 0.9701,
+          "bytes": {
+            "avif": 17881,
+            "webp": null
+          }
+        },
+        {
+          "index": 68,
+          "avif": "m/f_0068.avif",
+          "webp": null,
+          "quality": 20,
+          "ssim": 0.9703,
+          "bytes": {
+            "avif": 6432,
+            "webp": null
+          }
+        },
+        {
+          "index": 70,
+          "avif": "m/f_0070.avif",
+          "webp": null,
+          "quality": 20,
+          "ssim": 0.9819,
+          "bytes": {
+            "avif": 4744,
+            "webp": null
+          }
+        },
+        {
+          "index": 72,
+          "avif": "m/f_0072.avif",
+          "webp": null,
+          "quality": 20,
+          "ssim": 0.9849,
+          "bytes": {
+            "avif": 4068,
+            "webp": null
+          }
+        },
+        {
+          "index": 74,
+          "avif": "m/f_0074.avif",
+          "webp": "m/f_0074.webp",
+          "quality": 20,
+          "ssim": 0.9857,
+          "bytes": {
+            "avif": 4174,
+            "webp": 16324
+          }
+        },
+        {
+          "index": 76,
+          "avif": "m/f_0076.avif",
+          "webp": null,
+          "quality": 20,
+          "ssim": 0.985,
+          "bytes": {
+            "avif": 4926,
+            "webp": null
+          }
+        },
+        {
+          "index": 78,
+          "avif": "m/f_0078.avif",
+          "webp": null,
+          "quality": 20,
+          "ssim": 0.9848,
+          "bytes": {
+            "avif": 4704,
+            "webp": null
+          }
+        },
+        {
+          "index": 80,
+          "avif": "m/f_0080.avif",
+          "webp": null,
+          "quality": 20,
+          "ssim": 0.9819,
+          "bytes": {
+            "avif": 6587,
+            "webp": null
+          }
+        },
+        {
+          "index": 82,
+          "avif": "m/f_0082.avif",
+          "webp": null,
+          "quality": 28,
+          "ssim": 0.9722,
+          "bytes": {
+            "avif": 11904,
+            "webp": null
+          }
+        },
+        {
+          "index": 84,
+          "avif": "m/f_0084.avif",
+          "webp": null,
+          "quality": 37,
+          "ssim": 0.972,
+          "bytes": {
+            "avif": 18624,
+            "webp": null
+          }
+        },
+        {
+          "index": 86,
+          "avif": "m/f_0086.avif",
+          "webp": null,
+          "quality": 37,
+          "ssim": 0.9702,
+          "bytes": {
+            "avif": 18454,
+            "webp": null
+          }
+        },
+        {
+          "index": 88,
+          "avif": "m/f_0088.avif",
+          "webp": null,
+          "quality": 34,
+          "ssim": 0.9711,
+          "bytes": {
+            "avif": 13241,
+            "webp": null
+          }
+        },
+        {
+          "index": 90,
+          "avif": "m/f_0090.avif",
+          "webp": null,
+          "quality": 28,
+          "ssim": 0.9717,
+          "bytes": {
+            "avif": 10414,
+            "webp": null
+          }
+        },
+        {
+          "index": 92,
+          "avif": "m/f_0092.avif",
+          "webp": null,
+          "quality": 20,
+          "ssim": 0.9706,
+          "bytes": {
+            "avif": 7511,
+            "webp": null
+          }
+        },
+        {
+          "index": 94,
+          "avif": "m/f_0094.avif",
+          "webp": null,
+          "quality": 20,
+          "ssim": 0.9737,
+          "bytes": {
+            "avif": 6986,
+            "webp": null
+          }
+        },
+        {
+          "index": 96,
+          "avif": "m/f_0096.avif",
+          "webp": null,
+          "quality": 20,
+          "ssim": 0.9761,
+          "bytes": {
+            "avif": 6686,
+            "webp": null
+          }
+        },
+        {
+          "index": 98,
+          "avif": "m/f_0098.avif",
+          "webp": null,
+          "quality": 20,
+          "ssim": 0.979,
+          "bytes": {
+            "avif": 6622,
+            "webp": null
+          }
+        },
+        {
+          "index": 100,
+          "avif": "m/f_0100.avif",
+          "webp": null,
+          "quality": 20,
+          "ssim": 0.9814,
+          "bytes": {
+            "avif": 6692,
+            "webp": null
+          }
+        },
+        {
+          "index": 102,
+          "avif": "m/f_0102.avif",
+          "webp": null,
+          "quality": 20,
+          "ssim": 0.9825,
+          "bytes": {
+            "avif": 7340,
+            "webp": null
+          }
+        },
+        {
+          "index": 104,
+          "avif": "m/f_0104.avif",
+          "webp": "m/f_0104.webp",
+          "quality": 20,
+          "ssim": 0.9818,
+          "bytes": {
+            "avif": 7740,
+            "webp": 21654
+          }
+        },
+        {
+          "index": 106,
+          "avif": "m/f_0106.avif",
+          "webp": null,
+          "quality": 20,
+          "ssim": 0.9822,
+          "bytes": {
+            "avif": 8510,
+            "webp": null
+          }
+        },
+        {
+          "index": 108,
+          "avif": "m/f_0108.avif",
+          "webp": null,
+          "quality": 20,
+          "ssim": 0.9821,
+          "bytes": {
+            "avif": 8725,
+            "webp": null
+          }
+        },
+        {
+          "index": 110,
+          "avif": "m/f_0110.avif",
+          "webp": null,
+          "quality": 20,
+          "ssim": 0.9823,
+          "bytes": {
+            "avif": 8252,
+            "webp": null
+          }
+        },
+        {
+          "index": 112,
+          "avif": "m/f_0112.avif",
+          "webp": null,
+          "quality": 20,
+          "ssim": 0.9814,
+          "bytes": {
+            "avif": 8389,
+            "webp": null
+          }
+        },
+        {
+          "index": 114,
+          "avif": "m/f_0114.avif",
+          "webp": null,
+          "quality": 20,
+          "ssim": 0.9785,
+          "bytes": {
+            "avif": 8762,
+            "webp": null
+          }
+        },
+        {
+          "index": 116,
+          "avif": "m/f_0116.avif",
+          "webp": null,
+          "quality": 20,
+          "ssim": 0.9772,
+          "bytes": {
+            "avif": 8855,
+            "webp": null
+          }
+        },
+        {
+          "index": 118,
+          "avif": "m/f_0118.avif",
+          "webp": null,
+          "quality": 20,
+          "ssim": 0.9767,
+          "bytes": {
+            "avif": 8532,
+            "webp": null
+          }
+        },
+        {
+          "index": 120,
+          "avif": "m/f_0120.avif",
+          "webp": null,
+          "quality": 20,
+          "ssim": 0.977,
+          "bytes": {
+            "avif": 8454,
+            "webp": null
+          }
+        },
+        {
+          "index": 122,
+          "avif": "m/f_0122.avif",
+          "webp": null,
+          "quality": 20,
+          "ssim": 0.9776,
+          "bytes": {
+            "avif": 8127,
+            "webp": null
+          }
+        },
+        {
+          "index": 124,
+          "avif": "m/f_0124.avif",
+          "webp": null,
+          "quality": 20,
+          "ssim": 0.9784,
+          "bytes": {
+            "avif": 7771,
+            "webp": null
+          }
+        },
+        {
+          "index": 126,
+          "avif": "m/f_0126.avif",
+          "webp": null,
+          "quality": 20,
+          "ssim": 0.9802,
+          "bytes": {
+            "avif": 7365,
+            "webp": null
+          }
+        },
+        {
+          "index": 128,
+          "avif": "m/f_0128.avif",
+          "webp": null,
+          "quality": 20,
+          "ssim": 0.9809,
+          "bytes": {
+            "avif": 6999,
+            "webp": null
+          }
+        },
+        {
+          "index": 130,
+          "avif": "m/f_0130.avif",
+          "webp": null,
+          "quality": 20,
+          "ssim": 0.9791,
+          "bytes": {
+            "avif": 7501,
+            "webp": null
+          }
+        },
+        {
+          "index": 132,
+          "avif": "m/f_0132.avif",
+          "webp": null,
+          "quality": 20,
+          "ssim": 0.9754,
+          "bytes": {
+            "avif": 9109,
+            "webp": null
+          }
+        },
+        {
+          "index": 134,
+          "avif": "m/f_0134.avif",
+          "webp": "m/f_0134.webp",
+          "quality": 20,
+          "ssim": 0.9742,
+          "bytes": {
+            "avif": 10155,
+            "webp": 26192
+          }
+        },
+        {
+          "index": 136,
+          "avif": "m/f_0136.avif",
+          "webp": null,
+          "quality": 20,
+          "ssim": 0.971,
+          "bytes": {
+            "avif": 11728,
+            "webp": null
+          }
+        },
+        {
+          "index": 138,
+          "avif": "m/f_0138.avif",
+          "webp": null,
+          "quality": 37,
+          "ssim": 0.9708,
+          "bytes": {
+            "avif": 21883,
+            "webp": null
+          }
+        },
+        {
+          "index": 140,
+          "avif": "m/f_0140.avif",
+          "webp": null,
+          "quality": 44,
+          "ssim": 0.9706,
+          "bytes": {
+            "avif": 31271,
+            "webp": null
+          }
+        },
+        {
+          "index": 142,
+          "avif": "m/f_0142.avif",
+          "webp": null,
+          "quality": 47,
+          "ssim": 0.9722,
+          "bytes": {
+            "avif": 36705,
+            "webp": null
+          }
+        },
+        {
+          "index": 144,
+          "avif": "m/f_0144.avif",
+          "webp": null,
+          "quality": 49,
+          "ssim": 0.9738,
+          "bytes": {
+            "avif": 38455,
+            "webp": null
+          }
+        },
+        {
+          "index": 146,
+          "avif": "m/f_0146.avif",
+          "webp": null,
+          "quality": 49,
+          "ssim": 0.9738,
+          "bytes": {
+            "avif": 37171,
+            "webp": null
+          }
+        },
+        {
+          "index": 148,
+          "avif": "m/f_0148.avif",
+          "webp": null,
+          "quality": 49,
+          "ssim": 0.9736,
+          "bytes": {
+            "avif": 35352,
+            "webp": null
+          }
+        },
+        {
+          "index": 150,
+          "avif": "m/f_0150.avif",
+          "webp": null,
+          "quality": 47,
+          "ssim": 0.9707,
+          "bytes": {
+            "avif": 31480,
+            "webp": null
+          }
+        },
+        {
+          "index": 152,
+          "avif": "m/f_0152.avif",
+          "webp": null,
+          "quality": 49,
+          "ssim": 0.9703,
+          "bytes": {
+            "avif": 40673,
+            "webp": null
+          }
+        },
+        {
+          "index": 154,
+          "avif": "m/f_0154.avif",
+          "webp": null,
+          "quality": 52,
+          "ssim": 0.9716,
+          "bytes": {
+            "avif": 54678,
+            "webp": null
+          }
+        },
+        {
+          "index": 156,
+          "avif": "m/f_0156.avif",
+          "webp": null,
+          "quality": 50,
+          "ssim": 0.9706,
+          "bytes": {
+            "avif": 56799,
+            "webp": null
+          }
+        },
+        {
+          "index": 158,
+          "avif": "m/f_0158.avif",
+          "webp": null,
+          "quality": 49,
+          "ssim": 0.9712,
+          "bytes": {
+            "avif": 63074,
+            "webp": null
+          }
+        },
+        {
+          "index": 160,
+          "avif": "m/f_0160.avif",
+          "webp": null,
+          "quality": 49,
+          "ssim": 0.971,
+          "bytes": {
+            "avif": 75806,
+            "webp": null
+          }
+        },
+        {
+          "index": 162,
+          "avif": "m/f_0162.avif",
+          "webp": null,
+          "quality": 49,
+          "ssim": 0.9713,
+          "bytes": {
+            "avif": 98987,
+            "webp": null
+          }
+        },
+        {
+          "index": 164,
+          "avif": "m/f_0164.avif",
+          "webp": "m/f_0164.webp",
+          "quality": 52,
+          "ssim": 0.9708,
+          "bytes": {
+            "avif": 138966,
+            "webp": 263218
+          }
+        },
+        {
+          "index": 166,
+          "avif": "m/f_0166.avif",
+          "webp": null,
+          "quality": 55,
+          "ssim": 0.9704,
+          "bytes": {
+            "avif": 190635,
+            "webp": null
+          }
+        },
+        {
+          "index": 168,
+          "avif": "m/f_0168.avif",
+          "webp": null,
+          "quality": 55,
+          "ssim": 0.972,
+          "bytes": {
+            "avif": 200920,
+            "webp": null
+          }
+        },
+        {
+          "index": 170,
+          "avif": "m/f_0170.avif",
+          "webp": null,
+          "quality": 52,
+          "ssim": 0.9707,
+          "bytes": {
+            "avif": 170781,
+            "webp": null
+          }
+        },
+        {
+          "index": 172,
+          "avif": "m/f_0172.avif",
+          "webp": null,
+          "quality": 49,
+          "ssim": 0.9701,
+          "bytes": {
+            "avif": 144429,
+            "webp": null
+          }
+        },
+        {
+          "index": 174,
+          "avif": "m/f_0174.avif",
+          "webp": null,
+          "quality": 47,
+          "ssim": 0.971,
+          "bytes": {
+            "avif": 129448,
+            "webp": null
+          }
+        },
+        {
+          "index": 176,
+          "avif": "m/f_0176.avif",
+          "webp": null,
+          "quality": 42,
+          "ssim": 0.9714,
+          "bytes": {
+            "avif": 103854,
+            "webp": null
+          }
+        },
+        {
+          "index": 178,
+          "avif": "m/f_0178.avif",
+          "webp": null,
+          "quality": 37,
+          "ssim": 0.9702,
+          "bytes": {
+            "avif": 82923,
+            "webp": null
+          }
+        },
+        {
+          "index": 180,
+          "avif": "m/f_0180.avif",
+          "webp": null,
+          "quality": 30,
+          "ssim": 0.9704,
+          "bytes": {
+            "avif": 65589,
+            "webp": null
+          }
+        },
+        {
+          "index": 182,
+          "avif": "m/f_0182.avif",
+          "webp": null,
+          "quality": 39,
+          "ssim": 0.9711,
+          "bytes": {
+            "avif": 94918,
+            "webp": null
+          }
+        },
+        {
+          "index": 184,
+          "avif": "m/f_0184.avif",
+          "webp": null,
+          "quality": 45,
+          "ssim": 0.9718,
+          "bytes": {
+            "avif": 123842,
+            "webp": null
+          }
+        },
+        {
+          "index": 186,
+          "avif": "m/f_0186.avif",
+          "webp": null,
+          "quality": 47,
+          "ssim": 0.9704,
+          "bytes": {
+            "avif": 137780,
+            "webp": null
+          }
+        },
+        {
+          "index": 188,
+          "avif": "m/f_0188.avif",
+          "webp": null,
+          "quality": 50,
+          "ssim": 0.9716,
+          "bytes": {
+            "avif": 150868,
+            "webp": null
+          }
+        },
+        {
+          "index": 190,
+          "avif": "m/f_0190.avif",
+          "webp": null,
+          "quality": 50,
+          "ssim": 0.9705,
+          "bytes": {
+            "avif": 125847,
+            "webp": null
+          }
+        },
+        {
+          "index": 192,
+          "avif": "m/f_0192.avif",
+          "webp": null,
+          "quality": 54,
+          "ssim": 0.9721,
+          "bytes": {
+            "avif": 112776,
+            "webp": null
+          }
+        },
+        {
+          "index": 194,
+          "avif": "m/f_0194.avif",
+          "webp": "m/f_0194.webp",
+          "quality": 49,
+          "ssim": 0.9706,
+          "bytes": {
+            "avif": 58496,
+            "webp": 141766
+          }
+        },
+        {
+          "index": 196,
+          "avif": "m/f_0196.avif",
+          "webp": null,
+          "quality": 47,
+          "ssim": 0.9711,
+          "bytes": {
+            "avif": 39628,
+            "webp": null
+          }
+        },
+        {
+          "index": 198,
+          "avif": "m/f_0198.avif",
+          "webp": null,
+          "quality": 47,
+          "ssim": 0.9721,
+          "bytes": {
+            "avif": 32024,
+            "webp": null
+          }
+        },
+        {
+          "index": 200,
+          "avif": "m/f_0200.avif",
+          "webp": null,
+          "quality": 39,
+          "ssim": 0.9702,
+          "bytes": {
+            "avif": 15821,
+            "webp": null
+          }
+        },
+        {
+          "index": 202,
+          "avif": "m/f_0202.avif",
+          "webp": null,
+          "quality": 28,
+          "ssim": 0.9718,
+          "bytes": {
+            "avif": 15117,
+            "webp": null
+          }
+        },
+        {
+          "index": 204,
+          "avif": "m/f_0204.avif",
+          "webp": null,
+          "quality": 39,
+          "ssim": 0.9704,
+          "bytes": {
+            "avif": 31837,
+            "webp": null
+          }
+        },
+        {
+          "index": 206,
+          "avif": "m/f_0206.avif",
+          "webp": null,
+          "quality": 40,
+          "ssim": 0.9719,
+          "bytes": {
+            "avif": 34095,
+            "webp": null
+          }
+        },
+        {
+          "index": 208,
+          "avif": "m/f_0208.avif",
+          "webp": null,
+          "quality": 47,
+          "ssim": 0.9717,
+          "bytes": {
+            "avif": 53339,
+            "webp": null
+          }
+        },
+        {
+          "index": 210,
+          "avif": "m/f_0210.avif",
+          "webp": null,
+          "quality": 50,
+          "ssim": 0.9713,
+          "bytes": {
+            "avif": 68446,
+            "webp": null
+          }
+        },
+        {
+          "index": 212,
+          "avif": "m/f_0212.avif",
+          "webp": null,
+          "quality": 50,
+          "ssim": 0.9701,
+          "bytes": {
+            "avif": 65675,
+            "webp": null
+          }
+        },
+        {
+          "index": 214,
+          "avif": "m/f_0214.avif",
+          "webp": null,
+          "quality": 52,
+          "ssim": 0.9715,
+          "bytes": {
+            "avif": 82036,
+            "webp": null
+          }
+        },
+        {
+          "index": 216,
+          "avif": "m/f_0216.avif",
+          "webp": null,
+          "quality": 58,
+          "ssim": 0.9702,
+          "bytes": {
+            "avif": 158283,
+            "webp": null
+          }
+        },
+        {
+          "index": 218,
+          "avif": "m/f_0218.avif",
+          "webp": null,
+          "quality": 58,
+          "ssim": 0.9707,
+          "bytes": {
+            "avif": 276280,
+            "webp": null
+          }
+        },
+        {
+          "index": 220,
+          "avif": "m/f_0220.avif",
+          "webp": null,
+          "quality": 59,
+          "ssim": 0.9718,
+          "bytes": {
+            "avif": 257648,
+            "webp": null
+          }
+        },
+        {
+          "index": 222,
+          "avif": "m/f_0222.avif",
+          "webp": null,
+          "quality": 44,
+          "ssim": 0.9715,
+          "bytes": {
+            "avif": 66221,
+            "webp": null
+          }
+        },
+        {
+          "index": 224,
+          "avif": "m/f_0224.avif",
+          "webp": "m/f_0224.webp",
+          "quality": 52,
+          "ssim": 0.9702,
+          "bytes": {
+            "avif": 111312,
+            "webp": 158248
+          }
+        },
+        {
+          "index": 226,
+          "avif": "m/f_0226.avif",
+          "webp": null,
+          "quality": 58,
+          "ssim": 0.9719,
+          "bytes": {
+            "avif": 131108,
+            "webp": null
+          }
+        },
+        {
+          "index": 228,
+          "avif": "m/f_0228.avif",
+          "webp": null,
+          "quality": 56,
+          "ssim": 0.9707,
+          "bytes": {
+            "avif": 118116,
+            "webp": null
+          }
+        },
+        {
+          "index": 230,
+          "avif": "m/f_0230.avif",
+          "webp": null,
+          "quality": 56,
+          "ssim": 0.9712,
+          "bytes": {
+            "avif": 117821,
+            "webp": null
+          }
+        },
+        {
+          "index": 232,
+          "avif": "m/f_0232.avif",
+          "webp": null,
+          "quality": 60,
+          "ssim": 0.9713,
+          "bytes": {
+            "avif": 144016,
+            "webp": null
+          }
+        },
+        {
+          "index": 234,
+          "avif": "m/f_0234.avif",
+          "webp": null,
+          "quality": 60,
+          "ssim": 0.9713,
+          "bytes": {
+            "avif": 129849,
+            "webp": null
+          }
+        },
+        {
+          "index": 236,
+          "avif": "m/f_0236.avif",
+          "webp": null,
+          "quality": 45,
+          "ssim": 0.9704,
+          "bytes": {
+            "avif": 45289,
+            "webp": null
+          }
+        },
+        {
+          "index": 238,
+          "avif": "m/f_0238.avif",
+          "webp": null,
+          "quality": 30,
+          "ssim": 0.9704,
+          "bytes": {
+            "avif": 15208,
+            "webp": null
+          }
+        }
+      ]
+    }
+  }
+}
