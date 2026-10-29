@@ -1,7 +1,7 @@
 {
   "$schema": "./docs/state.schema.json",
   "project": "ReBoard SaaS platformu",
-  "updated_at": "2026-10-29T21:08:00+03:00",
+  "updated_at": "2026-10-29T23:45:00+03:00",
   "current_phase": "F2",
   "deadlines": {
     "demo_freeze": "2026-10-29T18:00:00+03:00",
@@ -567,8 +567,8 @@
       "status": "tamam",
       "title": "Hikâye sayfası hızı: mobil TBT ve açılış JS'i eşiğe (R-7)",
       "acceptance": "pnpm perf:lh bütün eşiklerde yeşil (/tr mobil TBT ≤ 200 ms, / JS ≤ 200 KiB gz); scroll hissi ölçülerek aynı (M-38); istemcide çözülemeyen çeviri 0 (M-37); demo akışı ve kare süresi yeşil; main ve canlı yayın donmuş kalır (dal f5/hiz)",
-      "evidence": "Dal f5/hiz (main'e alınmadı, yayımlanmadı). pnpm perf:lh iki tam koşu, ikisi de bütün eşiklerde tamam: /tr mobil TBT 59 / 14 ms (donmada 346), JS 161,2 KiB (204,9), LCP 1863 / 1781 ms, CLS 0; pasaport TBT 113 / 51 ms (M-11, D-032). GSAP çıktı, aynı eğri yerelde (M-38). İstemciye kapsamlı çeviri (M-37). Çatı parçalarına V8 derleme ipucu (D-031, M-39). pnpm lint, typecheck temiz; vitest 531/531 (2 atlanan: ham PNG yok), kapsam satır %100; boşta tam test:e2e 80/80, demo ve perf 2/2; docs:check tamam. Bozmalar: M-37 birim 2/2 ve e2e 2/2, M-39 birim 4/4 ve e2e 2/2. Kare süresi yük altında GSAP'li sürümle aynı (M-3).",
-      "note": "Main'e almadan önce: pnpm demo:offline --check bu dalda koşulmadı (derleme bayatlık denetimi artık next.config.ts'i de sayıyor). Main'e alma ve yayın kullanıcı onayıyla, yarışmadan sonra.",
+      "evidence": "Dal f5/hiz (main'e alınmadı, yayımlanmadı). pnpm perf:lh iki tam koşu, ikisi de bütün eşiklerde tamam: /tr mobil TBT 59 / 14 ms (donmada 346), JS 161,2 KiB (204,9), LCP 1863 / 1781 ms, CLS 0; pasaport TBT 113 / 51 ms (M-11, D-032). GSAP çıktı, aynı eğri yerelde (M-38). İstemciye kapsamlı çeviri (M-37). Çatı parçalarına V8 derleme ipucu (D-031, M-39). pnpm lint, typecheck temiz; vitest 531/531 (2 atlanan: ham PNG yok), kapsam satır %100; boşta tam test:e2e 80/80, demo ve perf 2/2; docs:check tamam. Bozmalar: M-37 birim 2/2 ve e2e 2/2, M-39 birim 4/4 ve e2e 2/2. Kare süresi yük altında GSAP'li sürümle aynı (M-3). pnpm demo:offline --check bu dalda iki kez yeşil: var olan derlemeyle 6,4 s, --build ile yeni derlemede 6,1 s; sunucuda engellenen bağlantı 0 (M-33). Linux CI taslak PR #1'de yeşil (koşu 40950478836: check 4 dk 28 s, secrets 7 s).",
+      "note": "Main'e alma ve yayın kullanıcı onayıyla, yarışmadan sonra.",
       "depends_on": [
         "T3.4"
       ],
@@ -894,8 +894,8 @@
       "id": "M-33",
       "claim": "Çevrimdışı demo internetsiz çalışır",
       "threshold": "Akış yeşil; sunucunun yerel dışı bağlantısı 0; tarayıcıda kesilen istekler yalnız bilinen ve akışı bozmayan ana makineler",
-      "last_value": "Akış 7,5 s yeşil; sunucuda engellenen 0; tarayıcıda kesilen 3 istek, hepsi tiles.openfreemap.org. Bozma: syncBuiltinESMExports kaldırılınca birim testi düştü",
-      "measured_at": "2026-10-29T12:10:00+03:00",
+      "last_value": "Akış 7,5 s yeşil; sunucuda engellenen 0; tarayıcıda kesilen 3 istek, hepsi tiles.openfreemap.org. Bozma: syncBuiltinESMExports kaldırılınca birim testi düştü. f5/hiz: var olan derlemeyle 6,4 s, zorla yeni derlemeyle 6,1 s yeşil; sunucuda engellenen 0, kesilen 3 (tiles.openfreemap.org)",
+      "measured_at": "2026-10-29T23:30:00+03:00",
       "test": "scripts/demo-offline.mjs, tests/unit/offline-guard.test.ts"
     },
     {
