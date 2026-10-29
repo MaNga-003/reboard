@@ -44,7 +44,7 @@ flowchart LR
 | Repository | `src/db/repo/…` | Bütün özel sorgular `withTenant(orgId)` üzerinden geçer (D-016) |
 | Şema | `src/db/schema/…` | Drizzle. Migrasyonlar `drizzle/` klasöründe |
 | Tasarım | `src/design/` | `wada.json`: sözlüğün 159 rengi (MIT, `WADA_LICENSE.md`). `tokens.ts`: Wada adlarıyla tanımlı paletler, durum renkleri (`STATUS`) ve `<html>` üzerine yazılan CSS değişkenleri. `color.ts`: kontrast, OKLab ΔE, ton farkı ve CVD benzetimi; testler ve palet önizlemesi bunu kullanır. `map.ts`: harita noktası renkleri, ölçülen altlık örnekleri ve dokunma yarıçapı (M-22) |
-| Çeviri | `messages/{tr,en}.json`, `src/i18n/` | next-intl. `src/proxy.ts` dil önekini yönetir (`/` → `/tr` ya da `/en`; API ve uzantılı dosyalar hariç). Anahtarların iki dilde eşit olduğu test edilir |
+| Çeviri | `messages/{tr,en}.json`, `src/i18n/` | next-intl. `src/proxy.ts` dil önekini yönetir (`/` → `/tr` ya da `/en`; API ve uzantılı dosyalar hariç). Anahtarların iki dilde eşit olduğu test edilir. İstemciye yalnızca rotanın istemci bileşenlerinin kullandığı ad alanları gider (R-7): `src/i18n/client-scopes.ts` kapsamları (`root`, `giris`, `pasaport`, `app`) tanımlar, her kapsamın layout'u `clientMessages(kapsam)` ile kendi `NextIntlClientProvider`'ını kurar. İç içe sağlayıcılar birleşmez, üsttekinin yerini alır; listeler kaynak grafiğinden test edilir (M-37) |
 | Kimlik | `src/lib/auth.ts`, `src/lib/viewer.ts` | `getAuth()` tembel başlatılır; build sırasında veritabanı ve secret denetimi tetiklenmez. `createAuth(db, ayarlar)` testlerde PGlite ile kurulur. `getViewer()` sayfaların ve eylemlerin tek kimlik kaynağıdır (`server-only`). Uç: `src/app/api/auth/[...all]/route.ts` |
 | Veritabanı istemcisi | `src/db/client.ts` | `getDb()`: `DATABASE_URL` varsa node-postgres, yoksa `.data/pglite`. Migrasyon: `pnpm db:migrate` (`scripts/db-migrate.ts`) |
 
@@ -220,6 +220,7 @@ Alanların anlamları ve birimleri `docs/DATA_DICTIONARY.md` dosyasında.
 - Yayın:
   - Vercel CLI ile yapılır (`pnpm deploy:prod`). `.vercelignore` bir izin listesidir: her şey dışarıda kalır, yalnızca derleme için gereken yollar yüklenir. `tests/unit/deploy-config.test.ts` bunu denetler.
   - `vercel.json` çatıyı (`nextjs`) ve fonksiyon bölgesini (`fra1`) sabitler.
+  - Derleme sonunda `next.config.ts` içindeki `compiler.runAfterProductionCompile` kancası `src/lib/compile-hints.ts`'i çağırır: Next'in `build-manifest.json` dosyasındaki `rootMainFiles` (her sayfada çalışan çatı parçaları) başına V8 derleme ipucu eklenir (D-031). Kanca `next build`'in parçası olduğundan yerelde, CI'da, çevrimdışı demoda ve Vercel'de aynı çalışır. SRI ya da tarayıcı kaynak haritası açılırsa derleme düşer.
   - Vercel'de `DATABASE_URL` (Neon havuzlu bağlantı) ve `BETTER_AUTH_SECRET` gizli değişkendir; `BETTER_AUTH_URL` canlı adrestir.
 - Demo verisi (T1.4):
   - `src/db/seed/demo.ts` saf bir fonksiyondur: `buildDemo(now)`. Tarihler `now`'a göre görelidir; kimlikler addan türetilen sabit UUID'lerdir (sürüm 8), sözde rastgele sayılar tohumludur. Aynı `now` aynı satırları ve aynı hash zincirini verir. Olay özetleri yalnızca `now`'ın UTC gününe bağlıdır: aynı günle yeniden yükleme etiket çapalarını (D-025) korur, başka bir gün değiştirir (D-030).

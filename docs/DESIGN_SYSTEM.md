@@ -64,6 +64,6 @@ Uzay finali (hikâyenin son bölümü): Deep Indigo `#051230` ve Dull Violet Bla
 
 ## 6. Hareket
 
-- Hikâye kare dizisi scroll ile ilerler. Yumuşatmayı GSAP ScrollTrigger scrub'ı (0,35 s) yapar. Sayfanın kendi scroll'una dokunulmaz: klavye, ekran okuyucu ve tarayıcı bul (Ctrl+F) bildikleri gibi çalışır.
+- Hikâye kare dizisi scroll ile ilerler. Yumuşatma 350 ms'lik expo eğrisidir; ilk sürümdeki GSAP ScrollTrigger scrub'ıyla (0,35 s) aynı his, GSAP'siz (R-7, M-38). Sayfanın kendi scroll'una dokunulmaz: klavye, ekran okuyucu ve tarayıcı bul (Ctrl+F) bildikleri gibi çalışır.
 - Arayüz geçişleri 150–250 ms sürer.
 - `prefers-reduced-motion: reduce` tercihinde kare dizisi yerine bölüm başına tek statik kare gösterilir ve geçişler kapanır.

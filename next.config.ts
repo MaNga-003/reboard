@@ -1,5 +1,6 @@
 import type { NextConfig } from "next";
 import createNextIntlPlugin from "next-intl/plugin";
+import { addCompileHints } from "./src/lib/compile-hints";
 
 const withNextIntl = createNextIntlPlugin("./src/i18n/request.ts");
 
@@ -30,6 +31,12 @@ const securityHeaders = [
 
 const nextConfig: NextConfig = {
   cacheComponents: false,
+  compiler: {
+    // R-7: çatı parçalarına V8 derleme ipucu. Kanca Vercel'de de çalışır (yayın next.config.ts'i yükler, scripts/'i yüklemez).
+    runAfterProductionCompile: async ({ distDir }) => {
+      addCompileHints(distDir);
+    },
+  },
   experimental: {
     // Kanıt yükleme (D-018): dosya en çok 4 MiB; çok parçalı form payıyla Vercel'in 4,5 MB gövde sınırına eşit.
     serverActions: { bodySizeLimit: "4.5mb" },

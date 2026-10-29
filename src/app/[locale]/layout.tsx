@@ -3,6 +3,7 @@ import { Fraunces, Inter } from "next/font/google";
 import { notFound } from "next/navigation";
 import { hasLocale, NextIntlClientProvider } from "next-intl";
 import { getTranslations, setRequestLocale } from "next-intl/server";
+import { clientMessages } from "@/i18n/client-messages";
 import { routing } from "@/i18n/routing";
 import { cssVariables } from "@/design/tokens";
 import "../globals.css";
@@ -29,7 +30,7 @@ export default async function LocaleLayout({ children, params }: LayoutProps<"/[
   return (
     <html lang={locale} className={`${inter.variable} ${fraunces.variable} h-full antialiased`} style={cssVariables()}>
       <body className="min-h-full flex flex-col">
-        <NextIntlClientProvider>{children}</NextIntlClientProvider>
+        <NextIntlClientProvider messages={await clientMessages("root")}>{children}</NextIntlClientProvider>
       </body>
     </html>
   );

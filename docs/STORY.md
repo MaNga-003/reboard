@@ -80,7 +80,7 @@ flowchart LR
 
 ## 4. Oynatıcı (`src/components/story/StoryPlayer.tsx`)
 
-- Yapışkan (sticky) bir canvas'a çizer. Scroll ilerlemesi GSAP ScrollTrigger ile (scrub 0,35 s) kare indeksine çevrilir; bölüm başına 120 svh scroll.
+- Yapışkan (sticky) bir canvas'a çizer; bölüm başına 120 svh scroll. Scroll ilerlemesi oynatıcının kendi `requestAnimationFrame` döngüsüyle yumuşatılıp kare indeksine çevrilir. Eğri ilk sürümdeki GSAP ScrollTrigger `scrub: 0.35` ile aynıdır: gsap'in `expo` eğrisi, 350 ms, kaydırmadan sonraki ilk karede başlar (`sequence.ts`: `expoOut`, `retarget`, `scrubAt`). GSAP paketten çıkarıldı (R-7); birim testte kâhin olarak durur ve iki yumuşatma rastgele scroll dizilerinde 1e-5 içinde aynıdır (M-38). Açılışta ve pencere boyutu değişince yumuşatma yoktur, doğru kare hemen çizilir.
 - `manifest.json` sunucuda okunur (`source.ts`); manifest yoksa sayfa hikâyesiz açılır.
 - İlk kare posterdir (LCP öğesi). Yönü tarayıcı `<picture>` içindeki `media="(orientation: portrait)"` ile seçer; sunucu yönü bilmediği için telefon böylece yalnızca 9:16 kareyi indirir. Oynatıcı hidrasyon bitip yön ve hareket tercihi öğrenilmeden ağa çıkmaz.
 - AVIF desteği ilk kare çözülerek sınanır; çözülemezse statik hikâye gösterilir (hareket azaltma modundaki gibi, kareler WebP). Dizinin WebP kopyası yoktur: aynı kalitede AVIF'in 1,7–2,4 katı yer tutar ve yayın paketini 100 MB sınırının üstüne taşırdı.

@@ -2,11 +2,24 @@
 // Kare dizisi oynatıcısı (D-004, STORY.md §4). Scroll ilerlemesi yapışkan bir canvas'ta kareye çevrilir; metin HTML'dir.
 // Hesaplar sequence.ts'te; burada yalnızca ağ, çözme ve çizim var. Hareket azaltma tercihinde ve AVIF çözemeyen
 // tarayıcıda her bölüm tek durağan kare (WebP yalnızca bunlarda var, D-004).
-import gsap from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useTranslations } from "next-intl";
 import { useEffect, useMemo, useRef, useState, useSyncExternalStore, type ReactNode } from "react";
-import { LruCache, coverRect, decodeWindow, frameAt, loadOrder, nearestLoaded, pickAspect, sectionOf, textOpacity, type Aspect } from "./sequence";
+import {
+  LruCache,
+  coverRect,
+  decodeWindow,
+  frameAt,
+  loadOrder,
+  nearestLoaded,
+  pickAspect,
+  retarget,
+  scrollProgress,
+  scrubAt,
+  sectionOf,
+  textOpacity,
+  type Aspect,
+  type Scrub,
+} from "./sequence";
 import type { StorySource, StoryVariant } from "./source";
 
 const KEYS = ["s1", "s2", "s3", "s4", "s5", "s6", "s7", "s8"] as const;
@@ -14,6 +27,8 @@ const KEYS = ["s1", "s2", "s3", "s4", "s5", "s6", "s7", "s8"] as const;
 const VH_PER_SECTION = 120;
 const AHEAD = 8;
 const BEHIND = 3;
+// Scroll'un kareye yumuşatılması (ms); gsap ScrollTrigger'daki scrub: 0.35 ile aynı eğri (R-7).
+const SCRUB_MS = 350;
 
 const frameUrl = (aspect: Aspect, index: number, ext: "avif" | "webp") => `/story/${aspect}/f_${String(index).padStart(4, "0")}.${ext}`;
 
@@ -136,7 +151,6 @@ function Sequence({
 
   useEffect(() => {
     if (!active) return;
-    gsap.registerPlugin(ScrollTrigger);
     const el = canvas.current!;
     const ctx = el.getContext("2d")!;
     const count = variant.indices.length;
@@ -238,26 +252,63 @@ function Sequence({
     ro.observe(el);
 
     const n = sections.length;
-    const state = { p: 0 };
+    let p = 0;
     const update = () => {
-      const i = frameAt(state.p, count);
+      // Testler yumuşatılmış ilerlemeyi buradan okur (story.spec).
+      el.dataset.progress = p.toFixed(5);
+      const i = frameAt(p, count);
       if (i !== current) dir = i > current ? 1 : -1;
       current = i;
       render();
       cards.current.forEach((c, k) => {
         if (!c) return;
-        const o = textOpacity(state.p, k, n);
+        const o = textOpacity(p, k, n);
         c.style.opacity = String(o);
         // Görünmeyen kart tıklanmaz ve ekran okuyucuda sıradaki metni gölgelemez.
         c.style.visibility = o > 0 ? "visible" : "hidden";
       });
     };
-    const tween = gsap.to(state, {
-      p: 1,
-      ease: "none",
-      onUpdate: update,
-      scrollTrigger: { trigger: root.current, start: "top top", end: "bottom bottom", scrub: 0.35 },
-    });
+
+    // Scroll → ilerleme. Ölçü kare başında okunur: önceki karenin yazıları çizimle temizlenmiştir, zorunlu yerleşim olmaz.
+    // gsap ScrollTrigger yerine (R-7): aynı eğri ve süre, açılış paketinden ~44 KiB gz eksik.
+    const sticky = el.parentElement!;
+    const target = () => {
+      const r = root.current!.getBoundingClientRect();
+      return scrollProgress(r.top, r.height, sticky.clientHeight);
+    };
+    // Açılışta ve boyut değişiminde yumuşatma yok (ScrollTrigger'ın refresh'i gibi): sayfa ortadan açılırsa doğru kare hemen çizilir.
+    const snap = (): Scrub => {
+      const t = target();
+      return { from: t, to: t, at: -Infinity };
+    };
+    let scrub = snap();
+    let raf = 0;
+    let chained = false;
+    let last = 0;
+    let frame = 1000 / 60; // kare aralığı; ilk ölçüme kadar 60 Hz
+    const tick = (now: number) => {
+      raf = 0;
+      // Döngü bir önceki karede de koştuysa aradaki süre kare aralığıdır; düşen kareler ölçüye girmez.
+      if (chained && now > last && now - last <= 34) frame = now - last;
+      // Kaydırma iki kare arasında oldu: eğri önceki karenin zamanından başlar ve bu karede hemen ilerler. gsap'in uyanık
+      // tik'i de böyle (resetTo son tik zamanına yaslanır); yaslanmasa her kaydırma bir kare geç tepki verir.
+      scrub = retarget(scrub, target(), now - frame, SCRUB_MS);
+      p = scrubAt(scrub, now, SCRUB_MS);
+      update();
+      last = now;
+      chained = now - scrub.at < SCRUB_MS;
+      if (chained) raf = requestAnimationFrame(tick);
+    };
+    const wake = () => {
+      if (!raf) raf = requestAnimationFrame(tick);
+    };
+    const onResize = () => {
+      scrub = snap();
+      wake();
+    };
+    window.addEventListener("scroll", wake, { passive: true });
+    window.addEventListener("resize", onResize);
+    p = scrub.to;
     update();
     void load().catch(() => undefined);
 
@@ -265,8 +316,9 @@ function Sequence({
       disposed = true;
       abort.abort();
       ro.disconnect();
-      tween.scrollTrigger?.kill();
-      tween.kill();
+      window.removeEventListener("scroll", wake);
+      window.removeEventListener("resize", onResize);
+      cancelAnimationFrame(raf);
       cache.clear();
     };
   }, [active, aspect, variant, perSection, sections, onUnsupported]);

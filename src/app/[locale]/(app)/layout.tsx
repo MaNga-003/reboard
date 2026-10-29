@@ -1,6 +1,8 @@
+import { NextIntlClientProvider } from "next-intl";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { PersonaButtons } from "@/components/auth/PersonaButtons";
 import { isRole } from "@/domain/access";
+import { clientMessages } from "@/i18n/client-messages";
 import { Link } from "@/i18n/navigation";
 import { requireViewer } from "@/lib/viewer";
 import { signOutAction } from "../giris/actions";
@@ -16,7 +18,7 @@ export default async function AppLayout({ children, params }: LayoutProps<"/[loc
   const demo = process.env.DEMO_MODE === "true";
 
   return (
-    <>
+    <NextIntlClientProvider messages={await clientMessages("app")}>
       <header className="border-b border-fg/30">
         <div className="mx-auto flex w-full max-w-5xl flex-wrap items-center gap-x-2 gap-y-1 px-4 py-2">
           <Link href="/" className={`${tap} font-display text-xl`}>
@@ -59,6 +61,6 @@ export default async function AppLayout({ children, params }: LayoutProps<"/[loc
         )}
       </header>
       {children}
-    </>
+    </NextIntlClientProvider>
   );
 }

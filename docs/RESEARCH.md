@@ -34,7 +34,7 @@
 | --- | --- | --- |
 | [Codrops: GSAP ile sinematik 3D scroll](https://tympanus.net/codrops/2025/11/19/how-to-build-cinematic-3d-scroll-experiences-with-gsap/) | Scroll ile scrub edilen sahne, sabit canvas | Oynatıcı yapısı |
 | [Scroll-scrubbed sequence](https://tessl.io/registry/skills/github/MengTo/Skills/scroll-scrubbed-visual-sequence), [dev.to: Next.js, GSAP, canvas](https://dev.to/pratham7711/how-i-made-a-scroll-scrubbed-video-portfolio-fast-nextjs-15-gsap-canvas-1mj6) | `<video>` ile kare aramak gecikmeli; kare dizisi canvas'ta daha hassas | Kare dizisi seçildi (D-004) |
-| [GSAP README](https://cdn.jsdelivr.net/npm/gsap@3.15.0/README.md) | GSAP ve eklentileri ücretsiz | ScrollTrigger lisans sorunu yok |
+| [GSAP README](https://cdn.jsdelivr.net/npm/gsap@3.15.0/README.md) | GSAP ve eklentileri ücretsiz | İlk sürümde ScrollTrigger lisans sorunu olmadan kullanıldı. Sonra aynı eğri oynatıcıya taşındı (R-7); GSAP yalnızca testte kâhin |
 | [CSS `animation-timeline` desteği](https://www.cssportal.com/css-properties/animation-timeline.php) | Firefox'ta hâlâ bayrak arkasında | JS tabanlı yapı |
 | [CHI'26: scrollytelling çalışması](https://arxiv.org/abs/2603.04367) | Etkileşimi artırıyor, anlamaya etkisi küçük | Rakamlar hikâyenin dışında, panelde de veriliyor |
 | [EOX WMTS yetenek belgesi](https://tiles.maps.eox.at/wmts/1.0.0/WMTSCapabilities.xml), katman `s2cloudless` ("Sentinel-2 cloudless layer for 2016 by EOX - 4326"); [EOxCloudless lisans özeti](https://cloudless.eox.at/documentation/license). Okunma: 2026-10-29 | 2016 katmanı [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/) ile yayımlanmış; künye "EOxCloudless https://cloudless.eox.at by EOX IT Services GmbH (Contains modified Copernicus Sentinel data 2016)". Sonraki yılların katmanları ticari olmayan ya da ücretli lisanslı: yalnız 2016 kullanılır | 8. bölümün yeri ve Dünya küresi (`scripts/story-imagery.mjs`, karolar `s2cloudless` WGS84 z4–z13); künye ana sayfada hikâyenin altında (`home.imageryCredit`) |
@@ -47,6 +47,9 @@
 | [OpenFreeMap](https://openfreemap.org) | API anahtarsız, ücretsiz vektör harita karoları | Pazar yeri haritası, MapLibre ile |
 | [KVKK yurt dışına aktarım rehberi](https://www.erdem-erdem.av.tr/bilgi-bankasi/yurt-disina-kisisel-veri-aktarimi-rehberi-neleri-duzenliyor) | Frankfurt'ta barındırma, standart sözleşme ya da açık rıza gerektirir | MVP'de yalnızca demo verisi; F5'te `T5.2` |
 | [Better Auth ve Drizzle ile SaaS mimarisi](https://makerkit.dev/courses/nextjs-drizzle/architecture-and-technologies) | Organizasyon eklentisiyle çok kiracılı yapı | D-010, D-016 |
+| [V8: Explicit compile hints](https://v8.dev/blog/explicit-compile-hints) (29 Nisan 2025). Okunma: 2026-10-29 | Dosyanın başındaki `//# allFunctionsCalledOnLoad` yorumu, dosyadaki işlevleri arka plan iş parçacığında, ağ yüklemesiyle örtüşerek derletir; Chrome 136'dan beri. "should be used sparingly though - compiling too much will consume time and memory!" | Yalnız her sayfada çalışan çatı parçalarına konur (D-031, M-11) |
+| [Next.js derleyicisi: `runAfterProductionCompile`](https://nextjs.org/docs/architecture/nextjs-compiler) (16.4.3 belgesi, `node_modules/next/dist/docs/03-architecture`). Okunma: 2026-10-29 | Üretim derlemesi bitince, sayfa üretiminden önce çalışan kanca; `distDir` verir. Kaynakta (`dist/build/index.js`) Turbopack derlemesi ve manifest yazımından sonra çağrılıyor | `next.config.ts` → `src/lib/compile-hints.ts` (D-031) |
+| [Vercel: Configuring a build](https://vercel.com/docs/builds/configure-a-build). Okunma: 2026-10-29 | Next.js projesinde `package.json`'daki `build` betiği, yoksa `next build` çalışır | Kanca yayında da çalışır; `.vercelignore` izin listesi değişmez |
 
 ## 6. Ekip belgeleri (git dışı, `.private/kaynak/`)
 
