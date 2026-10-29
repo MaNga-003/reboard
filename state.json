@@ -1,7 +1,7 @@
 {
   "$schema": "./docs/state.schema.json",
   "project": "ReBoard SaaS platformu",
-  "updated_at": "2026-10-29T14:24:00+03:00",
+  "updated_at": "2026-10-29T14:29:00+03:00",
   "current_phase": "F2",
   "deadlines": {
     "demo_freeze": "2026-10-29T18:00:00+03:00",
@@ -405,10 +405,10 @@
       "id": "T4.1",
       "phase": "F4",
       "mode": "otonom",
-      "status": "sürüyor",
+      "status": "tamam",
       "title": "Canlı yayın, migrasyon ve seed; canlı URL üzerinde E2E",
       "acceptance": "Canlı URL'de E2E testleri yeşil",
-      "evidence": null,
+      "evidence": "Canlı yayın dpl_HuaSCHYy2WsmpEZMjNXWSbm4xG7y (1be6a48, fra1) https://reboard-lovat.vercel.app; CI 40865202084 yeşil. live-smoke 40865334935: 34/34 (CSP başlığı, hikâye kareleri d 240 AVIF + 9 WebP ve m 120 AVIF + 9 WebP, çapa 5-53eb8e8b260d60, karşılaştırma 5 satır, fra1). Canlı E2E: live-demo 40857770464 1/1, 20,6 s; ardından yedek dal ve aynı gün seed'i (8 ilan, 0 E2E ilanı, 63 olay, 6 lot, çapa değişmedi).",
       "depends_on": [
         "T0.4",
         "T2.1",
@@ -420,16 +420,16 @@
         "D-003",
         "D-029"
       ],
-      "note": "Canlı Neon'da senaryo karşılaştırmasının 4 levha satırı yok (yalnız İBB x2 ve elektrik); tam canlı seed'den sonra scripts/live-smoke.mjs içindeki satır eşiği [3, 5] yerine 5 yapılır (D-029)."
+      "note": "Canlı Neon'da tam seed var (D-029): senaryo karşılaştırması 5 satır, live-smoke eşiği 5. live-demo.yml koşusu bir 'E2E demo' ilanı bırakır; koşudan sonra Neon yedek dalı ve aynı seed günüyle yeniden yükleme gerekir (DEMO_NOW=qr.json seedDay pnpm db:seed:live, D-030). Yerelden canlı adrese erişim TT Güvenli İnternet yüzünden kapalı (R-5); denetim GitHub Actions'ta."
     },
     {
       "id": "T4.2",
       "phase": "F4",
       "mode": "otonom",
-      "status": "sürüyor",
+      "status": "tamam",
       "title": "Çevrimdışı demo paketi ve Playwright ile kaydedilmiş demo videosu",
       "acceptance": "İnternet kapalıyken pnpm demo:offline ile demo akışı çalışır; video dosyası üretilir",
-      "evidence": null,
+      "evidence": "pnpm demo:offline --check (2026-10-29, 1be6a48, CSP'li build): demo akışı 1/1, sunucuda engellenen yerel dışı bağlantı 0, tarayıcıda kesilen 3 (tiles.openfreemap.org) (M-33). pnpm demo:video: 181,9 s, DEMO.md'den fark 1,9 s, 1920 × 1080, 40,1 MB, siyah kesit 0, 2. adımda harita hazır (M-35) → .private/demo/reboard-demo.mp4 (git dışı).",
       "depends_on": [
         "T4.1"
       ],
@@ -443,10 +443,10 @@
       "id": "T4.3",
       "phase": "F4",
       "mode": "otonom",
-      "status": "sürüyor",
+      "status": "tamam",
       "title": "DEMO.md, QR kodu ve demo akışı testi",
       "acceptance": "DEMO.md'deki her adım bir Playwright adımına karşılık gelir ve test yeşil",
-      "evidence": null,
+      "evidence": "demo.spec DEMO.md §2 tablosundan (demo-doc.ts) okunur: yerel paket 76/76, ardından demo ve perf 2/2 (2026-10-29, 1be6a48); canlı live-demo 40857770464 1/1, 20,6 s (M-17). QR canlı çapayla: .private/demo/qr-{tr,en}.{svg,png}, PL-2026-001, çapa 5-53eb8e8b260d60, live-smoke 40865334935'te QR ve çapa eşleşti (M-32).",
       "depends_on": [
         "T4.1"
       ],
@@ -629,9 +629,9 @@
       "id": "M-2",
       "claim": "Hikâye kare bütçesi ve kalitesi",
       "threshold": "Kare SSIM ≥ 0,95 (hedef 0,97); masaüstü ≤ 25 MB, mobil ≤ 12 MB, ilk bölüm ≤ 3 MB; yayın paketi ≤ 90 MB",
-      "last_value": "Final dizi (1.–8. bölüm): masaüstü 240 kare 19,01 MB, mobil 120 kare 7,20 MB; ilk bölüm 1,82 / 0,59 MB; durağan WebP 1,14 / 0,94 MB; en düşük kare SSIM 0,970 / 0,9701; yayın paketi 29,21 MB",
-      "measured_at": "2026-10-29T13:05:00+03:00",
-      "test": "tests/unit/story-budget.test.ts, tests/unit/deploy-config.test.ts, tests/e2e/story.spec.ts"
+      "last_value": "Final dizi (1.–8. bölüm): masaüstü 240 kare 19,01 MB, mobil 120 kare 7,20 MB; ilk bölüm 1,82 / 0,59 MB; durağan WebP 1,14 / 0,94 MB; en düşük kare SSIM 0,970 / 0,9701; yayın paketi 29,21 MB. Yayında (live-smoke 40865334935): d 240 AVIF · 9 WebP, m 120 AVIF · 9 WebP, boyutlar manifestle aynı; bozma (yerel): bir kare eksik ve bir kare 1 bayt fazla → 2 eksik",
+      "measured_at": "2026-10-29T14:29:00+03:00",
+      "test": "tests/unit/story-budget.test.ts, tests/unit/deploy-config.test.ts, tests/e2e/story.spec.ts, scripts/live-smoke.mjs"
     },
     {
       "id": "M-3",
@@ -901,8 +901,8 @@
       "id": "M-36",
       "claim": "CSP ana akışı kesmez, dışarıyı kapalı tutar",
       "threshold": "ihlal 0; WebGL2 varsa harita çizilir; kanıt ucu kendi sandbox CSP'sini korur; production'da unsafe-eval yok",
-      "last_value": "Yerel production: 1/1, 5,2 s, ihlal 0, WebGL2 var, harita çizildi; paket 76/76, demo ve perf 2/2, demo:offline --check geçti. Bozma: connect-src'den harita adresi çıkınca harita fallback ve 3 ihlal kaydı; genel CSP kanıt ucunun sandbox politikasını ezince trace.spec düştü (genel CSP /api/evidence/ dışına alındı)",
-      "measured_at": "2026-10-29T14:21:00+03:00",
+      "last_value": "Yerel production: 1/1, 5,2 s, ihlal 0, WebGL2 var, harita çizildi; paket 76/76, demo ve perf 2/2, demo:offline --check geçti. Bozma: connect-src'den harita adresi çıkınca harita fallback ve 3 ihlal kaydı; genel CSP kanıt ucunun sandbox politikasını ezince trace.spec düştü (genel CSP /api/evidence/ dışına alındı). Yayında live-smoke 40865334935: başlık ve yönergeler tamam",
+      "measured_at": "2026-10-29T14:29:00+03:00",
       "test": "tests/e2e/csp.spec.ts, tests/e2e/trace.spec.ts, scripts/live-smoke.mjs"
     }
   ]
