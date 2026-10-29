@@ -13,6 +13,7 @@
 | Yedek 1: internetsiz | `pnpm demo:offline` → `http://localhost:3000`. Yerel PGlite'a demo verisini yükler, derleme eskiyse derler, sunucuyu açar. İnternet ve Neon gerekmez; harita yerine liste görünür. Telefonla QR bu yedekte çalışmaz: pasaport dizüstünde açılır |
 | Yedek 2: video | `.private/demo/reboard-demo.mp4`, `pnpm demo:video` üretir: aşağıdaki akış, tablodaki sürelerle, 1920 × 1080. Kayıt internet varken yapılır: veri yerel PGlite'tan gelir, tarayıcı yalnızca harita döşemelerini indirir (2. adımda harita hazır olmazsa kayıt düşer) |
 | Provadan önce | `pnpm demo:offline --check`: akış testi çevrimdışı sunucuda koşar, yerel dışı her bağlantı kesik olur |
+| Donma noktası (29 Ekim 18:36) | Kod: git etiketi `demo-donma-2026-10-29`. Yayın: `dpl_HuaSCHYy2WsmpEZMjNXWSbm4xG7y` (kod `1be6a48`). Veri: Neon yedek dalı `yedek-2026-10-29-donma` (8 ilan, 0 `E2E`, 63 olay, 6 lot). Yarışmadan sonraki işler ayrı dalda ve ayrı klasörde (git worktree) yürür; ana klasör `main`'de kalır, yedek 1 donmuş koddan derlenir |
 
 ## 2. Akış
 
@@ -46,4 +47,5 @@ Rol değiştirici başlığın altındaki "Demo: veriler sentetiktir. Rol deği�
 | Canlı adres açılmıyor | Yedek 1'e geç (dizüstünde önceden açık tutulur) |
 | Dizüstü de sorunlu | Yedek 2: video |
 | Veri karıştı | Akış kendi ilanını açar; eski kayıtlar akışı bozmaz. Sıfırlama gerekirse §1'deki komut (aynı seed günüyle) |
+| Canlı adres açılıyor ama donmadan sonra yeni bir yayın girmiş | `vercel promote dpl_HuaSCHYy2WsmpEZMjNXWSbm4xG7y` donmuş yayını yeniden üretime alır; ardından `gh workflow run live-smoke.yml` |
 | Hikâye takılıyor | Sayfa açılınca 1. Tab'da sol üstte "Hikâyeyi geç" bağlantısı belirir; Enter hikâyenin sonuna atlar. Ya da doğrudan `/panel` |

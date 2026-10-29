@@ -1,7 +1,7 @@
 {
   "$schema": "./docs/state.schema.json",
   "project": "ReBoard SaaS platformu",
-  "updated_at": "2026-10-29T14:29:00+03:00",
+  "updated_at": "2026-10-29T18:37:00+03:00",
   "current_phase": "F2",
   "deadlines": {
     "demo_freeze": "2026-10-29T18:00:00+03:00",
@@ -598,7 +598,7 @@
     {
       "id": "R-4",
       "risk": "Herkese açık demoda ziyaretçiler veriyi bozabilir",
-      "mitigation": "Olaylar yalnızca eklenir; eklenen kayıt etiket çapasını ve QR'ı bozmaz, demo akışı her seferinde kendi ilanını açar. Gerekirse Neon yedek dalı alınır ve aynı seed günüyle yeniden yüklenir: DEMO_NOW=<qr.json seedDay> pnpm db:seed:live (D-030). Uygulamada sıfırlama düğmesi ve cron yok"
+      "mitigation": "Olaylar yalnızca eklenir; eklenen kayıt etiket çapasını ve QR'ı bozmaz, demo akışı her seferinde kendi ilanını açar. Gerekirse Neon yedek dalı alınır ve aynı seed günüyle yeniden yüklenir: DEMO_NOW=<qr.json seedDay> pnpm db:seed:live (D-030). Uygulamada sıfırlama düğmesi ve cron yok. Donma noktası (2026-10-29 18:36): git etiketi demo-donma-2026-10-29, yayın dpl_HuaSCHYy2WsmpEZMjNXWSbm4xG7y, Neon yedek-2026-10-29-donma (8 ilan, 0 E2E, 63 olay, 6 lot); geri dönüş DEMO.md §4"
     },
     {
       "id": "R-5",
