@@ -1,7 +1,7 @@
 {
   "$schema": "./docs/state.schema.json",
   "project": "ReBoard SaaS platformu",
-  "updated_at": "2026-10-29T13:30:00+03:00",
+  "updated_at": "2026-10-29T13:45:00+03:00",
   "current_phase": "F2",
   "deadlines": {
     "demo_freeze": "2026-10-29T18:00:00+03:00",
@@ -405,7 +405,7 @@
       "id": "T4.1",
       "phase": "F4",
       "mode": "otonom",
-      "status": "yapılacak",
+      "status": "sürüyor",
       "title": "Canlı yayın, migrasyon ve seed; canlı URL üzerinde E2E",
       "acceptance": "Canlı URL'de E2E testleri yeşil",
       "evidence": null,
@@ -768,8 +768,8 @@
       "id": "M-20",
       "claim": "Demo verisi dürüst ve tutarlı",
       "threshold": "boş tablo yalnız invitation/session/verification; synthetic dışı sınıf yalnız kaynaklı satırlarda; zincir ve kütle dengesi ok; 0 hatalı tahsis",
-      "last_value": "18/18 test; 374 satır (9 kullanıcı); 63 olay 5 zincirde ok; 1/5 parti tolerans dışı ve açıklamalı; bozma 2/2; fiyat yenileme zinciri değiştirmez",
-      "measured_at": "2026-10-27T20:16:00+03:00",
+      "last_value": "20/20 test; 374 satır (9 kullanıcı); 63 olay 5 zincirde ok; 1/5 parti tolerans dışı ve açıklamalı; bozma 2/2; fiyat yenileme zinciri değiştirmez; sunum günü (2026-10-29): üreticinin paneli ertesi İstanbul günü boyunca (00:00/09:00/18:00/23:59) seed anıyla aynı (warn, 11,79 gün, 8 teslim, 4 uyarı, HHI 4376); bozma (teslim +2 → 0) 18:00'de overdue ile yakalandı",
+      "measured_at": "2026-10-29",
       "test": "tests/integration/seed.test.ts"
     },
     {

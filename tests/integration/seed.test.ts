@@ -5,11 +5,13 @@ import { migrate } from "drizzle-orm/pglite/migrator";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
 import { createPgliteDb } from "@/db/client";
 import * as schema from "@/db/schema";
+import { panelData, type PanelData } from "@/db/repo/panel";
 import { publicPassport } from "@/db/repo/passport";
 import { saasCostData } from "@/db/repo/saas";
 import { withTenant } from "@/db/repo/tenant";
 import { appTables, buildDemo, seedDemo, seedPrices } from "@/db/seed";
-import { DEMO_USERS, demoId } from "@/db/seed/demo";
+import { DEMO_ORGS, DEMO_USERS, demoId, orgIdOf } from "@/db/seed/demo";
+import { istanbulDay } from "@/domain/market";
 import { Decimal } from "@/domain/result";
 import { balanceNoteMissing, genealogy, massBalance, verifyChain, type ChainedEvent } from "@/domain/traceability";
 
@@ -242,5 +244,28 @@ describe("demo seed", () => {
     expect(next.chains.find((c) => c.role === "producer")!.verdict).toMatchObject({ ok: false, reason: "anchor_mismatch" });
     await seedDemo(db, { now: NOW, password: "seed-test-parolasi", env: ENV });
     expect((await publicPassport(db, code, label))!.ok).toBe(true);
+  });
+
+  // D-030: seed sunumdan bir gün önce yüklenir, panel ise gerçek saatle hesaplar. Ertesi İstanbul günü boyunca düzey,
+  // uyarılar ve teslimler seed anındakiyle aynı kalmalı. En yakın planlı teslim +2 günde, gecikme toleransı 24 saat;
+  // biri öne çekilirse ya da stok zamanla azalmaya başlarsa burada düşer.
+  it("seed gününden sonraki İstanbul günü boyunca üreticinin paneli değişmez (sunum günü)", async () => {
+    const org = orgIdOf(DEMO_ORGS.reboard);
+    const print = ({ supply, impact }: PanelData) => ({
+      level: supply?.level,
+      days: supply?.days?.toFixed(2),
+      upcoming: supply?.upcoming.map((d) => d.plannedAt.toISOString()),
+      alerts: supply?.alerts.map((a) => `${a.kind}:${a.level}${"day" in a ? `@${a.day}` : ""}`),
+      onTime: supply?.suppliers.map((s) => `${s.orgId}:${s.onTime.rate?.toFixed(3)}`),
+      hhi: supply?.hhi?.toFixed(0),
+      monthly: JSON.stringify(impact?.monthly),
+    });
+    const base = print(await panelData(db, org, NOW));
+    expect(base.alerts?.length).toBeGreaterThan(0);
+    const nextDay = new Date(`${istanbulDay(NOW)}T00:00:00+03:00`).getTime() + 24 * 3600_000;
+    for (const h of [0, 9, 18, 23.99]) {
+      const at = new Date(nextDay + h * 3600_000);
+      expect(print(await panelData(db, org, at)), at.toISOString()).toEqual(base);
+    }
   });
 });
