@@ -1,7 +1,7 @@
 {
   "$schema": "./docs/state.schema.json",
   "project": "ReBoard SaaS platformu",
-  "updated_at": "2026-10-29T18:37:00+03:00",
+  "updated_at": "2026-10-29T21:08:00+03:00",
   "current_phase": "F2",
   "deadlines": {
     "demo_freeze": "2026-10-29T18:00:00+03:00",
@@ -559,6 +559,23 @@
       "decisions": [
         "D-011"
       ]
+    },
+    {
+      "id": "T5.4",
+      "phase": "F5",
+      "mode": "otonom",
+      "status": "tamam",
+      "title": "Hikâye sayfası hızı: mobil TBT ve açılış JS'i eşiğe (R-7)",
+      "acceptance": "pnpm perf:lh bütün eşiklerde yeşil (/tr mobil TBT ≤ 200 ms, / JS ≤ 200 KiB gz); scroll hissi ölçülerek aynı (M-38); istemcide çözülemeyen çeviri 0 (M-37); demo akışı ve kare süresi yeşil; main ve canlı yayın donmuş kalır (dal f5/hiz)",
+      "evidence": "Dal f5/hiz (main'e alınmadı, yayımlanmadı). pnpm perf:lh iki tam koşu, ikisi de bütün eşiklerde tamam: /tr mobil TBT 59 / 14 ms (donmada 346), JS 161,2 KiB (204,9), LCP 1863 / 1781 ms, CLS 0; pasaport TBT 113 / 51 ms (M-11, D-032). GSAP çıktı, aynı eğri yerelde (M-38). İstemciye kapsamlı çeviri (M-37). Çatı parçalarına V8 derleme ipucu (D-031, M-39). pnpm lint, typecheck temiz; vitest 531/531 (2 atlanan: ham PNG yok), kapsam satır %100; boşta tam test:e2e 80/80, demo ve perf 2/2; docs:check tamam. Bozmalar: M-37 birim 2/2 ve e2e 2/2, M-39 birim 4/4 ve e2e 2/2. Kare süresi yük altında GSAP'li sürümle aynı (M-3).",
+      "note": "Main'e almadan önce: pnpm demo:offline --check bu dalda koşulmadı (derleme bayatlık denetimi artık next.config.ts'i de sayıyor). Main'e alma ve yayın kullanıcı onayıyla, yarışmadan sonra.",
+      "depends_on": [
+        "T3.4"
+      ],
+      "decisions": [
+        "D-031",
+        "D-032"
+      ]
     }
   ],
   "open_questions": [
@@ -612,8 +629,8 @@
     },
     {
       "id": "R-7",
-      "risk": "Hikâye sayfası mobilde ana iş parçacığını tutuyor (TBT 346 ms, eşik 200) ve JS 204,9 KiB (eşik 200); düşük uçlu telefonda ilk dokunuş gecikebilir",
-      "mitigation": "Donmadan önce hidrasyon değiştirilmez (risk demo akışını bozmak). Yarışmadan sonra: gsap/ScrollTrigger'ı ilk boyamadan sonra yükle, istemci adalarını küçült, sonra pnpm perf:lh ile yeniden ölç (M-11). LCP uygulanan yavaşlatmada 1,9 s ve CLS 0, ilk görüntü hızlı"
+      "risk": "Hikâye sayfası mobilde ana iş parçacığını tutuyordu (donmada TBT 346 ms, eşik 200) ve JS 204,9 KiB idi (eşik 200); düşük uçlu telefonda ilk dokunuş gecikebilir. Canlı yayın ve main hâlâ donma sürümünde",
+      "mitigation": "f5/hiz dalında giderildi (T5.4): GSAP yerine aynı eğrili yerel yumuşatma (M-38), istemciye yalnız kapsamın çevirileri (M-37), çatı parçalarına V8 derleme ipucu (D-031). Ölçüm (D-032, M-11), iki tam koşu: /tr mobil TBT 59 / 14 ms (6 koşu 8–76), JS 161,2 KiB, LCP 1863 / 1781 ms, CLS 0. Dal yarışmadan sonra kullanıcı onayıyla main'e alınıp yayımlanır; o zamana kadar canlıdaki sayılar donmadaki gibidir"
     }
   ],
   "metrics": [
@@ -637,8 +654,8 @@
       "id": "M-3",
       "claim": "Scroll akıcılığı",
       "threshold": "kare süresi p99 ≤ 25 ms",
-      "last_value": "Final dizi, masaüstü, production build: 591 aralık, ortalama 16,7 ms, p95 16,7, p99 16,8, en uzun 16,8 ms; 240 karenin 239'u çizildi. CI'da paralel testlerle 33–50 ms görüldü (kaçan vsync); ölçüm ayrı perf projesine alındı. Ayrı projede, paketten sonra tek işçide (yerel): n 591, ort 16,7, p95 16,8, p99 16,8, en uzun 16,8 ms; 239/240",
-      "measured_at": "2026-10-29T13:55:00+03:00",
+      "last_value": "Final dizi, masaüstü, production build: 591 aralık, ortalama 16,7 ms, p95 16,7, p99 16,8, en uzun 16,8 ms; 240 karenin 239'u çizildi. CI'da paralel testlerle 33–50 ms görüldü (kaçan vsync); ölçüm ayrı perf projesine alındı. Ayrı projede, paketten sonra tek işçide (yerel): n 591, ort 16,7, p95 16,8, p99 16,8, en uzun 16,8 ms; 239/240. f5/hiz (GSAP'siz): boşta tam paket p99 16,8; eş zamanlı komutlarla bir koşu 33,4 ile düştü. 6 iş parçacığı yük altında GSAP'li donma ile aynı (10 s'de aralık: GSAP 424–476, yerel 452–471)",
+      "measured_at": "2026-10-29T21:05:00+03:00",
       "test": "tests/e2e/story-perf.spec.ts"
     },
     {
@@ -701,8 +718,8 @@
       "id": "M-11",
       "claim": "Hızlı açılır",
       "threshold": "LCP ≤ 2,5 s; CLS ≤ 0,1; TBT ≤ 200 ms; / JS ≤ 200 KB gz",
-      "last_value": "Lighthouse 13.5.0, yerel production build (CSP'li), benzetim 3 koşu ortancası; mobil LCP uygulanan yavaşlatmayla. /tr mobil: FCP 904 ms, LCP 1916 ms (benzetim 7512: Lantern JS'i ilk boyamaya bağlı sayıyor), TBT 346 ms AŞTI, CLS 0, JS 204,9 KiB AŞTI. /tr masaüstü: LCP 814 ms, TBT 25 ms, CLS 0, JS 204,9 KiB AŞTI. Pasaport mobil: LCP 1894 ms, TBT 120 ms, CLS 0 (geçti). JS aktarımı başlıkları da sayar: CSP 10 betik yanıtına ~3,1 KiB ekledi (CSP'siz 201,8). Gövde: react-dom 70,3, Next çalışma zamanı 45,3, gsap+ScrollTrigger 46,5 KiB gz; kazara şişkinlik yok. Düzeltme yarışmadan sonra (R-7)",
-      "measured_at": "2026-10-29T14:24:00+03:00",
+      "last_value": "f5/hiz dalı (canlıda donma sürümü). Lighthouse 13.5.0, yerel production build; benzetim 3 koşu, mobilde ayrıca uygulanan yavaşlatma 3 koşu: LCP ve TBT eşiği ona (D-032). Aynı build'de iki tam koşu, ikisinde de bütün eşikler tamam. /tr mobil: LCP 1863 / 1781 ms, TBT 59 / 14 ms (6 koşu 8–76; benzetim 3–217), CLS 0, JS 161,2 KiB. /tr masaüstü: LCP 711 / 891 ms, TBT 0 / 54, CLS 0. Pasaport mobil: LCP 1881 / 1778 ms, TBT 113 / 51 ms (6 koşu 46–138), CLS 0, JS 167,4 KiB. İzden TBT, Lighthouse görev ağacıyla 12/12 koşuda aynı. Donmada /tr mobil TBT 346 ms ve JS 204,9 KiB aşıyordu; GSAP çıktı (M-38), kapsamlı çeviri (M-37), V8 derleme ipucu (D-031: 8 karışık turda gözlenen TBT 179 → 59 ms, FCP/LCP aynı, yığın +0,3 MB)",
+      "measured_at": "2026-10-29T20:27:00+03:00",
       "test": "scripts/lighthouse.mjs (pnpm perf:lh)"
     },
     {
@@ -904,6 +921,30 @@
       "last_value": "Yerel production: 1/1, 5,2 s, ihlal 0, WebGL2 var, harita çizildi; paket 76/76, demo ve perf 2/2, demo:offline --check geçti. Bozma: connect-src'den harita adresi çıkınca harita fallback ve 3 ihlal kaydı; genel CSP kanıt ucunun sandbox politikasını ezince trace.spec düştü (genel CSP /api/evidence/ dışına alındı). Yayında live-smoke 40865334935: başlık ve yönergeler tamam",
       "measured_at": "2026-10-29T14:29:00+03:00",
       "test": "tests/e2e/csp.spec.ts, tests/e2e/trace.spec.ts, scripts/live-smoke.mjs"
+    },
+    {
+      "id": "M-37",
+      "claim": "İstemciye yalnız kapsamın çevirileri gider; hiçbir rotada çeviri eksik kalmaz",
+      "threshold": "kaynak grafiğine göre eksik 0, fazla 0, bilinemeyen çağrı 0; TR ve EN'de her rotada konsolda MISSING_MESSAGE 0; gezilmeyen rota 0",
+      "last_value": "Birim 11/11, E2E 2/2 (13/13 rota, TR ve EN). Yük (tr): kök 1.001 B (gz 618), giriş 570 (375), pasaport 2.035 (1.003), uygulama 20.065 (7.535); önce bütün katalog 33.006 B (gz 12.100) her sayfaya gömülüyordu. Bozma: birim 2/2 (eksik story, fazla panel), E2E 2/2 (units çıkınca /pazar/yeni ve ilan ayrıntısında units.kg, units.t)",
+      "measured_at": "2026-10-29T20:45:00+03:00",
+      "test": "tests/unit/client-messages.test.ts, tests/e2e/i18n-client.spec.ts"
+    },
+    {
+      "id": "M-38",
+      "claim": "Scroll yumuşatması GSAP'siz aynı",
+      "threshold": "birim: gsap kâhinine fark ≤ 1e-5; e2e: eğriye fark ≤ 5e-5, ilk karede ilerleme > 0, 350 ms dolmadan duran kare 0",
+      "last_value": "Birim: 40 bin rastgele dizide (254 bin örnek) en büyük fark 1,4e-6 (ders kitabı expo'su 7,8e-3). E2E: 5,4e-6 (bir kare gecikme 2e-2). gsap'li ilk sürümle tarayıcı izi: fark en çok 6,8e-3, en çok 2 karede; gsap kendi tekrarında 7,2e-2. Bozma: birim 4/4, e2e 2/2. Hikâye parçası 46,3 → 8,5 KiB gz",
+      "measured_at": "2026-10-29T19:30:00+03:00",
+      "test": "tests/unit/story-sequence.test.ts, tests/e2e/story.spec.ts"
+    },
+    {
+      "id": "M-39",
+      "claim": "V8 derleme ipucu yalnız çatı parçalarında, dosyanın geri kalanı aynen",
+      "threshold": "ipuçlu çatı dışı parça 0; ipucusuz çatı parçası 0; SRI ya da kaynak haritası açıkken derleme düşer",
+      "last_value": "Birim 10/10, E2E 1/1; build'de 5/5 çatı parçası ipuçlu, öteki 0. Bozma: birim 4/4 (her çağrıda ekleme, SRI denetimi yok, sona ekleme, kanca yok), E2E 2/2 (ipuçsuz çatı parçası, ipuçlu çatı dışı parça)",
+      "measured_at": "2026-10-29T20:00:00+03:00",
+      "test": "tests/unit/compile-hints.test.ts, tests/e2e/compile-hints.spec.ts"
     }
   ]
 }

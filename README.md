@@ -18,7 +18,7 @@ ReBoard, karışık atık tekstilden yük taşımayan iç mekân panelleri üret
 
 ## Teknoloji
 
-Next.js 16 (App Router), TypeScript, Tailwind 4, Drizzle ORM, PostgreSQL (Neon; yerelde ve testte PGlite), Better Auth, next-intl (TR ve EN), GSAP, Blender ile render edilmiş kare dizisi, Vitest ve Playwright.
+Next.js 16 (App Router), TypeScript, Tailwind 4, Drizzle ORM, PostgreSQL (Neon; yerelde ve testte PGlite), Better Auth, next-intl (TR ve EN), Blender ile render edilmiş ve canvas'ta oynatılan kare dizisi, Vitest ve Playwright.
 
 ## Çalıştırma
 

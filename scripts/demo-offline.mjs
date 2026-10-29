@@ -36,7 +36,7 @@ function run(cmd, extra = {}) {
   if (r.status !== 0) throw new Error(`${cmd} başarısız (${r.status})`);
 }
 
-/** Derleme, kaynaktan (src, messages, public/story manifest) yeniyse geçerlidir. */
+/** Derleme, kaynaktan (src, messages, next.config.ts, public/story manifest) yeniyse geçerlidir. */
 function newestMtime(dir) {
   let max = 0;
   for (const e of readdirSync(dir, { withFileTypes: true })) {
@@ -48,7 +48,8 @@ function newestMtime(dir) {
 function buildIsStale() {
   const id = join(ROOT, ".next", "BUILD_ID");
   if (!existsSync(id)) return true;
-  const sources = [newestMtime(join(ROOT, "src")), newestMtime(join(ROOT, "messages"))];
+  // Yapılandırma da derlemeyi değiştirir (başlıklar, derleme ipucu kancası; D-031).
+  const sources = [newestMtime(join(ROOT, "src")), newestMtime(join(ROOT, "messages")), statSync(join(ROOT, "next.config.ts")).mtimeMs];
   const manifest = join(ROOT, "public", "story", "manifest.json");
   if (existsSync(manifest)) sources.push(statSync(manifest).mtimeMs);
   return Math.max(...sources) > statSync(id).mtimeMs;

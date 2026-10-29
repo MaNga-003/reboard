@@ -1,9 +1,14 @@
 #!/usr/bin/env node
 // Hızlı açılır (M-11): Lighthouse, production build'de, mobil ve masaüstü. Sonuçlar .lighthouseci/ altına yazılır (git dışı).
 // Kullanım: pnpm perf:lh [https://adres]. Adres verilmezse yerel production sunucusu 3300'de açılır (önce pnpm build ve seed).
-// Yöntem: her sayfa benzetimle (Lantern) 3 kez, ortanca alınır. Mobil LCP ayrıca uygulanan yavaşlatmayla (devtools) ölçülür ve eşik
-// ona uygulanır: localhost'ta JS ilk boyamadan önce indiği için benzetim LCP'yi JS'e bağlı sayıp ikiye katlıyor (FCP 0,9 s, LCP 3,8 s;
-// uygulanan yavaşlatmada ikisi de 1,8 s). TBT benzetimden okunur: uygulanan yavaşlatmada hikâye kareleri ağı boşa düşürmez, TBT çıkmaz.
+// Yöntem: her sayfa benzetimle (Lantern) 3 kez, ortanca alınır. Mobilde ayrıca uygulanan yavaşlatmayla (devtools) 3 kez ölçülür ve
+// LCP ile TBT eşiği ona uygulanır (D-032); benzetim değerleri yine yazılır.
+// - LCP: localhost'ta JS ilk boyamadan önce indiği için benzetim LCP'yi JS'e bağlı sayıp ikiye katlıyor (FCP 0,9 s, LCP 3,8 s;
+//   uygulanan yavaşlatmada ikisi de 1,8 s).
+// - TBT: hikâye kareleri ağı boşa düşürmediğinden Lighthouse uygulanan yavaşlatmada TTI'yı, dolayısıyla TBT'yi hesaplamaz. Benzetim
+//   ise gözlenen izde FCP'den önce biten ilk yerleşim görevini (gözlenen 13–111 ms) benzetimde ~2,7 s'ye, FCP'nin sonrasına koyup
+//   sayıyor: aynı build'de 8 koşuda TBT 17–458 ms; 16 koşunun 16'sında görev gerçekte FCP'den önce bitti (R-7). Bu yüzden TBT koşunun
+//   izinden sayılır: FCP'den iz sonuna kadar ana iş parçacığında 50 ms'yi aşan görevler. Lighthouse TTI'da keser; iz sonu daha sıkı.
 import { spawn, spawnSync } from "node:child_process";
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { join, resolve } from "node:path";
@@ -46,9 +51,23 @@ const stop = () => {
   else server.kill("SIGTERM");
 };
 
+// Uygulanan yavaşlatmalı koşunun izinden TBT. FCP'den önce başlayan görevin yalnız FCP'den sonraki kısmı sayılır (Lighthouse gibi).
+function observedTbt(traceFile, fcpMs) {
+  const raw = JSON.parse(readFileSync(traceFile, "utf8"));
+  const events = Array.isArray(raw) ? raw : raw.traceEvents;
+  const nav = events.find((e) => e.name === "navigationStart" && e.args?.data?.isLoadingMainFrame && e.args?.data?.documentLoaderURL?.startsWith("http"));
+  const main = nav && events.find((e) => e.name === "thread_name" && e.pid === nav.pid && e.args?.name === "CrRendererMain");
+  if (!main) throw new Error(`${traceFile}: ana çerçevenin iş parçacığı bulunamadı`);
+  const fcp = nav.ts + fcpMs * 1000;
+  return events
+    .filter((e) => e.pid === nav.pid && e.tid === main.tid && e.ph === "X" && e.name === "RunTask" && e.ts + e.dur > fcp)
+    .reduce((sum, e) => sum + Math.max(0, (e.ts + e.dur - Math.max(e.ts, fcp)) / 1000 - 50), 0);
+}
+
 function lighthouse(url, preset, method, file) {
   const flags = [`--only-categories=performance`, `--throttling-method=${method}`, `--chrome-flags="--headless=new"`, `--output=json`, `--output-path=${JSON.stringify(file)}`, "--quiet"];
   if (preset === "desktop") flags.push("--preset=desktop");
+  if (method === "devtools") flags.push("--save-assets");
   const r = spawnSync(`pnpm dlx ${LIGHTHOUSE} ${JSON.stringify(url)} ${flags.join(" ")}`, {
     cwd: ROOT,
     shell: true,
@@ -58,10 +77,12 @@ function lighthouse(url, preset, method, file) {
   if (r.status !== 0 || !existsSync(file)) throw new Error(`lighthouse ${url} (${method}) başarısız: ${r.stderr.slice(-400)}`);
   const a = JSON.parse(readFileSync(file, "utf8")).audits;
   const script = a["resource-summary"].details.items.find((x) => x.resourceType === "script");
+  const fcp = a["first-contentful-paint"].numericValue;
   return {
-    fcp: a["first-contentful-paint"].numericValue,
+    fcp,
     lcp: a["largest-contentful-paint"].numericValue,
-    tbt: a["total-blocking-time"].numericValue ?? null,
+    // --save-assets izi rapor adının uzantısız hâline "-0.trace.json" ekleyerek yazar.
+    tbt: method === "devtools" ? observedTbt(file.replace(/\.json$/, "-0.trace.json"), fcp) : a["total-blocking-time"].numericValue,
     cls: a["cumulative-layout-shift"].numericValue,
     jsKiB: script.transferSize / 1024,
   };
@@ -90,27 +111,30 @@ try {
     if (status !== 200) throw new Error(`${url} ${status}: seed yüklü mü (pnpm db:seed)?`);
     const slug = `${p.path.replace(/\W+/g, "_")}-${p.preset}`;
     const sim = Array.from({ length: RUNS }, (_, i) => lighthouse(url, p.preset, "simulate", join(OUT, `${slug}-sim-${i}.json`)));
-    const applied = p.preset === "mobile" ? lighthouse(url, p.preset, "devtools", join(OUT, `${slug}-dt.json`)) : null;
+    const applied = p.preset === "mobile" ? Array.from({ length: RUNS }, (_, i) => lighthouse(url, p.preset, "devtools", join(OUT, `${slug}-dt-${i}.json`))) : null;
     const m = {
       page: p.name,
       fcp: median(sim.map((r) => r.fcp)),
       lcpSim: median(sim.map((r) => r.lcp)),
-      lcpApplied: applied?.lcp ?? null,
-      tbt: median(sim.map((r) => r.tbt)),
-      cls: Math.max(...sim.map((r) => r.cls), applied?.cls ?? 0),
+      lcpApplied: applied ? median(applied.map((r) => r.lcp)) : null,
+      tbtSim: median(sim.map((r) => r.tbt)),
+      tbtApplied: applied ? median(applied.map((r) => r.tbt)) : null,
+      cls: Math.max(...sim.map((r) => r.cls), ...(applied ?? []).map((r) => r.cls)),
       jsKiB: sim[0].jsKiB,
     };
     const lcp = m.lcpApplied ?? m.lcpSim;
+    const tbt = m.tbtApplied ?? m.tbtSim;
     const bad = [
       lcp > LIMIT.lcp && `LCP ${lcp.toFixed(0)} ms`,
-      m.tbt > LIMIT.tbt && `TBT ${m.tbt.toFixed(0)} ms`,
+      tbt > LIMIT.tbt && `TBT ${tbt.toFixed(0)} ms`,
       m.cls > LIMIT.cls && `CLS ${m.cls.toFixed(3)}`,
       p.jsBudget && m.jsKiB > LIMIT.jsKiB && `JS ${m.jsKiB.toFixed(1)} KiB`,
     ].filter(Boolean);
     failed += bad.length;
     rows.push({ ...m, bad });
+    const each = (rs, k) => rs.map((r) => r[k].toFixed(0)).join("/");
     console.log(
-      `${bad.length ? "AŞTI " : "tamam"} · ${p.name} · FCP ${m.fcp.toFixed(0)} · LCP ${lcp.toFixed(0)} ms${m.lcpApplied !== null ? ` (benzetim ${m.lcpSim.toFixed(0)})` : ""} · TBT ${m.tbt.toFixed(0)} ms · CLS ${m.cls.toFixed(3)} · JS ${m.jsKiB.toFixed(1)} KiB${bad.length ? ` · ${bad.join(", ")}` : ""}`,
+      `${bad.length ? "AŞTI " : "tamam"} · ${p.name} · FCP ${m.fcp.toFixed(0)} · LCP ${lcp.toFixed(0)} ms${applied ? ` (${each(applied, "lcp")}; benzetim ${m.lcpSim.toFixed(0)})` : ""} · TBT ${tbt.toFixed(0)} ms${applied ? ` (${each(applied, "tbt")}; benzetim ${m.tbtSim.toFixed(0)}: ${each(sim, "tbt")})` : ""} · CLS ${m.cls.toFixed(3)} · JS ${m.jsKiB.toFixed(1)} KiB${bad.length ? ` · ${bad.join(", ")}` : ""}`,
     );
   }
 } finally {

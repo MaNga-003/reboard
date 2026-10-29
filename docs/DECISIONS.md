@@ -138,6 +138,17 @@ Biçim: **Karar**, **Neden**, **Tarih**, kararı kim verdi (K: kullanıcı, C: C
 - **Neden:** Yarışmadan sonra şirketleşme seçeneği açık kalır. Sonradan açık lisansa geçmek kolaydır; yayımlanmış bir sürümü geri kapatmak mümkün değildir.
 - **Tarih:** 2026-10-27 · K
 
+### D-032 — Mobil TBT uygulanan yavaşlatmalı koşunun izinden okunur
+- **Karar:** `pnpm perf:lh` mobil sayfalarda TBT'yi Lighthouse'un uygulanan yavaşlatmalı (devtools: CPU 4×, yavaş 4G) koşusunun izinden sayar: FCP'den iz sonuna kadar ana iş parçacığında 50 ms'yi aşan görevler, FCP'den önce başlayanın yalnız sonrası; 3 koşunun ortancası. Eşik aynı (≤ 200 ms). Benzetim (Lantern) TBT'si yanında yazılır. Masaüstü benzetimden okunur.
+- **Neden:** Lighthouse uygulanan yavaşlatmada TBT'yi hesaplamıyor: hikâye kareleri ağı boşa düşürmez, TTI çıkmaz. Benzetim ise gözlenen izde FCP'den önce biten ilk yerleşim görevini (13–111 ms) ~2,7 s'ye, FCP'nin sonrasına koyup sayıyor. Aynı build'de 8 koşuda benzetim TBT'si 17–458 ms oynadı; 16 koşunun 16'sında o görev gerçekte FCP'den önce bitti (R-7). İz sonuna kadar saymak Lighthouse'un TTI'da kesmesinden sıkıdır. Mobil LCP de aynı nedenle uygulanan yavaşlatmadan okunuyor (M-11).
+- **Tarih:** 2026-10-29 · C
+
+### D-031 — Çatı parçalarına V8 derleme ipucu
+- **Karar:** `next build` sonunda Next'in `rootMainFiles` listesindeki parçaların (her sayfada açılışta çalışan 5 çatı parçası: React DOM, Next yönlendiricisi, Turbopack çalışma zamanı ve iki ortak parça) başına `//# allFunctionsCalledOnLoad` yorumu eklenir. Kanca `next.config.ts` içindedir (`compiler.runAfterProductionCompile`), mantık `src/lib/compile-hints.ts` dosyasındadır. Başka parçaya konmaz. SRI ya da tarayıcı kaynak haritası açılırsa derleme düşer.
+- **Neden:** Mobil hikâye sayfasında FCP'den sonraki en uzun görev React'in açılışıydı ve süresinin büyük kısmı ana iş parçacığında tembel derlemeydi. İpucuyla V8 bu parçaları indirme sürerken arka planda derler ([v8.dev](https://v8.dev/blog/explicit-compile-hints), Chrome 136 ve sonrası). Ölçüm: aynı build, 8 tur, her turda sıra karışık, CPU 4× ve yavaş 4G. Gözlenen TBT ortancası 179 → 59 ms oldu: ipuçlu en kötü koşu 83 ms, ipucusuz en iyi koşu 127 ms. FCP ve LCP değişmedi (1820 / 1817 ms). JS yığını 2,6 → 2,9 MB oldu. Bütün parçalara koymak benzetimde biraz daha düşürüyordu (ortanca 14 ms). Ama açılışta parçaların işlevlerinin yalnız %26–58'i çağrılıyor ve V8 ipucunun az kullanılmasını istiyor. Liste Next'ten geldiği için her build'de kendiliğinden doğrudur; dosya adları build'den build'e değişir.
+- **Bedel:** Chromium dışı tarayıcılar yorumu yok sayar; bu zararsızdır. Telefonda bellek ~0,3 MB artar.
+- **Tarih:** 2026-10-29 · C
+
 ### D-030 — Demo verisi yalnızca komutla ve sabit seed günüyle sıfırlanır
 - **Karar:**
   - Uygulamada "Demo verisini sıfırla" düğmesi ve günlük yeniden yükleme cron'u yoktur. Plan ikisini de öngörüyordu; yapılmadı ve belgelerden çıkarıldı (`/api/cron`, `CRON_SECRET`).

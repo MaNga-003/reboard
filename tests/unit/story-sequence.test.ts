@@ -1,15 +1,21 @@
 import fc from "fast-check";
+import gsap from "gsap";
 import { describe, expect, it } from "vitest";
 import {
   LruCache,
   coverRect,
   decodeWindow,
+  expoOut,
   frameAt,
   loadOrder,
   nearestLoaded,
   pickAspect,
+  retarget,
+  scrollProgress,
+  scrubAt,
   textOpacity,
   type ManifestFrame,
+  type Scrub,
 } from "@/components/story/sequence";
 
 const frames = (n: number, step = 1): ManifestFrame[] =>
@@ -113,6 +119,73 @@ describe("textOpacity", () => {
         expect(full.length).toBeLessThanOrEqual(1);
       }),
     );
+  });
+});
+
+describe("scrollProgress", () => {
+  it("üst kenar ekran üstündeyken 0, alt kenar yapışkan kabın altındayken 1; dışı kenetlenir", () => {
+    // 8 bölüm × 120svh, ekran 900 px: kaydırılabilir boy 8640 − 900.
+    expect(scrollProgress(0, 8640, 900)).toBe(0);
+    expect(scrollProgress(300, 8640, 900)).toBe(0);
+    expect(scrollProgress(-7740, 8640, 900)).toBe(1);
+    expect(scrollProgress(-9000, 8640, 900)).toBe(1);
+    expect(scrollProgress(-3870, 8640, 900)).toBeCloseTo(0.5, 12);
+    expect(scrollProgress(-10, 900, 900)).toBe(0);
+  });
+});
+
+// Oynatıcının hissi gsap ScrollTrigger'ın `scrub: 0.35`'iyle kuruldu; yerel yumuşatma onu birebir kopyalar (R-7).
+// gsap burada yalnızca kâhin olarak durur (devDependencies), pakete girmez.
+describe("yumuşatma: gsap ScrollTrigger scrub'ı ile aynı", () => {
+  const D = 350;
+
+  it("expoOut, gsap'in 'expo' eğrisi", () => {
+    const ease = gsap.parseEase("expo");
+    for (let i = -10; i <= 1010; i++) expect(expoOut(i / 1000)).toBeCloseTo(ease(Math.min(1, Math.max(0, i / 1000))), 12);
+  });
+
+  // ScrollTrigger her ilerleme değişiminde yumuşatma tween'ini o anki zamanda çizer, sonra
+  // resetTo("totalProgress", hedef, o anki değer) çağırır (gsap 3.15, ScrollTrigger.js 2316–2320). Aynısı burada
+  // duraklatılmış bir zaman çizelgesinde elle sürülür; her adımda iki uygulamanın değeri karşılaştırılır.
+  // Tolerans: gsap her çizimde değeri 6 basamağa yuvarlar (_renderPlain) ve yuvarlanmış değerden yeniden başlar. 40 bin
+  // rastgele dizide (254 bin örnek) en büyük fark 1,4e-6 ölçüldü; ders kitabı expo'su (1 − 2^(−10k)) 7,8e-3 sapardı.
+  // Eşik ikisinin arasında: yuvarlamaya 7 kat pay, yanlış eğriye 800 kat uzak.
+  it("özellik: rastgele scroll dizilerinde gsap resetTo ile aynı değer", () => {
+    const step = fc.record({ dt: fc.integer({ min: 1, max: 600 }), to: fc.option(fc.double({ min: 0, max: 1, noNaN: true }), { nil: undefined }) });
+    fc.assert(
+      fc.property(fc.array(step, { minLength: 1, maxLength: 40 }), (steps) => {
+        // ScrollTrigger'ın tween'i gsap'in kök çizelgesinde yaşar; resetTo başlangıcı yalnızca smoothChildTiming açıkken
+        // o ana hizalar (gsap.js _alignPlayhead), kökte açıktır.
+        const tl = gsap.timeline({ paused: true, smoothChildTiming: true });
+        tl.set({}, {}, 3600); // çizelge zamanı kenetlenmesin
+        const state = { p: 0 };
+        const tw = gsap.to(state, { p: 0, ease: "expo", duration: D / 1000, paused: true });
+        tl.add(tw, 0);
+        let s: Scrub = { from: 0, to: 0, at: -Infinity };
+        let now = 0;
+        for (const { dt, to } of steps) {
+          now += dt;
+          tl.time(now / 1000);
+          if (to !== undefined && to !== s.to) {
+            tw.resetTo("p", to, state.p);
+            s = retarget(s, to, now, D);
+          }
+          expect(Math.abs(scrubAt(s, now, D) - state.p)).toBeLessThanOrEqual(1e-5);
+        }
+        tl.kill();
+      }),
+    );
+  });
+
+  it("hedef değişince eğri o anki değerden başlar ve süre sonunda hedefe varır", () => {
+    let s: Scrub = { from: 0, to: 0, at: -Infinity };
+    s = retarget(s, 1, 0, D);
+    const mid = scrubAt(s, 100, D);
+    expect(mid).toBe(expoOut(100 / D));
+    s = retarget(s, 0.2, 100, D);
+    expect(scrubAt(s, 100, D)).toBe(mid);
+    expect(scrubAt(s, 100 + D, D)).toBe(0.2);
+    expect(retarget(s, 0.2, 200, D)).toBe(s);
   });
 });
 

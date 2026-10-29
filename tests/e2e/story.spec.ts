@@ -1,6 +1,7 @@
 // Hikâye sayfası (T3.4, STORY.md §4): sayaç dürüstlüğü (D-011, D-013), kare dizisinin scroll'la ilerlemesi,
 // hareket azaltma yedeği ve 9:16 seçimi. Kareler henüz kodlanmadıysa yalnızca sayaç denetlenir.
 import { expect, test, type Page } from "@playwright/test";
+import { expoOut } from "../../src/components/story/sequence";
 
 async function hasStory(page: Page) {
   return (await page.request.get("/story/manifest.json")).ok();
@@ -66,6 +67,51 @@ test("kare dizisi scroll'la ilerler; ileri ve geri aynı kareye döner", async (
   expect(Number(await canvas.getAttribute("data-frame"))).toBeGreaterThan(mid);
   await scrollTo(0.5);
   await expect(canvas).toHaveAttribute("data-frame", String(mid));
+});
+
+// Yumuşatma gsap ScrollTrigger'ın `scrub: 0.35`'iyle kurulan hissi korur (R-7). Eğrinin kendisi birim testte gsap'e karşı
+// doğrulanır (story-sequence.test); burada oynatıcının bağlantısı ölçülür: kaydırmadan sonraki ilk karede ilerlemesi
+// (bir önceki karenin zamanına yaslanır, boştayken 60 Hz varsayılır), 350 ms süre ve tam hedefte durması.
+// Kare zamanı gözlemciden document.timeline.currentTime ile okunur: rAF'ın aldığı zamanla aynıdır (120/120 karede ölçüldü).
+// Ölçülen en büyük fark 5,4e-6 (data-progress 5 basamak); eşik 5e-5. Bir kare gecikme 2e-2, ders kitabı expo'su 6e-4 sapar.
+test("scroll yumuşatması: ilk karede başlar, gsap'in eğrisiyle 350 ms'de tam hedefe oturur", async ({ page }) => {
+  test.skip(!(await hasStory(page)), "kareler henüz kodlanmadı (public/story/manifest.json yok)");
+  await page.setViewportSize({ width: 1440, height: 900 });
+  await page.goto("/tr");
+  const canvas = page.locator("section canvas");
+  await expect(canvas).toHaveAttribute("data-progress", "0.00000");
+  const { rows, target } = await page.evaluate(
+    () =>
+      new Promise<{ rows: [number, number][]; target: number }>((resolve) => {
+        const el = document.querySelector<HTMLCanvasElement>("section canvas")!;
+        const rows: [number, number][] = [];
+        const mo = new MutationObserver(() => rows.push([document.timeline.currentTime as number, Number(el.dataset.progress)]));
+        mo.observe(el, { attributeFilter: ["data-progress"] });
+        // Kaydırma iki kare arasında, kullanıcı girdisi gibi: bir karenin çiziminden hemen sonra.
+        requestAnimationFrame(() => {
+          const ch = new MessageChannel();
+          ch.port1.onmessage = () => window.scrollBy(0, 600);
+          ch.port2.postMessage(null);
+        });
+        setTimeout(() => {
+          mo.disconnect();
+          // Hedef sayfanın kendi ölçüsünden: yapışkan alan kaydırılabilir boyunun ne kadarını geçti.
+          const r = el.closest("section")!.getBoundingClientRect();
+          resolve({ rows, target: -r.top / (r.height - el.parentElement!.clientHeight) });
+        }, 800);
+      }),
+  );
+  expect(rows.length).toBeGreaterThan(5);
+  const [t1, p1] = rows[0];
+  const [tEnd, to] = rows.at(-1)!;
+  expect(to).toBeCloseTo(target, 4);
+  expect(p1, "ilk karede ilerlemeli").toBeGreaterThan(0);
+  const at = t1 - 1000 / 60;
+  const off = rows.map(([t, p]) => ({ t: Math.round(t - t1), p, want: to * expoOut((t - at) / 350) })).filter((r) => Math.abs(r.p - r.want) > 5e-5);
+  expect(off, "eğriden sapan kareler").toEqual([]);
+  // Kare düşse de geçerli: son değişim süre dolduktan sonraki ilk karede, ondan önceki süre dolmadan.
+  expect(tEnd - at, "son değişim 350 ms dolunca").toBeGreaterThanOrEqual(350);
+  expect(rows.at(-2)![0] - at, "süre dolmadan duran kare yok").toBeLessThan(350);
 });
 
 test("hareket azaltma: canvas yok, her bölüm tek statik kare ve metniyle", async ({ page }) => {

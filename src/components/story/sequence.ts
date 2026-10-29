@@ -20,6 +20,41 @@ export function pickAspect(width: number, height: number, available: readonly As
   return available.includes(want) ? want : (available[0] ?? null);
 }
 
+/**
+ * Yapışkan alanın scroll ilerlemesi (0–1): üst kenarı ekranın üstüne değince 0, alt kenarı yapışkan kabın altına değince 1.
+ * top, alanın getBoundingClientRect().top'u; viewport, yapışkan kabın yüksekliği (svh: adres çubuğu oynayınca kaymaz).
+ */
+export function scrollProgress(top: number, height: number, viewport: number): number {
+  const span = height - viewport;
+  return span > 0 ? Math.min(1, Math.max(0, -top / span)) : 0;
+}
+
+/**
+ * gsap ScrollTrigger scrub'ının eğrisi: gsap 3.15'in "expo"su (expo.out). Ders kitabındaki 1 − 2^(−10k) değil; gsap uçları
+ * tam 0 ve 1'e oturtan bir terim ekler (gsap.js, _insertEase("Expo")) ve fark kare aralığı kadar büyür (k=0,1'de 0,003).
+ * k: geçen süre ÷ yumuşatma süresi.
+ */
+export function expoOut(k: number): number {
+  if (k <= 0) return 0;
+  if (k >= 1) return 1;
+  const q = 1 - k;
+  return 1 - (2 ** (-10 * k) * q + q ** 6 * k);
+}
+
+/** Yumuşatılan ilerleme: `at` anında `from`'dan `to`'ya giden tek eğri. */
+export type Scrub = { from: number; to: number; at: number };
+
+/** Süre dolunca tam hedef: kayan nokta 1'in altında kalıp son kareyi kaçırmasın. */
+export function scrubAt(s: Scrub, now: number, duration: number): number {
+  const k = (now - s.at) / duration;
+  return k >= 1 ? s.to : s.from + (s.to - s.from) * expoOut(k);
+}
+
+/** Hedef değişince eğri o anki değerden yeniden başlar (ScrollTrigger'daki resetTo); hedef aynıysa eğri sürer. */
+export function retarget(s: Scrub, to: number, now: number, duration: number): Scrub {
+  return to === s.to ? s : { from: scrubAt(s, now, duration), to, at: now };
+}
+
 /** Scroll ilerlemesi (0–1) → dizideki sıra. Uçlar kenetlenir; NaN ilk kareye düşer. */
 export function frameAt(progress: number, count: number): number {
   if (count <= 0) return -1;
