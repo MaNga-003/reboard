@@ -115,10 +115,11 @@ try {
   } else {
     const out = join(ROOT, ".private", "demo", mode === "video" ? "video-run" : "check-run");
     rmSync(out, { recursive: true, force: true });
+    // Video internet varken önceden kaydedilir: tarayıcı harita döşemelerini indirir, DEMO.md 2. adımdaki "haritada
+    // görünür" ekranda olur. Sunucu yine yerel PGlite'tadır ve yerel dışı bağlantıları kesiktir.
     run(`pnpm exec playwright test tests/e2e/demo.spec.ts --output ${JSON.stringify(out)}`, {
       E2E_BASE_URL: BASE,
-      DEMO_OFFLINE: "1",
-      ...(mode === "video" ? { DEMO_PACE: "1" } : {}),
+      ...(mode === "video" ? { DEMO_PACE: "1" } : { DEMO_OFFLINE: "1" }),
     });
     console.log(`Sunucunun engellenen yerel dışı bağlantısı: ${blocked}`);
     if (mode === "video") {
@@ -130,7 +131,21 @@ try {
       const probe = spawnSync("ffprobe", ["-v", "error", "-show_entries", "format=duration:stream=width,height", "-of", "json", mp4], { encoding: "utf8" });
       const info = JSON.parse(probe.stdout);
       const s = info.streams.find((x) => x.width);
-      console.log(`Video: ${mp4}, ${Number(info.format.duration).toFixed(1)} s, ${s.width}×${s.height}, ${(statSync(mp4).size / 1e6).toFixed(1)} MB`);
+      const duration = Number(info.format.duration);
+      console.log(`Video: ${mp4}, ${duration.toFixed(1)} s, ${s.width}×${s.height}, ${(statSync(mp4).size / 1e6).toFixed(1)} MB`);
+      // Ölçüyle kabul: süre DEMO.md §2'nin son bitişine ±5 s, tam HD, siyah kesit yok (donmuş ya da boş kayıt sahnede fark edilmez).
+      // Adımlar demo testinin ayrıştırıcısından okunur (Node .ts tiplerini siler); belge değişince kabul de değişir.
+      const { demoSteps } = await import(pathToFileURL(join(ROOT, "tests", "e2e", "demo-doc.ts")).href);
+      const expected = Math.max(...demoSteps(readFileSync(join(ROOT, "docs", "DEMO.md"), "utf8")).map((s) => s.end));
+      const black = spawnSync("ffmpeg", ["-hide_banner", "-i", mp4, "-vf", "blackdetect=d=0.5:pix_th=0.10", "-an", "-f", "null", "-"], { encoding: "utf8" });
+      const blackSpans = (black.stderr.match(/black_start/g) ?? []).length;
+      const bad = [
+        Math.abs(duration - expected) > 5 && `süre ${duration.toFixed(1)} s, DEMO.md ${expected} s`,
+        (s.width !== 1920 || s.height !== 1080) && `boyut ${s.width}×${s.height}`,
+        blackSpans > 0 && `${blackSpans} siyah kesit`,
+      ].filter(Boolean);
+      if (bad.length) throw new Error(`video kabul edilmedi: ${bad.join("; ")}`);
+      console.log(`Video kabul: DEMO.md ${expected} s (fark ${(duration - expected).toFixed(1)} s), siyah kesit 0`);
     }
   }
 } finally {

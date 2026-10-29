@@ -69,7 +69,7 @@ pnpm dev              # geliştirme (DATABASE_URL yoksa PGlite: .data/pglite)
 pnpm build && pnpm start
 pnpm lint && pnpm typecheck
 pnpm test             # Vitest (birim ve entegrasyon, PGlite)
-pnpm test:e2e         # Playwright (Chromium); demo akışı (demo.spec.ts) paketten sonra tek başına koşar
+pnpm test:e2e         # Playwright (Chromium); demo akışı ve kare süresi ölçümü paketten sonra tek işçiyle koşar
 pnpm db:generate      # Drizzle migrasyonu üret
 pnpm db:migrate       # migrasyonları uygula (yerel PGlite)
 pnpm db:migrate:live  # migrasyonları Neon'a uygula (.env.neon, git dışı)

@@ -1,4 +1,4 @@
-// Canlı yayının hızlı denetimi: yönlendirme, iki dil, kimlik ucu, giriş akışı, pazar yeri, izlenebilirlik, panel, pasaport, senaryo, SaaS giderleri, fonksiyon bölgesi ve güvenlik başlıkları.
+// Canlı yayının hızlı denetimi: yönlendirme, iki dil, hikâye kareleri, kimlik ucu, giriş akışı, pazar yeri, izlenebilirlik, panel, pasaport, senaryo, SaaS giderleri, fonksiyon bölgesi ve güvenlik başlıkları.
 // Yalnızca okur; canlı veritabanına yazmaz.
 // Türk Telekom "Güvenli İnternet" *.vercel.app'i yönlendirdiği için GitHub Actions'ta çalışır (live-smoke.yml).
 // Kullanım: node scripts/live-smoke.mjs [https://adres]
@@ -24,6 +24,30 @@ for (const lang of ["tr", "en"]) {
     check(h.get("x-frame-options") === "DENY", "X-Frame-Options", h.get("x-frame-options"));
     check(h.get("referrer-policy") === "strict-origin-when-cross-origin", "Referrer-Policy", h.get("referrer-policy"));
   }
+}
+
+// Hikâye kareleri (D-004, M-2): eksik kare oynatıcıyı en yakın kareye takar, AVIF hiç gelmezse sayfa statik yedeğe
+// düşer. İkisi de hatasız görünür; bu yüzden manifest dolaşılır ve her dosya boyutuyla sayılır.
+const man = await get("/story/manifest.json");
+const manifest = man.status === 200 ? await man.json() : null;
+check(manifest?.variants?.d?.frames?.length > 0, "/story/manifest.json", man.status);
+for (const [name, v] of Object.entries(manifest?.variants ?? {})) {
+  const files = [
+    ...v.frames.map((f) => ({ path: f.avif, type: "image/avif", bytes: f.bytes.avif })),
+    ...v.frames.filter((f) => f.webp).map((f) => ({ path: f.webp, type: "image/webp", bytes: f.bytes.webp })),
+  ];
+  const bad = [];
+  for (let i = 0; i < files.length; i += 24) {
+    await Promise.all(
+      files.slice(i, i + 24).map(async (f) => {
+        const r = await fetch(`${base}/story/${f.path}`, { method: "HEAD", headers: { "user-agent": "reboard-live-smoke" } });
+        const len = r.headers.get("content-length");
+        if (r.status !== 200 || !(r.headers.get("content-type") ?? "").startsWith(f.type) || (len !== null && Number(len) !== f.bytes)) bad.push(`${f.path} ${r.status} ${len}`);
+      }),
+    );
+  }
+  const webp = files.filter((f) => f.type === "image/webp").length;
+  check(bad.length === 0, `hikâye kareleri (${name}): her AVIF ve WebP yayında, boyutu manifestle aynı`, bad.length ? `${bad.length} eksik: ${bad.slice(0, 3).join("; ")}` : `${files.length - webp} AVIF · ${webp} WebP`);
 }
 
 const ok = await get("/api/auth/ok");
@@ -134,7 +158,7 @@ if (process.env.DEMO_PASSWORD) {
     "girişli /tr/senaryo: kaynaklı varsayılan; yalnız ayda 10 t dolu, 5 sonuç Sentetik ve bilinmiyor, kırmızı yok",
     `${scenario.status} · ${scenarioKpis} sonuç · ${[...scenarioClasses].join(",")} · ${unknownKpis} bilinmiyor · ${redKpis} kırmızı · dolu: ${filled.join(",")}`,
   );
-  // Karşılaştırma için kaynaklı değerler (D-029): her satırda https kaynak ve okunma tarihi. Levha satırları canlıda tam seed'le (T4.1) gelir; o zamana kadar 3 satır.
+  // Karşılaştırma için kaynaklı değerler (D-029): her satırda https kaynak ve okunma tarihi. İBB ×2, elektrik ve 2 levha satırı.
   const refRows = (refHtml.match(/<tr[^>]*data-reference="/g) ?? []).length;
   const refSources = (refHtml.match(/data-source[^>]*>(?:(?!<\/th>).)*?<a href="https:\/\//gs) ?? []).length;
   const refDates = (refHtml.match(/>Okunma: 2[78] Eki 2026</g) ?? []).length;

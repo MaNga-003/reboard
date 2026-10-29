@@ -1,7 +1,7 @@
 {
   "$schema": "./docs/state.schema.json",
   "project": "ReBoard SaaS platformu",
-  "updated_at": "2026-10-29T13:45:00+03:00",
+  "updated_at": "2026-10-29T13:55:00+03:00",
   "current_phase": "F2",
   "deadlines": {
     "demo_freeze": "2026-10-29T18:00:00+03:00",
@@ -437,7 +437,7 @@
         "D-003",
         "D-030"
       ],
-      "note": "pnpm demo:offline: PGlite + production build, sunucuya --import ile çevrimdışı koruma (scripts/offline-guard.mjs; yerel dışı DNS ve çıplak IP reddedilir, sayılır). --check akışı tarayıcıda yerel dışı istekler kesikken koşar: 2026-10-29 7,5 s yeşil, sunucuda engellenen 0, tarayıcıda kesilen 3 (tiles.openfreemap.org) (M-33). Bekleyen: final kareler gelince pnpm demo:video; T4.1 bitince tamam."
+      "note": "pnpm demo:offline: PGlite + production build, sunucuya --import ile çevrimdışı koruma (scripts/offline-guard.mjs; yerel dışı DNS ve çıplak IP reddedilir, sayılır). --check akışı tarayıcıda yerel dışı istekler kesikken koşar: 2026-10-29 7,5 s yeşil, sunucuda engellenen 0, tarayıcıda kesilen 3 (tiles.openfreemap.org) (M-33). pnpm demo:video (2026-10-29): ilk koşu iki kart bulup düştü (gerçekçi başlık seed ilanının alt dizesiydi), kart ve teslim satırı tam adla aranıyor. İkinci kayıtta 2. adımda harita boştu (video kipi tarayıcıyı da çevrimdışı koşuyordu); video artık internetle kaydedilir, sunucu yine PGlite ve korumalı, 2. adımda harita hazır olmazsa kayıt düşer. Üçüncü kayıt 181,0 s, 1920 × 1080, 2. adımda harita noktalarıyla görünüyor. Kabul ölçüsü betikte (M-35): dördüncü kayıt 181,9 s, fark 1,9 s, 1920 × 1080, siyah kesit 0."
     },
     {
       "id": "T4.3",
@@ -455,7 +455,7 @@
         "D-025",
         "D-030"
       ],
-      "note": "DEMO.md §2 tablosu tests/e2e/demo-doc.ts ile okunur, demo.spec.ts aynı adımları koşar (roller başlıktaki menüyle, QR piksellerden). Yerel production build 7/7, 7,9 s (M-17). DEMO.md §4: 'Hikâyeyi geç' 1. Tab'da (ölçüldü). QR: scripts/demo-qr.ts canlı çapayla (M-32); yerel deneme geçti. Bekleyen: T4.1 (canlı seed, live-demo.yml, canlı QR). Tam yerel pakette (2026-10-29) demo testi paralel pazar testiyle aynı veritabanında yarıştı (harita noktası +2); demo ayrı Playwright projesi oldu, test:e2e onu paketten sonra koşar: 76/76 + 1/1, art arda 2 koşu."
+      "note": "DEMO.md §2 tablosu tests/e2e/demo-doc.ts ile okunur, demo.spec.ts aynı adımları koşar (roller başlıktaki menüyle, QR piksellerden). Yerel production build 7/7, 7,9 s (M-17). DEMO.md §4: 'Hikâyeyi geç' 1. Tab'da (ölçüldü). QR: scripts/demo-qr.ts canlı çapayla (M-32); yerel deneme geçti. Canlı: live-demo 40857770464 1/1, 20,6 s; QR canlı çapayla 13:32'de yazıldı. Tam yerel pakette (2026-10-29) demo testi paralel pazar testiyle aynı veritabanında yarıştı (harita noktası +2); demo ayrı Playwright projesi oldu, test:e2e onu paketten sonra koşar: 76/76 + 1/1, art arda 2 koşu."
     },
     {
       "id": "T4.4",
@@ -632,8 +632,8 @@
       "id": "M-3",
       "claim": "Scroll akıcılığı",
       "threshold": "kare süresi p99 ≤ 25 ms",
-      "last_value": "Final dizi, masaüstü, production build: 591 aralık, ortalama 16,7 ms, p95 16,7, p99 16,8, en uzun 16,8 ms; 240 karenin 239'u çizildi (8 işçili paralel koşuda)",
-      "measured_at": "2026-10-29T13:15:00+03:00",
+      "last_value": "Final dizi, masaüstü, production build: 591 aralık, ortalama 16,7 ms, p95 16,7, p99 16,8, en uzun 16,8 ms; 240 karenin 239'u çizildi. CI'da paralel testlerle 33–50 ms görüldü (kaçan vsync); ölçüm ayrı perf projesine alındı. Ayrı projede, paketten sonra tek işçide (yerel): n 591, ort 16,7, p95 16,8, p99 16,8, en uzun 16,8 ms; 239/240",
+      "measured_at": "2026-10-29T13:55:00+03:00",
       "test": "tests/e2e/story-perf.spec.ts"
     },
     {
@@ -744,8 +744,8 @@
       "id": "M-17",
       "claim": "Demo çalışır",
       "threshold": "DEMO.md akışı 7/7 adım yeşil, yeniden deneme yok; belge ile test aynı adımları koşar",
-      "last_value": "Yerel production build: 7/7, 7,9 s; çevrimdışı 7,5 s. 'Hikâyeyi geç' 1. Tab'da (belge 2 derken test düştü, düzeltildi). Canlı adres: T4.1",
-      "measured_at": "2026-10-29T12:05:00+03:00",
+      "last_value": "Yerel production build: 7/7, 7,9 s; çevrimdışı 7,5 s. 'Hikâyeyi geç' 1. Tab'da (belge 2 derken test düştü, düzeltildi). Canlı (2026-10-29, reboard-fmtqhn8td): live-demo 40857770464 1/1, 20,6 s; ardından aynı seed günüyle yeniden yükleme (8 ilan, 0 E2E). Tam yerel paket: 75/75, ardından demo ve perf tek işçide 2/2",
+      "measured_at": "2026-10-29T13:55:00+03:00",
       "test": "tests/e2e/demo.spec.ts, tests/unit/demo-doc.test.ts, .github/workflows/live-demo.yml"
     },
     {
@@ -864,8 +864,8 @@
       "id": "M-32",
       "claim": "Sunum QR'ı canlı lotun pasaportunu çapasıyla açar; yeniden yükleme QR'ı bozmaz",
       "threshold": "Doğrulama geçmezse ya da PNG geri okunamazsa dosya yazılmaz; aynı seed günü → aynı çapa",
-      "last_value": "Seed: 2026-10-29 06:00Z, 15:00Z, 20:59Z, 21:01Z aynı zincir başı, 10-30 farklı. Yerel deneme: 4 zincir doğrulandı, PNG geri okundu. Canlı QR: T4.1",
-      "measured_at": "2026-10-29T09:34:00+03:00",
+      "last_value": "Seed: 2026-10-29 06:00Z, 15:00Z, 20:59Z, 21:01Z aynı zincir başı, 10-30 farklı. Yerel deneme: 4 zincir doğrulandı, PNG geri okundu. Canlı QR (2026-10-29 13:32): PL-2026-001, seed günü 2026-10-29, çapa 5-53eb8e8b260d60…, 4 zincir ok, PNG geri okundu; aynı günle yeniden yüklemeden önce ve sonra çapa aynı",
+      "measured_at": "2026-10-29T13:32:00+03:00",
       "test": "scripts/demo-qr.ts, tests/integration/seed.test.ts"
     },
     {
@@ -883,6 +883,14 @@
       "last_value": "41 anahtar (14 kaynak, 5 ekip, 22 kural); kaynakların hepsi 2026-10-29'da yeniden okundu, değerler aynı; bilerek bozma 4/4",
       "measured_at": "2026-10-29T12:40:00+03:00",
       "test": "tests/unit/facts.test.ts"
+    },
+    {
+      "id": "M-35",
+      "claim": "Yedek video sahnede kullanılabilir",
+      "threshold": "Süre DEMO.md ± 5 s; 1920 × 1080; siyah kesit 0; 2. adımda harita hazır",
+      "last_value": "181,9 s (DEMO.md 180 s, fark 1,9 s), 1920 × 1080, 40,1 MB, siyah kesit 0; harita 2. adımda çizili. Bilerek bozma: çevrimdışı tarayıcıda 2. adımda fallback ile düştü; sentetik klipte 1,5 s siyah yakalandı, 0,3 s geçti",
+      "measured_at": "2026-10-29T13:44:00+03:00",
+      "test": "scripts/demo-offline.mjs, tests/e2e/demo.spec.ts"
     }
   ]
 }

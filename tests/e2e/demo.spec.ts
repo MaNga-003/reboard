@@ -1,6 +1,6 @@
 // Demo akışı (T4.3): DEMO.md §2'deki her satır burada aynı numaralı bir adımdır; sunucunun sahnede yaptığı gibi tek sayfada,
 // rol değiştirerek ilerler. Adım listesi belgeden okunur, sonda belgeyle birebir eşleştiği denetlenir (birim testi: demo-doc).
-// DEMO_PACE=1 iken her adım belgedeki süresini doldurur ve 1920 × 1080 video kaydedilir (T4.2, scripts/demo-video.mjs).
+// DEMO_PACE=1 iken her adım belgedeki süresini doldurur ve 1920 × 1080 video kaydedilir (T4.2, pnpm demo:video).
 import { expect, test, devices, type BrowserContext, type Page } from "@playwright/test";
 import jsQR from "jsqr";
 import sharp from "sharp";
@@ -81,7 +81,9 @@ test("demo akışı: DEMO.md'deki adımlar sırayla ve aynı ekranlarda çalış
   test.setTimeout(PACE ? 360_000 : 180_000);
   await offline(page.context());
   const done: number[] = [];
-  const title = PACE ? "Pamuk-polyester kesim artığı" : `E2E demo ${Date.now()}-${Math.floor(Math.random() * 1e4)}`;
+  // Videoda gerçekçi ad, seed ilanlarından ayrı okunur ("…kesim artığı, haftalık" seed'de var). Kart ve satır yine de
+  // tam adla aranır: alt dize eşleşmesi seed ilanını da yakalıyordu (video kipinde 2 kart).
+  const title = PACE ? "Pamuk-polyester kumaş kırpıntısı" : `E2E demo ${Date.now()}-${Math.floor(Math.random() * 1e4)}`;
 
   /** Belgedeki adım: ekran yolu tutmalı; adım bitince sayfa o ekranda olmalı. Video kipinde adım süresini doldurur. */
   async function step(n: number, screen: string, body: () => Promise<void>) {
@@ -150,6 +152,8 @@ test("demo akışı: DEMO.md'deki adımlar sırayla ve aynı ekranlarda çalış
     await expect(page.getByTestId("quantity")).toContainText("500 kg");
     await nav(page, tr.nav.market);
     await expect(page.locator("[data-map-state]")).toHaveAttribute("data-points", String(points + 1));
+    // Videoda "haritada görünür" gerçekten haritada olmalı; yedek metinle kaydedilmiş video adımı göstermez.
+    if (PACE) await expect(page.locator("[data-map-state]")).toHaveAttribute("data-map-state", "ready", { timeout: 20_000 });
   });
 
   // 3. Üretici eşleşme skorunu ve kuş uçuşu mesafeyi görür, teklif verir; sağlayıcı kabul eder, teslim planı oluşur.
@@ -158,9 +162,10 @@ test("demo akışı: DEMO.md'deki adımlar sırayla ve aynı ekranlarda çalış
     await switchRole(page, "producer");
     verifiedBefore = await kgOf(page, "verified");
     await nav(page, tr.nav.market);
-    const card = page.locator("article", { hasText: title });
+    const link = page.getByRole("link", { name: title, exact: true });
+    const card = page.locator("article").filter({ has: link });
     await expect(card.locator("[data-match-score]")).toHaveAttribute("data-match-score", /^\d{1,3}$/);
-    await card.getByRole("link", { name: title }).click();
+    await card.getByRole("link", { name: title, exact: true }).click();
     const km = fmtNumber(crowFliesKm(DEMO_ORGS.reboard, DEMO_ORGS.a), "tr", 1);
     await expect(await factOf(page, tr.market.location)).toHaveText(`${DEMO_ORGS.a.district} · ${km} km ${tr.common.asTheCrowFlies}`);
     await expect(page.locator("[data-part]")).toHaveCount(4);
@@ -180,7 +185,9 @@ test("demo akışı: DEMO.md'deki adımlar sırayla ve aynı ekranlarda çalış
   await step(4, "/izlenebilirlik", async () => {
     await switchRole(page, "producer");
     await nav(page, tr.nav.traceability);
-    await page.locator("tr", { hasText: title }).first().getByRole("link", { name: "Teslim al" }).click();
+    // Haftalık anlaşmanın birden çok teslimi var; en erkeni alınır.
+    const row = page.getByRole("row").filter({ has: page.getByRole("cell", { name: title, exact: true }) });
+    await row.first().getByRole("link", { name: "Teslim al" }).click();
     await expect(page.getByLabel("Beyan edilen kg")).toHaveValue("500");
     await page.getByLabel("Tartılan kg").fill("492");
     await page.getByLabel("Ayıklanan kg").fill("0");
