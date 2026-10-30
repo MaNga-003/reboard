@@ -74,7 +74,7 @@ pnpm perf:lh          # Lighthouse 13.5.0 (M-11): yerel production 3300'de, /tr 
 pnpm db:generate      # Drizzle migrasyonu üret
 pnpm db:migrate       # migrasyonları uygula (yerel PGlite)
 pnpm db:migrate:live  # migrasyonları Neon'a uygula (.env.neon, git dışı)
-pnpm deploy:prod      # Vercel'e yayın (yalnızca .vercelignore izin listesi yüklenir)
+pnpm deploy:prod      # Vercel'e yayın (yalnızca .vercelignore izin listesi yüklenir; --force derleme önbelleğini atlar, yoksa Tailwind CSS'i eski önbellekten gelip yeni sınıfları kaçırabilir)
 pnpm live:check       # canlı denetim; TT Güvenli İnternet yüzünden: gh workflow run live-smoke.yml
 pnpm db:seed          # sentetik demo verisi (yerel PGlite; DEMO_MODE=true ister, tabloları boşaltır; DEMO_NOW=YYYY-MM-DD günü sabitler, D-030)
 pnpm db:seed:live     # aynı veriyi Neon'a yükler (.env.local + .env.neon); önce Neon yedek dalı, QR için aynı DEMO_NOW

@@ -27,7 +27,7 @@
     "demo:offline": "node scripts/demo-offline.mjs",
     "demo:video": "node scripts/demo-offline.mjs --video",
     "demo:qr": "tsx --env-file=.env.neon scripts/demo-qr.ts",
-    "deploy:prod": "vercel deploy --prod",
+    "deploy:prod": "vercel deploy --prod --force",
     "live:check": "node scripts/live-smoke.mjs",
     "story:render": "node scripts/story-render.mjs",
     "story:encode": "node scripts/story-encode.mjs",

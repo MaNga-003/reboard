@@ -1,7 +1,7 @@
 {
   "$schema": "./docs/state.schema.json",
   "project": "ReBoard SaaS platformu",
-  "updated_at": "2026-10-30T01:59:00+03:00",
+  "updated_at": "2026-10-30T05:19:00+03:00",
   "current_phase": "F2",
   "deadlines": {
     "demo_freeze": "2026-10-29T18:00:00+03:00",
@@ -520,10 +520,10 @@
       "id": "T4.8",
       "phase": "F4",
       "mode": "otonom",
-      "status": "sürüyor",
+      "status": "tamam",
       "title": "SaaS arayüzünü modern SaaS kabuğuyla yeniden tasarla ve canlıya al (hikâye değişmez)",
       "acceptance": "Giriş, pazar yeri, izlenebilirlik, panel, senaryo, pasaport ve ana sayfa yeni tasarımda; hikâye bileşenleri değişmez; metin ve sayılar değişmez; yerel e2e, demo akışı, kare süresi ve birim paket yeşil; canlıda live-smoke yeşil",
-      "evidence": null,
+      "evidence": "2026-10-30: yeni arayüz (koyu kenar çubuğu, görselli başlıklar, kartlar, mobil sekme çubuğu) 53f8946 ile main'e alındı. Yerel production: e2e 76/76, demo akışı 1/1, kare süresi p99 16,8 ms (hikâye değişmedi), birim ve entegrasyon 524 geçti, lint, tür denetimi ve docs:check yeşil (M-37). Canlı: dpl_HVwdzH6EdvhEJbAB74x7ad1aG9nT (reboard-lovat.vercel.app), live-smoke 40990796397: 35 kontrol tamam, 0 başarısız; canlıdan alınan ekran görüntülerinde yeni renkler ve görseller doğrulandı. Bulgu: ilk yayın (dpl_3QK5WzpZ8p5M9p5juvQTvRSLK61W) Vercel'in eski derleme önbelleğinden Tailwind CSS'ini kullanması yüzünden yeni düzenle ama renksiz açıldı; live-smoke yalnızca işaretlemeye baktığı için yakalamadı. --force ile yeniden yayınlandı, deploy:prod komutuna eklendi, live-smoke'a canlı CSS'te yeni sınıfları arayan kontrol eklendi. Yedek 2 videosu yeni arayüzle yeniden kaydedildi: 181,0 sn, 1920×1080, siyah kesit 0.",
       "depends_on": [
         "T4.3"
       ],
@@ -916,7 +916,7 @@
       "id": "M-37",
       "claim": "Arayüz yenilenince davranış sözleşmeleri korunur",
       "threshold": "e2e, demo akışı, kare süresi (p99 ≤ 25 ms) ve birim paket yeşil; hikâye bileşenleri değişmez",
-      "last_value": "Yerel production: e2e 76/76, demo 1/1, kare süresi p99 16,8 ms (239/240 kare), birim ve entegrasyon 524 geçti (2 atlanan), lint ve tür denetimi temiz. Bulgular: details ızgarasındaki geniş tablo sayfayı 58 px taşırdı (min-w-0 ve minmax(0,1fr) ile çözüldü); escapedAbsolutes gizli öğeleri de sayıyordu (düzeltildi); senaryo tablosunda dolgu 360 px'te 33 px kayma verdi (dar ekranda 8 px)",
+      "last_value": "Yerel production: e2e 76/76, demo 1/1, kare süresi p99 16,8 ms (239/240 kare), birim ve entegrasyon 524 geçti (2 atlanan), lint ve tür denetimi temiz. Bulgular: details ızgarasındaki geniş tablo sayfayı 58 px taşırdı (min-w-0 ve minmax(0,1fr) ile çözüldü); escapedAbsolutes gizli öğeleri de sayıyordu (düzeltildi); senaryo tablosunda dolgu 360 px'te 33 px kayma verdi (dar ekranda 8 px). Canlı (dpl_HVwdz…): live-smoke 35/35; ilk yayında eski Tailwind CSS'i önbellekten geldi (renksiz sayfa), --force ile giderildi ve live-smoke'a CSS kontrolü eklendi",
       "measured_at": "2026-10-30T01:59:00+03:00",
       "test": "tests/e2e/*.spec.ts, tests/unit/*.test.ts, tests/e2e/helpers.ts"
     }

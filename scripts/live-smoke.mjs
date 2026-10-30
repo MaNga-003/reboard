@@ -65,6 +65,11 @@ check(vid.split("::").includes("fra1"), "fonksiyon bölgesi fra1", vid);
 const signin = await get("/tr/giris");
 const signinHtml = await signin.text();
 check(signin.status === 200 && signinHtml.includes('data-persona="supplier"'), "/tr/giris demo rolleri", signin.status);
+// Yayında derleme önbelleği eski Tailwind CSS'ini getirebilir (30 Ekim): sayfa yeni düzenle ama renksiz açılır, işaretleme doğru
+// göründüğü için yukarıdaki kontroller geçer. Yeni arayüz sınıfları yayındaki CSS'te aranır.
+const cssPaths = [...new Set([...signinHtml.matchAll(/\/_next\/static\/[^"]+\.css/g)].map((m) => m[0]))];
+const css = (await Promise.all(cssPaths.map(async (p) => (await get(p)).text()))).join("\n");
+check(css.includes(".bg-surface") && css.includes(".bg-brand") && css.includes(".rb-aurora"), "CSS yeni arayüz sınıflarını içerir", `${cssPaths.length} dosya, ${css.length} bayt`);
 const anon = await get("/tr/panel");
 check([307, 308].includes(anon.status) && /\/tr\/giris$/.test(anon.headers.get("location") ?? ""), "oturumsuz /tr/panel → /tr/giris", `${anon.status} ${anon.headers.get("location")}`);
 const anonMarket = await get("/tr/pazar");
