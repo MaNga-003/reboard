@@ -1,7 +1,7 @@
 {
   "$schema": "./docs/state.schema.json",
   "project": "ReBoard SaaS platformu",
-  "updated_at": "2026-10-30T05:19:00+03:00",
+  "updated_at": "2026-10-30T06:40:00+03:00",
   "current_phase": "F2",
   "deadlines": {
     "demo_freeze": "2026-10-29T18:00:00+03:00",
@@ -530,6 +530,21 @@
       "decisions": [
         "D-014",
         "D-034"
+      ]
+    },
+    {
+      "id": "T4.9",
+      "phase": "F4",
+      "mode": "otonom",
+      "status": "tamam",
+      "title": "Görünür dil anahtarı (TR | EN)",
+      "acceptance": "Giriş sayfasında ve uygulama başlığında aynı sayfayı öbür dilde açan anahtar; e2e testli; canlıda yayında",
+      "evidence": "2026-10-30: kullanıcı Türkçe dil desteğini sordu. Ölçüm: site tarayıcı diline göre açılıyor (İngilizce tarayıcı /en, Türkçe ve diğerleri /tr) ve uygulamada görünür dil anahtarı yoktu; İngilizce açılan kişi Türkçeye geçemiyordu. Anahtar eklendi (src/components/shell/LocaleSwitch.tsx); tests/e2e/auth.spec.ts dil testi yeşil, e2e 77/77, demo akışı 1/1, kare süresi p99 16,8 ms.",
+      "depends_on": [
+        "T4.8"
+      ],
+      "decisions": [
+        "D-005"
       ]
     },
     {

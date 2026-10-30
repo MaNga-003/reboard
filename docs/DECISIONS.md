@@ -33,7 +33,9 @@ Biçim: **Karar**, **Neden**, **Tarih**, kararı kim verdi (K: kullanıcı, C: C
 
 ### D-005 — Dil: Türkçe (varsayılan) ve İngilizce
 - **Karar:** Çeviri next-intl ile yapılır. Varsayılan `tr`, ikinci dil `en`. Bileşenlerde sabit metin bulunmaz.
-- **Tarih:** 2026-10-27 · K
+  - `/` tarayıcı diline göre açılır: Türkçe tarayıcı `/tr`, İngilizce tarayıcı `/en`, başka dil `/tr`. Seçim `NEXT_LOCALE` çerezine yazılır.
+  - Yanlış dilde açılan kişi dil anahtarıyla (TR | EN) aynı sayfayı öbür dilde açar: giriş sayfasında ve ≥ 640 px'te uygulama başlığında; pasaportta kendi bağlantısı vardır (T4.9).
+- **Tarih:** 2026-10-27 · K (dil anahtarı 2026-10-30 · C)
 
 ### D-006 — Depo: `MaNga-003/reboard`, herkese açık; kaynak belgeler depo dışında
 - **Karar:** Kod GitHub'da `MaNga-003` organizasyonunda herkese açık bir depoda tutulur. Ekip belgeleri (pptx, docx, pdf) ve iç notlar `.private/` klasöründe durur ve git'e girmez.

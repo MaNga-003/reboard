@@ -2,6 +2,7 @@ import { Boxes, ScanSearch, ShieldCheck } from "lucide-react";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { PasswordForm } from "@/components/auth/PasswordForm";
 import { PersonaButtons } from "@/components/auth/PersonaButtons";
+import { LocaleSwitch } from "@/components/shell/LocaleSwitch";
 import { BrandMark, Wordmark } from "@/components/ui/Brand";
 import { alertBox, cardPad, h1, h2, lead, note } from "@/components/ui/classes";
 import { Still } from "@/components/ui/Still";
@@ -53,10 +54,15 @@ export default async function SignInPage({ params, searchParams }: PageProps<"/[
       </aside>
 
       <main id="main" className="mx-auto grid w-full max-w-2xl flex-1 content-center gap-8 px-4 py-10 sm:px-8 lg:py-16">
-        <Link href="/" className="inline-flex min-h-11 items-center gap-3 self-start text-ink lg:hidden">
-          <BrandMark className="size-9" />
-          <Wordmark>{t("nav.brand")}</Wordmark>
-        </Link>
+        <div className="flex items-center justify-between gap-4">
+          <Link href="/" className="inline-flex min-h-11 items-center gap-3 text-ink lg:hidden">
+            <BrandMark className="size-9" />
+            <Wordmark>{t("nav.brand")}</Wordmark>
+          </Link>
+          <div className="ms-auto">
+            <LocaleSwitch label={t("nav.language")} />
+          </div>
+        </div>
         <h1 className={h1}>{t("auth.title")}</h1>
         <section aria-labelledby="demo-title" className={`${cardPad} grid gap-4`}>
           <h2 id="demo-title" className={h2}>

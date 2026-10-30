@@ -32,6 +32,25 @@ test("İngilizce arayüzde aynı akış", async ({ page }) => {
   await expect(page.getByTestId("viewer")).toHaveText("Mobilya Atölyesi F · Owner");
 });
 
+// D-005: site tarayıcı diline göre açılır; yanlış dilde açılan kişi görünür bir anahtarla geçebilmeli.
+test("dil anahtarı: giriş sayfasında ve uygulama başlığında aynı sayfayı öbür dilde açar", async ({ page }) => {
+  await page.goto("/tr/giris");
+  await page.getByRole("group", { name: "Dil" }).getByRole("link", { name: "EN" }).click();
+  await expect(page).toHaveURL(/\/en\/giris$/);
+  await expect(page.locator("html")).toHaveAttribute("lang", "en");
+  await expect(page.getByRole("heading", { level: 1 })).toHaveText("Sign in");
+  await page.getByRole("group", { name: "Language" }).getByRole("link", { name: "TR" }).click();
+  await expect(page).toHaveURL(/\/tr\/giris$/);
+  await expect(page.getByRole("heading", { level: 1 })).toHaveText("Giriş");
+
+  await signIn(page, "producer");
+  await page.goto("/tr/pazar");
+  await page.locator("header").getByRole("group", { name: "Dil" }).getByRole("link", { name: "EN" }).click();
+  await expect(page).toHaveURL(/\/en\/pazar$/);
+  await expect(page.getByRole("heading", { level: 1 })).toHaveText("Marketplace");
+  await expect(page.locator("header").getByRole("group", { name: "Language" }).getByRole("link", { name: "EN" })).toHaveAttribute("aria-current", "true");
+});
+
 test("hatalı parola tek ve genel bir hata verir", async ({ page }) => {
   await page.goto("/tr/giris");
   await page.getByRole("textbox", { name: "E-posta", exact: true }).fill("kaynak-a@demo.reboard.example");

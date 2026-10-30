@@ -88,6 +88,7 @@ Uzay finali (hikâyenin son bölümü): Deep Indigo `#051230` ve Dull Violet Bla
 ## 7. Uygulama kabuğu ve sayfa kalıpları (T4.8, D-034)
 
 - **Kabuk** (`src/app/[locale]/(app)/layout.tsx`): ≥ 1024 px'te sol koyu kenar çubuğu (marka, gezinme, "hikâyeyi yeniden izle" kartı) ve üstte yapışkan açık başlık (rol menüsü, kurum ve rol, çıkış). Daha dar ekranda kenar çubuğu gizlenir, gezinme altta sabit sekme çubuğuna geçer.
+- **Dil anahtarı** (`LocaleSwitch`, D-005): giriş sayfasında ve ≥ 640 px'te başlıkta; `<nav>` değil `role="group"`, bağlantılar 44 × 44 px. Dar ekranda başlıkta yer yoktur; orada giriş sayfası ve pasaport bağlantısı kullanılır.
 - **Test sözleşmeleri** (davranışı sabitler; değişirse testler de değişmelidir): görünür `<nav>` tek olur; başlıkta tek `<summary>` (rol menüsü) bulunur ve `<header>` yalnızca kabukta kullanılır; `data-testid="viewer"` tek olur; `data-kpi`, `data-level`, `data-result-class` öznitelikleri ve gezinme bağlantı adları (Pazar yeri, İzlenebilirlik, Panel, Senaryo) korunur.
 - **Sayfa başlığı:** `PageBanner` (koyu yüzey, sağda hikâyenin render karesi) ya da `PageHeader`. Görsel yalnızca süstür (`alt=""`); anlam yazıdadır. Kare `<Still name>` ile gelir (`src/components/ui/Still.tsx`; düz `<img>` bilinçli: kareler hazır WebP, `next/image` üretimde sharp ister).
 - **Kartlar ve tablolar:** `card`, `cardPad` (`src/components/ui/classes.ts`); tablo `TableWrap`, `th`, `td`, `tr` (`src/components/trace/Table.tsx`). Dar ekranda hücre dolgusu 8 px: tablolar 360 px'te kaymadan sığar.

@@ -1,6 +1,7 @@
 import { ChevronDown, LogOut, PlayCircle } from "lucide-react";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { PersonaButtons } from "@/components/auth/PersonaButtons";
+import { LocaleSwitch } from "@/components/shell/LocaleSwitch";
 import { NavLink, type NavIcon } from "@/components/shell/NavLink";
 import { BrandMark, Wordmark } from "@/components/ui/Brand";
 import { Still } from "@/components/ui/Still";
@@ -73,6 +74,10 @@ export default async function AppLayout({ children, params }: LayoutProps<"/[loc
               </div>
             </details>
           )}
+          {/* Dar ekranda başlık sığmaz; orada dil anahtarı giriş sayfasında ve pasaportta. */}
+          <div className="hidden sm:block">
+            <LocaleSwitch label={t("nav.language")} />
+          </div>
           <p data-testid="viewer" className="hidden max-w-[16rem] truncate rounded-full bg-canvas px-3 text-sm font-medium leading-9 text-ink md:block">
             {t("auth.signedInAs", { org: viewer.orgName, role: t(`roles.${role}`) })}
           </p>
