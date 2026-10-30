@@ -14,26 +14,26 @@ export function ListingFacts({ row }: { row: Pick<MarketRow, "listing" | "orgNam
   const unknown = t("common.unknown");
 
   return (
-    <dl className="grid gap-x-4 gap-y-1 text-sm sm:grid-cols-[max-content_1fr]">
-      <dt className="font-semibold">{t("market.detail.owner")}</dt>
+    <dl className="grid gap-x-4 gap-y-1.5 text-sm sm:grid-cols-[max-content_1fr]">
+      <dt className="font-medium text-muted">{t("market.detail.owner")}</dt>
       <dd>{row.orgName ?? t("market.hiddenOrg")}</dd>
-      <dt className="font-semibold">{t("market.quantity")}</dt>
+      <dt className="font-medium text-muted">{t("market.quantity")}</dt>
       <dd data-testid="quantity">
         {fmtNumber(l.quantity, locale)} {t(`units.${l.unit}`)} · {t(`market.recurrence.${l.recurrence}`)}
         {l.recurrence !== "once" && ` (${t("market.perDelivery")})`}
       </dd>
-      <dt className="font-semibold">{t("market.price")}</dt>
+      <dt className="font-medium text-muted">{t("market.price")}</dt>
       <dd>
         <PriceText unitPrice={l.unitPrice} currency={l.currency} taxBasis={l.taxBasis} unit={l.priceUnit ?? l.unit} />
       </dd>
-      <dt className="font-semibold">{t("market.location")}</dt>
+      <dt className="font-medium text-muted">{t("market.location")}</dt>
       <dd>
         {l.district ?? unknown}
         {row.distanceKm && ` · ${t("market.distance", { km: fmtNumber(row.distanceKm, locale, 1) })} ${t("common.asTheCrowFlies")}`}
       </dd>
       {isWaste(l.kind) && (
         <>
-          <dt className="font-semibold">{t("market.composition")}</dt>
+          <dt className="font-medium text-muted">{t("market.composition")}</dt>
           <dd>
             {l.composition
               ? compositionShares(l.composition)
@@ -41,13 +41,13 @@ export function ListingFacts({ row }: { row: Pick<MarketRow, "listing" | "orgNam
                   .join(" · ")
               : unknown}
             {" · "}
-            <span data-silk={silk} className={silk === "no" ? undefined : "font-semibold"}>
+            <span data-silk={silk} className={silk === "no" ? "text-ink" : "font-semibold text-ink"}>
               {t(`market.silk.${silk}`)}
             </span>
           </dd>
         </>
       )}
-      <dt className="font-semibold">{t("market.window")}</dt>
+      <dt className="font-medium text-muted">{t("market.window")}</dt>
       <dd>
         {t("market.windowValue", {
           start: l.windowStart ? fmtDate(l.windowStart, locale) : unknown,

@@ -36,9 +36,9 @@ export function ReceiveForm({ locale, deliveryId, d }: { locale: string; deliver
         </Field>
       </div>
 
-      <fieldset className="grid gap-3 rounded border border-fg/30 p-4">
-        <legend className="px-1 font-semibold">{f("composition")}</legend>
-        <p className="text-sm">{f("compositionHint")}</p>
+      <fieldset className="grid gap-3 rounded-2xl border border-line bg-canvas p-4">
+        <legend className="px-1 font-semibold text-ink">{f("composition")}</legend>
+        <p className="text-sm text-muted">{f("compositionHint")}</p>
         <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
           {FIBRE_FIELDS.map((fb) => (
             <Field key={fb} id={`c_${fb}`} label={t(`fibres.${fb}`)}>

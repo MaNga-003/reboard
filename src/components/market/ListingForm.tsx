@@ -69,9 +69,9 @@ export function ListingForm({ locale, defaultKind, today, until }: { locale: str
       </div>
 
       {waste && (
-        <fieldset className="grid gap-3 rounded border border-fg/30 p-4">
-          <legend className="px-1 font-semibold">{f("composition")}</legend>
-          <p className="text-sm">{f("compositionHint")}</p>
+        <fieldset className="grid gap-3 rounded-2xl border border-line bg-canvas p-4">
+          <legend className="px-1 font-semibold text-ink">{f("composition")}</legend>
+          <p className="text-sm text-muted">{f("compositionHint")}</p>
           <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
             {FIBRE_FIELDS.map((fb) => (
               <Field key={fb} id={`c_${fb}`} label={t(`fibres.${fb}`)}>
@@ -105,7 +105,7 @@ export function ListingForm({ locale, defaultKind, today, until }: { locale: str
           <input {...a11y("amount", "amount", bad)} inputMode="decimal" className={control} />
         </Field>
       </div>
-      <p className="text-sm">{f("location")}</p>
+      <p className="text-sm text-muted">{f("location")}</p>
       <FormError message={state ? t(`market.errors.${state.error}`) : null} />
       <button type="submit" disabled={pending} className={submit}>
         {f("submit")}

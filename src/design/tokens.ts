@@ -1,5 +1,7 @@
 // Renk tokenları (D-014): yalnızca Sanzo Wada sözlüğündeki adlarla tanımlanır, hex sözlükten çözülür.
-// Ana palet kullanıcının seçimini bekliyor (Q-1); seçilene kadar geçici olarak B kullanılır.
+// İki katman vardır: hikâye ve eski sınıflar PALETTES[ACTIVE_PALETTE] rollerini (bg, fg…) kullanır; uygulama arayüzü
+// (kenar çubuğu, kartlar, düğmeler) UI rollerini kullanır (T4.8).
+import { over } from "./color";
 import wada from "./wada.json";
 
 export type WadaColor = { name: string; hex: string; combinations: number[] };
@@ -67,11 +69,72 @@ export function statusHex(id: PaletteId = ACTIVE_PALETTE): Record<StatusName, { 
   ) as Record<StatusName, { fill: string; on: string }>;
 }
 
+/**
+ * Arayüz paleti (T4.8): hikâyenin kimliğinden. Koyu indigo uzay finalinden, terrakota atölyenin sıcak ışığından gelir.
+ * Her rol bir Wada rengidir; ton açıkları (canvas, line…) Wada rengi + saydamlıktır ve hex'e çözülür, testler ölçebilsin.
+ */
+export const UI = {
+  ink: "Deep Indigo",
+  muted: "Slate Color",
+  subtle: "Dark Medici Blue",
+  surface: "White",
+  brand: "Burnt Sienna",
+  onBrand: "White",
+  side: "Deep Indigo",
+  sideInk: "White",
+  glow: "Golden Yellow",
+  sky: "Pale King's Blue",
+} as const;
+
+export type UiRole = keyof typeof UI;
+
+export function uiHex(): Record<UiRole, string> {
+  return Object.fromEntries(Object.entries(UI).map(([role, name]) => [role, wadaHex(name)])) as Record<UiRole, string>;
+}
+
+export function uiTints() {
+  const c = uiHex();
+  return {
+    canvas: over(c.ink, 0.035, c.surface),
+    line: over(c.ink, 0.12, c.surface),
+    lineStrong: over(c.ink, 0.5, c.surface),
+    brandSoft: over(c.brand, 0.1, c.surface),
+    sideMuted: over(c.sideInk, 0.68, c.side),
+    sideLine: over(c.sideInk, 0.12, c.side),
+    sideActive: over(c.sideInk, 0.1, c.side),
+  };
+}
+
+function uiVariables(): Record<string, string> {
+  const c = uiHex();
+  const t = uiTints();
+  return {
+    "--rb-ink": c.ink,
+    "--rb-muted": c.muted,
+    "--rb-subtle": c.subtle,
+    "--rb-surface": c.surface,
+    "--rb-canvas": t.canvas,
+    "--rb-line": t.line,
+    "--rb-line-strong": t.lineStrong,
+    "--rb-brand": c.brand,
+    "--rb-on-brand": c.onBrand,
+    "--rb-brand-soft": t.brandSoft,
+    "--rb-side": c.side,
+    "--rb-side-ink": c.sideInk,
+    "--rb-side-muted": t.sideMuted,
+    "--rb-side-line": t.sideLine,
+    "--rb-side-active": t.sideActive,
+    "--rb-glow": c.glow,
+    "--rb-sky": c.sky,
+  };
+}
+
 /** <html> üzerine yazılan CSS değişkenleri; globals.css bunları Tailwind temasına bağlar. */
 export function cssVariables(id: PaletteId = ACTIVE_PALETTE): Record<string, string> {
   const hex = paletteHex(id);
   const status = statusHex(id);
   return {
+    ...uiVariables(),
     "--rb-bg": hex.bg,
     "--rb-text": hex.text,
     "--rb-accent": hex.accent,

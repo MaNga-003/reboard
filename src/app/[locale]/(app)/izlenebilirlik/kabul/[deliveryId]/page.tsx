@@ -6,7 +6,8 @@ import { getDb } from "@/db/client";
 import { receiveTarget } from "@/db/repo/trace";
 import { can } from "@/domain/access";
 import { Decimal } from "@/domain/result";
-import { Link } from "@/i18n/navigation";
+import { BackLink } from "@/components/ui/BackLink";
+import { cardPad, h1, lead, note } from "@/components/ui/classes";
 import { fmtDate, fmtNumber } from "@/lib/format";
 import { requireViewer } from "@/lib/viewer";
 
@@ -22,34 +23,34 @@ export default async function ReceivePage({ params }: PageProps<"/[locale]/izlen
   const silk = target.containsSilk === null ? "unknown" : target.containsSilk ? "yes" : "no";
 
   return (
-    <main id="main" className="mx-auto grid w-full max-w-3xl flex-1 content-start gap-6 px-4 py-10">
-      <Link href="/izlenebilirlik" className="inline-flex min-h-11 items-center justify-self-start underline underline-offset-4">
-        {t("trace.back")}
-      </Link>
-      <h1 className="font-display text-4xl">{t("trace.receive.title")}</h1>
-      <p className="max-w-prose">{t("trace.receive.lead")}</p>
+    <main id="main" className="mx-auto grid w-full max-w-3xl flex-1 content-start gap-6 px-4 py-8 sm:px-6 lg:py-10">
+      <BackLink href="/izlenebilirlik">{t("trace.back")}</BackLink>
+      <h1 className={h1}>{t("trace.receive.title")}</h1>
+      <p className={lead}>{t("trace.receive.lead")}</p>
       <div className="flex flex-wrap items-center gap-2 text-sm">
-        <span className="font-semibold">{t("trace.receive.delivery")}</span>
+        <span className="font-semibold text-ink">{t("trace.receive.delivery")}</span>
         <ResultClassBadge value={target.resultClass} />
       </div>
-      <dl className="grid gap-x-4 gap-y-1 text-sm sm:grid-cols-[max-content_1fr]">
-        <dt className="font-semibold">{t("trace.cols.seller")}</dt>
+      <dl className="grid gap-x-6 gap-y-2.5 rounded-2xl border border-line bg-surface p-5 text-sm shadow-card sm:grid-cols-[max-content_1fr] [&_dd]:text-ink">
+        <dt className="font-medium text-muted">{t("trace.cols.seller")}</dt>
         <dd>{target.sellerName ?? t("market.hiddenOrg")}</dd>
-        <dt className="font-semibold">{t("trace.cols.listing")}</dt>
+        <dt className="font-medium text-muted">{t("trace.cols.listing")}</dt>
         <dd>{target.listingTitle ?? t("common.unknown")}</dd>
-        <dt className="font-semibold">{t("trace.cols.plannedAt")}</dt>
+        <dt className="font-medium text-muted">{t("trace.cols.plannedAt")}</dt>
         <dd>{fmtDate(target.plannedAt, locale)}</dd>
-        <dt className="font-semibold">{t("trace.cols.plannedKg")}</dt>
+        <dt className="font-medium text-muted">{t("trace.cols.plannedKg")}</dt>
         <dd>{target.plannedKg === null ? t("common.unknown") : fmtNumber(target.plannedKg, locale)}</dd>
       </dl>
       {canReceive ? (
-        <ReceiveForm
-          locale={locale}
-          deliveryId={target.id}
-          d={{ declaredKg: target.plannedKg === null ? "" : new Decimal(target.plannedKg).toString(), composition: target.composition, silk }}
-        />
+        <div className={cardPad}>
+          <ReceiveForm
+            locale={locale}
+            deliveryId={target.id}
+            d={{ declaredKg: target.plannedKg === null ? "" : new Decimal(target.plannedKg).toString(), composition: target.composition, silk }}
+          />
+        </div>
       ) : (
-        <p role="note" className="rounded border border-fg/30 px-3 py-2">
+        <p role="note" className={note}>
           {t("trace.readOnly")}
         </p>
       )}

@@ -1,7 +1,7 @@
 {
   "$schema": "./docs/state.schema.json",
   "project": "ReBoard SaaS platformu",
-  "updated_at": "2026-10-29T18:37:00+03:00",
+  "updated_at": "2026-10-30T01:59:00+03:00",
   "current_phase": "F2",
   "deadlines": {
     "demo_freeze": "2026-10-29T18:00:00+03:00",
@@ -312,10 +312,10 @@
       "id": "T3.1",
       "phase": "F3",
       "mode": "hibrit",
-      "status": "yapılacak",
+      "status": "iptal",
       "title": "Palet önizleme sayfası (A/B/C) ve kullanıcının seçimi",
       "acceptance": "Üç aday gerçek bileşenlerle gösterilir; ölçümler sayfada görünür; kullanıcı birini seçer",
-      "evidence": null,
+      "evidence": "Kullanıcı kararı (2026-10-30): palet adayları yerine yeni arayüz tasarımı (T4.8, D-034). Adaylar gerçek ekranlarda ölçüldü (en düşük metin kontrastı A 4,05, B 7,45, C 3,56); seçim yapılmadı.",
       "depends_on": [
         "T0.5"
       ],
@@ -373,28 +373,27 @@
       "id": "T3.5",
       "phase": "F3",
       "mode": "otonom",
-      "status": "engelli",
+      "status": "tamam",
       "title": "Final render, AVIF/WebP kodlama ve bütçe testleri",
       "acceptance": "Kare SSIM ≥ 0,95 (hedef 0,97); masaüstü en fazla 25 MB, mobil en fazla 12 MB, ilk bölüm en fazla 3 MB (karar C, D-004); yayın paketi ≤ 90 MB; metin altı kontrastı en az 4,5",
-      "evidence": "pnpm story:encode (2026-10-29): masaüstü 240 kare 19,01 MB, mobil 120 kare 7,20 MB, ilk bölüm 1,82 / 0,59 MB, en düşük kare SSIM 0,970 / 0,9701 (M-2); yayın paketi 29,21 MB (deploy-config). Süreklilik final AVIF'te sıçrama 0, bozmada yakalama 89/92 ve 74/84 (M-10). Metin altı kontrastı en kötü kare durumunda üç palette de ≥ 4,91 (M-9). story-budget, story-continuity, story-contrast yeşil.",
+      "evidence": "pnpm story:encode (2026-10-29): masaüstü 240 kare 19,01 MB, mobil 120 kare 7,20 MB, ilk bölüm 1,82 / 0,59 MB, en düşük kare SSIM 0,970 / 0,9701 (M-2); yayın paketi 29,21 MB (deploy-config). Süreklilik final AVIF'te sıçrama 0, bozmada yakalama 89/92 ve 74/84 (M-10). Metin altı kontrastı en kötü kare durumunda üç palette de ≥ 4,91 (M-9). story-budget, story-continuity, story-contrast yeşil. Engel kalktı (2026-10-30): T3.1 iptal oldu; kareler paletten bağımsızdır, yeniden render gerekmedi.",
       "depends_on": [
-        "T3.3",
-        "T3.1"
+        "T3.3"
       ],
       "decisions": [
         "D-004",
         "D-014"
       ],
-      "note": "Süre ölçümü (2026-10-28, kırpıntılı 1. bölüm, 1920×1080, RTX 3050, OptiX + OIDN; kare 0 ve 29, 360 kareye oranlı): 1024 örnek 264/338 s → ≈ 30,1 sa; 512: 145/171 s → ≈ 15,8 sa; 256: 66/80 s → ≈ 7,3 sa; 128: 32/40 s → ≈ 3,6 sa; 64: 17/20 s → ≈ 1,8 sa. Kazandırmayanlar: eşik 0,01 (%3), sekme sayısını azaltmak (%3), eğri alt bölümü 2 (%2), ribbon eğri (daha yavaş ve kare 29 SSIM 0,935), küçük render (aynı bütçede kare 29 SSIM 0,869 → 0,82–0,86). Ham kare 1024'e karşı (kare 29): 512 SSIM 0,990, 256 0,987, 128 0,983, 64 0,976. Kodlama kaybı baskın: 14 MB bütçesi (kare başı ≈ 47 kB, AVIF q18) kare 29'da 1024/512/256/128/64 için SSIM 0,869/0,869/0,867/0,866/0,863 verir; %100 kırpıntıda 1024, 256, 128 ve 64 ayırt edilmiyor, bütçeli AVIF lifleri siliyor. Kare başı ≈ 200 kB (q60) ile 0,978/0,974/0,971/0,968/0,962. Karar: 128 örnek (kullanıcı, 2026-10-28; D-004). Kalite hedefi → bayt (128 örnek, kendi PNG'sine karşı): kare 0 SSIM ≥ 0,98 için 4 kB; kare 29 0,95 için 108 kB, 0,97 için 165 kB, 0,98 için 221 kB. Vercel Hobby (okunma 2026-10-28): CLI yüklemesi ≤ 100 MB (vercel.com/docs/limits), aylık 100 GB aktarım, aşılınca 30 gün durur (vercel.com/docs/plans/hobby). Bütçe kararı C (kullanıcı, 2026-10-28; D-004): kare başı SSIM 0,97 hedefi (taban 0,95), tavan masaüstü 25 / mobil 12 / ilk bölüm 3 MB. story-encode kare başı ikili arama yapar (AVIF q20–90; örnek: kare 0 q20 5 kB, kare 29 q55 165 kB). WebP aynı SSIM'de AVIF'in 1,7–2,4 katı (kare 29: 282 kB, kare 52: 79 kB'a karşı 33 kB); bu yüzden WebP yalnızca poster ve bölüm durağan karelerinde, AVIF'siz tarayıcı statik hikâyeye geçer. Yayın paketi testi ≤ 90 MB (deploy-config). story-budget belge ile kodlayıcı 4/4. Testler yazıldı: story-contrast (kare bağımsız en kötü durum, 4/4) ve story-budget (belge ile kodlayıcı aynı 3/3; kare ölçümü manifest gelince). Final render 128 örnek. 8. bölüm eşit log zoom ile sıçradı (masaüstü ×1,39 Sahra girişi, mobil ×1,77 yerleşimin saydamlaşması); kamera hızı sondadan üretilen PACE tablosuyla ayarlanıp yeniden render edildi (26,1 dk): ×1,12 / ×1,13 (M-10). Engel: T3.1 (palet seçimi, Q-1). Kareler paletten bağımsız (her bölüm kendi Wada rengini taşır); metin kartının kontrastı üç palette de ölçüldü. Palet seçilince T3.5 tamam olur, yeniden render gerekmez."
+      "note": "Süre ölçümü (2026-10-28, kırpıntılı 1. bölüm, 1920×1080, RTX 3050, OptiX + OIDN; kare 0 ve 29, 360 kareye oranlı): 1024 örnek 264/338 s → ≈ 30,1 sa; 512: 145/171 s → ≈ 15,8 sa; 256: 66/80 s → ≈ 7,3 sa; 128: 32/40 s → ≈ 3,6 sa; 64: 17/20 s → ≈ 1,8 sa. Kazandırmayanlar: eşik 0,01 (%3), sekme sayısını azaltmak (%3), eğri alt bölümü 2 (%2), ribbon eğri (daha yavaş ve kare 29 SSIM 0,935), küçük render (aynı bütçede kare 29 SSIM 0,869 → 0,82–0,86). Ham kare 1024'e karşı (kare 29): 512 SSIM 0,990, 256 0,987, 128 0,983, 64 0,976. Kodlama kaybı baskın: 14 MB bütçesi (kare başı ≈ 47 kB, AVIF q18) kare 29'da 1024/512/256/128/64 için SSIM 0,869/0,869/0,867/0,866/0,863 verir; %100 kırpıntıda 1024, 256, 128 ve 64 ayırt edilmiyor, bütçeli AVIF lifleri siliyor. Kare başı ≈ 200 kB (q60) ile 0,978/0,974/0,971/0,968/0,962. Karar: 128 örnek (kullanıcı, 2026-10-28; D-004). Kalite hedefi → bayt (128 örnek, kendi PNG'sine karşı): kare 0 SSIM ≥ 0,98 için 4 kB; kare 29 0,95 için 108 kB, 0,97 için 165 kB, 0,98 için 221 kB. Vercel Hobby (okunma 2026-10-28): CLI yüklemesi ≤ 100 MB (vercel.com/docs/limits), aylık 100 GB aktarım, aşılınca 30 gün durur (vercel.com/docs/plans/hobby). Bütçe kararı C (kullanıcı, 2026-10-28; D-004): kare başı SSIM 0,97 hedefi (taban 0,95), tavan masaüstü 25 / mobil 12 / ilk bölüm 3 MB. story-encode kare başı ikili arama yapar (AVIF q20–90; örnek: kare 0 q20 5 kB, kare 29 q55 165 kB). WebP aynı SSIM'de AVIF'in 1,7–2,4 katı (kare 29: 282 kB, kare 52: 79 kB'a karşı 33 kB); bu yüzden WebP yalnızca poster ve bölüm durağan karelerinde, AVIF'siz tarayıcı statik hikâyeye geçer. Yayın paketi testi ≤ 90 MB (deploy-config). story-budget belge ile kodlayıcı 4/4. Testler yazıldı: story-contrast (kare bağımsız en kötü durum, 4/4) ve story-budget (belge ile kodlayıcı aynı 3/3; kare ölçümü manifest gelince). Final render 128 örnek. 8. bölüm eşit log zoom ile sıçradı (masaüstü ×1,39 Sahra girişi, mobil ×1,77 yerleşimin saydamlaşması); kamera hızı sondadan üretilen PACE tablosuyla ayarlanıp yeniden render edildi (26,1 dk): ×1,12 / ×1,13 (M-10). Engel (2026-10-30'da kalktı, T3.1 iptal): palet seçimi. Kareler paletten bağımsız (her bölüm kendi Wada rengini taşır); metin kartının kontrastı üç palette de ölçüldü. Palet seçilince T3.5 tamam olur, yeniden render gerekmez."
     },
     {
       "id": "T3.6",
       "phase": "F3",
       "mode": "kullanıcı",
-      "status": "yapılacak",
+      "status": "tamam",
       "title": "Hikâyenin his ve zevk onayı (2–4 maddelik kontrol listesi)",
       "acceptance": "Kullanıcı onay verir ya da değişiklik listesi verir",
-      "evidence": null,
+      "evidence": "Kullanıcı (2026-10-30): hikâyeyi beğendi ve olduğu gibi bırakılmasını istedi (D-034). Madde bazında değişiklik listesi vermedi.",
       "depends_on": [
         "T3.5"
       ],
@@ -518,6 +517,22 @@
       "note": "İlk bulgu düzeltildi: İBB tarifesi KDV dahil ve 2026 için geçerli; tesis adları tarifede (2026-10-27). Senaryo: kaynaksız 22 varsayılan girdi arayüzden kalktı, yerine dayanak metni geldi; 4 yeni kaynaklı karşılaştırma satırı (Arcline sunta, Arkutorman MDF, 2026-10-28) (D-029). 2026-10-29: veri sözlüğündeki 'Toplam 100 olmalı' kodla çelişiyordu ('en fazla 100'), düzeltildi; %2 kütle dengesi toleransının ISO 22095'ten değil platform kuralından geldiği yazıldı; D-018'deki Vercel 4,5 MB sınırına kaynak eklendi. Seed'deki kaynaklı değerlerin bağlantı ve tarihini seed.test.ts denetler."
     },
     {
+      "id": "T4.8",
+      "phase": "F4",
+      "mode": "otonom",
+      "status": "sürüyor",
+      "title": "SaaS arayüzünü modern SaaS kabuğuyla yeniden tasarla ve canlıya al (hikâye değişmez)",
+      "acceptance": "Giriş, pazar yeri, izlenebilirlik, panel, senaryo, pasaport ve ana sayfa yeni tasarımda; hikâye bileşenleri değişmez; metin ve sayılar değişmez; yerel e2e, demo akışı, kare süresi ve birim paket yeşil; canlıda live-smoke yeşil",
+      "evidence": null,
+      "depends_on": [
+        "T4.3"
+      ],
+      "decisions": [
+        "D-014",
+        "D-034"
+      ]
+    },
+    {
       "id": "T5.1",
       "phase": "F5",
       "mode": "otonom",
@@ -562,14 +577,6 @@
     }
   ],
   "open_questions": [
-    {
-      "id": "Q-1",
-      "owner": "kullanıcı",
-      "question": "Ana palet A (#303), B (#310) ya da C (#343)?",
-      "blocks": [
-        "T3.5"
-      ]
-    },
     {
       "id": "Q-3",
       "owner": "ekip",
@@ -904,6 +911,14 @@
       "last_value": "Yerel production: 1/1, 5,2 s, ihlal 0, WebGL2 var, harita çizildi; paket 76/76, demo ve perf 2/2, demo:offline --check geçti. Bozma: connect-src'den harita adresi çıkınca harita fallback ve 3 ihlal kaydı; genel CSP kanıt ucunun sandbox politikasını ezince trace.spec düştü (genel CSP /api/evidence/ dışına alındı). Yayında live-smoke 40865334935: başlık ve yönergeler tamam",
       "measured_at": "2026-10-29T14:29:00+03:00",
       "test": "tests/e2e/csp.spec.ts, tests/e2e/trace.spec.ts, scripts/live-smoke.mjs"
+    },
+    {
+      "id": "M-37",
+      "claim": "Arayüz yenilenince davranış sözleşmeleri korunur",
+      "threshold": "e2e, demo akışı, kare süresi (p99 ≤ 25 ms) ve birim paket yeşil; hikâye bileşenleri değişmez",
+      "last_value": "Yerel production: e2e 76/76, demo 1/1, kare süresi p99 16,8 ms (239/240 kare), birim ve entegrasyon 524 geçti (2 atlanan), lint ve tür denetimi temiz. Bulgular: details ızgarasındaki geniş tablo sayfayı 58 px taşırdı (min-w-0 ve minmax(0,1fr) ile çözüldü); escapedAbsolutes gizli öğeleri de sayıyordu (düzeltildi); senaryo tablosunda dolgu 360 px'te 33 px kayma verdi (dar ekranda 8 px)",
+      "measured_at": "2026-10-30T01:59:00+03:00",
+      "test": "tests/e2e/*.spec.ts, tests/unit/*.test.ts, tests/e2e/helpers.ts"
     }
   ]
 }

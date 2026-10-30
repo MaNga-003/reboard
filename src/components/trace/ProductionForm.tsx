@@ -19,9 +19,9 @@ export function ProductionForm({ locale, stock, canLot }: { locale: string; stoc
   return (
     <form action={dispatch} onSubmit={keepValues(dispatch)} className="grid gap-5" noValidate>
       <input type="hidden" name="locale" value={locale} />
-      <fieldset className="grid gap-3 rounded border border-fg/30 p-4">
-        <legend className="px-1 font-semibold">{f("stock")}</legend>
-        <p className="text-sm">{f("stockHint")}</p>
+      <fieldset className="grid gap-3 rounded-2xl border border-line bg-canvas p-4">
+        <legend className="px-1 font-semibold text-ink">{f("stock")}</legend>
+        <p className="text-sm text-muted">{f("stockHint")}</p>
         <div className="grid gap-4 sm:grid-cols-2">
           {stock.map((s) => (
             <Field key={s.id} id={`a_${s.id}`} label={f("allocate", { code: s.code })} hint={f("remaining", { kg: s.remainingText, supplier: s.supplier })}>
@@ -31,9 +31,9 @@ export function ProductionForm({ locale, stock, canLot }: { locale: string; stoc
         </div>
       </fieldset>
 
-      <fieldset className="grid gap-3 rounded border border-fg/30 p-4">
-        <legend className="px-1 font-semibold">{t("trace.lot.massBalance")}</legend>
-        <p className="text-sm">{f("balanceHint")}</p>
+      <fieldset className="grid gap-3 rounded-2xl border border-line bg-canvas p-4">
+        <legend className="px-1 font-semibold text-ink">{t("trace.lot.massBalance")}</legend>
+        <p className="text-sm text-muted">{f("balanceHint")}</p>
         <div className="grid gap-4 sm:grid-cols-3">
           {(["outputKg", "scrapKg", "moistureLossKg"] as const).map((k) => (
             <Field key={k} id={k} label={f(k)}>
@@ -57,8 +57,8 @@ export function ProductionForm({ locale, stock, canLot }: { locale: string; stoc
       </Field>
 
       {canLot ? (
-        <fieldset className="grid gap-3 rounded border border-fg/30 p-4">
-          <legend className="px-1 font-semibold">{f("lot")}</legend>
+        <fieldset className="grid gap-3 rounded-2xl border border-line bg-canvas p-4">
+          <legend className="px-1 font-semibold text-ink">{f("lot")}</legend>
           <div className="grid gap-4 sm:grid-cols-2">
             <Field id="sheetCount" label={f("sheetCount")} hint={f("sheetHint")}>
               <input {...a11y("sheetCount", "sheetCount", bad, true)} type="number" min={1} step={1} inputMode="numeric" className={control} />

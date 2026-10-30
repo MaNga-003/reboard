@@ -14,6 +14,19 @@
     "brand": "ReBoard",
     "main": "Main menu"
   },
+  "shell": {
+    "watchStory": "Watch the story again",
+    "pillars": {
+      "market": "Textile waste marketplace",
+      "continuity": "Supply continuity",
+      "verified": "Verifiable recovery"
+    },
+    "pillarsText": {
+      "market": "Waste listings, offers and the delivery plan in one place.",
+      "continuity": "Stock, days of raw material left and alerts for upcoming deliveries.",
+      "verified": "Every kilogram is tied to a weighbridge reading and to the next step; if a record changes later, the chain check fails."
+    }
+  },
   "resultClass": {
     "synthetic": "Synthetic",
     "sourced_estimate": "Sourced estimate",

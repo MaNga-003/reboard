@@ -8,6 +8,9 @@ import { getDb } from "@/db/client";
 import { lotGenealogy } from "@/db/repo/trace";
 import { FIBRES } from "@/domain/fibre";
 import { Link } from "@/i18n/navigation";
+import { BackLink } from "@/components/ui/BackLink";
+import { PageBanner } from "@/components/ui/PageHeader";
+import { btnPrimary, h2, note, page } from "@/components/ui/classes";
 import { fmtNumber, fmtPercent } from "@/lib/format";
 import { requireViewer } from "@/lib/viewer";
 
@@ -26,74 +29,79 @@ export default async function LotPage({ params, searchParams }: PageProps<"/[loc
   const fibres = g.fibreKg ? FIBRES.filter((f) => g.fibreKg![f].gt(0)) : [];
 
   return (
-    <main id="main" className="mx-auto grid w-full max-w-5xl flex-1 content-start gap-8 px-4 py-10">
-      <Link href="/izlenebilirlik" className="inline-flex min-h-11 items-center justify-self-start underline underline-offset-4">
-        {t("trace.back")}
-      </Link>
+    <main id="main" className={`${page} gap-8`}>
+      <BackLink href="/izlenebilirlik">{t("trace.back")}</BackLink>
       <Notice query={await searchParams} />
 
-      <article data-lot-code={lot.code} className="grid gap-4">
-        <div className="flex flex-wrap items-center gap-2 text-sm">
-          <span data-test-status={lot.testStatus} className="font-semibold">
-            {t(`trace.testStatus.${lot.testStatus}`)}
-          </span>
-          <ResultClassBadge value={g.resultClass} />
-        </div>
-        <h1 className="font-display text-4xl break-words">{t("trace.lot.title", { code: lot.code })}</h1>
-        <p role="note" className="max-w-prose rounded border border-fg/30 px-3 py-2 text-sm">
-          {t("trace.lot.testNote")}
-        </p>
-        {lot.isPublic && (
-          <Link href={`/pasaport/${lot.code}`} data-passport-link className="inline-flex min-h-11 items-center justify-self-start underline underline-offset-4">
-            {t("trace.lot.passport")}
-          </Link>
-        )}
-        <dl className="grid gap-x-4 gap-y-1 text-sm sm:grid-cols-[max-content_1fr]">
-          <dt className="font-semibold">{t("trace.lot.production")}</dt>
+      <article data-lot-code={lot.code} className="grid gap-6">
+        <PageBanner
+          still="press"
+          title={t("trace.lot.title", { code: lot.code })}
+          lead={
+            <p role="note" className="max-w-prose">
+              {t("trace.lot.testNote")}
+            </p>
+          }
+          actions={
+            <>
+              <span data-test-status={lot.testStatus} className="rounded-full bg-surface px-3 text-sm font-semibold leading-8 text-ink">
+                {t(`trace.testStatus.${lot.testStatus}`)}
+              </span>
+              <ResultClassBadge value={g.resultClass} />
+              {lot.isPublic && (
+                <Link href={`/pasaport/${lot.code}`} data-passport-link className={btnPrimary}>
+                  {t("trace.lot.passport")}
+                </Link>
+              )}
+            </>
+          }
+        />
+        <dl className="grid gap-x-6 gap-y-2.5 rounded-2xl border border-line bg-surface p-5 text-sm shadow-card sm:grid-cols-[max-content_1fr] [&_dd]:text-ink">
+          <dt className="font-medium text-muted">{t("trace.lot.production")}</dt>
           <dd>{production.code}</dd>
-          <dt className="font-semibold">{t("trace.lot.binder")}</dt>
+          <dt className="font-medium text-muted">{t("trace.lot.binder")}</dt>
           <dd>{t(`trace.binders.${production.binder}`)}</dd>
-          <dt className="font-semibold">{t("trace.lot.sheets")}</dt>
+          <dt className="font-medium text-muted">{t("trace.lot.sheets")}</dt>
           <dd>{lot.sheetCount ?? unknown}</dd>
-          <dt className="font-semibold">{t("trace.lot.area")}</dt>
+          <dt className="font-medium text-muted">{t("trace.lot.area")}</dt>
           <dd>
             <Qty value={lot.areaM2} locale={locale} unit="m²" />
           </dd>
-          <dt className="font-semibold">{t("trace.lot.thickness")}</dt>
+          <dt className="font-medium text-muted">{t("trace.lot.thickness")}</dt>
           <dd>
             <Qty value={lot.thicknessMm} locale={locale} unit="mm" />
           </dd>
-          <dt className="font-semibold">{t("trace.lot.density")}</dt>
+          <dt className="font-medium text-muted">{t("trace.lot.density")}</dt>
           <dd>
             <Qty value={lot.densityKgM3} locale={locale} unit="kg/m³" />
           </dd>
-          <dt className="font-semibold">{t("trace.lot.textileKg")}</dt>
+          <dt className="font-medium text-muted">{t("trace.lot.textileKg")}</dt>
           <dd data-testid="textile-kg">
             <Qty value={g.textileKg} locale={locale} />
           </dd>
-          <dt className="font-semibold">{t("trace.lot.verifiedTextileKg")}</dt>
+          <dt className="font-medium text-muted">{t("trace.lot.verifiedTextileKg")}</dt>
           <dd data-testid="verified-kg">
             <Qty value={g.verifiedTextileKg} locale={locale} />
           </dd>
-          <dt className="font-semibold">{t("trace.lot.share")}</dt>
+          <dt className="font-medium text-muted">{t("trace.lot.share")}</dt>
           <dd>{g.lotShare === null ? unknown : fmtPercent(g.lotShare.times(100).toNumber(), locale, 1)}</dd>
         </dl>
       </article>
 
       <section aria-labelledby="tree-title" className="grid gap-3">
-        <h2 id="tree-title" className="text-2xl font-semibold">
+        <h2 id="tree-title" className={h2}>
           {t("trace.lot.tree")}
         </h2>
-        <p className="text-sm">{t("trace.lot.treeHint")}</p>
-        <ul data-testid="genealogy" className="grid gap-2 text-sm">
+        <p className="text-sm text-muted">{t("trace.lot.treeHint")}</p>
+        <ul data-testid="genealogy" className="grid gap-2 rounded-2xl border border-line bg-surface p-5 text-sm text-ink shadow-card">
           <li className="grid gap-2">
             <span className="font-semibold">{lot.code}</span>
-            <ul className="grid gap-2 border-s-2 border-fg/30 ps-4">
+            <ul className="grid gap-2 border-s-2 border-line-strong ps-4">
               <li className="grid gap-2">
                 <span>
                   <span className="font-semibold">{production.code}</span> · {t("trace.cols.outputKg")}: <Qty value={production.outputKg} locale={locale} />
                 </span>
-                <ul className="grid gap-2 border-s-2 border-fg/30 ps-4">
+                <ul className="grid gap-2 border-s-2 border-line-strong ps-4">
                   {g.sources.map((s) => (
                     <li key={s.waste.id} data-batch-code={s.waste.code} data-verified={s.waste.verified} className="flex flex-wrap items-center gap-x-2">
                       <Link href={`/izlenebilirlik/parti/${s.waste.id}`} className="inline-flex min-h-11 items-center font-semibold underline underline-offset-4">
@@ -114,16 +122,16 @@ export default async function LotPage({ params, searchParams }: PageProps<"/[loc
 
       <div className="grid gap-8 md:grid-cols-2">
         <section aria-labelledby="fibre-title" className="grid content-start gap-3">
-          <h2 id="fibre-title" className="text-2xl font-semibold">
+          <h2 id="fibre-title" className={h2}>
             {t("trace.lot.fibreKg")}
           </h2>
           {g.fibreKg === null ? (
-            <p>{unknown}</p>
+            <p className={note}>{unknown}</p>
           ) : (
-            <dl className="grid grid-cols-[max-content_1fr] gap-x-4 gap-y-1 text-sm">
+            <dl className="grid grid-cols-[max-content_1fr] gap-x-6 gap-y-2.5 rounded-2xl border border-line bg-surface p-5 text-sm shadow-card [&_dd]:text-ink">
               {fibres.map((f) => (
                 <div key={f} data-fibre={f} className="contents">
-                  <dt className="font-semibold">{t(`fibres.${f}`)}</dt>
+                  <dt className="font-medium text-muted">{t(`fibres.${f}`)}</dt>
                   <dd>
                     <Qty value={g.fibreKg![f]} locale={locale} />
                   </dd>
@@ -133,16 +141,16 @@ export default async function LotPage({ params, searchParams }: PageProps<"/[loc
           )}
         </section>
         <section aria-labelledby="supplier-title" className="grid content-start gap-3">
-          <h2 id="supplier-title" className="text-2xl font-semibold">
+          <h2 id="supplier-title" className={h2}>
             {t("trace.lot.bySupplier")}
           </h2>
           {g.bySupplierKg === null ? (
-            <p>{unknown}</p>
+            <p className={note}>{unknown}</p>
           ) : (
-            <dl className="grid grid-cols-[max-content_1fr] gap-x-4 gap-y-1 text-sm">
+            <dl className="grid grid-cols-[max-content_1fr] gap-x-6 gap-y-2.5 rounded-2xl border border-line bg-surface p-5 text-sm shadow-card [&_dd]:text-ink">
               {[...g.bySupplierKg].map(([org, kg]) => (
                 <div key={org} data-supplier={v.supplierNames.get(org) ?? ""} className="contents">
-                  <dt className="font-semibold">{v.supplierNames.get(org) ?? t("market.hiddenOrg")}</dt>
+                  <dt className="font-medium text-muted">{v.supplierNames.get(org) ?? t("market.hiddenOrg")}</dt>
                   <dd>
                     <Qty value={kg} locale={locale} />
                   </dd>
@@ -154,26 +162,26 @@ export default async function LotPage({ params, searchParams }: PageProps<"/[loc
       </div>
 
       <section aria-labelledby="balance-title" className="grid gap-3">
-        <h2 id="balance-title" className="text-2xl font-semibold">
+        <h2 id="balance-title" className={h2}>
           {t("trace.lot.massBalance")}
         </h2>
-        <dl className="grid gap-x-4 gap-y-1 text-sm sm:grid-cols-[max-content_1fr]">
-          <dt className="font-semibold">{t("trace.lot.input")}</dt>
+        <dl className="grid gap-x-6 gap-y-2.5 rounded-2xl border border-line bg-surface p-5 text-sm shadow-card sm:grid-cols-[max-content_1fr] [&_dd]:text-ink">
+          <dt className="font-medium text-muted">{t("trace.lot.input")}</dt>
           <dd>
             <Qty value={g.massBalance.inputKg} locale={locale} />
           </dd>
-          <dt className="font-semibold">{t("trace.lot.accounted")}</dt>
+          <dt className="font-medium text-muted">{t("trace.lot.accounted")}</dt>
           <dd>
             <Qty value={g.massBalance.accountedKg} locale={locale} />
           </dd>
         </dl>
-        <p className="text-sm">
+        <p className="rounded-2xl border border-line bg-surface p-4 text-sm text-ink shadow-card">
           <BalanceText mb={g.massBalance} locale={locale} />
         </p>
       </section>
 
       <section aria-labelledby="timeline-title" className="grid gap-3">
-        <h2 id="timeline-title" className="text-2xl font-semibold">
+        <h2 id="timeline-title" className={h2}>
           {t("trace.lot.timeline")}
         </h2>
         <ChainStatus verdict={v.chain} />

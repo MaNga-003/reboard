@@ -4,7 +4,8 @@ import { getDb } from "@/db/client";
 import { stock } from "@/db/repo/trace";
 import { can } from "@/domain/access";
 import { producible } from "@/domain/traceability";
-import { Link } from "@/i18n/navigation";
+import { BackLink } from "@/components/ui/BackLink";
+import { cardPad, h1, lead, note } from "@/components/ui/classes";
 import { fmtNumber } from "@/lib/format";
 import { requireViewer } from "@/lib/viewer";
 
@@ -31,22 +32,22 @@ export default async function NewProductionPage({ params }: PageProps<"/[locale]
     }));
 
   return (
-    <main id="main" className="mx-auto grid w-full max-w-3xl flex-1 content-start gap-6 px-4 py-10">
-      <Link href="/izlenebilirlik" className="inline-flex min-h-11 items-center justify-self-start underline underline-offset-4">
-        {t("trace.back")}
-      </Link>
-      <h1 className="font-display text-4xl">{t("trace.production.title")}</h1>
-      <p className="max-w-prose">{t("trace.production.lead")}</p>
+    <main id="main" className="mx-auto grid w-full max-w-3xl flex-1 content-start gap-6 px-4 py-8 sm:px-6 lg:py-10">
+      <BackLink href="/izlenebilirlik">{t("trace.back")}</BackLink>
+      <h1 className={h1}>{t("trace.production.title")}</h1>
+      <p className={lead}>{t("trace.production.lead")}</p>
       {!canProduce ? (
-        <p role="note" className="rounded border border-fg/30 px-3 py-2">
+        <p role="note" className={note}>
           {t("trace.readOnly")}
         </p>
       ) : options.length === 0 ? (
-        <p role="note" className="rounded border border-fg/30 px-3 py-2">
+        <p role="note" className={note}>
           {t("trace.production.noStock")}
         </p>
       ) : (
-        <ProductionForm locale={locale} stock={options} canLot={can(roles, "panelLot", "create")} />
+        <div className={cardPad}>
+          <ProductionForm locale={locale} stock={options} canLot={can(roles, "panelLot", "create")} />
+        </div>
       )}
     </main>
   );

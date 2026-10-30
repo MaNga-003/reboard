@@ -66,9 +66,9 @@ function Frame({
       onKeyDown={cursor.onKeyDown}
       onFocus={cursor.onFocus}
       onBlur={cursor.onBlur}
-      className="relative w-full"
+      className="relative w-full rounded-2xl border border-line bg-surface shadow-card"
     >
-      <svg width="100%" height={H} aria-hidden="true" className="block touch-pan-y text-fg" onPointerMove={onPointerMove} onPointerLeave={() => cursor.setActive(null)}>
+      <svg width="100%" height={H} aria-hidden="true" className="block touch-pan-y text-ink" onPointerMove={onPointerMove} onPointerLeave={() => cursor.setActive(null)}>
         {children}
       </svg>
       <p id={hintId} className={hidden}>
@@ -89,7 +89,7 @@ function Tip({ x, width, children }: { x: number; width: number; children: React
   // İpucu noktanın sağına; sağ yarıdaysa soluna: kenarı aşmaz.
   const side = x > width / 2 ? { right: width - x + 12 } : { left: x + 12 };
   return (
-    <div aria-hidden="true" style={{ top: M.top, ...side }} className="pointer-events-none absolute grid max-w-56 gap-1 rounded border border-fg bg-bg px-3 py-2 text-sm shadow">
+    <div aria-hidden="true" style={{ top: M.top, ...side }} className="pointer-events-none absolute grid max-w-56 gap-1 rounded-xl border border-line-strong bg-surface px-3 py-2 text-sm text-ink shadow-pop">
       {children}
     </div>
   );
@@ -100,8 +100,8 @@ function YAxis({ ticks, y, width, fmt }: { ticks: number[]; y: (v: number) => nu
     <g>
       {ticks.map((v) => (
         <g key={v}>
-          <line x1={M.left} x2={width - M.right} y1={y(v)} y2={y(v)} className="stroke-fg/15" strokeWidth={1} />
-          <text x={M.left - 6} y={y(v)} dy="0.32em" textAnchor="end" className="fill-fg text-xs">
+          <line x1={M.left} x2={width - M.right} y1={y(v)} y2={y(v)} className="stroke-line" strokeWidth={1} />
+          <text x={M.left - 6} y={y(v)} dy="0.32em" textAnchor="end" className="fill-ink text-xs">
             {fmt(v)}
           </text>
         </g>
@@ -114,7 +114,7 @@ function YAxis({ ticks, y, width, fmt }: { ticks: number[]; y: (v: number) => nu
 function PlacedText({ label, className = "" }: { label: Label; className?: string }) {
   const { x0, y0, x1, y1 } = label.box;
   return (
-    <text data-box={[x0, y0, x1, y1].map((v) => v.toFixed(1)).join(" ")} x={label.x} y={label.base} textAnchor={label.anchor} className={`fill-fg text-xs ${className}`}>
+    <text data-box={[x0, y0, x1, y1].map((v) => v.toFixed(1)).join(" ")} x={label.x} y={label.base} textAnchor={label.anchor} className={`fill-ink text-xs ${className}`}>
       {label.text}
     </text>
   );
@@ -183,29 +183,29 @@ export function ProjectionChart({
     >
       <YAxis ticks={g.ticks} y={y} width={width} fmt={(v) => fmt.format(v)} />
       {ticks.map((t) => (
-        <text key={t.day} x={x(t.day)} y={H - 8} textAnchor={t.day === 0 ? "start" : t.day === maxDay ? "end" : "middle"} className="fill-fg text-xs">
+        <text key={t.day} x={x(t.day)} y={H - 8} textAnchor={t.day === 0 ? "start" : t.day === maxDay ? "end" : "middle"} className="fill-ink text-xs">
           {t.label}
         </text>
       ))}
       {g.thresholds.map((t, i) => (
         <g key={i} data-threshold={t.days}>
           {t.segments.map(([a, b]) => (
-            <line key={a} x1={a} x2={b} y1={t.ty} y2={t.ty} className="stroke-fg" strokeWidth={1} strokeDasharray="4 4" />
+            <line key={a} x1={a} x2={b} y1={t.ty} y2={t.ty} className="stroke-ink" strokeWidth={1} strokeDasharray="4 4" />
           ))}
           {t.label && <PlacedText label={t.label} />}
         </g>
       ))}
-      <path data-series="stock" d={line} fill="none" className="stroke-fg" strokeWidth={2} strokeLinejoin="round" strokeLinecap="round" />
+      <path data-series="stock" d={line} fill="none" className="stroke-brand" strokeWidth={2.5} strokeLinejoin="round" strokeLinecap="round" />
       {g.arrivals.map((p) => (
-        <circle key={p.x} data-mark="arrival" cx={p.x} cy={p.y} r={ARRIVAL_R - 2} className="fill-fg stroke-bg" strokeWidth={2} />
+        <circle key={p.x} data-mark="arrival" cx={p.x} cy={p.y} r={ARRIVAL_R - 2} className="fill-ink stroke-surface" strokeWidth={2} />
       ))}
       {g.marker && (
         <g data-marker-day={g.marker.day}>
-          <circle data-mark="marker" cx={g.marker.at.x} cy={g.marker.at.y} r={MARKER_R - 2} className="fill-danger stroke-bg" strokeWidth={2} />
+          <circle data-mark="marker" cx={g.marker.at.x} cy={g.marker.at.y} r={MARKER_R - 2} className="fill-danger stroke-surface" strokeWidth={2} />
           {g.marker.label && <PlacedText label={g.marker.label} className="font-semibold" />}
         </g>
       )}
-      {a && <line x1={x(a.day)} x2={x(a.day)} y1={M.top} y2={M.top + PLOT_H} className="stroke-fg" strokeWidth={1} />}
+      {a && <line x1={x(a.day)} x2={x(a.day)} y1={M.top} y2={M.top + PLOT_H} className="stroke-ink" strokeWidth={1} />}
     </Frame>
   );
 }
@@ -259,16 +259,16 @@ export function MonthlyChart({ label, hint, locale, bars }: { label: string; hin
       <YAxis ticks={scale.ticks} y={y} width={width} fmt={(v) => compact.format(v)} />
       {bars.map((b, i) => (
         <g key={b.key} data-month={b.key}>
-          {b.value > 0 && <path data-series="verified" d={column(i, b.value)} className={cursor.active === i ? "fill-fg/70" : "fill-fg"} />}
-          <text x={cx(i)} y={H - 8} textAnchor="middle" className="fill-fg text-xs">
+          {b.value > 0 && <path data-series="verified" d={column(i, b.value)} className={cursor.active === i ? "fill-brand/70" : "fill-brand"} />}
+          <text x={cx(i)} y={H - 8} textAnchor="middle" className="fill-ink text-xs">
             {b.label}
           </text>
         </g>
       ))}
-      <text x={cx(last)} y={y(bars[last].value) - 6} textAnchor="middle" className="fill-fg text-xs font-semibold">
+      <text x={cx(last)} y={y(bars[last].value) - 6} textAnchor="middle" className="fill-ink text-xs font-semibold">
         {bars[last].display}
       </text>
-      <line x1={M.left} x2={width - M.right} y1={base} y2={base} className="stroke-fg" strokeWidth={1} />
+      <line x1={M.left} x2={width - M.right} y1={base} y2={base} className="stroke-ink" strokeWidth={1} />
     </Frame>
   );
 }

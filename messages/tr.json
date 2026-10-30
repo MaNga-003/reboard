@@ -14,6 +14,19 @@
     "brand": "ReBoard",
     "main": "Ana menü"
   },
+  "shell": {
+    "watchStory": "Hikâyeyi yeniden izle",
+    "pillars": {
+      "market": "Atık tekstil pazar yeri",
+      "continuity": "Tedarik sürekliliği",
+      "verified": "Doğrulanabilir geri kazanım"
+    },
+    "pillarsText": {
+      "market": "Atık ilanları, teklifler ve teslim planı tek yerde.",
+      "continuity": "Stok, kaç günlük hammadde kaldığı ve yaklaşan teslimler için uyarılar.",
+      "verified": "Her kilogram kantar tartımına ve bir sonraki adıma bağlanır; kayıt sonradan değişirse zincir doğrulaması düşer."
+    }
+  },
   "resultClass": {
     "synthetic": "Sentetik",
     "sourced_estimate": "Kaynaklı tahmin",

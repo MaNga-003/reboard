@@ -4,7 +4,7 @@ import fc from "fast-check";
 import jsQR from "jsqr";
 import { describe, expect, it } from "vitest";
 import { QUIET, qrPath } from "@/components/passport/qr";
-import { paletteHex } from "@/design/tokens";
+import { paletteHex, uiHex } from "@/design/tokens";
 import { contrastRatio, relativeLuminance } from "@/design/color";
 
 const RUN = /M(\d+) (\d+)h(\d+)v1h-(\d+)z/g;
@@ -111,6 +111,17 @@ describe("pasaport QR'ı (M-26)", () => {
       const { px, w } = rasterize(text, 4, c);
       expect(jsQR(px, w, w, { inversionAttempts: "dontInvert" })?.data ?? null, id).toBe(text);
     }
+  });
+
+  // Sayfadaki QR artık beyaz zeminde ink modülle çizilir (T4.8); okuyucu için en yüksek kontrast.
+  it("arayüz renkleriyle (ink / beyaz) sembol kontrastı ≥ 0,55 ve QR çözülür", () => {
+    const text = url("reboard-lovat.vercel.app", "PL-2026-001", 37, HEAD);
+    const u = uiHex();
+    const c = { bg: u.surface, text: u.ink };
+    const sc = relativeLuminance(c.bg) - relativeLuminance(c.text);
+    expect(sc, `SC ${sc.toFixed(3)}`).toBeGreaterThanOrEqual(0.55);
+    const { px, w } = rasterize(text, 4, c as ReturnType<typeof paletteHex>);
+    expect(jsQR(px, w, w, { inversionAttempts: "dontInvert" })?.data ?? null).toBe(text);
   });
 
   it("metrik kendini sınar: bir modül satırı kayınca çözücü okuyamaz", () => {

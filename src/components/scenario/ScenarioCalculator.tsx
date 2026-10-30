@@ -5,6 +5,7 @@
 import { useTranslations } from "next-intl";
 import { useMemo, useState } from "react";
 import { control, Field } from "@/components/market/fields";
+import { btnSecondary, h2 } from "@/components/ui/classes";
 import { hidden } from "@/components/panel/Charts";
 import {
   SCENARIO_FIELDS,
@@ -38,18 +39,18 @@ export function ScenarioCalculator() {
           data-preset="sourced"
           disabled={same(form, SOURCED_FORM)}
           onClick={() => setForm(SOURCED_FORM)}
-          className="inline-flex min-h-11 items-center rounded border border-fg px-4 text-start font-semibold disabled:border-fg/40 disabled:text-fg/70"
+          className={`${btnSecondary} text-start`}
         >
           {t("scenario.presets.sourced")}
         </button>
       </div>
 
       <section aria-labelledby="sc-results" className="relative grid gap-4">
-        <h2 id="sc-results" className="text-2xl font-semibold">
+        <h2 id="sc-results" className={h2}>
           {t("scenario.resultsTitle")}
         </h2>
-        <p className="text-sm">{t("scenario.taxNote")}</p>
-        <dl className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+        <p className="text-sm text-muted">{t("scenario.taxNote")}</p>
+        <dl className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {RESULT_IDS.map((id) => (
             <ResultCard key={id} run={run} id={id} />
           ))}
@@ -60,13 +61,13 @@ export function ScenarioCalculator() {
       </section>
 
       <section aria-labelledby="sc-inputs" className="grid gap-4">
-        <h2 id="sc-inputs" className="text-2xl font-semibold">
+        <h2 id="sc-inputs" className={h2}>
           {t("scenario.inputsTitle")}
         </h2>
         <form onSubmit={(e) => e.preventDefault()} className="grid gap-6 md:grid-cols-2">
           {GROUPS.map((g) => (
-            <fieldset key={g} data-group={g} className="grid min-w-0 content-start gap-3 rounded border border-fg/30 p-4">
-              <legend className="px-1 font-semibold">{t(`scenario.groups.${g}`)}</legend>
+            <fieldset key={g} data-group={g} className="grid min-w-0 content-start gap-3 rounded-2xl border border-line bg-surface p-5 shadow-card">
+              <legend className="px-1 font-semibold text-ink">{t(`scenario.groups.${g}`)}</legend>
               {SCENARIO_FIELDS.filter((f) => f.group === g).map((f) => {
                 const id = `sc-${f.key}`;
                 const bad = invalid.includes(f.key);

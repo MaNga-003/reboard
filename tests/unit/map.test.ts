@@ -27,6 +27,19 @@ describe("harita noktası kontrastı", () => {
     });
   }
 
+  it(`arayüz paletinde (paletsiz çağrı) her nokta her altlık örneğinde ≥ ${UI_MIN}:1 bir katman taşır; etiket ≥ ${TEXT_MIN}:1`, () => {
+    const m = markerColors();
+    const weak: string[] = [];
+    for (const [kind, s] of [["own", m.own], ["other", m.other]] as const) {
+      for (const [where, base] of Object.entries(BASEMAP_SAMPLES)) {
+        const best = Math.max(contrastRatio(s.fill, base), contrastRatio(s.ring, base));
+        if (best < UI_MIN) weak.push(`${kind} ~ ${where}: ${best.toFixed(2)}`);
+      }
+    }
+    expect(weak).toEqual([]);
+    expect(contrastRatio(m.label.text, m.label.halo)).toBeGreaterThanOrEqual(TEXT_MIN);
+  });
+
   it("ölçü kötü örneği yakalar: eski kendi-ilanı halkası (zemin rengi) palet B'de karada 3:1'in altında", () => {
     const m = markerColors("B");
     expect(Math.max(contrastRatio(m.own.fill, BASEMAP_SAMPLES.land), contrastRatio(m.label.halo, BASEMAP_SAMPLES.land))).toBeLessThan(UI_MIN);

@@ -93,9 +93,9 @@ Biçim: **Karar**, **Neden**, **Tarih**, kararı kim verdi (K: kullanıcı, C: C
 - **Tarih:** 2026-10-27 · C
 
 ### D-014 — Renkler yalnızca Sanzo Wada sözlüğünden
-- **Karar:** Arayüz ve hikâye renkleri `MaNga-003/dictionary-of-colour-combinations` deposundaki 159 renkten ve 348 kombinasyondan seçilir. Ana palet kullanıcı tarafından seçilecek (açık soru Q-1). Metin kontrastı ve OKLab ΔE eşikleri otomatik testle denetlenir.
+- **Karar:** Arayüz ve hikâye renkleri `MaNga-003/dictionary-of-colour-combinations` deposundaki 159 renkten ve 348 kombinasyondan seçilir. Arayüz paleti UI rolleridir (D-034); hikâye ve eski sınıflar palet B'yi kullanır. A ve C adayları seçilmeyecek; yalnızca ölçüm testlerinde duruyor. Metin kontrastı ve OKLab ΔE eşikleri otomatik testle denetlenir.
 - **Hikâye render'ı:** Malzemelerin temel renkleri, ışıkların ve dünyanın rengi Wada'dan gelir (`lib.rgba(ad)`; ad sözlükte yoksa render durur). Doku içinde iki Wada rengi arasındaki geçiş ve parlaklık değişimi serbesttir; fotogerçekçi ışık zaten ara tonlar üretir. 8. bölümde yer ve Dünya küresi EOX Sentinel-2 cloudless uydu mozaiğidir; o, renk seçimi değil gerçek görüntüdür.
-- **Tarih:** 2026-10-27 · K (render notu 2026-10-29 · C)
+- **Tarih:** 2026-10-27 · K (render notu 2026-10-29 · C; arayüz paleti 2026-10-30 · K)
 
 ### D-015 — MVP kapsamı dışında kalanlar
 - **Karar:** Canlı GPS, yapay zekâ ile rota optimizasyonu, ödeme ve emanet hesabı, karbon kredisi, blokzincir ve mobil uygulama MVP'ye girmez.
@@ -137,6 +137,15 @@ Biçim: **Karar**, **Neden**, **Tarih**, kararı kim verdi (K: kullanıcı, C: C
 - **Karar:** Depo herkese açıktır ama kod açık kaynak lisansıyla yayımlanmaz. `LICENSE` dosyası "tüm hakları saklıdır" der. Üçüncü taraf bileşenler (Wada renk verisi, MIT) kendi lisanslarıyla kalır.
 - **Neden:** Yarışmadan sonra şirketleşme seçeneği açık kalır. Sonradan açık lisansa geçmek kolaydır; yayımlanmış bir sürümü geri kapatmak mümkün değildir.
 - **Tarih:** 2026-10-27 · K
+
+### D-034 — Arayüz modern SaaS kabuğuyla yeniden tasarlandı; hikâye olduğu gibi kaldı
+- **Karar:**
+  - Uygulama arayüzü (giriş, pazar yeri, izlenebilirlik, panel, senaryo, açık pasaport ve ana sayfanın hikâye sonrası bölümü) koyu kenar çubuğu, açık üst başlık, kartlar, görselli sayfa başlıkları ve mobilde alt sekme çubuğuyla yeniden yapıldı (`docs/DESIGN_SYSTEM.md` §1.1 ve §7).
+  - Renkler yeni arayüz rolleridir (`UI`: Deep Indigo, Slate Color, Burnt Sienna, Golden Yellow, Pale King's Blue…). Hepsi Wada rengidir (D-014); ton açıkları Wada rengi + saydamlıktır. Hikâye oynatıcısı, kareleri ve kartı değişmedi; hikâye ve eski sınıflar palet B'yi kullanmaya devam eder.
+  - Görsel, hikâyenin kendi render karelerinden alınır (`public/story/d`, `<Still>`); yeni görsel üretilmedi.
+  - Metinler ve sayılar değişmedi: sonuç sınıfı rozetleri, "kuş uçuşu", "test edilmedi", `data-kpi`, `data-level`, `data-result-class` gibi sözleşmeler aynı. Eklenen yeni yazılar yalnızca ürünün yaptığı işi anlatır; sayı ve iddia içermez (D-028).
+- **Neden:** Kullanıcı (2026-10-30) demoyu tekdüze, renksiz ve görselsiz buldu; jüriyi etkileyecek bir SaaS görünümü istedi ve hikâyeyi sevdi. Palet adayları (A, B, C) arasında seçim yapılmadı; T3.1 bu yüzden iptal oldu.
+- **Tarih:** 2026-10-30 · K
 
 ### D-030 — Demo verisi yalnızca komutla ve sabit seed günüyle sıfırlanır
 - **Karar:**

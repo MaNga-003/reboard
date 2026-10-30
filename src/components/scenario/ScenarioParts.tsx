@@ -59,6 +59,15 @@ function useScenarioText() {
  * Sonuç kutusu. Sınıf rozeti zorunlu (D-011); data-kpi dürüstlük testinin kataloğudur.
  * Zarar ve oluşmayan koridor kırmızıdır, ama hiçbir zaman yalnızca renkle değil: simge, yazı ve açıklama birlikte.
  */
+/** Üst çizgi rengi sonuca göre; zarar ve oluşmayan koridor kırmızıdır (danger, 4 px). */
+const TOP: Record<ResultId, string> = {
+  factory: "border-t-brand",
+  customer: "border-t-glow",
+  reboard: "border-t-ink",
+  corridor: "border-t-sky",
+  saas: "border-t-subtle",
+};
+
 export function ResultCard({ run, id }: { run: ScenarioRun; id: ResultId }) {
   const t = useTranslations();
   const text = useScenarioText();
@@ -66,12 +75,12 @@ export function ResultCard({ run, id }: { run: ScenarioRun; id: ResultId }) {
   // Koridorun yokluğu çipte yazar; aynı cümleyi koşul olarak tekrarlamak gürültü olur.
   const conditions = resultOf(run, id).conditions.filter((c) => c !== "no_corridor");
   return (
-    <div data-kpi={`scenario-${id}`} data-alert={alert} className={`grid min-w-0 content-start gap-1 pt-2 ${alert ? "border-t-4 border-danger" : "border-t-2 border-fg"}`}>
-      <dt className="font-semibold">{t(`scenario.results.${id}.title`)}</dt>
-      <dd data-value className="text-3xl font-semibold break-words [font-variant-numeric:normal]">
+    <div data-kpi={`scenario-${id}`} data-alert={alert} className={`grid min-w-0 content-start gap-1.5 rounded-2xl border border-t-4 border-line bg-surface p-5 shadow-card ${alert ? "border-t-danger" : TOP[id]}`}>
+      <dt className="font-semibold text-ink">{t(`scenario.results.${id}.title`)}</dt>
+      <dd data-value className="text-3xl font-semibold tracking-tight text-ink break-words [font-variant-numeric:normal]">
         {text.value(run, id)}
       </dd>
-      <dd className="flex flex-wrap items-center gap-2 text-sm">
+      <dd className="flex flex-wrap items-center gap-2 text-sm text-muted">
         <ResultClassBadge value={classOf(run, id)} />
         {alert && <StatusChip level="danger" label={t(id === "corridor" ? "scenario.noCorridor" : "scenario.loss")} />}
         {conditions.map((c) => (
@@ -81,16 +90,16 @@ export function ResultCard({ run, id }: { run: ScenarioRun; id: ResultId }) {
         ))}
       </dd>
       {alert && (
-        <dd data-explain className="text-sm font-semibold">
+        <dd data-explain className="text-sm font-semibold text-ink">
           {t(`scenario.results.${id}.alert`)}
         </dd>
       )}
-      <dd className="text-sm">{t(`scenario.results.${id}.formula`)}</dd>
-      <dd data-parts className="text-sm break-words">
+      <dd className="text-sm text-muted">{t(`scenario.results.${id}.formula`)}</dd>
+      <dd data-parts className="text-sm break-words text-muted">
         {text.parts(run, id)}
       </dd>
       {id === "customer" && (
-        <dd className="text-sm">{t("scenario.usableArea", { area: text.area(run.usableAreaM2) })}</dd>
+        <dd className="text-sm text-muted">{t("scenario.usableArea", { area: text.area(run.usableAreaM2) })}</dd>
       )}
     </div>
   );

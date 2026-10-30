@@ -1,6 +1,7 @@
 "use client";
 import { useTranslations } from "next-intl";
 import { useState } from "react";
+import { btnPrimary } from "@/components/ui/classes";
 import { fmtTime } from "@/lib/format";
 
 type State = { kind: "idle" } | { kind: "busy" } | { kind: "done"; ok: boolean; chains: number; at: string } | { kind: "failed" };
@@ -28,11 +29,11 @@ export function VerifyButton({ code, anchor, locale }: { code: string; anchor: s
         type="button"
         onClick={run}
         disabled={state.kind === "busy"}
-        className="inline-flex min-h-11 items-center rounded bg-accent px-5 font-semibold text-on-accent disabled:opacity-70"
+        className={btnPrimary}
       >
         {state.kind === "busy" ? t("busy") : t("again")}
       </button>
-      <p role="status" data-verify-result={state.kind === "done" ? (state.ok ? "ok" : "broken") : state.kind} className="text-sm">
+      <p role="status" data-verify-result={state.kind === "done" ? (state.ok ? "ok" : "broken") : state.kind} className="text-sm text-muted">
         {state.kind === "done" &&
           t("result", { time: fmtTime(state.at, locale), verdict: state.ok ? t("ok", { count: state.chains }) : t("broken") })}
         {state.kind === "failed" && t("failed")}

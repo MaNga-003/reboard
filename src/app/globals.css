@@ -13,6 +13,26 @@
   --color-on-warn: var(--rb-on-warn);
   --color-danger: var(--rb-danger);
   --color-on-danger: var(--rb-on-danger);
+  /* Arayüz katmanı (T4.8): kenar çubuğu, kartlar, düğmeler. Hikâye yukarıdaki bg/fg/accent rollerinde kalır. */
+  --color-ink: var(--rb-ink);
+  --color-muted: var(--rb-muted);
+  --color-subtle: var(--rb-subtle);
+  --color-surface: var(--rb-surface);
+  --color-canvas: var(--rb-canvas);
+  --color-line: var(--rb-line);
+  --color-line-strong: var(--rb-line-strong);
+  --color-brand: var(--rb-brand);
+  --color-on-brand: var(--rb-on-brand);
+  --color-brand-soft: var(--rb-brand-soft);
+  --color-side: var(--rb-side);
+  --color-side-ink: var(--rb-side-ink);
+  --color-side-muted: var(--rb-side-muted);
+  --color-side-line: var(--rb-side-line);
+  --color-side-active: var(--rb-side-active);
+  --color-glow: var(--rb-glow);
+  --color-sky: var(--rb-sky);
+  --shadow-card: 0 1px 2px color-mix(in srgb, var(--rb-ink) 6%, transparent), 0 14px 32px -18px color-mix(in srgb, var(--rb-ink) 22%, transparent);
+  --shadow-pop: 0 4px 12px color-mix(in srgb, var(--rb-ink) 10%, transparent), 0 28px 56px -24px color-mix(in srgb, var(--rb-ink) 45%, transparent);
   --font-sans: var(--font-inter);
   --font-display: var(--font-fraunces);
 }
@@ -28,6 +48,39 @@ body {
   outline: 2px solid var(--rb-text);
   outline-offset: 2px;
 }
+.rb-app :focus-visible {
+  outline-color: var(--rb-brand);
+}
+.rb-dark :focus-visible {
+  outline-color: var(--rb-side-ink);
+}
+
+/* Koyu yüzey: uzay finalinin indigosu, atölyenin sıcak ışığı iki köşeden sızar. */
+.rb-aurora {
+  background:
+    radial-gradient(56rem 28rem at 88% -12%, color-mix(in srgb, var(--rb-glow) 34%, transparent), transparent 62%),
+    radial-gradient(44rem 26rem at -6% 112%, color-mix(in srgb, var(--rb-brand) 46%, transparent), transparent 58%),
+    var(--rb-side);
+  color: var(--rb-side-ink);
+}
+/* İnce nokta ızgarası: boş yüzeylere doku verir. */
+.rb-dots {
+  background-image: radial-gradient(color-mix(in srgb, var(--rb-ink) 16%, transparent) 1px, transparent 1.2px);
+  background-size: 20px 20px;
+}
+@keyframes rb-rise {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+.rb-rise {
+  animation: rb-rise 0.45s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+}
 
 @media (prefers-reduced-motion: reduce) {
   *,
@@ -41,9 +94,11 @@ body {
 
 /* Harita açılır kutusu: MapLibre'nin sabit beyaz zemini yerine palet; ok kaldırılır çünkü yönü konuma göre değişir. */
 .rb-map-popup .maplibregl-popup-content {
-  background: var(--rb-bg);
-  color: var(--rb-text);
-  border: 1px solid var(--rb-text);
+  background: var(--rb-surface);
+  color: var(--rb-ink);
+  border: 1px solid var(--rb-line-strong);
+  border-radius: 0.75rem;
+  box-shadow: var(--shadow-pop);
   padding: 0.25rem 0.75rem;
 }
 .rb-map-popup .maplibregl-popup-tip {

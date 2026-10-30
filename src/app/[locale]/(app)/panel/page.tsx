@@ -1,11 +1,14 @@
 import { getTranslations, setRequestLocale } from "next-intl/server";
+import { ShieldCheck, Truck } from "lucide-react";
 import type { ReactNode } from "react";
 import { ResultClassBadge } from "@/components/ResultClassBadge";
 import { MonthlyChart, ProjectionChart, type MonthDatum, type ProjectionDatum } from "@/components/panel/Charts";
 import { KgTotalText, Kpi } from "@/components/panel/Kpi";
 import { StatusChip } from "@/components/panel/Status";
 import { Qty } from "@/components/trace/Qty";
-import { TableWrap, td, th } from "@/components/trace/Table";
+import { TableWrap, td, th, tr } from "@/components/trace/Table";
+import { lead as leadClass, note as noteClass, page } from "@/components/ui/classes";
+import { PageBanner } from "@/components/ui/PageHeader";
 import { getDb } from "@/db/client";
 import { panelData } from "@/db/repo/panel";
 import { permissionList } from "@/domain/access";
@@ -21,17 +24,20 @@ const X_TICKS = [0, 7, 14, 21, 28];
 function Caption({ id, title, resultClass, children }: { id: string; title: string; resultClass: ResultClass; children?: ReactNode }) {
   return (
     <div className="grid gap-1">
-      <h3 id={id} className="flex flex-wrap items-center gap-2 text-xl font-semibold">
+      <h3 id={id} className="flex flex-wrap items-center gap-2 text-lg font-semibold tracking-tight text-ink">
         {title}
         <ResultClassBadge value={resultClass} />
       </h3>
-      {children && <p className="max-w-prose text-sm">{children}</p>}
+      {children && <p className="max-w-prose text-sm text-muted">{children}</p>}
     </div>
   );
 }
 
-const details = "group grid gap-2";
-const summary = "inline-flex min-h-11 cursor-pointer items-center font-semibold underline underline-offset-4";
+// <details> ızgara konteyneridir: min-w-0 ve minmax(0,1fr) sütun, içindeki geniş tablonun (kendi kabında kayar) onu
+// genişletip sayfayı ya da kendi kutusunu taşırmasını önler.
+const details = "group grid min-w-0 grid-cols-[minmax(0,1fr)] gap-3";
+const summary = "inline-flex min-h-11 cursor-pointer items-center font-semibold text-brand underline-offset-4 hover:underline";
+const sectionTitle = "text-2xl font-semibold tracking-tight text-ink";
 
 // Etki ve tedarik paneli (T2.3). Sayılar src/domain'den; burada yalnızca biçim ve yerleşim var.
 export default async function PanelPage({ params }: PageProps<"/[locale]/panel">) {
@@ -78,13 +84,14 @@ export default async function PanelPage({ params }: PageProps<"/[locale]/panel">
 
   const impactSection = impact && (
     <>
-      <dl className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
-        <Kpi id="verified" label={t("panel.impact.verified")} value={<KgTotalText total={impact.verified} locale={locale} />} resultClass={impact.resultClass} note={unknownNote(impact.verified)} />
-        <Kpi id="declared" label={t("panel.impact.declared")} value={<KgTotalText total={impact.declared} locale={locale} />} resultClass={impact.resultClass} note={unknownNote(impact.declared)} />
+      <dl className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+        <Kpi accent="brand" id="verified" label={t("panel.impact.verified")} value={<KgTotalText total={impact.verified} locale={locale} />} resultClass={impact.resultClass} note={unknownNote(impact.verified)} />
+        <Kpi accent="muted" id="declared" label={t("panel.impact.declared")} value={<KgTotalText total={impact.declared} locale={locale} />} resultClass={impact.resultClass} note={unknownNote(impact.declared)} />
         {impact.inPanel && (
-          <Kpi id="inPanel" label={t("panel.impact.inPanel")} value={<KgTotalText total={impact.inPanel} locale={locale} />} resultClass={impact.inPanel.resultClass} />
+          <Kpi accent="glow" id="inPanel" label={t("panel.impact.inPanel")} value={<KgTotalText total={impact.inPanel} locale={locale} />} resultClass={impact.inPanel.resultClass} />
         )}
         <Kpi
+          accent="sky"
           id="batches"
           label={t("panel.impact.batches")}
           value={t("panel.impact.batchesValue", { verified: impact.verifiedBatches, total: impact.batches })}
@@ -97,7 +104,7 @@ export default async function PanelPage({ params }: PageProps<"/[locale]/panel">
         <TableWrap label={t(supply ? "panel.impact.sourcesTitle" : "panel.impact.receiversTitle")}>
           <table className="w-full text-left text-sm" aria-labelledby="sources-title">
             <thead>
-              <tr className="border-b border-fg/30">
+              <tr>
                 <th scope="col" className={th}>{t("panel.impact.cols.org")}</th>
                 <th scope="col" className={th}>{t("panel.impact.cols.kg")}</th>
                 <th scope="col" className={th}>{t("panel.impact.cols.share")}</th>
@@ -105,10 +112,21 @@ export default async function PanelPage({ params }: PageProps<"/[locale]/panel">
             </thead>
             <tbody>
               {impact.byCounterparty.map((r) => (
-                <tr key={r.orgId} data-counterparty={r.orgId} className="border-b border-fg/15">
+                <tr key={r.orgId} data-counterparty={r.orgId} className={tr}>
                   <td className={td}>{orgName(r.orgId)}</td>
                   <td className={td}>{kgText(r.verified)}</td>
-                  <td className={td}>{r.share === null ? unknown : fmtPercent(r.share.times(100).toNumber(), locale)}</td>
+                  <td className={td}>
+                    {r.share === null ? (
+                      unknown
+                    ) : (
+                      <span className="grid min-w-28 gap-1">
+                        <span>{fmtPercent(r.share.times(100).toNumber(), locale)}</span>
+                        <span aria-hidden="true" className="block h-1.5 overflow-hidden rounded-full bg-line">
+                          <span className="block h-full rounded-full bg-brand" style={{ width: `${Math.min(100, r.share.times(100).toNumber())}%` }} />
+                        </span>
+                      </span>
+                    )}
+                  </td>
                 </tr>
               ))}
             </tbody>
@@ -135,14 +153,14 @@ export default async function PanelPage({ params }: PageProps<"/[locale]/panel">
           <TableWrap label={t("panel.impact.trendTitle")}>
             <table className="w-full text-left text-sm">
               <thead>
-                <tr className="border-b border-fg/30">
+                <tr>
                   <th scope="col" className={th}>{t("panel.impact.cols.month")}</th>
                   <th scope="col" className={th}>{t("panel.impact.cols.kg")}</th>
                 </tr>
               </thead>
               <tbody>
                 {impact.monthly.map((m) => (
-                  <tr key={m.month} data-month={m.month} className="border-b border-fg/15">
+                  <tr key={m.month} data-month={m.month} className={tr}>
                     <td className={td}>{fmtMonth(m.month, locale)}</td>
                     <td className={td}>{kgText(m.verified)}</td>
                   </tr>
@@ -152,7 +170,7 @@ export default async function PanelPage({ params }: PageProps<"/[locale]/panel">
           </TableWrap>
         </details>
       </section>
-      <p role="note" data-co2="hidden" className="max-w-prose rounded border border-fg/30 px-3 py-2 text-sm">
+      <p role="note" data-co2="hidden" className={`max-w-prose ${noteClass}`}>
         {t("panel.impact.co2")}
       </p>
     </>
@@ -191,8 +209,9 @@ export default async function PanelPage({ params }: PageProps<"/[locale]/panel">
 
   const supplySection = supply && (
     <>
-      <dl className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+      <dl className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
         <Kpi
+          accent="brand"
           id="days"
           label={t("panel.supply.days")}
           value={supply.days === null ? <span data-days="unknown">{unknown}</span> : <span data-days={supply.days.toString()}>{t("panel.supply.daysValue", { days: num(supply.days) })}</span>}
@@ -200,8 +219,9 @@ export default async function PanelPage({ params }: PageProps<"/[locale]/panel">
           note={supply.level && <StatusChip level={supply.level} label={level(supply.level)} />}
         />
         <Kpi id="usable" label={t("panel.supply.usable")} value={<KgTotalText total={supply.usable} locale={locale} />} resultClass={supply.resultClass} note={unknownNote(supply.usable)} />
-        <Kpi id="pending" label={t("panel.supply.pending")} value={<KgTotalText total={supply.pending} locale={locale} />} resultClass={supply.resultClass} note={<span>{t("panel.supply.pendingNote", { batches: supply.pending.batches })}</span>} />
+        <Kpi accent="muted" id="pending" label={t("panel.supply.pending")} value={<KgTotalText total={supply.pending} locale={locale} />} resultClass={supply.resultClass} note={<span>{t("panel.supply.pendingNote", { batches: supply.pending.batches })}</span>} />
         <Kpi
+          accent="sky"
           id="need"
           label={t("panel.supply.need")}
           value={
@@ -215,7 +235,7 @@ export default async function PanelPage({ params }: PageProps<"/[locale]/panel">
         />
       </dl>
       <p
-        className="max-w-prose text-sm"
+        className="max-w-prose text-sm text-muted"
         data-thresholds-from-model={supply.thresholds.fromModel}
         data-green={supply.thresholds.greenDays.toString()}
         data-yellow={supply.thresholds.yellowDays.toString()}
@@ -227,7 +247,7 @@ export default async function PanelPage({ params }: PageProps<"/[locale]/panel">
       </p>
 
       <section aria-labelledby="alerts-title" className="grid gap-3">
-        <h3 id="alerts-title" className="text-xl font-semibold">
+        <h3 id="alerts-title" className="text-lg font-semibold tracking-tight text-ink">
           {t("panel.supply.alertsTitle")}
         </h3>
         {supply.alerts.length === 0 ? (
@@ -235,7 +255,7 @@ export default async function PanelPage({ params }: PageProps<"/[locale]/panel">
         ) : (
           <ul className="grid gap-2">
             {supply.alerts.map((a, i) => (
-              <li key={`${a.kind}-${i}`} data-alert={a.kind} data-level={a.level} className="flex flex-wrap items-start gap-x-3 gap-y-1 border-b border-fg/15 pb-2">
+              <li key={`${a.kind}-${i}`} data-alert={a.kind} data-level={a.level} className="flex flex-wrap items-start gap-x-3 gap-y-1 rounded-xl border border-line bg-surface p-3 shadow-card">
                 <StatusChip level={a.level} label={level(a.level)} />
                 <span className="min-w-0 flex-1 basis-60">{alertText(a)}</span>
               </li>
@@ -277,7 +297,7 @@ export default async function PanelPage({ params }: PageProps<"/[locale]/panel">
             <TableWrap label={t("panel.supply.projectionTitle")}>
               <table className="w-full text-left text-sm">
                 <thead>
-                  <tr className="border-b border-fg/30">
+                  <tr>
                     <th scope="col" className={th}>{t("panel.supply.cols.date")}</th>
                     <th scope="col" className={th}>{t("panel.supply.cols.stock")}</th>
                     <th scope="col" className={th}>{t("panel.supply.cols.level")}</th>
@@ -286,7 +306,7 @@ export default async function PanelPage({ params }: PageProps<"/[locale]/panel">
                 </thead>
                 <tbody>
                   {projectionPoints.map((p) => (
-                    <tr key={p.day} data-day={p.day} className="border-b border-fg/15">
+                    <tr key={p.day} data-day={p.day} className={tr}>
                       <td className={`${td} whitespace-nowrap`}>{p.date}</td>
                       <td className={td}>{p.detail}</td>
                       <td className={td}>{p.levelLabel}</td>
@@ -308,7 +328,7 @@ export default async function PanelPage({ params }: PageProps<"/[locale]/panel">
           <TableWrap label={t("panel.supply.upcomingTitle")}>
             <table className="w-full text-left text-sm">
               <thead>
-                <tr className="border-b border-fg/30">
+                <tr>
                   <th scope="col" className={th}>{t("panel.supply.cols.plannedAt")}</th>
                   <th scope="col" className={th}>{t("panel.supply.cols.supplier")}</th>
                   <th scope="col" className={th}>{t("panel.supply.cols.plannedKg")}</th>
@@ -316,7 +336,7 @@ export default async function PanelPage({ params }: PageProps<"/[locale]/panel">
               </thead>
               <tbody>
                 {supply.upcoming.map((d) => (
-                  <tr key={d.id} data-delivery-id={d.id} className="border-b border-fg/15">
+                  <tr key={d.id} data-delivery-id={d.id} className={tr}>
                     <td className={`${td} whitespace-nowrap`}>{fmtDate(d.plannedAt, locale)}</td>
                     <td className={td}>{orgName(d.supplierOrgId)}</td>
                     <td className={td}>
@@ -337,7 +357,7 @@ export default async function PanelPage({ params }: PageProps<"/[locale]/panel">
         <TableWrap label={t("panel.supply.suppliersTitle")}>
           <table className="w-full text-left text-sm">
             <thead>
-              <tr className="border-b border-fg/30">
+              <tr>
                 <th scope="col" className={th}>{t("panel.supply.cols.supplier")}</th>
                 <th scope="col" className={th}>{t("panel.supply.cols.onTime")}</th>
                 <th scope="col" className={th}>{t("panel.supply.cols.gap")}</th>
@@ -347,7 +367,7 @@ export default async function PanelPage({ params }: PageProps<"/[locale]/panel">
             </thead>
             <tbody>
               {supply.suppliers.map((s) => (
-                <tr key={s.orgId} data-supplier={s.orgId} className="border-b border-fg/15">
+                <tr key={s.orgId} data-supplier={s.orgId} className={tr}>
                   <td className={td}>{orgName(s.orgId)}</td>
                   <td className={td}>
                     {s.onTime.rate === null
@@ -367,36 +387,46 @@ export default async function PanelPage({ params }: PageProps<"/[locale]/panel">
   );
 
   return (
-    <main id="main" className="mx-auto grid w-full max-w-5xl flex-1 content-start gap-10 px-4 py-10">
-      <div className="grid gap-2">
-        <h1 className="font-display text-4xl">{t("panel.title")}</h1>
-        <p>{t("panel.welcome", { name: viewer.userName })}</p>
-        <dl className="grid gap-x-6 gap-y-1 sm:grid-cols-[max-content_1fr]">
-          <dt className="font-semibold">{t("panel.organization")}</dt>
-          <dd>{viewer.orgName}</dd>
-          <dt className="font-semibold">{t("panel.kind")}</dt>
-          <dd>{viewer.orgKind ? t(`orgKind.${viewer.orgKind}`) : unknown}</dd>
-          <dt className="font-semibold">{t("panel.role")}</dt>
-          <dd>{viewer.roles.map((r) => t(`roles.${r}`)).join(", ")}</dd>
+    <main id="main" className={`${page} gap-10`}>
+      <PageBanner still="press" title={t("panel.title")} lead={t("panel.welcome", { name: viewer.userName })}>
+        <dl className="relative grid gap-x-8 gap-y-3 border-t border-side-line px-6 py-4 text-sm sm:grid-cols-3 sm:px-10">
+          <div>
+            <dt className="text-side-muted">{t("panel.organization")}</dt>
+            <dd className="font-semibold text-side-ink">{viewer.orgName}</dd>
+          </div>
+          <div>
+            <dt className="text-side-muted">{t("panel.kind")}</dt>
+            <dd className="font-semibold text-side-ink">{viewer.orgKind ? t(`orgKind.${viewer.orgKind}`) : unknown}</dd>
+          </div>
+          <div>
+            <dt className="text-side-muted">{t("panel.role")}</dt>
+            <dd className="font-semibold text-side-ink">{viewer.roles.map((r) => t(`roles.${r}`)).join(", ")}</dd>
+          </div>
         </dl>
-      </div>
+      </PageBanner>
 
       <section aria-labelledby="impact-heading" data-section="impact" className="grid gap-6">
-        <div className="grid gap-1">
-          <h2 id="impact-heading" className="text-2xl font-semibold">
+        <div className="grid gap-2">
+          <h2 id="impact-heading" className={`${sectionTitle} flex items-center gap-3`}>
+            <span aria-hidden="true" className="grid size-9 place-items-center rounded-xl bg-brand-soft text-brand">
+              <ShieldCheck className="size-5" />
+            </span>
             {t("panel.impact.title")}
           </h2>
-          <p className="max-w-prose">{impact ? t("panel.impact.lead") : t("panel.impact.empty")}</p>
+          <p className={leadClass}>{impact ? t("panel.impact.lead") : t("panel.impact.empty")}</p>
         </div>
         {impactSection}
       </section>
 
       <section aria-labelledby="supply-heading" data-section="supply" className="grid gap-6">
-        <div className="grid gap-1">
-          <h2 id="supply-heading" className="text-2xl font-semibold">
+        <div className="grid gap-2">
+          <h2 id="supply-heading" className={`${sectionTitle} flex items-center gap-3`}>
+            <span aria-hidden="true" className="grid size-9 place-items-center rounded-xl bg-brand-soft text-brand">
+              <Truck className="size-5" />
+            </span>
             {t("panel.supply.title")}
           </h2>
-          <p className="max-w-prose">{supply ? t("panel.supply.lead") : t("panel.supply.empty")}</p>
+          <p className={leadClass}>{supply ? t("panel.supply.lead") : t("panel.supply.empty")}</p>
         </div>
         {supplySection}
       </section>
@@ -406,7 +436,7 @@ export default async function PanelPage({ params }: PageProps<"/[locale]/panel">
         <p className="max-w-prose">{t("panel.permissionsLead")}</p>
         <ul className="grid gap-x-6 sm:grid-cols-2">
           {perms.map((p) => (
-            <li key={`${p.resource}.${p.action}`} data-allowed={p.allowed} className="flex justify-between gap-4 border-b border-fg/20 py-2">
+            <li key={`${p.resource}.${p.action}`} data-allowed={p.allowed} className="flex justify-between gap-4 rounded-lg border border-line bg-surface px-3 py-2">
               <span>{t(`permissions.${p.resource}.${p.action}`)}</span>
               <span className={p.allowed ? "font-semibold" : "line-through"}>{p.allowed ? t("panel.allowed") : t("panel.denied")}</span>
             </li>

@@ -16,11 +16,11 @@ export function ScenarioReferences({ items }: { items: ScenarioReference[] }) {
   const num = (v: string) => fmtNumber(v, locale, 3);
   return (
     <section aria-labelledby="sc-references" className="grid gap-3">
-      <h2 id="sc-references" className="flex flex-wrap items-center gap-2 text-2xl font-semibold">
+      <h2 id="sc-references" className="flex flex-wrap items-center gap-2 text-xl font-semibold tracking-tight text-ink">
         {t("scenario.references.title")}
         <ResultClassBadge value={weakestClass(items.flatMap((i) => i.rows.map((r) => r.resultClass)))} />
       </h2>
-      <p className="max-w-prose">{t("scenario.references.intro")}</p>
+      <p className="max-w-prose text-base leading-relaxed text-muted">{t("scenario.references.intro")}</p>
       <TableWrap label={t("scenario.references.title")}>
         <table className="w-full">
           <thead>
@@ -40,10 +40,10 @@ export function ScenarioReferences({ items }: { items: ScenarioReference[] }) {
               const src = rows[0];
               const amount = high ? t("scenario.references.range", { low: num(low.value), high: num(high.value) }) : num(low.value);
               return (
-                <tr key={id} data-reference={id} className="border-t border-fg/30">
+                <tr key={id} data-reference={id} className="border-t border-line">
                   <th scope="row" className={`${td} text-start font-normal`}>
-                    <span className="block font-semibold">{t(`scenario.references.items.${id}.label`)}</span>
-                    <span className="block text-sm">{t(`scenario.references.items.${id}.note`)}</span>
+                    <span className="block font-semibold text-ink">{t(`scenario.references.items.${id}.label`)}</span>
+                    <span className="block text-sm text-muted">{t(`scenario.references.items.${id}.note`)}</span>
                     <span data-input={input} className="block text-sm">
                       {t("scenario.references.input", { field: t(`scenario.fields.${input}`) })}
                     </span>

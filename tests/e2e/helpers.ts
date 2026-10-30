@@ -63,6 +63,9 @@ export async function escapedAbsolutes(page: Page) {
     const out: string[] = [];
     for (const el of document.querySelectorAll<HTMLElement>("body *")) {
       if (getComputedStyle(el).position !== "absolute") continue;
+      // display:none altındaki öğenin yerleşimi yok (offsetParent null); sayfayı taşıramaz. Mobilde gizlenen kenar çubuğu ve
+      // başlık görselleri bu yüzden sayılmaz. sr-only gibi 1 px'lik görünmez öğelerin kutusu vardır ve sayılmaya devam eder.
+      if (!el.getClientRects().length) continue;
       let scroller: HTMLElement | null = null;
       for (let p = el.parentElement; p && !scroller; p = p.parentElement) if (getComputedStyle(p).overflowX !== "visible") scroller = p;
       if (scroller && !(el.offsetParent && scroller.contains(el.offsetParent))) out.push(`${el.tagName.toLowerCase()} "${(el.textContent ?? "").trim().slice(0, 25)}"`);

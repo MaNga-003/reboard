@@ -20,20 +20,20 @@ function Total({ id, label, total, lines }: { id: string; label: string; total: 
         ? t("saasCosts.atLeast", { amount: fmtMoney(total.atLeast, locale) })
         : t("common.unknown");
   return (
-    <div data-kpi={id} className="grid min-w-0 content-start gap-1 border-t-2 border-fg pt-2">
-      <dt className="font-semibold">{label}</dt>
-      <dd data-value className="text-3xl font-semibold break-words [font-variant-numeric:normal]">
+    <div data-kpi={id} className="grid min-w-0 content-start gap-1.5 rounded-2xl border border-t-4 border-line border-t-brand bg-surface p-5 shadow-card">
+      <dt className="font-semibold text-ink">{label}</dt>
+      <dd data-value className="text-3xl font-semibold tracking-tight text-ink break-words [font-variant-numeric:normal]">
         {value}
       </dd>
-      <dd className="flex flex-wrap items-center gap-2 text-sm">
+      <dd className="flex flex-wrap items-center gap-2 text-sm text-muted">
         <ResultClassBadge value={total.resultClass} />
       </dd>
       {items.length > 0 && (
-        <dd data-unknown className="text-sm">
+        <dd data-unknown className="text-sm text-muted">
           {t("saasCosts.unknownItems", { items: fmtList(items, locale) })}
         </dd>
       )}
-      {total.fxUnknown && <dd className="text-sm">{t("saasCosts.fxMissing")}</dd>}
+      {total.fxUnknown && <dd className="text-sm text-muted">{t("saasCosts.fxMissing")}</dd>}
     </div>
   );
 }
@@ -47,12 +47,12 @@ function Stage({ summary, data }: { summary: SaasStageSummary; data: SaasCostDat
   return (
     <div data-stage={s} className="grid gap-4">
       <div className="grid gap-1">
-        <h3 id={`saas-${s}`} className="text-xl font-semibold">
+        <h3 id={`saas-${s}`} className="text-lg font-semibold tracking-tight text-ink">
           {t(`saasCosts.stages.${s}.title`)}
         </h3>
-        <p className="max-w-prose text-sm">{t(`saasCosts.stages.${s}.intro`)}</p>
+        <p className="max-w-prose text-sm text-muted">{t(`saasCosts.stages.${s}.intro`)}</p>
       </div>
-      <dl className="grid gap-6 sm:grid-cols-2">
+      <dl className="grid gap-4 sm:grid-cols-2">
         <Total id={`saas-${s}-monthly`} label={t("saasCosts.monthly")} total={summary.monthly} lines={summary.lines} />
         <Total id={`saas-${s}-per-customer`} label={t("saasCosts.perCustomer")} total={summary.perCustomer} lines={summary.lines} />
       </dl>
@@ -72,12 +72,12 @@ function Stage({ summary, data }: { summary: SaasStageSummary; data: SaasCostDat
               const row = data.rows.get(l.key)!;
               const url = new URL(row.sourceUrl);
               return (
-                <tr key={l.key} data-line={l.key} className="border-t border-fg/30">
+                <tr key={l.key} data-line={l.key} className="border-t border-line">
                   {/* Kaynak ve tarih kalem hücresinde: dar ekranda ayrı sütun kaydırma alanının dışında kalıyordu (390 px, 27 Ekim). */}
                   <th scope="row" className={`${td} text-start font-normal`}>
-                    <span className="block font-semibold">{t(`saasCosts.items.${l.item}`)}</span>
+                    <span className="block font-semibold text-ink">{t(`saasCosts.items.${l.item}`)}</span>
                     <span className="block">{row.vendor ? [row.vendor, row.plan].filter(Boolean).join(" ") : t("saasCosts.noVendor")}</span>
-                    <span className="block text-sm">{t(`saasCosts.notes.${l.key}`)}</span>
+                    <span className="block text-sm text-muted">{t(`saasCosts.notes.${l.key}`)}</span>
                     <span data-source className="flex flex-wrap items-center gap-x-2 text-sm">
                       <span>{t("saasCosts.columns.source")}:</span>
                       <a href={row.sourceUrl} rel="noreferrer" className={rowLink}>
@@ -120,11 +120,11 @@ export function SaasCosts({ data }: { data: SaasCostData }) {
   return (
     <section aria-labelledby="sc-saas" className="grid gap-8">
       <div className="grid gap-2">
-        <h2 id="sc-saas" className="flex flex-wrap items-center gap-2 text-2xl font-semibold">
+        <h2 id="sc-saas" className="flex flex-wrap items-center gap-2 text-xl font-semibold tracking-tight text-ink">
           {t("saasCosts.title")}
           {classes.length > 0 && <ResultClassBadge value={weakestClass(classes)} />}
         </h2>
-        <p className="max-w-prose">{t("saasCosts.intro")}</p>
+        <p className="max-w-prose text-base leading-relaxed text-muted">{t("saasCosts.intro")}</p>
         {fx ? (
           <p data-fx className="flex flex-wrap items-center gap-x-2 text-sm">
             <span>{t("saasCosts.fx", { rate: fmtNumber(fx.value, locale, 4), date: fmtDate(fx.period ?? fx.retrievedAt, locale) })}</span>
@@ -134,7 +134,7 @@ export function SaasCosts({ data }: { data: SaasCostData }) {
             <ResultClassBadge value={fx.resultClass} />
           </p>
         ) : (
-          <p className="text-sm">{t("saasCosts.fxMissing")}</p>
+          <p className="text-sm text-muted">{t("saasCosts.fxMissing")}</p>
         )}
       </div>
       {data.stages.length === 0 ? (

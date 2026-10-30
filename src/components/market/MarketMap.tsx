@@ -14,7 +14,7 @@ const STYLE = "https://tiles.openfreemap.org/styles/positron";
 // Turbopack bu dosyayı statik varlık olarak kopyalar; MapLibre 6 işçisi kendi başına bir ES modülüdür.
 const WORKER = new URL("../../../node_modules/maplibre-gl/dist/maplibre-gl-worker.mjs", import.meta.url);
 const ANTALYA: [number, number] = [30.7, 36.93];
-const LINK = "inline-flex min-h-11 items-center underline underline-offset-4";
+const LINK = "inline-flex min-h-11 items-center font-semibold underline underline-offset-4";
 
 export function MarketMap({ points }: { points: MapPoint[] }) {
   const t = useTranslations("market.map");
@@ -145,9 +145,9 @@ export function MarketMap({ points }: { points: MapPoint[] }) {
         data-map-state={state}
         data-points={points.length}
         data-groups={groupByPoint(points).length}
-        className="h-72 w-full overflow-hidden rounded border border-fg/30 bg-fg/5"
+        className="h-80 w-full overflow-hidden rounded-2xl border border-line bg-canvas shadow-card"
       />
-      <figcaption className="grid gap-1 text-sm">
+      <figcaption className="grid gap-1 text-sm text-muted">
         <span>{state === "fallback" ? t("fallback") : t("legend")}</span>
         <span>
           {t("attribution")}{" "}

@@ -9,12 +9,28 @@ import { fmtNumber } from "@/lib/format";
  * Gösterge kutusu. D-011: sınıf zorunlu prop; sınıfsız gösterge derlenmez. data-kpi, dürüstlük testinin dolaştığı katalogdur.
  * Büyük tek başına sayıda orantılı rakam: eşit genişlikli rakam "121"i dağınık gösterir.
  */
-export function Kpi({ id, label, value, resultClass, note }: { id: string; label: string; value: ReactNode; resultClass: ResultClass; note?: ReactNode }) {
+const ACCENT = { ink: "border-t-ink", brand: "border-t-brand", glow: "border-t-glow", sky: "border-t-sky", muted: "border-t-subtle" } as const;
+
+export function Kpi({
+  id,
+  label,
+  value,
+  resultClass,
+  note,
+  accent = "ink",
+}: {
+  id: string;
+  label: string;
+  value: ReactNode;
+  resultClass: ResultClass;
+  note?: ReactNode;
+  accent?: keyof typeof ACCENT;
+}) {
   return (
-    <div data-kpi={id} className="grid content-start gap-1 border-t-2 border-fg pt-2">
-      <dt>{label}</dt>
-      <dd className="text-3xl font-semibold [font-variant-numeric:normal]">{value}</dd>
-      <dd className="flex flex-wrap items-center gap-2 text-sm">
+    <div data-kpi={id} className={`grid content-start gap-2 rounded-2xl border border-t-4 border-line bg-surface p-5 shadow-card ${ACCENT[accent]}`}>
+      <dt className="text-sm font-medium text-muted">{label}</dt>
+      <dd className="text-3xl font-semibold tracking-tight text-ink [font-variant-numeric:normal]">{value}</dd>
+      <dd className="flex flex-wrap items-center gap-2 text-sm text-muted">
         <ResultClassBadge value={resultClass} />
         {note}
       </dd>

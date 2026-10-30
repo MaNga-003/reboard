@@ -1,7 +1,7 @@
 // Token kataloğu ölçümleri (M-1 metin kısmı, M-8 durum kısmı). Paletler ve durumlar dolaşılır: eklenen her öğe kendiliğinden denetlenir.
 import { describe, expect, it } from "vitest";
 import { contrastRatio, deltaE, hueDifference, minCvdDeltaE } from "@/design/color";
-import { PALETTES, STATUS, WADA, cssVariables, paletteHex, statusHex, type PaletteId, type StatusName } from "@/design/tokens";
+import { PALETTES, STATUS, UI, WADA, cssVariables, paletteHex, statusHex, uiHex, uiTints, type PaletteId, type StatusName } from "@/design/tokens";
 
 const ids = Object.keys(PALETTES) as PaletteId[];
 const names = Object.keys(STATUS) as StatusName[];
@@ -44,6 +44,49 @@ describe.each(ids)("palet %s", (id) => {
     expect(contrastRatio(p.text, p.bg)).toBeGreaterThanOrEqual(MIN.ui);
     const vsBg = deltaE(s[n].fill, p.bg);
     expect(vsBg, `${id}.${n} dolgu/zemin ΔE ${fmt(vsBg)}`).toBeGreaterThanOrEqual(MIN.fillVsBg);
+  });
+});
+
+// Arayüz paleti (T4.8): kenar çubuğu, kartlar, düğmeler. Eşikler DESIGN_SYSTEM §3'teki ölçülmüş değerlerin altında,
+// yazı için WCAG normal metin 4,5; arayüz öğesi (input kenarı, vurgu dolgusu) 3.
+describe("arayüz paleti (UI)", () => {
+  const c = uiHex();
+  const t = uiTints();
+  const r = (a: string, b: string) => contrastRatio(a, b);
+
+  it("her rol bir Wada rengi; CSS değişkenleri yayımlanır", () => {
+    const hexes = new Set(WADA.map((x) => x.hex));
+    for (const [role, hex] of Object.entries(c)) expect(hexes.has(hex), `UI.${role} ${hex}`).toBe(true);
+    for (const name of Object.values(UI)) expect(WADA.some((x) => x.name === name), name).toBe(true);
+    const vars = cssVariables();
+    expect(vars["--rb-ink"]).toBe(c.ink);
+    expect(vars["--rb-brand"]).toBe(c.brand);
+    expect(vars["--rb-canvas"]).toBe(t.canvas);
+  });
+
+  it.each([
+    ["ink / surface", () => r(c.ink, c.surface), 7],
+    ["ink / canvas", () => r(c.ink, t.canvas), 7],
+    ["muted / surface", () => r(c.muted, c.surface), 4.5],
+    ["muted / canvas", () => r(c.muted, t.canvas), 4.5],
+    ["subtle / surface", () => r(c.subtle, c.surface), 4.5],
+    ["subtle / canvas", () => r(c.subtle, t.canvas), 4.5],
+    ["düğme yazısı / brand", () => r(c.onBrand, c.brand), 4.5],
+    ["brand bağlantı yazısı / surface", () => r(c.brand, c.surface), 4.5],
+    ["brand bağlantı yazısı / canvas", () => r(c.brand, t.canvas), 4.5],
+    ["koyu yüzey: sideInk / side", () => r(c.sideInk, c.side), 7],
+    ["koyu yüzey: sideMuted / side", () => r(t.sideMuted, c.side), 4.5],
+    ["koyu yüzey: sideMuted / sideActive", () => r(t.sideMuted, t.sideActive), 4.5],
+    ["koyu yüzey: sideInk / sideActive", () => r(c.sideInk, t.sideActive), 7],
+    ["input kenarı / surface (arayüz öğesi)", () => r(t.lineStrong, c.surface), 3],
+  ] as const)("%s ≥ eşik", (name, ratio, min) => {
+    const v = ratio();
+    expect(v, `${name} ${v.toFixed(2)} < ${min}`).toBeGreaterThanOrEqual(min);
+  });
+
+  // Ölçünün kendisi: Golden Yellow süs ışığıdır; yazı olarak beyazda okunmaz. Bu eşik onu yazıda kullanmayı yakalar.
+  it("ölçü kötü örneği yakalar: glow rengi beyaz üstünde yazı olarak < 4,5", () => {
+    expect(r(c.glow, c.surface)).toBeLessThan(4.5);
   });
 });
 
