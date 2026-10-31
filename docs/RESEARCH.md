@@ -18,7 +18,7 @@
 | [GS1 EPCIS ve CBV rehberi](https://ref.gs1.org/guidelines/epcis-cbv/) | Dönüşüm `TransformationEvent` ile, girdi ve çıktı miktarlarıyla kaydedilir | `custody_events` EPCIS türlerini ve CBV `bizStep` sözlüğünü kullanır (D-012) |
 | [ISO 22095 kütle dengesi (2026)](https://www.iso.org/contents/news/2026/03/new-iso-standards-bring-clarity.html) | Gözetim zinciri modelleri: kimlik koruma, ayrıştırma, kütle dengesi | Kütle dengesi denetimi ve açıklama zorunluluğu. %2 tolerans bu kaynaktan alınmadı; platformun kuralıdır (`DATA_DICTIONARY.md`) |
 | [AB DPP tekstil takvimi](https://single-market-economy.ec.europa.eu/single-market/digital-product-passport/textile-apparel_en) | Tekstil için yasal düzenleme 2027'nin 4. çeyreğinde bekleniyor | Pasaport şimdiden açık ve makine okunur; F5'te UNTP biçimine dışa aktarım |
-| [UNTP DPP](https://spec-untp-fbb45f.opensource.unicc.org/docs/specification/DigitalProductPassport), [open-dpp](https://github.com/open-dpp/open-dpp) | Doğrulanabilir kimlik bilgisiyle pasaport | F5: `T5.1` |
+| [UNTP DPP](https://spec-untp-fbb45f.opensource.unicc.org/docs/specification/DigitalProductPassport), [open-dpp](https://github.com/open-dpp/open-dpp) | Doğrulanabilir kimlik bilgisiyle pasaport | F5: `T5.8` |
 
 ## 3. Karbon
 
@@ -58,7 +58,7 @@
 | Jüri cevapları ve maliyet hesabı (PDF) | Dürüstlük kuralları, ürün parametreleri, maliyet aralıkları |
 | Maliyet ve veri raporu (DOCX, Şerife) | 11 tablo, formüller, karar kapıları, referans değerler |
 | Ekip planı, 30 Ekim (DOCX) | Takvim, görev dağılımı, hedef sayılar |
-| Sunum (PPTX) | Hikâye ve ana mesaj. Jüri belgesiyle çelişen ifadeler Q-3'te |
+| Sunum (PPTX) | Hikâye ve ana mesaj. Kaynaksız sayılar sunumda kaldı (kullanıcı kararı, 30.10; T4.5); platform onları göstermez |
 
 ## 7. Renk
 
@@ -107,4 +107,4 @@ Belgelerdeki dış olgular (2026-10-29 denetimi):
 - D-018'deki 4,5 MB istek gövdesi sınırı: [Vercel Functions Limits](https://vercel.com/docs/functions/limitations), "The maximum payload size for the request body or the response body of a Vercel Function is 4.5 MB".
 - D-027 ve D-029'daki fiyatlar ve tarifeler bu tablonun kaynak satırlarıyla aynı okumadır.
 - Belgelerdeki öteki sayılar platformun kuralları ya da ölçümleridir (`docs/VERIFICATION.md`).
-- Sunumla çelişen ifadeler Q-3'te durur.
+- Sunumdaki "~1,5 milyon ton" ve "%85" için birincil kaynak bulunamadı; ikisi de platforma girmez (D-028). Sunumda kalmaları kullanıcı kararıdır (30.10; T4.5).

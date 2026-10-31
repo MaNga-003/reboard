@@ -1,7 +1,7 @@
 {
   "$schema": "./docs/state.schema.json",
   "project": "ReBoard SaaS platformu",
-  "updated_at": "2026-10-29T23:45:00+03:00",
+  "updated_at": "2026-10-30T01:09:00+03:00",
   "current_phase": "F2",
   "deadlines": {
     "demo_freeze": "2026-10-29T18:00:00+03:00",
@@ -312,7 +312,7 @@
       "id": "T3.1",
       "phase": "F3",
       "mode": "hibrit",
-      "status": "yapılacak",
+      "status": "sürüyor",
       "title": "Palet önizleme sayfası (A/B/C) ve kullanıcının seçimi",
       "acceptance": "Üç aday gerçek bileşenlerle gösterilir; ölçümler sayfada görünür; kullanıcı birini seçer",
       "evidence": null,
@@ -321,7 +321,8 @@
       ],
       "decisions": [
         "D-014"
-      ]
+      ],
+      "note": "Önizleme (30.10): ayrı sayfa yerine gerçek ekranlar. Çevrimdışı yedekte Panel ve Pazar yeri (1440 px) ile Pasaport (390 px); <html> üzerindeki --rb-* değişkenleri cssVariables(A|B|C) ile değiştirildi, kod değişmedi. Harita işaretleri JS'te hesaplandığı için görüntülerde B'de kaldı. Ölçülen en düşük metin kontrastı: A 4,05 ('Yeni ilan ver' ve 'Yeniden doğrula' düğmeleri, eşik 4,5), B 7,45, C 3,56 (aynı düğmeler; Panel'de en düşük 4,93). Kullanıcı C'yi seçti (30.10). Uygulama ve kanıt f5/palet-c dalında (C:\\Users\\burak\\Desktop\\reboard-palet); T3.1 ve T3.5 orada kapandı, bu dosyadaki durum birleştirmede ona uyar."
     },
     {
       "id": "T3.2",
@@ -468,7 +469,8 @@
       "depends_on": [
         "T4.3"
       ],
-      "decisions": []
+      "decisions": [],
+      "note": "Kullanıcı kararı (30.10): provaları ekip kendi yöntemiyle yapar; prova kiti kullanılmaz. Provada çıkan bir sorun iletilirse test ya da göreve çevrilir."
     },
     {
       "id": "T4.5",
@@ -486,7 +488,7 @@
         "D-028",
         "D-029"
       ],
-      "note": "Sunum kaynakçası ve iddiaları doğrulandı (.private/kaynak-dogrulama.md); İrem'in yanıtları işlendi (prototip yok, bağlayıcı adayları PET/CoPET ve pMDI, ölçüler hedef, 6. ve 7. madde künyeleri). Ekibin 28.10 yanıtları doğrulandı (raporun 8. bölümü): 1,5 Mt için kuruluş belgesi yok, Eurostat seed kapsam notundan sunuma atıf kaldırıldı (canlıya tam seed'le gider, T4.1). Senaryodaki kaynaksız varsayılanlar kaldırıldı (D-029). 785 TL/t KDV tutarsızlığı yalnızca test örneğinde ve supplier_baseline seed'inde kaldı; Şerife'nin girdi dosyası bekleniyor. Sunum düzeltmeleri ekipte (Q-3)."
+      "note": "Sunum kaynakçası ve iddiaları doğrulandı (.private/kaynak-dogrulama.md); İrem'in yanıtları işlendi (prototip yok, bağlayıcı adayları PET/CoPET ve pMDI, ölçüler hedef, 6. ve 7. madde künyeleri). Ekibin 28.10 yanıtları doğrulandı (raporun 8. bölümü): 1,5 Mt için kuruluş belgesi yok, Eurostat seed kapsam notundan sunuma atıf kaldırıldı (canlıya tam seed'le gider, T4.1). Senaryodaki kaynaksız varsayılanlar kaldırıldı (D-029). 785 TL/t KDV tutarsızlığı yalnızca test örneğinde ve supplier_baseline seed'inde kaldı; Şerife'nin girdi dosyası bekleniyor. Kullanıcı kararı (30.10): sunuma bağlı kalınır; '1,5 milyon ton' ve '%85' sunumda kalır. Platform ulusal tonaj ya da oran göstermez (D-028), bu yüzden demoda ekran sunumla çelişmez. Karar kâğıdı .private/T4.5-karar-kagidi.md (Eurostat 2024: 374.222 t, okunma 29.10). Açık kalan tek madde: 785 TL/t KDV için Şerife'nin girdi dosyası."
     },
     {
       "id": "T4.6",
@@ -518,19 +520,102 @@
       "note": "İlk bulgu düzeltildi: İBB tarifesi KDV dahil ve 2026 için geçerli; tesis adları tarifede (2026-10-27). Senaryo: kaynaksız 22 varsayılan girdi arayüzden kalktı, yerine dayanak metni geldi; 4 yeni kaynaklı karşılaştırma satırı (Arcline sunta, Arkutorman MDF, 2026-10-28) (D-029). 2026-10-29: veri sözlüğündeki 'Toplam 100 olmalı' kodla çelişiyordu ('en fazla 100'), düzeltildi; %2 kütle dengesi toleransının ISO 22095'ten değil platform kuralından geldiği yazıldı; D-018'deki Vercel 4,5 MB sınırına kaynak eklendi. Seed'deki kaynaklı değerlerin bağlantı ve tarihini seed.test.ts denetler."
     },
     {
-      "id": "T5.1",
+      "id": "T5.5",
       "phase": "F5",
       "mode": "otonom",
+      "status": "sürüyor",
+      "title": "Postgres RLS: kiracı izolasyonunun ikinci savunma hattı",
+      "acceptance": "Kiracı kataloğundaki 22 tablonun hepsinde RLS açık; uygulama kurum verisine yalnız kapsamlı işlemde erişir (rol reboard_app, reboard.org_id). 8 kurum × 22 tablo: süzgeçsiz sorgu sözleşmedeki satırları görür (sızıntı ve eksik 0); başka kurum adına yazma 0 başarı; kapsamsız depo yolu 0; bozma testleri düşer; M-4, test:e2e ve demo akışı yeşil; main ve canlı donmuş kalır (dal f5/rls)",
+      "evidence": null,
+      "depends_on": [
+        "T1.5"
+      ],
+      "decisions": [
+        "D-016"
+      ],
+      "note": "T5.1'in (Faz 5 şemsiyesi) kabul ölçütü 'her alt iş ayrı görev olarak açılır' idi; T5.5–T5.11 olarak açıldı, şemsiye kaldırıldı. Main'e alma ve Neon'a migrasyon kullanıcı onayıyla, yarışmadan sonra. Yarım iş (31.10, proje kapandı, D-035 main'de): drizzle/0006_satir_guvenligi.sql yazıldı; main'e alınmadı ve Neon'a uygulanmadı. Dalda kapsamlı depo katmanı (src/db/repo/scope.ts) ve RLS testleri yok, acceptance karşılanmadı. SQL başlığındaki D-033 karar kaydı hiç yazılmadı, bu yüzden görevden çıkarıldı."
+    },
+    {
+      "id": "T5.6",
+      "phase": "F5",
+      "mode": "hibrit",
       "status": "yapılacak",
-      "title": "Postgres RLS, e-posta bildirimleri, EPCIS 2.0 JSON-LD dışa aktarımı, UNTP DPP, taşıyıcı modülü, Eurostat ve TCMB verisini otomatik çekme, gözlemlenebilirlik",
-      "acceptance": "Her alt iş ayrı görev olarak açılır",
+      "title": "E-posta bildirimleri",
+      "acceptance": "Teklif, kabul ve teslim olayları e-posta kuyruğuna (outbox) aynı işlemde yazılır; gönderim bir arayüzün arkasında ve aynı olay iki kez gönderilmez; TR ve EN şablonlar; sağlayıcı anahtarı yalnız ortam değişkeninde; test sahte taşıyıcıyla ölçülür. Kullanıcı: sağlayıcı hesabı ve gönderen alan adının DNS doğrulaması",
       "evidence": null,
       "depends_on": [
         "T4.6"
       ],
+      "decisions": []
+    },
+    {
+      "id": "T5.7",
+      "phase": "F5",
+      "mode": "otonom",
+      "status": "yapılacak",
+      "title": "EPCIS 2.0 JSON-LD dışa aktarımı",
+      "acceptance": "Kurum kendi gözetim olaylarını EPCIS 2.0 JSON-LD belgesi olarak indirir; belge GS1'in yayımladığı EPCIS 2.0 JSON şemasıyla doğrulanır (hata 0); kg miktarları ve hash zinciri belgede korunur; başka kurumun olayı belgeye girmez",
+      "evidence": null,
+      "depends_on": [
+        "T1.3"
+      ],
+      "decisions": []
+    },
+    {
+      "id": "T5.8",
+      "phase": "F5",
+      "mode": "hibrit",
+      "status": "yapılacak",
+      "title": "UNTP DPP doğrulanabilir kimlik bilgisi",
+      "acceptance": "Herkese açık lotun pasaportu UNTP DPP kimlik bilgisi olarak dışa verilir ve sabitlenmiş UNTP şema sürümüyle doğrulanır (hata 0); 'test edilmedi' ve sonuç sınıfı korunur. Kullanıcı: imza anahtarının yeri ve yayımlayan kimliği (did:web bir alan adı ister, D-003)",
+      "evidence": null,
+      "depends_on": [
+        "T2.4"
+      ],
+      "decisions": []
+    },
+    {
+      "id": "T5.9",
+      "phase": "F5",
+      "mode": "hibrit",
+      "status": "yapılacak",
+      "title": "Taşıyıcı modülü ve rota karşılaştırması",
+      "acceptance": "Taşıyıcı kurum planlı teslime teklif verir; teklif anlaşmanın iki tarafına görünür, başkasına görünmez (M-4); rota karşılaştırması ekip raporundaki yöntemle yapılır, yöntem birincil kaynakla doğrulanır; kuş uçuşu ve yol mesafesi ayrı etiketlenir. Kullanıcı: yol mesafesi sağlayıcısı (kendi OSRM sunucusu ya da anahtarlı servis)",
+      "evidence": null,
+      "depends_on": [
+        "T2.1"
+      ],
       "decisions": [
-        "D-016"
+        "D-011"
       ]
+    },
+    {
+      "id": "T5.10",
+      "phase": "F5",
+      "mode": "otonom",
+      "status": "yapılacak",
+      "title": "Eurostat ve TCMB verisini otomatik çekme",
+      "acceptance": "Zamanlanmış iş Eurostat API ve TCMB'den referans değerleri çeker; yalnız değişen değer kaynak bağlantısı ve okunma tarihiyle yeni satır olur; çekim hatası eski değeri silmez ve uyarı bırakır; kayıtlı yanıtlarla test edilir (D-028)",
+      "evidence": null,
+      "depends_on": [
+        "T1.4"
+      ],
+      "decisions": [
+        "D-028"
+      ]
+    },
+    {
+      "id": "T5.11",
+      "phase": "F5",
+      "mode": "otonom",
+      "status": "yapılacak",
+      "title": "Gözlemlenebilirlik",
+      "acceptance": "Sunucu hataları ve yavaş istekler iz (OpenTelemetry) ve yapılandırılmış günlükle izlenir; günlüğe kişisel veri, parola ve kanıt içeriği yazılmaz (test); demo akışında sunucu hatası 0 ölçülür",
+      "evidence": null,
+      "depends_on": [
+        "T4.1"
+      ],
+      "decisions": []
     },
     {
       "id": "T5.2",
@@ -585,14 +670,6 @@
       "question": "Ana palet A (#303), B (#310) ya da C (#343)?",
       "blocks": [
         "T3.5"
-      ]
-    },
-    {
-      "id": "Q-3",
-      "owner": "ekip",
-      "question": "Sunumdaki düzeltmeler (öneriler .private/kaynak-dogrulama.md, 3. ve 8. bölüm) ekipçe uygulanacak mı? Yanıtlananlar (28.10): yazılım iddiaları 'planlanan' diye yazılacak; PET/CoPET için SDS yok, 'formaldehit içermez' yalnız pMDI için yazılabilir; '8 milyon m³' yerine 'yaklaşık 8,6 milyon m³ tüketim (FAOSTAT 2024)' yazılacak. Demodan sonra netleşecek (kullanıcı kararı, 28.10): (1) Türkiye için '1,5 milyon ton' yazan bir kuruluş belgesi bulunamadı; EEA kişi başı atık oranıyla izdüşüm ~1,36 Mt veriyor. Belge iletilmezse Eurostat'ın 2022 sayısı (361.500 t) kullanılsın mı? '%85' için de kaynak yok. PLA sorusu yanıtlandı (İrem, 28.10): tekstil levhasında PLA bağlayıcıyla sonuç yok; isteğe bağlı 4. test adayı. İrem'in önerdiği test sırası: pMDI ve PET/CoPET, rPP, sitrik asit + nişasta, PLA (notlar .private/kaynak-dogrulama.md §9).",
-      "blocks": [
-        "T4.5"
       ]
     }
   ],

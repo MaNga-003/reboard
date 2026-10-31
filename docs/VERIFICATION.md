@@ -52,5 +52,5 @@
 
 - Ana palet seçimi (Q-1, T3.1).
 - Hikâyenin his ve zevk onayı (T3.6). En fazla 4 maddelik kontrol listesiyle sorulur.
-- Sunum ile platform dilinin uyumu (Q-3, T4.5).
+- Sunum ile platform dilinin uyumu (T4.5). Kaynaksız sayılar sunumda kalır, platforma girmez (kullanıcı kararı, 30.10).
 - Provalar (T4.4).

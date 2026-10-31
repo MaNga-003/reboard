@@ -43,6 +43,13 @@
       "when": 1793120333339,
       "tag": "0005_saas_kurulum",
       "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "7",
+      "when": 1793306969296,
+      "tag": "0006_satir_guvenligi",
+      "breakpoints": true
     }
   ]
 }
