@@ -48,5 +48,5 @@
 
 ## 2. Kullanıcıya kalanlar (ölçülemez)
 
-- Sunum ile platform dilinin uyumu (Q-3, T4.5).
+- Sunum ile platform dilinin uyumu (T4.5). Kaynaksız sayılar sunumda kalır, platforma girmez (kullanıcı kararı, 30.10).
 - Provalar (T4.4).

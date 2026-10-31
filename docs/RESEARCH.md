@@ -55,7 +55,7 @@
 | Jüri cevapları ve maliyet hesabı (PDF) | Dürüstlük kuralları, ürün parametreleri, maliyet aralıkları |
 | Maliyet ve veri raporu (DOCX, Şerife) | 11 tablo, formüller, karar kapıları, referans değerler |
 | Ekip planı, 30 Ekim (DOCX) | Takvim, görev dağılımı, hedef sayılar |
-| Sunum (PPTX) | Hikâye ve ana mesaj. Jüri belgesiyle çelişen ifadeler Q-3'te |
+| Sunum (PPTX) | Hikâye ve ana mesaj. Kaynaksız sayılar sunumda kaldı (kullanıcı kararı, 30.10; T4.5); platform onları göstermez |
 
 ## 7. Renk
 
@@ -104,4 +104,4 @@ Belgelerdeki dış olgular (2026-10-29 denetimi):
 - D-018'deki 4,5 MB istek gövdesi sınırı: [Vercel Functions Limits](https://vercel.com/docs/functions/limitations), "The maximum payload size for the request body or the response body of a Vercel Function is 4.5 MB".
 - D-027 ve D-029'daki fiyatlar ve tarifeler bu tablonun kaynak satırlarıyla aynı okumadır.
 - Belgelerdeki öteki sayılar platformun kuralları ya da ölçümleridir (`docs/VERIFICATION.md`).
-- Sunumla çelişen ifadeler Q-3'te durur.
+- Sunumdaki "~1,5 milyon ton" ve "%85" için birincil kaynak bulunamadı; ikisi de platforma girmez (D-028). Sunumda kalmaları kullanıcı kararıdır (30.10; T4.5).

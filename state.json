@@ -1,7 +1,7 @@
 {
   "$schema": "./docs/state.schema.json",
   "project": "ReBoard SaaS platformu",
-  "updated_at": "2026-10-30T06:40:00+03:00",
+  "updated_at": "2026-10-31T17:30:00+03:00",
   "current_phase": "F2",
   "deadlines": {
     "demo_freeze": "2026-10-29T18:00:00+03:00",
@@ -428,13 +428,14 @@
       "status": "tamam",
       "title": "Çevrimdışı demo paketi ve Playwright ile kaydedilmiş demo videosu",
       "acceptance": "İnternet kapalıyken pnpm demo:offline ile demo akışı çalışır; video dosyası üretilir",
-      "evidence": "pnpm demo:offline --check (2026-10-29, 1be6a48, CSP'li build): demo akışı 1/1, sunucuda engellenen yerel dışı bağlantı 0, tarayıcıda kesilen 3 (tiles.openfreemap.org) (M-33). pnpm demo:video: 181,9 s, DEMO.md'den fark 1,9 s, 1920 × 1080, 40,1 MB, siyah kesit 0, 2. adımda harita hazır (M-35) → .private/demo/reboard-demo.mp4 (git dışı).",
+      "evidence": "pnpm demo:offline --check (2026-10-29, 1be6a48, CSP'li build): demo akışı 1/1, sunucuda engellenen yerel dışı bağlantı 0, tarayıcıda kesilen 3 (tiles.openfreemap.org) (M-33). pnpm demo:video: 181,9 s, DEMO.md'den fark 1,9 s, 1920 × 1080, 40,1 MB, siyah kesit 0, 2. adımda harita hazır (M-35) → .private/demo/reboard-demo.mp4 (git dışı; 31.10'da silindi, pnpm demo:video yeniden üretir).",
       "depends_on": [
         "T4.1"
       ],
       "decisions": [
         "D-003",
-        "D-030"
+        "D-030",
+        "D-035"
       ],
       "note": "pnpm demo:offline: PGlite + production build, sunucuya --import ile çevrimdışı koruma (scripts/offline-guard.mjs; yerel dışı DNS ve çıplak IP reddedilir, sayılır). --check akışı tarayıcıda yerel dışı istekler kesikken koşar: 2026-10-29 7,5 s yeşil, sunucuda engellenen 0, tarayıcıda kesilen 3 (tiles.openfreemap.org) (M-33). pnpm demo:video (2026-10-29): ilk koşu iki kart bulup düştü (gerçekçi başlık seed ilanının alt dizesiydi), kart ve teslim satırı tam adla aranıyor. İkinci kayıtta 2. adımda harita boştu (video kipi tarayıcıyı da çevrimdışı koşuyordu); video artık internetle kaydedilir, sunucu yine PGlite ve korumalı, 2. adımda harita hazır olmazsa kayıt düşer. Üçüncü kayıt 181,0 s, 1920 × 1080, 2. adımda harita noktalarıyla görünüyor. Kabul ölçüsü betikte (M-35): dördüncü kayıt 181,9 s, fark 1,9 s, 1920 × 1080, siyah kesit 0."
     },
@@ -467,7 +468,8 @@
       "depends_on": [
         "T4.3"
       ],
-      "decisions": []
+      "decisions": [],
+      "note": "Kullanıcı kararı (30.10): provaları ekip kendi yöntemiyle yapar; prova kiti kullanılmaz. Provada çıkan bir sorun iletilirse test ya da göreve çevrilir. Proje 31.10'da kapatıldı (D-035); iş kullanıcıda kaldı."
     },
     {
       "id": "T4.5",
@@ -485,7 +487,7 @@
         "D-028",
         "D-029"
       ],
-      "note": "Sunum kaynakçası ve iddiaları doğrulandı (.private/kaynak-dogrulama.md); İrem'in yanıtları işlendi (prototip yok, bağlayıcı adayları PET/CoPET ve pMDI, ölçüler hedef, 6. ve 7. madde künyeleri). Ekibin 28.10 yanıtları doğrulandı (raporun 8. bölümü): 1,5 Mt için kuruluş belgesi yok, Eurostat seed kapsam notundan sunuma atıf kaldırıldı (canlıya tam seed'le gider, T4.1). Senaryodaki kaynaksız varsayılanlar kaldırıldı (D-029). 785 TL/t KDV tutarsızlığı yalnızca test örneğinde ve supplier_baseline seed'inde kaldı; Şerife'nin girdi dosyası bekleniyor. Sunum düzeltmeleri ekipte (Q-3)."
+      "note": "Sunum kaynakçası ve iddiaları doğrulandı (.private/kaynak-dogrulama.md); İrem'in yanıtları işlendi (prototip yok, bağlayıcı adayları PET/CoPET ve pMDI, ölçüler hedef, 6. ve 7. madde künyeleri). Ekibin 28.10 yanıtları doğrulandı (raporun 8. bölümü): 1,5 Mt için kuruluş belgesi yok, Eurostat seed kapsam notundan sunuma atıf kaldırıldı (canlıya tam seed'le gider, T4.1). Senaryodaki kaynaksız varsayılanlar kaldırıldı (D-029). 785 TL/t KDV tutarsızlığı yalnızca test örneğinde ve supplier_baseline seed'inde kaldı; Şerife'nin girdi dosyası bekleniyor. Kullanıcı kararı (30.10): sunuma bağlı kalınır; '1,5 milyon ton' ve '%85' sunumda kalır. Platform ulusal tonaj ya da oran göstermez (D-028), bu yüzden demoda ekran sunumla çelişmez. Karar kâğıdı .private/T4.5-karar-kagidi.md (Eurostat 2024: 374.222 t, okunma 29.10). Açık kalan tek madde: 785 TL/t KDV için Şerife'nin girdi dosyası."
     },
     {
       "id": "T4.6",
@@ -591,16 +593,7 @@
       ]
     }
   ],
-  "open_questions": [
-    {
-      "id": "Q-3",
-      "owner": "ekip",
-      "question": "Sunumdaki düzeltmeler (öneriler .private/kaynak-dogrulama.md, 3. ve 8. bölüm) ekipçe uygulanacak mı? Yanıtlananlar (28.10): yazılım iddiaları 'planlanan' diye yazılacak; PET/CoPET için SDS yok, 'formaldehit içermez' yalnız pMDI için yazılabilir; '8 milyon m³' yerine 'yaklaşık 8,6 milyon m³ tüketim (FAOSTAT 2024)' yazılacak. Demodan sonra netleşecek (kullanıcı kararı, 28.10): (1) Türkiye için '1,5 milyon ton' yazan bir kuruluş belgesi bulunamadı; EEA kişi başı atık oranıyla izdüşüm ~1,36 Mt veriyor. Belge iletilmezse Eurostat'ın 2022 sayısı (361.500 t) kullanılsın mı? '%85' için de kaynak yok. PLA sorusu yanıtlandı (İrem, 28.10): tekstil levhasında PLA bağlayıcıyla sonuç yok; isteğe bağlı 4. test adayı. İrem'in önerdiği test sırası: pMDI ve PET/CoPET, rPP, sitrik asit + nişasta, PLA (notlar .private/kaynak-dogrulama.md §9).",
-      "blocks": [
-        "T4.5"
-      ]
-    }
-  ],
+  "open_questions": [],
   "risks": [
     {
       "id": "R-1",
@@ -615,12 +608,12 @@
     {
       "id": "R-3",
       "risk": "Demo günü internet olmayabilir",
-      "mitigation": "pnpm demo:offline (PGlite) ve kaydedilmiş demo videosu"
+      "mitigation": "pnpm demo:offline (PGlite); demo videosu kapanışta silindi, pnpm demo:video yeniden kaydeder (D-035)"
     },
     {
       "id": "R-4",
       "risk": "Herkese açık demoda ziyaretçiler veriyi bozabilir",
-      "mitigation": "Olaylar yalnızca eklenir; eklenen kayıt etiket çapasını ve QR'ı bozmaz, demo akışı her seferinde kendi ilanını açar. Gerekirse Neon yedek dalı alınır ve aynı seed günüyle yeniden yüklenir: DEMO_NOW=<qr.json seedDay> pnpm db:seed:live (D-030). Uygulamada sıfırlama düğmesi ve cron yok. Donma noktası (2026-10-29 18:36): git etiketi demo-donma-2026-10-29, yayın dpl_HuaSCHYy2WsmpEZMjNXWSbm4xG7y, Neon yedek-2026-10-29-donma (8 ilan, 0 E2E, 63 olay, 6 lot); geri dönüş DEMO.md §4"
+      "mitigation": "Olaylar yalnızca eklenir; eklenen kayıt etiket çapasını ve QR'ı bozmaz, demo akışı her seferinde kendi ilanını açar. Gerekirse Neon yedek dalı alınır ve aynı seed günüyle yeniden yüklenir: DEMO_NOW=<qr.json seedDay> pnpm db:seed:live (D-030). Uygulamada sıfırlama düğmesi ve cron yok. Donma noktası (2026-10-29 18:36): git etiketi demo-donma-2026-10-29, yayın dpl_HuaSCHYy2WsmpEZMjNXWSbm4xG7y, donma anındaki veri 8 ilan, 0 E2E, 63 olay, 6 lot (Neon yedek dalı kapanışta silindi, D-035); geri dönüş DEMO.md §4"
     },
     {
       "id": "R-5",

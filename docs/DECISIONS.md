@@ -149,6 +149,14 @@ Biçim: **Karar**, **Neden**, **Tarih**, kararı kim verdi (K: kullanıcı, C: C
 - **Neden:** Kullanıcı (2026-10-30) demoyu tekdüze, renksiz ve görselsiz buldu; jüriyi etkileyecek bir SaaS görünümü istedi ve hikâyeyi sevdi. Palet adayları (A, B, C) arasında seçim yapılmadı; T3.1 bu yüzden iptal oldu.
 - **Tarih:** 2026-10-30 · K
 
+### D-035 — Proje 31 Ekim 2026'da kapatıldı; depo ve canlı sürüm arşiv olarak kalır
+- **Karar:**
+  - Kullanıcı projeyi sonlandırdı. Depo, canlı adres (`https://reboard-lovat.vercel.app`) ve Vercel ile Neon projeleri silinmez; son hâliyle durur. Yeni özellik geliştirilmez, F5 görevleri yapılmadan kalır.
+  - Yedekler silindi: üç Neon yedek dalı (`yedek-2026-10-29-donma`, `-sahne`, `-reseed`) ile `.private/demo` altındaki iki demo videosu ve kayıt klasörleri. Veri sentetiktir; `pnpm db:seed:live` ve `pnpm demo:video` yeniden üretir. Git etiketleri (`demo-donma-2026-10-29`, `demo-saas-2026-10-30`) git geçmişidir, yedek sayılmaz ve kalır.
+  - Bütün dallar GitHub'a gönderildi. `f5/rls` ve `f5/palet-c` yarım iştir ve `main`'e girmedi.
+- **Neden:** Yarışma günü (30 Ekim) geçti; kullanıcı projenin silinmeden burada noktalanmasını istedi. Yedekler yalnızca demo gününün güvencesiydi.
+- **Tarih:** 2026-10-31 · K
+
 ### D-030 — Demo verisi yalnızca komutla ve sabit seed günüyle sıfırlanır
 - **Karar:**
   - Uygulamada "Demo verisini sıfırla" düğmesi ve günlük yeniden yükleme cron'u yoktur. Plan ikisini de öngörüyordu; yapılmadı ve belgelerden çıkarıldı (`/api/cron`, `CRON_SECRET`).

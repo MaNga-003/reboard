@@ -1,6 +1,8 @@
 # Demo senaryosu (30 Ekim)
 
 > 3 dakikalık canlı demo. Her adım `tests/e2e/demo.spec.ts` içinde bir Playwright adımına karşılık gelir (T4.3). Adım değişirse test de aynı commit'te değişir.
+>
+> **Kapanış (31 Ekim 2026, D-035):** Proje kapatıldı. Yedek 2 videosu ve Neon yedek dalları silindi; komutlar aynısını yeniden üretir. Bu belge yarışma gününün kaydı olarak kalır.
 
 ## 1. Hazırlık
 
@@ -11,9 +13,9 @@
 | Demo verisini sıfırla | Uygulamada düğme yok (D-030). Kayıt eklemek demoyu bozmaz: olaylar yalnızca eklenir, QR geçerli kalır. Ama canlı akış testi (`gh workflow run live-demo.yml`) pazar yerinde `E2E demo …` adlı bir ilan ve ona bağlı teklif, parti ve lot bırakır; bu iş akışı ya da prova canlıda koşulduysa sahneden önce aynı günle yeniden yüklenir (2026-10-29'da yapıldı: 8 ilan, 0 `E2E`, 63 olay, çapa aynı). Gerçekten gerekirse önce Neon'da yedek dal alınır, sonra `DEMO_NOW=<qr.json'daki seedDay> pnpm db:seed:live`. Aynı gün aynı çapayı verir, sunumdaki QR geçerli kalır; başka bir günle yüklenirse `pnpm demo:qr` yeniden çalıştırılır ve sunumdaki QR değiştirilir |
 | Demo parolası | Ortam değişkeni `DEMO_PASSWORD`. Depoda yazmaz; ekibe ayrı iletilir |
 | Yedek 1: internetsiz | `pnpm demo:offline` → `http://localhost:3000`. Yerel PGlite'a demo verisini yükler, derleme eskiyse derler, sunucuyu açar. İnternet ve Neon gerekmez; harita yerine liste görünür. Telefonla QR bu yedekte çalışmaz: pasaport dizüstünde açılır |
-| Yedek 2: video | `.private/demo/reboard-demo.mp4`, `pnpm demo:video` üretir: aşağıdaki akış, tablodaki sürelerle, 1920 × 1080. Kayıt internet varken yapılır: veri yerel PGlite'tan gelir, tarayıcı yalnızca harita döşemelerini indirir (2. adımda harita hazır olmazsa kayıt düşer) |
+| Yedek 2: video | `pnpm demo:video` `.private/demo/reboard-demo.mp4` üretir: aşağıdaki akış, tablodaki sürelerle, 1920 × 1080. Kayıt internet varken yapılır: veri yerel PGlite'tan gelir, tarayıcı yalnızca harita döşemelerini indirir (2. adımda harita hazır olmazsa kayıt düşer). Kapanışta dosya silindi (D-035); gerekirse yeniden kaydedilir |
 | Provadan önce | `pnpm demo:offline --check`: akış testi çevrimdışı sunucuda koşar, yerel dışı her bağlantı kesik olur |
-| Donma noktası (30 Ekim, yeni arayüz) | Kod: git etiketi `demo-saas-2026-10-30` (kod `53f8946`, `main`). Yayın: `dpl_HVwdzH6EdvhEJbAB74x7ad1aG9nT`. Veri ve şema değişmedi; Neon yedek dalı `yedek-2026-10-29-donma` aynı veriyi tutar (8 ilan, 0 `E2E`, 63 olay, 6 lot). Yedek 1 `main`'den derlenir, yedek 2 videosu yeni arayüzle 30 Ekim 05:16'da kaydedildi. Eski arayüz: git etiketi `demo-donma-2026-10-29`, yayını `dpl_HuaSCHYy2WsmpEZMjNXWSbm4xG7y`, videosu `.private/demo/reboard-demo-eski-arayuz.mp4` |
+| Donma noktası (30 Ekim, yeni arayüz) | Kod: git etiketi `demo-saas-2026-10-30` (kod `53f8946`, `main`). Yayın: `dpl_HVwdzH6EdvhEJbAB74x7ad1aG9nT`. Veri ve şema değişmedi: donma anında 8 ilan, 0 `E2E`, 63 olay, 6 lot (Neon yedek dalı kapanışta silindi, D-035). Yedek 1 `main`'den derlenir. Eski arayüz: git etiketi `demo-donma-2026-10-29`, yayını `dpl_HuaSCHYy2WsmpEZMjNXWSbm4xG7y` |
 
 ## 2. Akış
 
@@ -45,7 +47,7 @@ Rol değiştirici başlığın altındaki "Demo: veriler sentetiktir. Rol deği�
 | Belirti | Ne yapılır |
 | --- | --- |
 | Canlı adres açılmıyor | Yedek 1'e geç (dizüstünde önceden açık tutulur) |
-| Dizüstü de sorunlu | Yedek 2: video |
+| Dizüstü de sorunlu | Yedek 2: video (kapanışta silindi; `pnpm demo:video` yeniden kaydeder) |
 | Veri karıştı | Akış kendi ilanını açar; eski kayıtlar akışı bozmaz. Sıfırlama gerekirse §1'deki komut (aynı seed günüyle) |
 | Canlı adres açılıyor ama donmadan sonra yeni bir yayın girmiş | `vercel promote dpl_HVwdzH6EdvhEJbAB74x7ad1aG9nT` yeni arayüzün donmuş yayınını yeniden üretime alır; ardından `gh workflow run live-smoke.yml`. Eski arayüze dönmek istenirse `vercel promote dpl_HuaSCHYy2WsmpEZMjNXWSbm4xG7y` |
 | Yeni bir yayın girecek | `pnpm deploy:prod` derleme önbelleğini atlar (`--force`). Önbellekle yayında Vercel eski Tailwind CSS'ini kullanıp yeni sınıfları derlemedi: sayfa yeni düzenle ama renksiz açıldı (30 Ekim 05:12; çözüm `--force`). Yayından sonra canlı CSS'te `.bg-surface` ve `.rb-aurora` aranır |
