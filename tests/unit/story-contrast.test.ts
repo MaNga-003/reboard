@@ -2,22 +2,22 @@
 // Kartın bileşik zemini altındaki pikselle tekdüze değişir: parlaklığı, altı saf siyahken en düşük, saf beyazken en yüksektir.
 // Metnin parlaklığı bu aralığın dışındaysa en kötü kontrast iki uçtan birindedir. İki uç her palette ≥ 4,5 ise
 // hiçbir kare metni okunmaz kılamaz. Kanıt kare piksellerine bağlı değildir; ileride render edilen bölümler de kapsanır.
+// Kareler paletten bağımsızdır (her bölüm kendi Wada rengini taşır); palete bağlı olan yalnızca kartın zemini ve metni.
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
 import { describe, expect, it } from "vitest";
 import { contrastRatio, over, relativeLuminance } from "@/design/color";
-import { PALETTES, paletteHex, type PaletteId } from "@/design/tokens";
+import { paletteHex } from "@/design/tokens";
 
 const MIN = 4.5;
-const ids = Object.keys(PALETTES) as PaletteId[];
 
 // Kartın saydamlığı bileşenin kendisinden okunur: sınıf değişirse test de değişir.
 const source = readFileSync(join(process.cwd(), "src/components/story/StoryPlayer.tsx"), "utf8");
 const card = /function Card\b[\s\S]*?className="([^"]*)"/.exec(source)?.[1] ?? "";
 const alpha = Number(/\bbg-bg\/(\d+)\b/.exec(card)?.[1]) / 100;
 
-function worst(id: PaletteId, a: number) {
-  const p = paletteHex(id);
+function worst(a: number) {
+  const p = paletteHex();
   const [dark, light] = [over(p.bg, a, "#000000"), over(p.bg, a, "#ffffff")];
   const lt = relativeLuminance(p.text);
   const between = lt >= relativeLuminance(dark) && lt <= relativeLuminance(light);
@@ -31,14 +31,14 @@ describe("hikâye kartı", () => {
     expect(alpha).toBeLessThanOrEqual(1);
   });
 
-  it.each(ids)("palet %s: kartın altında en kötü kare olsa da metin ≥ 4,5", (id) => {
-    const w = worst(id, alpha);
-    expect(w.between, `${id}: metin parlaklığı bileşik zemin aralığında`).toBe(false);
-    expect(w.ratio, `${id}: saydamlık ${alpha}, en kötü kontrast ${w.ratio.toFixed(2)}`).toBeGreaterThanOrEqual(MIN);
+  it("kartın altında en kötü kare olsa da metin ≥ 4,5", () => {
+    const w = worst(alpha);
+    expect(w.between, "metin parlaklığı bileşik zemin aralığında").toBe(false);
+    expect(w.ratio, `saydamlık ${alpha}, en kötü kontrast ${w.ratio.toFixed(2)}`).toBeGreaterThanOrEqual(MIN);
   });
 
-  // Ölçünün kendisi: çok saydam bir kart en az bir palette düşmeli, yoksa test hiçbir şeyi yakalamıyordur.
-  it("ölçü kötü örneği yakalar: %40 opak kart en az bir palette < 4,5", () => {
-    expect(Math.min(...ids.map((id) => worst(id, 0.4).ratio))).toBeLessThan(MIN);
+  // Ölçünün kendisi: çok saydam bir kart düşmeli, yoksa test hiçbir şeyi yakalamıyordur.
+  it("ölçü kötü örneği yakalar: %40 opak kart < 4,5", () => {
+    expect(worst(0.4).ratio).toBeLessThan(MIN);
   });
 });

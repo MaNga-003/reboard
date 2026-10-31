@@ -93,9 +93,9 @@ Biçim: **Karar**, **Neden**, **Tarih**, kararı kim verdi (K: kullanıcı, C: C
 - **Tarih:** 2026-10-27 · C
 
 ### D-014 — Renkler yalnızca Sanzo Wada sözlüğünden
-- **Karar:** Arayüz ve hikâye renkleri `MaNga-003/dictionary-of-colour-combinations` deposundaki 159 renkten ve 348 kombinasyondan seçilir. Ana palet kullanıcı tarafından seçilecek (açık soru Q-1). Metin kontrastı ve OKLab ΔE eşikleri otomatik testle denetlenir.
+- **Karar:** Arayüz ve hikâye renkleri `MaNga-003/dictionary-of-colour-combinations` deposundaki 159 renkten ve 348 kombinasyondan seçilir. Ana palet Wada #343 (Ivory Buff, Vandar Poel's Blue, Burnt Sienna, Deep Grayish Olive); düğme yazısı White, çünkü Burnt Sienna üstünde kombinasyonun Ivory Buff'ı 4,5:1'i geçmiyordu (DESIGN_SYSTEM §1). Metin kontrastı ve OKLab ΔE eşikleri otomatik testle denetlenir.
 - **Hikâye render'ı:** Malzemelerin temel renkleri, ışıkların ve dünyanın rengi Wada'dan gelir (`lib.rgba(ad)`; ad sözlükte yoksa render durur). Doku içinde iki Wada rengi arasındaki geçiş ve parlaklık değişimi serbesttir; fotogerçekçi ışık zaten ara tonlar üretir. 8. bölümde yer ve Dünya küresi EOX Sentinel-2 cloudless uydu mozaiğidir; o, renk seçimi değil gerçek görüntüdür.
-- **Tarih:** 2026-10-27 · K (render notu 2026-10-29 · C)
+- **Tarih:** 2026-10-27 · K (render notu 2026-10-29 · C; ana palet 2026-10-30 · K)
 
 ### D-015 — MVP kapsamı dışında kalanlar
 - **Karar:** Canlı GPS, yapay zekâ ile rota optimizasyonu, ödeme ve emanet hesabı, karbon kredisi, blokzincir ve mobil uygulama MVP'ye girmez.

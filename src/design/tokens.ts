@@ -1,5 +1,4 @@
 // Renk tokenları (D-014): yalnızca Sanzo Wada sözlüğündeki adlarla tanımlanır, hex sözlükten çözülür.
-// Ana palet kullanıcının seçimini bekliyor (Q-1); seçilene kadar geçici olarak B kullanılır.
 import wada from "./wada.json";
 
 export type WadaColor = { name: string; hex: string; combinations: number[] };
@@ -11,40 +10,20 @@ export function wadaHex(name: string): string {
   return c.hex;
 }
 
-export type PaletteId = "A" | "B" | "C";
+/**
+ * Ana palet: Wada kombinasyonu 343 (kullanıcı seçti, 2026-10-30; Q-1). Rol → Wada renk adı.
+ * Düğme yazısı kombinasyonun kendi Ivory Buff'ı değil White: Burnt Sienna üstünde Ivory Buff 3,56:1 kalıyordu,
+ * White 5,21:1 veriyor (DESIGN_SYSTEM §1). Aynı eşiği geçen tek başka açık renk Pale Lemon Yellow 4,52:1 ile sınırdaydı.
+ */
+export const PALETTE = {
+  combination: 343,
+  roles: { bg: "Ivory Buff", text: "Vandar Poel's Blue", accent: "Burnt Sienna", onAccent: "White", secondary: "Deep Grayish Olive" },
+} as const;
 
-type PaletteDef = {
-  id: PaletteId;
-  combination: number;
-  /** Rol → Wada renk adı */
-  roles: { bg: string; text: string; accent: string; onAccent: string; secondary: string };
-};
+export type RoleName = keyof typeof PALETTE.roles;
 
-export const PALETTES: Record<PaletteId, PaletteDef> = {
-  A: {
-    id: "A",
-    combination: 303,
-    roles: { bg: "Naples Yellow", text: "Deep Slate Olive", accent: "Peach Red", onAccent: "Deep Slate Olive", secondary: "Neutral Gray" },
-  },
-  B: {
-    id: "B",
-    combination: 310,
-    roles: { bg: "Sulpher Yellow", text: "Deep Slate Olive", accent: "Pinkish Cinnamon", onAccent: "Deep Slate Olive", secondary: "Olive" },
-  },
-  C: {
-    id: "C",
-    combination: 343,
-    roles: { bg: "Ivory Buff", text: "Vandar Poel's Blue", accent: "Burnt Sienna", onAccent: "Ivory Buff", secondary: "Deep Grayish Olive" },
-  },
-};
-
-export const ACTIVE_PALETTE: PaletteId = "B";
-
-export type RoleName = keyof PaletteDef["roles"];
-
-export function paletteHex(id: PaletteId): Record<RoleName, string> {
-  const roles = PALETTES[id].roles;
-  return Object.fromEntries(Object.entries(roles).map(([role, name]) => [role, wadaHex(name)])) as Record<RoleName, string>;
+export function paletteHex(): Record<RoleName, string> {
+  return Object.fromEntries(Object.entries(PALETTE.roles).map(([role, name]) => [role, wadaHex(name)])) as Record<RoleName, string>;
 }
 
 export type StatusName = "ok" | "warn" | "danger";
@@ -60,17 +39,17 @@ export const STATUS: Record<StatusName, { fill: string; on: "text" | "bg" }> = {
   danger: { fill: "Carmine Red", on: "bg" },
 };
 
-export function statusHex(id: PaletteId = ACTIVE_PALETTE): Record<StatusName, { fill: string; on: string }> {
-  const hex = paletteHex(id);
+export function statusHex(): Record<StatusName, { fill: string; on: string }> {
+  const hex = paletteHex();
   return Object.fromEntries(
     Object.entries(STATUS).map(([k, s]) => [k, { fill: wadaHex(s.fill), on: hex[s.on] }]),
   ) as Record<StatusName, { fill: string; on: string }>;
 }
 
 /** <html> üzerine yazılan CSS değişkenleri; globals.css bunları Tailwind temasına bağlar. */
-export function cssVariables(id: PaletteId = ACTIVE_PALETTE): Record<string, string> {
-  const hex = paletteHex(id);
-  const status = statusHex(id);
+export function cssVariables(): Record<string, string> {
+  const hex = paletteHex();
+  const status = statusHex();
   return {
     "--rb-bg": hex.bg,
     "--rb-text": hex.text,

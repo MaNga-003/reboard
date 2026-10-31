@@ -2,34 +2,31 @@
 import { describe, expect, it } from "vitest";
 import { contrastRatio } from "@/design/color";
 import { BASEMAP_SAMPLES, MARKER, markerColors } from "@/design/map";
-import { PALETTES, type PaletteId } from "@/design/tokens";
+import { wadaHex } from "@/design/tokens";
 import { groupByPoint } from "@/domain/geo";
 import { CalcError } from "@/domain/result";
 
 const UI_MIN = 3;
 const TEXT_MIN = 4.5;
-// Palet kullanıcının seçimini bekliyor (Q-1); üç aday da geçmeli.
-const palettes = Object.keys(PALETTES) as PaletteId[];
 
 describe("harita noktası kontrastı", () => {
-  for (const id of palettes) {
-    it(`palet ${id}: her nokta her altlık örneğinde ≥ ${UI_MIN}:1 bir katman taşır; etiket ≥ ${TEXT_MIN}:1`, () => {
-      const m = markerColors(id);
-      const weak: string[] = [];
-      for (const [kind, s] of [["own", m.own], ["other", m.other]] as const) {
-        for (const [where, base] of Object.entries(BASEMAP_SAMPLES)) {
-          const best = Math.max(contrastRatio(s.fill, base), contrastRatio(s.ring, base));
-          if (best < UI_MIN) weak.push(`${kind} ~ ${where}: ${best.toFixed(2)}`);
-        }
+  it(`her nokta her altlık örneğinde ≥ ${UI_MIN}:1 bir katman taşır; etiket ≥ ${TEXT_MIN}:1`, () => {
+    const m = markerColors();
+    const weak: string[] = [];
+    for (const [kind, s] of [["own", m.own], ["other", m.other]] as const) {
+      for (const [where, base] of Object.entries(BASEMAP_SAMPLES)) {
+        const best = Math.max(contrastRatio(s.fill, base), contrastRatio(s.ring, base));
+        if (best < UI_MIN) weak.push(`${kind} ~ ${where}: ${best.toFixed(2)}`);
       }
-      expect(weak).toEqual([]);
-      expect(contrastRatio(m.label.text, m.label.halo)).toBeGreaterThanOrEqual(TEXT_MIN);
-    });
-  }
+    }
+    expect(weak).toEqual([]);
+    expect(contrastRatio(m.label.text, m.label.halo)).toBeGreaterThanOrEqual(TEXT_MIN);
+  });
 
-  it("ölçü kötü örneği yakalar: eski kendi-ilanı halkası (zemin rengi) palet B'de karada 3:1'in altında", () => {
-    const m = markerColors("B");
-    expect(Math.max(contrastRatio(m.own.fill, BASEMAP_SAMPLES.land), contrastRatio(m.label.halo, BASEMAP_SAMPLES.land))).toBeLessThan(UI_MIN);
+  // Ölçünün kendisi: ilk paletteki kendi-ilanı noktası (Pinkish Cinnamon dolgu, zemin rengi halka) karada 3:1'in altındaydı.
+  it("ölçü kötü örneği yakalar: eski kendi-ilanı noktası (açık vurgu, zemin rengi halka) karada 3:1'in altında", () => {
+    const [fill, ring] = [wadaHex("Pinkish Cinnamon"), wadaHex("Sulpher Yellow")];
+    expect(Math.max(contrastRatio(fill, BASEMAP_SAMPLES.land), contrastRatio(ring, BASEMAP_SAMPLES.land))).toBeLessThan(UI_MIN);
   });
 });
 

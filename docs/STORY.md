@@ -104,7 +104,7 @@ flowchart LR
 | Mobil dizisi toplamı | ≤ 12 MB | aynı |
 | İlk bölüm | ≤ 3 MB | aynı |
 | Yayın paketi (CLI yüklemesi, kareler dahil) | ≤ 90 MB (Vercel Hobby sınırı 100 MB) | `tests/unit/deploy-config.test.ts` |
-| Metin kartının en kötü kare üstündeki kontrastı (%90 opak zemin, altında saf siyah ya da beyaz) | Her palette ≥ 4,5 | `tests/unit/story-contrast.test.ts` |
+| Metin kartının en kötü kare üstündeki kontrastı (%90 opak zemin, altında saf siyah ya da beyaz) | ≥ 4,5 | `tests/unit/story-contrast.test.ts` |
 | Ardışık karelerde sıçrama | Küçük önizlemede (32 × 18, mobil 9 × 16) OKLab ΔE: basamak, dışarıdaki kare ve tümsek oranları sağlam dizinin uçlarından ~%15 pay; bölüm sınırındaki bir karelik duraklama sıçrama sayılmaz (M-10) | `tests/unit/story-continuity.test.ts` (`node scripts/story-continuity.mjs` ölçer ve uç değerleri yazar) |
 | Bölüm sınırı (kesme) | 480 px'te ham ve yapı SSIM ≥ 0,99, ortalama ΔE ≤ 0,004, parlaklık eğimi ≤ 0,008; mobil dikiş ≤ 0,95 × komşu adım | aynı |
 | Sonraki bölümün eşyaları önceki bölümlerde | Görünen ışın 0; her ışıkta kesilen pay ≤ 0,02; sonraki bölüm ışığının ulaşan payı ≤ 0,02 | `tests/unit/story-scene.test.ts` (`pnpm story:check` ölçer) |

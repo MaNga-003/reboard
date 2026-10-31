@@ -1,7 +1,7 @@
 {
   "$schema": "./docs/state.schema.json",
   "project": "ReBoard SaaS platformu",
-  "updated_at": "2026-10-29T18:37:00+03:00",
+  "updated_at": "2026-10-30T01:17:00+03:00",
   "current_phase": "F2",
   "deadlines": {
     "demo_freeze": "2026-10-29T18:00:00+03:00",
@@ -312,10 +312,10 @@
       "id": "T3.1",
       "phase": "F3",
       "mode": "hibrit",
-      "status": "yapılacak",
+      "status": "tamam",
       "title": "Palet önizleme sayfası (A/B/C) ve kullanıcının seçimi",
       "acceptance": "Üç aday gerçek bileşenlerle gösterilir; ölçümler sayfada görünür; kullanıcı birini seçer",
-      "evidence": null,
+      "evidence": "2026-10-30: üç aday çevrimdışı yedekte gerçek ekranlarda (Pazar yeri ve Panel 1440 px, Pasaport 390 px) yan yana gösterildi; ayrı önizleme sayfası yerine ekran görüntüsü (kod değişmeden, <html> üzerindeki --rb-* değişkenleri değiştirilerek). Ekrandaki bütün metnin WCAG kontrastı ölçüldü: en düşük A 4,05, B 7,45, C 3,56 (C'de iki düğme; Panel'de en düşük 4,93). Kullanıcı C'yi seçti. Uygulama (f5/palet-c): PALETTES tek palete indi (#343); düğme yazısı White 5,21:1 (Pale Lemon Yellow 4,52 eşikte kaldı); 'düğme yazısı ≥ 4,5' kalıcı teste bağlandı (design-tokens 12/12). Bilerek bozma: Ivory Buff'ta birim test düştü, e2e'de 8 axe testi düştü. Doğrulama: birim ve entegrasyon 497 geçti (2 atlanan: ham PNG yok), lint ve tür denetimi temiz, e2e 76/76, demo akışı 1/1, kare süresi p99 16,8 ms (M-3).",
       "depends_on": [
         "T0.5"
       ],
@@ -373,10 +373,10 @@
       "id": "T3.5",
       "phase": "F3",
       "mode": "otonom",
-      "status": "engelli",
+      "status": "tamam",
       "title": "Final render, AVIF/WebP kodlama ve bütçe testleri",
       "acceptance": "Kare SSIM ≥ 0,95 (hedef 0,97); masaüstü en fazla 25 MB, mobil en fazla 12 MB, ilk bölüm en fazla 3 MB (karar C, D-004); yayın paketi ≤ 90 MB; metin altı kontrastı en az 4,5",
-      "evidence": "pnpm story:encode (2026-10-29): masaüstü 240 kare 19,01 MB, mobil 120 kare 7,20 MB, ilk bölüm 1,82 / 0,59 MB, en düşük kare SSIM 0,970 / 0,9701 (M-2); yayın paketi 29,21 MB (deploy-config). Süreklilik final AVIF'te sıçrama 0, bozmada yakalama 89/92 ve 74/84 (M-10). Metin altı kontrastı en kötü kare durumunda üç palette de ≥ 4,91 (M-9). story-budget, story-continuity, story-contrast yeşil.",
+      "evidence": "pnpm story:encode (2026-10-29): masaüstü 240 kare 19,01 MB, mobil 120 kare 7,20 MB, ilk bölüm 1,82 / 0,59 MB, en düşük kare SSIM 0,970 / 0,9701 (M-2); yayın paketi 29,21 MB (deploy-config). Süreklilik final AVIF'te sıçrama 0, bozmada yakalama 89/92 ve 74/84 (M-10). Metin altı kontrastı en kötü kare durumunda üç palette de ≥ 4,91 (M-9). story-budget, story-continuity, story-contrast yeşil. Q-1 kapandı (kullanıcı C'yi seçti, 2026-10-30): kareler paletten bağımsız olduğu için yeniden render gerekmedi; seçilen paletle kart kontrastı 4,91 (M-9, story-contrast yeşil).",
       "depends_on": [
         "T3.3",
         "T3.1"
@@ -385,16 +385,16 @@
         "D-004",
         "D-014"
       ],
-      "note": "Süre ölçümü (2026-10-28, kırpıntılı 1. bölüm, 1920×1080, RTX 3050, OptiX + OIDN; kare 0 ve 29, 360 kareye oranlı): 1024 örnek 264/338 s → ≈ 30,1 sa; 512: 145/171 s → ≈ 15,8 sa; 256: 66/80 s → ≈ 7,3 sa; 128: 32/40 s → ≈ 3,6 sa; 64: 17/20 s → ≈ 1,8 sa. Kazandırmayanlar: eşik 0,01 (%3), sekme sayısını azaltmak (%3), eğri alt bölümü 2 (%2), ribbon eğri (daha yavaş ve kare 29 SSIM 0,935), küçük render (aynı bütçede kare 29 SSIM 0,869 → 0,82–0,86). Ham kare 1024'e karşı (kare 29): 512 SSIM 0,990, 256 0,987, 128 0,983, 64 0,976. Kodlama kaybı baskın: 14 MB bütçesi (kare başı ≈ 47 kB, AVIF q18) kare 29'da 1024/512/256/128/64 için SSIM 0,869/0,869/0,867/0,866/0,863 verir; %100 kırpıntıda 1024, 256, 128 ve 64 ayırt edilmiyor, bütçeli AVIF lifleri siliyor. Kare başı ≈ 200 kB (q60) ile 0,978/0,974/0,971/0,968/0,962. Karar: 128 örnek (kullanıcı, 2026-10-28; D-004). Kalite hedefi → bayt (128 örnek, kendi PNG'sine karşı): kare 0 SSIM ≥ 0,98 için 4 kB; kare 29 0,95 için 108 kB, 0,97 için 165 kB, 0,98 için 221 kB. Vercel Hobby (okunma 2026-10-28): CLI yüklemesi ≤ 100 MB (vercel.com/docs/limits), aylık 100 GB aktarım, aşılınca 30 gün durur (vercel.com/docs/plans/hobby). Bütçe kararı C (kullanıcı, 2026-10-28; D-004): kare başı SSIM 0,97 hedefi (taban 0,95), tavan masaüstü 25 / mobil 12 / ilk bölüm 3 MB. story-encode kare başı ikili arama yapar (AVIF q20–90; örnek: kare 0 q20 5 kB, kare 29 q55 165 kB). WebP aynı SSIM'de AVIF'in 1,7–2,4 katı (kare 29: 282 kB, kare 52: 79 kB'a karşı 33 kB); bu yüzden WebP yalnızca poster ve bölüm durağan karelerinde, AVIF'siz tarayıcı statik hikâyeye geçer. Yayın paketi testi ≤ 90 MB (deploy-config). story-budget belge ile kodlayıcı 4/4. Testler yazıldı: story-contrast (kare bağımsız en kötü durum, 4/4) ve story-budget (belge ile kodlayıcı aynı 3/3; kare ölçümü manifest gelince). Final render 128 örnek. 8. bölüm eşit log zoom ile sıçradı (masaüstü ×1,39 Sahra girişi, mobil ×1,77 yerleşimin saydamlaşması); kamera hızı sondadan üretilen PACE tablosuyla ayarlanıp yeniden render edildi (26,1 dk): ×1,12 / ×1,13 (M-10). Engel: T3.1 (palet seçimi, Q-1). Kareler paletten bağımsız (her bölüm kendi Wada rengini taşır); metin kartının kontrastı üç palette de ölçüldü. Palet seçilince T3.5 tamam olur, yeniden render gerekmez."
+      "note": "Süre ölçümü (2026-10-28, kırpıntılı 1. bölüm, 1920×1080, RTX 3050, OptiX + OIDN; kare 0 ve 29, 360 kareye oranlı): 1024 örnek 264/338 s → ≈ 30,1 sa; 512: 145/171 s → ≈ 15,8 sa; 256: 66/80 s → ≈ 7,3 sa; 128: 32/40 s → ≈ 3,6 sa; 64: 17/20 s → ≈ 1,8 sa. Kazandırmayanlar: eşik 0,01 (%3), sekme sayısını azaltmak (%3), eğri alt bölümü 2 (%2), ribbon eğri (daha yavaş ve kare 29 SSIM 0,935), küçük render (aynı bütçede kare 29 SSIM 0,869 → 0,82–0,86). Ham kare 1024'e karşı (kare 29): 512 SSIM 0,990, 256 0,987, 128 0,983, 64 0,976. Kodlama kaybı baskın: 14 MB bütçesi (kare başı ≈ 47 kB, AVIF q18) kare 29'da 1024/512/256/128/64 için SSIM 0,869/0,869/0,867/0,866/0,863 verir; %100 kırpıntıda 1024, 256, 128 ve 64 ayırt edilmiyor, bütçeli AVIF lifleri siliyor. Kare başı ≈ 200 kB (q60) ile 0,978/0,974/0,971/0,968/0,962. Karar: 128 örnek (kullanıcı, 2026-10-28; D-004). Kalite hedefi → bayt (128 örnek, kendi PNG'sine karşı): kare 0 SSIM ≥ 0,98 için 4 kB; kare 29 0,95 için 108 kB, 0,97 için 165 kB, 0,98 için 221 kB. Vercel Hobby (okunma 2026-10-28): CLI yüklemesi ≤ 100 MB (vercel.com/docs/limits), aylık 100 GB aktarım, aşılınca 30 gün durur (vercel.com/docs/plans/hobby). Bütçe kararı C (kullanıcı, 2026-10-28; D-004): kare başı SSIM 0,97 hedefi (taban 0,95), tavan masaüstü 25 / mobil 12 / ilk bölüm 3 MB. story-encode kare başı ikili arama yapar (AVIF q20–90; örnek: kare 0 q20 5 kB, kare 29 q55 165 kB). WebP aynı SSIM'de AVIF'in 1,7–2,4 katı (kare 29: 282 kB, kare 52: 79 kB'a karşı 33 kB); bu yüzden WebP yalnızca poster ve bölüm durağan karelerinde, AVIF'siz tarayıcı statik hikâyeye geçer. Yayın paketi testi ≤ 90 MB (deploy-config). story-budget belge ile kodlayıcı 4/4. Testler yazıldı: story-contrast (kare bağımsız en kötü durum, 4/4) ve story-budget (belge ile kodlayıcı aynı 3/3; kare ölçümü manifest gelince). Final render 128 örnek. 8. bölüm eşit log zoom ile sıçradı (masaüstü ×1,39 Sahra girişi, mobil ×1,77 yerleşimin saydamlaşması); kamera hızı sondadan üretilen PACE tablosuyla ayarlanıp yeniden render edildi (26,1 dk): ×1,12 / ×1,13 (M-10). Engel (2026-10-30'da kalktı, Q-1 kapandı): T3.1 (palet seçimi). Kareler paletten bağımsız (her bölüm kendi Wada rengini taşır); metin kartının kontrastı üç palette de ölçüldü. Palet seçilince T3.5 tamam olur, yeniden render gerekmez."
     },
     {
       "id": "T3.6",
       "phase": "F3",
       "mode": "kullanıcı",
-      "status": "yapılacak",
+      "status": "tamam",
       "title": "Hikâyenin his ve zevk onayı (2–4 maddelik kontrol listesi)",
       "acceptance": "Kullanıcı onay verir ya da değişiklik listesi verir",
-      "evidence": null,
+      "evidence": "Kullanıcı (2026-10-30): \"hikâyeyi beğendim\". Madde bazında değişiklik listesi vermedi; 8. bölümün yerleşim görünümü için yeniden render istenmedi.",
       "depends_on": [
         "T3.5"
       ],
@@ -563,14 +563,6 @@
   ],
   "open_questions": [
     {
-      "id": "Q-1",
-      "owner": "kullanıcı",
-      "question": "Ana palet A (#303), B (#310) ya da C (#343)?",
-      "blocks": [
-        "T3.5"
-      ]
-    },
-    {
       "id": "Q-3",
       "owner": "ekip",
       "question": "Sunumdaki düzeltmeler (öneriler .private/kaynak-dogrulama.md, 3. ve 8. bölüm) ekipçe uygulanacak mı? Yanıtlananlar (28.10): yazılım iddiaları 'planlanan' diye yazılacak; PET/CoPET için SDS yok, 'formaldehit içermez' yalnız pMDI için yazılabilir; '8 milyon m³' yerine 'yaklaşık 8,6 milyon m³ tüketim (FAOSTAT 2024)' yazılacak. Demodan sonra netleşecek (kullanıcı kararı, 28.10): (1) Türkiye için '1,5 milyon ton' yazan bir kuruluş belgesi bulunamadı; EEA kişi başı atık oranıyla izdüşüm ~1,36 Mt veriyor. Belge iletilmezse Eurostat'ın 2022 sayısı (361.500 t) kullanılsın mı? '%85' için de kaynak yok. PLA sorusu yanıtlandı (İrem, 28.10): tekstil levhasında PLA bağlayıcıyla sonuç yok; isteğe bağlı 4. test adayı. İrem'in önerdiği test sırası: pMDI ve PET/CoPET, rPP, sitrik asit + nişasta, PLA (notlar .private/kaynak-dogrulama.md §9).",
@@ -621,8 +613,8 @@
       "id": "M-1",
       "claim": "Metin kontrastı",
       "threshold": "normal ≥ 4.5, büyük/arayüz ≥ 3",
-      "last_value": "17 test yeşil; en düşük gövde 6,11 (C), çip yazısı 4,73 (C/danger); bozma: koyu durum dolgusu 5 hata",
-      "measured_at": "2026-10-27T18:24:00+03:00",
+      "last_value": "12 test yeşil; en düşük gövde 6,11, düğme yazısı 5,21, çip yazısı 4,73 (danger); bozma: koyu durum dolgusu 5 hata; düğme yazısı Ivory Buff'ta (3,56) birim test ve e2e'de 8 axe testi düştü",
+      "measured_at": "2026-10-30T01:10:00+03:00",
       "test": "tests/unit/design-tokens.test.ts"
     },
     {
@@ -684,9 +676,9 @@
     {
       "id": "M-9",
       "claim": "Hikâye metni okunur",
-      "threshold": "metin kartı en kötü kare üstünde (altı saf siyah ya da beyaz) her palette kontrast ≥ 4,5",
-      "last_value": "en kötü A 8,80, B 9,16, C 4,91 (kart %90 opak); bozma: %40 opak kartta 3/3 palet düştü",
-      "measured_at": "2026-10-28T11:45:00+03:00",
+      "threshold": "metin kartı en kötü kare üstünde (altı saf siyah ya da beyaz) kontrast ≥ 4,5",
+      "last_value": "en kötü 4,91 (ana palet C, kart %90 opak); bozma: %40 opak kartta 1,20 ile düştü",
+      "measured_at": "2026-10-30T01:10:00+03:00",
       "test": "tests/unit/story-contrast.test.ts"
     },
     {
@@ -789,8 +781,8 @@
       "id": "M-22",
       "claim": "Harita noktaları seçilir ve dokunulur",
       "threshold": "nokta ≥ 3:1 (altlık örnekleri ve ekran pikseli); etiket ≥ 4,5:1; dokunma alanı ≥ 44 px",
-      "last_value": "A/B/C: 0 zayıf çift; ekranda halka 12,23:1 (önce 1,64:1); 44 px dokunma alanı; bozma 3/3",
-      "measured_at": "2026-10-27T09:10:00+03:00",
+      "last_value": "0 zayıf çift (en düşük 5,28:1, su altlığı); halka kara altlıkta 8,02:1 (belirteç hesabı; e2e ekranda ≥ 3 geçti; önce 1,64:1); 44 px dokunma alanı; bozma 3/3",
+      "measured_at": "2026-10-30T01:10:00+03:00",
       "test": "tests/unit/map.test.ts, tests/e2e/market.spec.ts"
     },
     {
@@ -821,8 +813,8 @@
       "id": "M-26",
       "claim": "Pasaport QR'ı okunur",
       "threshold": "çözülen metin beklenen adres; SC ≥ 0,55 (ISO/IEC 15415 B); modül ≥ 4 px; sessiz bölge ≥ 4 modül; %7'lik kare lekede 0 okunamayan konum",
-      "last_value": "SC A 0,769, B 0,806, C 0,601; ekranda 5 genişlik × TR/EN 4,53 px/modül, SC 0,806; M düzeyi %8 lekede 54/54 (L %6'da yarısı okunmadı); mutasyon 4/4, E2E %30 soluk 4/4 düştü",
-      "measured_at": "2026-10-27T19:17:00+03:00",
+      "last_value": "SC 0,601 (ana palet C; seçimden önce B'de 0,806 ve ekranda 4,53 px/modül); ekranda 5 genişlik × TR/EN e2e eşikleri geçti; M düzeyi %8 lekede 54/54 (L %6'da yarısı okunmadı); mutasyon 4/4, E2E %30 soluk 4/4 düştü",
+      "measured_at": "2026-10-30T01:10:00+03:00",
       "test": "tests/unit/qr.test.ts, tests/e2e/passport.spec.ts"
     },
     {

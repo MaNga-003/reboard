@@ -13,7 +13,7 @@ const rgb = (hex: string) => [1, 3, 5].map((i) => parseInt(hex.slice(i, i + 2), 
 type Patch = { x: number; y: number; s: number };
 
 /** Yolu modül başına `scale` piksel olarak boyar; yol yalnızca yatay koşulardan oluşur. `erase` kare bir lekeyi zemin rengine boyar. */
-function rasterize(text: string, scale = 4, colors = paletteHex("B"), erase?: Patch) {
+function rasterize(text: string, scale = 4, colors = paletteHex(), erase?: Patch) {
   const { size, d } = qrPath(text);
   const w = size * scale;
   const px = new Uint8ClampedArray(w * w * 4);
@@ -93,7 +93,7 @@ describe("pasaport QR'ı (M-26)", () => {
     for (let y = 9; y + s <= n - 9; y += 3)
       for (let x = 9; x + s <= n - 1; x += 3) {
         tried++;
-        const { px, w } = rasterize(text, 4, paletteHex("B"), { x: x + QUIET, y: y + QUIET, s });
+        const { px, w } = rasterize(text, 4, paletteHex(), { x: x + QUIET, y: y + QUIET, s });
         if (jsQR(px, w, w, { inversionAttempts: "dontInvert" })?.data !== text) misses.push(`${x},${y}`);
       }
     expect(tried).toBeGreaterThan(30);
@@ -101,16 +101,14 @@ describe("pasaport QR'ı (M-26)", () => {
   });
 
   // ISO/IEC 15415 sembol kontrastı SC = Rmax − Rmin; yansıma yerine göreli parlaklık. ≥ 0,55 "B" derecesi ve üstü.
-  // Ölçülen: A 0,769, B 0,806, C 0,601 (C'nin mavisi en zayıfı). Ters QR'ı birçok okuyucu çözemez: modül zeminden koyu.
-  it("üç palet adayında da sembol kontrastı ≥ 0,55, modül zeminden koyu ve QR o renklerle çözülür", () => {
+  // Ters QR'ı birçok okuyucu çözemez: modül zeminden koyu olmalı. Ölçülen SC 0,601: eşiğe yakın, yani mavi açılırsa test düşer.
+  it("ana palette sembol kontrastı ≥ 0,55, modül zeminden koyu ve QR o renklerle çözülür", () => {
     const text = url("reboard-lovat.vercel.app", "PL-2026-001", 37, HEAD);
-    for (const id of ["A", "B", "C"] as const) {
-      const c = paletteHex(id);
-      const sc = relativeLuminance(c.bg) - relativeLuminance(c.text);
-      expect(sc, `${id}: SC ${sc.toFixed(3)}, WCAG ${contrastRatio(c.text, c.bg).toFixed(2)}`).toBeGreaterThanOrEqual(0.55);
-      const { px, w } = rasterize(text, 4, c);
-      expect(jsQR(px, w, w, { inversionAttempts: "dontInvert" })?.data ?? null, id).toBe(text);
-    }
+    const c = paletteHex();
+    const sc = relativeLuminance(c.bg) - relativeLuminance(c.text);
+    expect(sc, `SC ${sc.toFixed(3)}, WCAG ${contrastRatio(c.text, c.bg).toFixed(2)}`).toBeGreaterThanOrEqual(0.55);
+    const { px, w } = rasterize(text, 4, c);
+    expect(jsQR(px, w, w, { inversionAttempts: "dontInvert" })?.data ?? null).toBe(text);
   });
 
   it("metrik kendini sınar: bir modül satırı kayınca çözücü okuyamaz", () => {
